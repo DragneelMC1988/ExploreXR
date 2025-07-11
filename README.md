@@ -3,11 +3,7 @@
 [![WordPress Compatible](https://img.shields.io/badge/WordPress-5.0%2B-0073aa.svg)](https://wordpress.org/)
 [![PHP Version](https://img.shields.io/badge/PHP-7.4%2B-8892bf.svg)](https://php.net/)
 [![License](https://img.shields.io/badge/License-GPL%20v2-007ec6.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
-[![Version](https://img.shields.io/badge/Version-1.0.0-brightgreen.svg)](https://github.com/yourusername/explorexr/releases)
-
-<p align="center">
-  <img src="https://github.com/yourusername/explorexr/raw/main/assets/img/logos/explorexr-banner.png" alt="ExploreXR Banner" width="800"/>
-</p>
+[![Version](https://img.shields.io/badge/Version-1.0.0-brightgreen.svg)](https://github.com/DragneelMC1988/explorexr/releases)
 
 ## 🌐 Transform Your WordPress Site with Interactive 3D Content
 
@@ -68,20 +64,20 @@ ExploreXR handles the technical complexities so you can focus on showcasing your
 ## � See It In Action
 
 <p align="center">
-  <img src="https://github.com/yourusername/explorexr/raw/main/assets/img/screenshots/demo-showcase.gif" alt="ExploreXR Demo" width="700"/>
+  <img src="https://github.com/DragneelMC1988/explorexr/raw/main/assets/img/screenshots/demo-showcase.gif" alt="ExploreXR Demo" width="700"/>
 </p>
 
 <details>
   <summary><b>📸 View More Screenshots</b></summary>
   
   <h4>Admin Dashboard</h4>
-  <img src="https://github.com/yourusername/explorexr/raw/main/assets/img/screenshots/admin-dashboard.jpg" alt="Admin Dashboard" width="600"/>
+  <img src="https://github.com/DragneelMC1988/explorexr/raw/main/assets/img/screenshots/admin-dashboard.jpg" alt="Admin Dashboard" width="600"/>
   
   <h4>Model Management</h4>
-  <img src="https://github.com/yourusername/explorexr/raw/main/assets/img/screenshots/model-management.jpg" alt="Model Management" width="600"/>
+  <img src="https://github.com/DragneelMC1988/explorexr/raw/main/assets/img/screenshots/model-management.jpg" alt="Model Management" width="600"/>
   
   <h4>AR Mode on Mobile</h4>
-  <img src="https://github.com/yourusername/explorexr/raw/main/assets/img/screenshots/ar-mode-mobile.jpg" alt="AR Mode on Mobile" width="400"/>
+  <img src="https://github.com/DragneelMC1988/explorexr/raw/main/assets/img/screenshots/ar-mode-mobile.jpg" alt="AR Mode on Mobile" width="400"/>
 </details>
 
 ## 🚀 Quick Start Guide
@@ -278,10 +274,10 @@ This project is licensed under the GPL v2 or later - see the [LICENSE](LICENSE) 
 
 ## 📊 Stats
 
-![GitHub stars](https://img.shields.io/github/stars/yourusername/explorexr?style=social)
-![GitHub forks](https://img.shields.io/github/forks/yourusername/explorexr?style=social)
-![GitHub issues](https://img.shields.io/github/issues/yourusername/explorexr)
-![GitHub downloads](https://img.shields.io/github/downloads/yourusername/explorexr/total)
+![GitHub stars](https://img.shields.io/github/stars/DragneelMC1988/explorexr?style=social)
+![GitHub forks](https://img.shields.io/github/forks/DragneelMC1988/explorexr?style=social)
+![GitHub issues](https://img.shields.io/github/issues/DragneelMC1988/explorexr)
+![GitHub downloads](https://img.shields.io/github/downloads/DragneelMC1988/explorexr/total)
 
 ---
 
