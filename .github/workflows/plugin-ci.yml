@@ -1,0 +1,142 @@
+name: WordPress Plugin CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: PHP ${{ matrix.php }} - WP ${{ matrix.wordpress }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: [7.4, 8.0, 8.1]
+        wordpress: [5.9, 6.0, 6.2, latest]
+        include:
+          - php: 8.2
+            wordpress: latest
+        exclude:
+          - php: 8.1
+            wordpress: 5.9
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: dom, curl, libxml, mbstring, zip, pdo, mysql, pdo_mysql, bcmath, intl
+          coverage: none
+
+      - name: Validate composer.json and composer.lock
+        if: ${{ hashFiles('composer.json') != '' }}
+        run: composer validate --strict
+
+      - name: Install PHP dependencies
+        if: ${{ hashFiles('composer.json') != '' }}
+        run: composer install --prefer-dist --no-progress
+
+      - name: Setup WordPress
+        run: |
+          export WP_VERSION=${{ matrix.wordpress }}
+          bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
+
+      - name: Run PHP Lint
+        run: find . -type f -name '*.php' -not -path "./vendor/*" -print0 | xargs -0 -n1 php -l
+
+      - name: Run PHPUnit
+        if: ${{ hashFiles('phpunit.xml.dist') != '' }}
+        run: vendor/bin/phpunit
+
+  coding-standards:
+    name: WordPress Coding Standards
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          extensions: dom, curl, libxml, mbstring, zip
+          coverage: none
+          tools: phpcs
+
+      - name: Run PHPCS
+        run: phpcs --standard=WordPress --extensions=php --ignore=*/vendor/*,*/node_modules/* .
+
+  javascript:
+    name: JavaScript Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'npm'
+
+      - name: Install dependencies
+        if: ${{ hashFiles('package.json') != '' }}
+        run: npm ci
+
+      - name: Run ESLint
+        if: ${{ hashFiles('package.json') != '' }}
+        run: npm run lint
+
+      - name: Run JavaScript tests
+        if: ${{ hashFiles('package.json') != '' }}
+        run: npm test
+
+  build-deploy:
+    name: Build Plugin Package
+    runs-on: ubuntu-latest
+    needs: [test, coding-standards, javascript]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          extensions: dom, curl, libxml, mbstring, zip
+          coverage: none
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'npm'
+
+      - name: Install dependencies
+        if: ${{ hashFiles('package.json') != '' }}
+        run: npm ci
+
+      - name: Build assets
+        if: ${{ hashFiles('package.json') != '' }}
+        run: npm run build
+
+      - name: Create plugin zip
+        run: |
+          mkdir -p build
+          rsync -av --exclude-from=.distignore . ./build/explorexr
+          cd build
+          zip -r explorexr.zip explorexr
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: explorexr-plugin
+          path: build/explorexr.zip

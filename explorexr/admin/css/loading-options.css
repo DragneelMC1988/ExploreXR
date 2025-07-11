@@ -1,0 +1,146 @@
+/* Styles for the Loading Options Page */
+
+.expoxr-settings-section {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    padding: 15px;
+    margin: 15px 0;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.expoxr-settings-section h2 {
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.expoxr-range {
+    vertical-align: middle;
+    width: 200px;
+}
+
+.expoxr-opacity-value {
+    display: inline-block;
+    width: 40px;
+    text-align: center;
+    margin-left: 5px;
+}
+
+.expoxr-settings-preview {
+    background: #f5f5f5;
+    border: 1px solid #e0e0e0;
+    padding: 20px;
+    margin-top: 20px;
+    position: relative;
+    min-height: 200px;
+}
+
+.expoxr-preview-title {
+    margin-top: 0;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.expoxr-loading-preview-container {
+    position: relative;
+    height: 200px;
+    background-color: #f9f9f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/**
+ * ExploreXR Loading Options CSS
+ * 
+ * Styles for the loading UI of 3D models.
+ */
+
+/* Loading container */
+.expoxr-loading-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.9);
+    z-index: 10;
+    transition: opacity 0.5s ease;
+}
+
+/* Progress bar */
+.expoxr-loading-progress-bar {
+    width: 80%;
+    max-width: 300px;
+    height: 10px;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.expoxr-loading-progress {
+    height: 100%;
+    width: 0%;
+    background-color: #1e88e5;
+    transition: width 0.3s ease;
+}
+
+/* Percentage indicator */
+.expoxr-loading-percentage {
+    font-size: 16px;
+    font-weight: bold;
+    color: #1e88e5;
+}
+
+/* Admin preview */
+.expoxr-loading-preview-container {
+    background-color: #f5f5f5;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.expoxr-loading-preview {
+    width: 100%;
+    max-width: 500px;
+    height: 150px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.expoxr-loading-preview[data-loading-type="bar"] .expoxr-loading-percentage {
+    display: none;
+}
+
+.expoxr-loading-preview[data-loading-type="percentage"] .expoxr-loading-progress-bar {
+    display: none;
+}
+
+/* Free version notice */
+.expoxr-free-version-notice {
+    display: flex;
+    align-items: center;
+    color: #666;
+    font-style: italic;
+}
+
+.expoxr-loading-color-preview {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-left: 10px;
+    border: 1px solid #ddd;
+}

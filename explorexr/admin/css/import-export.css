@@ -1,0 +1,81 @@
+/* Import/Export section styles */
+
+.expoxr-import-export-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-top: 20px;
+    max-width: 900px;
+}
+
+.expoxr-export-section, 
+.expoxr-import-section {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.expoxr-export-section h4, 
+.expoxr-import-section h4 {
+    margin-top: 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    font-size: 16px;
+}
+
+.expoxr-import-section input[type="file"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #f9f9f9;
+}
+
+.expoxr-export-section .dashicons,
+.expoxr-import-section .dashicons {
+    margin-right: 5px;
+    vertical-align: text-bottom;
+    font-size: 18px;
+    line-height: 18px;
+    height: 18px;
+    width: 18px;
+}
+
+@media (max-width: 782px) {
+    .expoxr-import-export-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+.expoxr-import-section .import-note {
+    background: #f8f8f8;
+    padding: 10px;
+    border-left: 4px solid #ffb900;
+    margin-bottom: 15px;
+}
+
+.expoxr-export-section .button,
+.expoxr-import-section .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.expoxr-import-section .button .spinner {
+    margin-right: 5px;
+    float: none;
+}
+
+.expoxr-import-settings-preview {
+    max-height: 300px;
+    overflow-y: auto;
+    background: #f5f5f5;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-top: 10px;
+    font-family: monospace;
+    font-size: 12px;
+}

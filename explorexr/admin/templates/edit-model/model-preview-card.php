@@ -1,0 +1,95 @@
+<?php
+/**
+ * Model Preview Card Template
+ * 
+ * Displays a preview of the 3D model with the shortcode
+ *
+ * @package ExpoXR
+ */
+
+// Prevent direct access
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+// Check if model_id is defined, if not try to get it from $_GET
+if (!isset($model_id) || empty($model_id)) {
+    $model_id = isset($_GET['model_id']) ? intval($_GET['model_id']) : 0;
+    if (!$model_id) {
+        echo '<div class="notice notice-error"><p>Error: Model ID not provided to model-preview-card.php template.</p></div>';
+        return;
+    }
+}
+
+// Ensure required variables are defined
+if (!isset($shortcode)) {
+    $shortcode = '[expoxr_model id="' . $model_id . '"]';
+}
+
+if (!isset($model_file)) {
+    $model_file = get_post_meta($model_id, '_expoxr_model_file', true) ?: '';
+}
+
+if (!isset($poster_url)) {
+    $poster_url = get_post_meta($model_id, '_expoxr_model_poster', true) ?: '';
+}
+
+if (!isset($auto_rotate)) {
+    $auto_rotate = get_post_meta($model_id, '_expoxr_auto_rotate', true) === 'on';
+}
+
+if (!isset($camera_controls)) {
+    $camera_controls = get_post_meta($model_id, '_expoxr_camera_controls', true) === 'on';
+}
+
+if (!isset($animation_enabled)) {
+    $animation_enabled = get_post_meta($model_id, '_expoxr_animation_enabled', true) === 'on';
+}
+
+if (!isset($animation_autoplay)) {
+    $animation_autoplay = get_post_meta($model_id, '_expoxr_animation_autoplay', true) === 'on';
+}
+
+if (!isset($animation_name)) {
+    $animation_name = get_post_meta($model_id, '_expoxr_animation_name', true) ?: '';
+}
+?>
+
+<!-- Model Preview Section -->
+<div class="expoxr-card expoxr-preview-card">
+    <div class="expoxr-card-header">
+        <h2><span class="dashicons dashicons-visibility"></span> Model Preview</h2>
+        <div class="expoxr-model-shortcode">
+            <code><?php echo esc_html($shortcode); ?></code>
+            <button type="button" class="copy-shortcode" data-shortcode="<?php echo esc_attr($shortcode); ?>">
+                <span class="dashicons dashicons-clipboard"></span> Copy
+            </button>
+        </div>
+    </div>
+    <div class="expoxr-card-content">
+        <div id="expoxr-model-preview-container">
+            <?php if (!empty($model_file)) : ?>                    
+            <model-viewer 
+                src="<?php echo esc_url($model_file); ?>"
+                <?php if (!empty($poster_url)) : ?>poster="<?php echo esc_url($poster_url); ?>"<?php endif; ?>
+                <?php if ($auto_rotate) : ?>auto-rotate<?php endif; ?>
+                camera-controls
+                <?php if ($animation_enabled && !empty($animation_name)) : ?>animation-name="<?php echo esc_attr($animation_name); ?>"<?php endif; ?>
+                <?php if ($animation_enabled && $animation_autoplay) : ?>autoplay<?php endif; ?>
+                shadow-intensity="1"
+                class="expoxr-model-preview">
+            </model-viewer>
+            <?php else : ?>
+            <div class="expoxr-empty-preview">
+                <span class="dashicons dashicons-format-image"></span>
+                <p>No model file available</p>
+            </div>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
+
+
+
+
+

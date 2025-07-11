@@ -1,0 +1,80 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Source code
+*.php text eol=lf
+*.js text eol=lf
+*.css text eol=lf
+*.scss text eol=lf
+*.html text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.json text eol=lf
+*.xml text eol=lf
+*.svg text eol=lf
+
+# WordPress-specific files
+*.pot text eol=lf
+*.po text eol=lf
+*.mo binary
+
+# Configuration files
+.gitignore text eol=lf
+.gitattributes text eol=lf
+.eslintrc text eol=lf
+.editorconfig text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# Graphics
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+
+# 3D Model files
+*.glb binary
+*.gltf text eol=lf
+*.usdz binary
+*.bin binary
+*.hdr binary
+
+# Documents
+*.pdf binary
+
+# Archives
+*.zip binary
+*.tar.gz binary
+*.rar binary
+
+# Exclude files from exporting
+/.github export-ignore
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/CONTRIBUTING.md export-ignore
+/SECURITY.md export-ignore
+/CODING-STANDARDS.md export-ignore
+/tests export-ignore
+/docs export-ignore
+/phpunit.xml.dist export-ignore
+/.editorconfig export-ignore
+/.eslintrc export-ignore
+/.eslintignore export-ignore
+/.travis.yml export-ignore
+/phpcs.xml export-ignore
+/phpcs.xml.dist export-ignore
+
+# Allow node_modules to be properly gitignored
+node_modules export-ignore
+
+# Export ignore development files
+*.map export-ignore
+/src export-ignore
+/package.json export-ignore
+/package-lock.json export-ignore
+/composer.json export-ignore
+/composer.lock export-ignore
+/webpack.config.js export-ignore
+/gulpfile.js export-ignore

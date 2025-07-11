@@ -1,0 +1,123 @@
+/* 
+ * ExpoXR Metabox Styles
+ * Custom styling for 3D model post type metaboxes
+ */
+
+.expoxr-field-row {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.expoxr-field-row:last-child {
+    border-bottom: none;
+}
+
+.expoxr-field-row label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.expoxr-field-row input[type="text"],
+.expoxr-field-row input[type="number"],
+.expoxr-field-row select,
+.expoxr-field-row textarea {
+    width: 100%;
+    max-width: 400px;
+}
+
+.expoxr-field-description {
+    color: #666;
+    font-style: italic;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+/* Model preview container */
+.expoxr-model-preview {
+    margin: 15px 0;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Model viewer styling */
+model-viewer {
+    width: 100%;
+    height: 300px;
+    background-color: #eee;
+    margin-bottom: 15px;
+}
+
+/* Annotation styles */
+.expoxr-annotation-item {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
+
+.expoxr-annotation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.expoxr-annotation-details {
+    margin-top: 10px;
+    display: none;
+}
+
+/* Animation controls */
+.expoxr-animation-controls {
+    display: flex;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+/* AR settings */
+.expoxr-checkbox-group {
+    margin-bottom: 15px;
+}
+
+.expoxr-checkbox-group label {
+    margin-right: 15px;
+    font-weight: normal;
+}
+
+/* Helper classes */
+.expoxr-hidden {
+    display: none;
+}
+
+.expoxr-flex {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.expoxr-notice {
+    background-color: #fff8e5;
+    border-left: 4px solid #ffb900;
+    padding: 10px;
+    margin: 15px 0;
+}
+
+/* Custom button styling */
+.expoxr-button {
+    display: inline-block;
+    padding: 8px 12px;
+    background-color: #0073aa;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    cursor: pointer;
+    border: none;
+}
+
+.expoxr-button:hover {
+    background-color: #005177;
+}

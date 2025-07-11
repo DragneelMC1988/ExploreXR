@@ -1,0 +1,926 @@
+/**
+ * Edit Model Page CSS
+ * 
+ * Styles for the Edit Model admin page
+ * Aligned with ExploreXR's admin style guidelines
+ */
+
+/* WordPress admin compatibility fixes - Only apply minimal necessary changes */
+
+/* Ensure proper scroll behavior without breaking admin menu */
+body.wp-admin {
+    height: auto !important;
+}
+
+/* Don't override WordPress admin menu positioning - this breaks hover functionality */
+/* Removed: #adminmenuwrap position and z-index overrides */
+
+/* Ensure content area doesn't conflict with admin layout */
+#wpcontent {
+    height: auto !important;
+    min-height: 100%;
+}
+
+/* Only apply admin bar fixes when needed */
+@media screen and (max-width: 782px) {
+    .expoxr-admin-menu-fix {
+        padding-top: 46px; /* WordPress admin bar height on mobile */
+    }
+}
+
+.expoxr-admin-page {    
+    margin: 20px 20px 0 0;
+}
+
+.expoxr-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.expoxr-page-title h1 {
+    margin-bottom: 5px;
+}
+
+.expoxr-page-subtitle {
+    color: #646970;
+    font-size: 14px;
+}
+
+.expoxr-preview-card {
+    margin-bottom: 30px;
+}
+
+.expoxr-model-shortcode {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.expoxr-model-shortcode code {
+    padding: 4px 8px;
+    background: #E4E9EC;
+    border-radius: 4px;
+}
+
+/* Card styles - inheriting from admin-styles.css */
+/* .expoxr-card base styles are defined in admin-styles.css */
+
+.expoxr-card-note {
+    background-color: #f0f6fc;
+    border-left: 4px solid #72aee6;
+    padding: 12px;
+    margin-bottom: 20px;
+}
+
+.expoxr-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.expoxr-form-group {
+    margin-bottom: 20px;
+}
+
+.expoxr-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.expoxr-form-group .description {
+    display: block;
+    color: #646970;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+.expoxr-form-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.expoxr-form-row label {
+    margin-bottom: 0;
+    min-width: 60px;
+}
+
+.expoxr-empty-preview {
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #f5f5f5;
+    border-radius: 4px;
+    color: #646970;
+}
+
+.expoxr-empty-preview .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 15px;
+    opacity: 0.5;
+}
+
+.expoxr-tabs {
+    display: flex;
+    border-bottom: 1px solid #c3c4c7;
+    margin-bottom: 20px;
+}
+
+.expoxr-tab {
+    padding: 8px 15px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-size: 14px;
+    color: #646970;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -1px;
+}
+
+.expoxr-tab:hover {
+    color: #2271b1;
+}
+
+.expoxr-tab.active {
+    color: #2271b1;
+    border-bottom-color: #2271b1;
+}
+
+.expoxr-tab-content {
+    display: none;
+}
+
+.expoxr-tab-content.active {
+    display: block;
+}
+
+.expoxr-device-tabs {
+    display: flex;
+    margin-bottom: 15px;
+    background: #f6f7f7;
+    border-radius: 0;
+    padding: 5px;
+}
+
+.expoxr-device-tab {
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #646970;
+    transition: all 0.2s ease;
+}
+
+.expoxr-device-tab.active {
+    background: #fff;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+    color: #2271b1;
+}
+
+.expoxr-device-content {
+    display: none;
+}
+
+.expoxr-device-content.active {
+    display: block;
+}
+
+.expoxr-size-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.expoxr-size-option {
+    display: flex;
+    cursor: pointer;
+    border: 1px solid #c3c4c7;
+    border-radius: 0;
+    padding: 15px;
+    background: #f6f7f7;
+    transition: all 0.2s ease;
+}
+
+.expoxr-size-option:hover {
+    background: #0D152C;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+}
+
+.expoxr-size-option input[type="radio"] {
+    margin-right: 10px;
+}
+
+.expoxr-size-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+}
+
+.expoxr-size-box {
+    background: #ddd;
+    border-radius: 4px;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.expoxr-file-input-wrapper {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.expoxr-file-input-wrapper input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.expoxr-file-input-decoration {
+    border: 2px dashed #c3c4c7;
+    border-radius: 0;
+    padding: 30px;
+    text-align: center;
+    color: #646970;
+    transition: all 0.3s ease;
+    background: #f6f7f7;
+}
+
+.expoxr-file-input-wrapper:hover .expoxr-file-input-decoration {
+    border-color: #2AACE2;
+    background: #f0f7fc;
+}
+
+.expoxr-file-input-decoration .dashicons {
+    display: block;
+    margin: 0 auto 10px;
+    font-size: 36px;
+    width: 36px;
+    height: 36px;
+    color: #2AACE2;
+}
+
+.expoxr-current-model {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f0f7fc;
+    border-radius: 0;
+    border-left: 4px solid #2AACE2;
+}
+
+.expoxr-current-model h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #1d2327;
+    font-weight: 600;
+}
+
+.expoxr-model-file-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.expoxr-model-file-path {
+    margin-left: 34px;
+    padding: 8px;
+    background: #E4E9EC;
+    border-radius: 4px;
+    font-size: 13px;
+    overflow-x: auto;
+    border: 1px solid #e2e4e7;
+}
+
+.expoxr-current-poster {
+    margin-bottom: 20px;
+}
+
+.expoxr-current-poster h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #1d2327;
+    font-weight: 600;
+}
+
+.expoxr-remove-poster {
+    margin-top: 10px;
+}
+
+.expoxr-input-group {
+    display: flex;
+    gap: 5px;
+}
+
+.expoxr-input-group input {
+    flex-grow: 1;
+}
+
+.expoxr-checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.expoxr-checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.expoxr-checkbox-label:hover {
+    background-color: #f6f7f7;
+}
+
+.expoxr-checkbox-label span {
+    line-height: 20px;
+}
+
+.expoxr-form-actions {
+    margin-top: 30px;
+    display: flex;
+    gap: 10px;
+}
+
+/* Button styles */
+.expoxr-action-button,
+.expoxr-primary-button,
+.expoxr-secondary-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* Button styles - inheriting base button styles from admin-styles.css */
+/* .button-primary and .button-secondary are defined in admin-styles.css */
+
+.expoxr-primary-button {
+    background-color: #2AACE2;
+    color: #fff;
+    border: 1px solid #2AACE2;
+}
+
+.expoxr-primary-button:hover {
+    background-color: #1e8bb8;
+    color: #fff;
+    border-color: #1e8bb8;
+}
+
+.expoxr-secondary-button,
+.button {
+    background-color: #0D152C;
+    color: #2c3338;
+    border: 1px solid #c3c4c7;
+}
+
+.expoxr-secondary-button:hover,
+.button:hover {
+    background-color: #e2e4e7;
+    color: #1d2327;
+}
+
+span.required {
+    color: #d63638;
+}
+
+span.optional {
+    font-size: 12px;
+    color: #646970;
+    font-weight: normal;
+}
+
+/* Alert styles aligned with admin-style.css */
+.expoxr-alert {
+    display: flex;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 0;
+    align-items: flex-start;
+    line-height: 1.5;
+    border-left: 4px solid;
+}
+
+.expoxr-alert.success {
+    background-color: #d4edda;
+    border-color: #00a32a;
+    color: #155724;
+}
+
+.expoxr-alert.info {
+    background-color: #d1ecf1;
+    border-color: #72aee6;
+    color: #0c5460;
+}
+
+.expoxr-alert.warning {
+    background-color: #fff3cd;
+    border-color: #ffb900;
+    color: #856404;
+}
+
+.expoxr-alert.error {
+    background-color: #f8d7da;
+    border-color: #d63638;
+    color: #721c24;
+}
+
+.expoxr-alert .dashicons {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    margin-right: 15px;
+}
+
+.expoxr-alert.success .dashicons {
+    color: #00a32a;
+}
+
+.expoxr-alert.error .dashicons {
+    color: #d63638;
+}
+
+.copy-shortcode {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 8px;
+    background: #E4E9EC;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.copy-shortcode:hover {
+    background: #e2e4e7;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Additional button icon styles */
+.expoxr-action-button .dashicons,
+.expoxr-primary-button .dashicons,
+.expoxr-secondary-button .dashicons,
+.button .dashicons {
+    margin-right: 5px;
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: inherit;
+}
+
+/* Empty preview styling */
+.expoxr-empty-preview {
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #f6f7f7;
+    border-radius: 0;
+    color: #646970;
+}
+
+.expoxr-empty-preview .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 15px;
+    opacity: 0.5;
+    color: #2AACE2;
+}
+
+/* Model viewer styling */
+.expoxr-model-preview {
+    width: 100%; 
+    height: 400px; 
+    background-color: #f6f7f7; 
+    border-radius: 0;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+/* Full width form groups */
+.expoxr-full-width {
+    grid-column: 1 / -1;
+}
+
+/* Size box demo elements */
+.expoxr-size-box-small {
+    width: 60px; 
+    height: 60px;
+    background-color: #e2e4e7;
+}
+
+.expoxr-size-box-medium {
+    width: 80px; 
+    height: 80px;
+    background-color: #e2e4e7;
+}
+
+.expoxr-size-box-large {
+    width: 100px; 
+    height: 80px;
+    background-color: #e2e4e7;
+}
+
+.expoxr-size-box-xlarge {
+    width: 120px; 
+    height: 90px;
+    background-color: #e2e4e7;
+}
+
+/* Poster preview styling */
+.expoxr-poster-thumbnail {
+    max-width: 150px; 
+    max-height: 150px; 
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.expoxr-poster-thumbnail:hover {
+    transform: scale(1.05);
+}
+
+.expoxr-poster-preview {
+    margin-top: 15px;
+}
+
+.expoxr-poster-preview img {
+    max-width: 200px; 
+    max-height: 200px; 
+    border: 1px solid #ddd; 
+    border-radius: 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Addon Settings Styles */
+.expoxr-addon-settings-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.expoxr-addon-settings-section {
+    border: 1px solid #e0e0e0;
+    border-radius: 0;
+    background: #E4E9EC;
+    overflow: hidden;
+}
+
+.addon-settings-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    padding: 15px 20px;
+    background: #f7f7f7;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+}
+
+.addon-icon {
+    font-size: 18px;
+    width: 20px;
+    text-align: center;
+}
+
+.addon-status-badge {
+    margin-left: auto;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.addon-status-badge.active {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.addon-status-badge.inactive {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.addon-options-container {
+    padding: 20px;
+}
+
+.addon-option-field {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e8e8e8;
+}
+
+.addon-option-field:last-of-type {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.addon-option-field label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #444;
+}
+
+.addon-option-field .expoxr-checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.addon-option-field .expoxr-checkbox-label input[type="checkbox"] {
+    margin: 2px 0 0 0;
+}
+
+.addon-option-field input[type="text"],
+.addon-option-field input[type="number"],
+.addon-option-field select,
+.addon-option-field textarea {
+    width: 100%;
+    max-width: 400px;
+}
+
+.addon-option-field input[type="color"] {
+    width: 60px;
+    height: 35px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.addon-option-field .description {
+    margin-top: 5px;
+    margin-bottom: 0;
+    font-size: 13px;
+    color: #666;
+    line-height: 1.4;
+}
+
+.addon-reset-section {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #e8e8e8;
+    text-align: right;
+}
+
+.reset-addon-settings {
+    font-size: 12px;
+    padding: 6px 12px;
+}
+
+.expoxr-no-addons-message {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+}
+
+.expoxr-no-addons-message p {
+    margin-bottom: 15px;
+}
+
+.expoxr-no-addons-message em {
+    font-style: italic;
+    color: #888;
+}
+
+/* Edit Model Notifications */
+.expoxr-edit-notification {
+    position: fixed;
+    top: 60px;
+    right: 20px;
+    z-index: 99999;
+    min-width: 300px;
+    max-width: 500px;
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    animation: slideInRight 0.3s ease-out;
+}
+
+.expoxr-edit-notification.success {
+    border-left: 4px solid #00a32a;
+    background: #f0f9f0;
+}
+
+.expoxr-edit-notification.error {
+    border-left: 4px solid #d63638;
+    background: #fdf0f0;
+}
+
+.expoxr-edit-notification.info {
+    border-left: 4px solid #0073aa;
+    background: #f0f9ff;
+}
+
+.expoxr-edit-notification .notification-message {
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.expoxr-edit-notification .notification-close {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #646970;
+    padding: 0;
+    margin-left: 10px;
+    line-height: 1;
+}
+
+.expoxr-edit-notification .notification-close:hover {
+    color: #d63638;
+}
+
+/* Addon Settings Interactive States */
+.addon-option-field.modified {
+    background: #fff9e6;
+    border-color: #ffa500;
+    border-radius: 4px;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.addon-option-field.modified::before {
+    content: '●';
+    color: #ffa500;
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.expoxr-addon-settings-section.collapsed .addon-options-container {
+    display: none;
+}
+
+.collapse-indicator {
+    margin-left: auto;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.expoxr-addon-settings-section.collapsed .collapse-indicator {
+    transform: rotate(45deg);
+}
+
+.color-picker-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.color-preview {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive addon settings */
+@media (max-width: 782px) {
+    .addon-settings-title {
+        padding: 12px 15px;
+        font-size: 14px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .addon-status-badge {
+        margin-left: 0;
+        order: -1;
+        align-self: flex-start;
+    }
+    
+    .addon-options-container {
+        padding: 15px;
+    }
+    
+    .addon-option-field input[type="text"],
+    .addon-option-field input[type="number"],
+    .addon-option-field select,
+    .addon-option-field textarea {
+        max-width: 100%;
+    }
+    
+    .addon-reset-section {
+        text-align: center;
+    }
+    
+    .reset-addon-settings {
+        width: 100%;
+    }
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 782px) {
+    .expoxr-form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .expoxr-page-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .expoxr-page-actions {
+        margin-top: 15px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .expoxr-page-actions a,
+    .expoxr-page-actions button {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+    }
+    
+    .expoxr-form-actions {
+        flex-direction: column;
+    }
+    
+    .expoxr-form-actions button,
+    .expoxr-form-actions a {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .expoxr-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .expoxr-model-shortcode {
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .expoxr-model-shortcode code {
+        width: 100%;
+        box-sizing: border-box;
+        overflow-x: auto;
+    }
+    
+    .copy-shortcode {
+        width: 100%;
+        justify-content: center;
+    }
+}

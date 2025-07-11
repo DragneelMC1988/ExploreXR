@@ -1,0 +1,86 @@
+/* Styles for the Files Page */
+
+.expoxr-model-modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.expoxr-model-modal-content {
+    position: relative;
+    background-color: #fefefe;
+    margin: 50px auto;
+    padding: 20px;
+    border-radius: 5px;
+    width: 80%;
+    height: 80%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.expoxr-model-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    color: #555;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 1;
+    text-decoration: none;
+}
+
+.expoxr-model-close:hover {
+    color: #000;
+}
+
+.expoxr-model-title {
+    margin-top: 0;
+    padding-right: 30px;
+}
+
+model-viewer {
+    width: 100%;
+    height: calc(100% - 60px);
+    margin-top: 10px;
+    background-color: #f5f5f5;
+}
+
+/* View Model button styling */
+.view-3d-model {
+    display: inline-block;
+    padding: 6px 12px;
+    background-color: #0073aa;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.view-3d-model:hover {
+    background-color: #005a87;
+    color: white;
+    text-decoration: none;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 115, 170, 0.3);
+}
+
+.view-3d-model:focus {
+    outline: 2px solid #005a87;
+    outline-offset: 2px;
+    color: white;
+    text-decoration: none;
+}
+
+.view-3d-model:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 115, 170, 0.3);
+}
