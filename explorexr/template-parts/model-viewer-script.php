@@ -384,14 +384,8 @@ if (!function_exists('expoxr_add_model_viewer_attributes')) {    /**
             $attributes['data-lazy-load-model'] = 'true';
         }
         
-        // AR support attributes
-        $ar_support_bg_color = get_option('expoxr_ar_background_color', '#FFFFFF');
-        $ar_button_text = get_option('expoxr_ar_button_text', 'View in AR');
-        $ar_fallback_text = get_option('expoxr_ar_fallback_text', 'AR not supported on this device');
-        
-        $attributes['data-ar-background'] = $ar_support_bg_color;
-        $attributes['data-ar-button-text'] = $ar_button_text;
-        $attributes['data-ar-fallback-text'] = $ar_fallback_text;
+        // AR support is not available in the Free version
+        // Premium AR features are available in the Pro version only
         
         return $attributes;
     }

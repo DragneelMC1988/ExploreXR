@@ -17,15 +17,7 @@ if (!defined('ABSPATH')) {
  * @return int|bool The post ID on success, false on failure
  */
 function expoxr_save_all_post_meta($post_id) {
-    // Don't process/**
- * Check if a premium feature is available
- *
- * @param string $feature_slug The feature slug
- * @param string $license_key The license key
- * @return bool Whether the feature is ready to use
- */
-function expoxr_is_addon_available($feature_slug, $license_key) {
-    // Premium features are not available in the Free versiones or revisions
+    // Don't process autosaves or revisions
     if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
         return $post_id;
     }
@@ -160,12 +152,15 @@ function expoxr_is_addon_available($feature_slug, $license_key) {
                 expoxr_create_debug_log($upload_debug, 'upload-failure-' . $post_id);
             }
         }
-    }// Save size settings
+    }
+    
+    // Save size settings
     expoxr_save_size_settings($post_id);
     
     // Save poster settings
     expoxr_save_poster_settings($post_id);
-      // Save camera and accessibility settings - basic functionality only
+    
+    // Save camera and accessibility settings - basic functionality only
     // Camera settings - basic functionality only
     if (false) { // Premium camera features disabled in free version
         // First run debug functions if they exist
@@ -397,14 +392,14 @@ function expoxr_save_camera_settings($post_id, $edit_mode = false) {
 }
 
 /**
- * Check if an addon is installed, active, and licensed
+ * Check if a premium feature is available
  *
- * @param string $addon_slug The addon slug (e.g., 'expoxr-ar-addon')
- * @param string $license_key The license key identifier (e.g., 'ar')
- * @return bool Whether the addon is ready to use
+ * @param string $feature_slug The feature slug
+ * @param string $license_key The license key
+ * @return bool Whether the feature is ready to use
  */
-function expoxr_is_addon_available($addon_slug, $license_key) {
-    // Addons are not available in the Free version
+function expoxr_is_addon_available($feature_slug, $license_key) {
+    // Premium features are not available in the Free version
     return false;
 }
 

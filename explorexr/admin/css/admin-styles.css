@@ -1014,12 +1014,18 @@ div.expoxr-premium-notice,
 .expoxr-model-modal-content {
     position: relative;
     background-color: #fefefe;
-    margin: 50px auto;
+    margin: 20px auto;
     padding: 20px;
     border-radius: 5px;
-    width: 80%;
-    height: 80%;
+    width: 95%;
+    height: 90%;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.expoxr-model-modal-content model-viewer {
+    width: 100%;
+    height: calc(100% - 60px); /* Account for title and padding */
+    min-height: 500px;
 }
 
 .expoxr-model-close {
@@ -1047,7 +1053,7 @@ div.expoxr-premium-notice,
 
 #expoxr-model-viewer {
     width: 100%;
-    height: calc(100% - 60px);
+    height: calc(80vh - 60px);
     margin-top: 10px;
     background-color: rgba(0, 0, 0, 0);
 }
