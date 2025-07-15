@@ -316,6 +316,7 @@ function expoxr_custom_ui_page() {
                                     echo wp_get_attachment_image($attachment_id, 'medium', false, ['alt' => esc_attr(get_the_title())]);
                                 } else {
                                     // Fallback for external URLs or non-WordPress images
+                                    // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage -- Fallback for external URLs
                                     printf('<img src="%s" alt="%s" loading="lazy">', 
                                         esc_url($poster_url), 
                                         esc_attr(get_the_title())

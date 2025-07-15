@@ -170,6 +170,7 @@ function expoxr_modern_model_browser_page() {
                                     echo wp_get_attachment_image($poster_id, 'medium', false, array('alt' => esc_attr(get_the_title())));
                                 } else {
                                     // Fallback for cases where we have URL but no attachment ID
+                                    // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage -- Fallback for external URLs
                                     printf('<img src="%s" alt="%s" loading="lazy">', 
                                         esc_url($poster_url), 
                                         esc_attr(get_the_title())

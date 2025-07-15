@@ -93,6 +93,7 @@ function expoxr_dashboard_page() {
         <div class="expoxr-gradient-banner">
             <div class="expoxr-gradient-banner-content">
                 <?php 
+                // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage -- Plugin logo for admin interface
                 printf('<img src="%s" alt="%s" class="expoxr-banner-logo" loading="lazy">', 
                     esc_url(EXPOXR_PLUGIN_URL . 'assets/img/logos/exploreXR-Logo.png'), 
                     esc_attr__('ExploreXR Logo', 'explorexr')

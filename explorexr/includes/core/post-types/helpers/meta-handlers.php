@@ -406,6 +406,7 @@ function expoxr_save_annotation_settings($post_id) {
         // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Array is sanitized in the loop below
         foreach (wp_unslash($_POST['expoxr_annotations']) as $index => $annotation) {
             // Only add annotations with all required position values
+            // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
             if (!empty($annotation['position_x']) && !empty($annotation['position_y']) && !empty($annotation['position_z'])) {
                 $annotations[] = array(
                     'title' => sanitize_text_field($annotation['title']),
