@@ -44,17 +44,8 @@ if (!isset($camera_controls)) {
     $camera_controls = get_post_meta($model_id, '_expoxr_camera_controls', true) === 'on';
 }
 
-if (!isset($animation_enabled)) {
-    $animation_enabled = get_post_meta($model_id, '_expoxr_animation_enabled', true) === 'on';
-}
-
-if (!isset($animation_autoplay)) {
-    $animation_autoplay = get_post_meta($model_id, '_expoxr_animation_autoplay', true) === 'on';
-}
-
-if (!isset($animation_name)) {
-    $animation_name = get_post_meta($model_id, '_expoxr_animation_name', true) ?: '';
-}
+// Animation settings are not available in the Free version
+// This feature is available in the Pro version only
 ?>
 
 <!-- Model Preview Section -->
@@ -76,8 +67,6 @@ if (!isset($animation_name)) {
                 <?php if (!empty($poster_url)) : ?>poster="<?php echo esc_url($poster_url); ?>"<?php endif; ?>
                 <?php if ($auto_rotate) : ?>auto-rotate<?php endif; ?>
                 camera-controls
-                <?php if ($animation_enabled && !empty($animation_name)) : ?>animation-name="<?php echo esc_attr($animation_name); ?>"<?php endif; ?>
-                <?php if ($animation_enabled && $animation_autoplay) : ?>autoplay<?php endif; ?>
                 shadow-intensity="1"
                 class="expoxr-model-preview">
             </model-viewer>

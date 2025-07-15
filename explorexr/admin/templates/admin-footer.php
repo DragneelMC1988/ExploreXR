@@ -23,7 +23,7 @@ if (!defined('ABSPATH')) {
             ?>
             <p class="expoxr-footer-text">
                 <?php esc_html_e('ExploreXR is part of the', 'explorexr'); ?> <strong><?php esc_html_e('ExpoXR Family', 'explorexr'); ?></strong> - 
-                <?php esc_html_e('Advanced XR solutions for the modern web', 'explorexr'); ?>
+                <?php esc_html_e('XR solutions for the modern web', 'explorexr'); ?>
             </p>
         </div>
         <div class="expoxr-footer-links">

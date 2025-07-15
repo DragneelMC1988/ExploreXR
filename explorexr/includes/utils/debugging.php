@@ -150,8 +150,7 @@ function expoxr_add_console_logging() {
     $plugin_version = EXPOXR_VERSION;
     $debug_ar = get_option('expoxr_debug_ar_features', false) ? 'true' : 'false';
     $debug_camera = get_option('expoxr_debug_camera_controls', false) ? 'true' : 'false';
-    $debug_animations = get_option('expoxr_debug_animations', false) ? 'true' : 'false';
-    $debug_annotations = get_option('expoxr_debug_annotations', false) ? 'true' : 'false';
+    // Animation and annotation debug features are not available in the Free version
     $debug_loading = get_option('expoxr_debug_loading_info', false) ? 'true' : 'false';
     
     ?>
@@ -302,8 +301,7 @@ function expoxr_add_sample_debug_entries() {
     expoxr_debug_log('Failed to load texture: texture-file.jpg', 'warning');
     expoxr_debug_log('Model load error: Invalid file format', 'error');
     expoxr_debug_log('Camera position changed: 0 1.5 2.5', 'info');
-    expoxr_debug_log('Animation started: "Spin"', 'info');
-    expoxr_debug_log('Hotspot clicked: Annotation #3', 'info');
+    // Animation and annotation sample logs are not available in the Free version
     expoxr_debug_log('Loading progress: 75%', 'info');
     expoxr_debug_log('Model successfully loaded after 3.2s', 'info');
 }

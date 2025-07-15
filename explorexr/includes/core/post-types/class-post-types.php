@@ -98,15 +98,8 @@ class ExpoXR_Post_Types {
         
         // Camera controls are handled in the edit-model-page.php through cards system
         
-        // Animation settings metabox
-        add_meta_box(
-            'expoxr_model_animation',
-            'Animation Settings',
-            'expoxr_model_animation_box',
-            'expoxr_model',
-            'normal',
-            'default'
-        );
+        // Animation settings are not available in the Free version
+        // This feature is available in the Pro version only
     }
     /**
      * Include all metabox files
@@ -117,7 +110,7 @@ class ExpoXR_Post_Types {
         // Include core metabox files
         require_once $metabox_dir . 'model-file.php';
         require_once $metabox_dir . 'model-size.php';
-        require_once $metabox_dir . 'animation.php';
+        // Animation features not available in Free version
         
         // Include helper files
         require_once plugin_dir_path(__FILE__) . 'helpers/meta-handlers.php';

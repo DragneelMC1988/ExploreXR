@@ -75,7 +75,7 @@ function expoxr_uninstall_settings_callback() {
     // Check if add-ons are installed
     $addon_installed = false;
     if (function_exists('get_plugins')) {
-        $addon_patterns = array('expoxr-camera-addon', 'expoxr-annotations-addon', 'expoxr-ar-addon');
+        $addon_patterns = array('expoxr-ar-addon');
         $all_plugins = get_plugins();
         
         foreach ($all_plugins as $plugin_path => $plugin_data) {

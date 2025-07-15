@@ -113,9 +113,7 @@ function expoxr_process_form_submission($post_data, $post_id = 0, $edit_mode = f
             'camera_controls',
             'auto_rotate',
             'ar_enabled',
-            'animation_enabled',
-            'animation_autoplay',
-            'animation_crossfade',
+            // Animation features are not available in the Free version
             'show_progress',
             'show_loading_dots',
             'enable_draco',
@@ -183,7 +181,7 @@ function expoxr_sanitize_form_data($data) {
         }
         
         // Text fields
-        if (in_array($key, array('title', 'description', 'model_alt', 'animation_name'))) {
+        if (in_array($key, array('title', 'description', 'model_alt'))) {
             $sanitized[$key] = sanitize_text_field($value);
         }
         // URLs
@@ -191,12 +189,11 @@ function expoxr_sanitize_form_data($data) {
             $sanitized[$key] = esc_url_raw($value);
         }
         // Numeric fields
-        elseif (in_array($key, array('rotation_speed', 'animation_duration'))) {
+        elseif (in_array($key, array('rotation_speed'))) {
             $sanitized[$key] = is_numeric($value) ? floatval($value) : 0;
         }
         // Checkbox fields (on/off)
-        elseif (in_array($key, array('camera_controls', 'auto_rotate', 'ar_enabled', 'animation_enabled', 
-                                     'animation_autoplay', 'animation_crossfade'))) {
+        elseif (in_array($key, array('camera_controls', 'auto_rotate', 'ar_enabled'))) {
             $sanitized[$key] = ($value === 'on' || $value === '1' || $value === 'true') ? 'on' : 'off';
         }
         // Color fields

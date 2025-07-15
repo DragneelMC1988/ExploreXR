@@ -120,7 +120,6 @@ function expoxr_dashboard_page() {
                 <ul class="expoxr-pro-features">
                     <li><span class="dashicons dashicons-yes"></span> Advanced AR Features</li>
                     <li><span class="dashicons dashicons-yes"></span> Expert Camera Controls</li>
-                    <li><span class="dashicons dashicons-yes"></span> Model Annotations</li>
                     <li><span class="dashicons dashicons-yes"></span> Priority Support</li>
                 </ul>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=expoxr-premium')); ?>" class="button button-primary">Learn More</a>
@@ -296,24 +295,6 @@ function expoxr_dashboard_page() {
             <div class="expoxr-premium-features">
                 <div class="expoxr-premium-feature">
                     <div class="expoxr-premium-icon">
-                        <span class="dashicons dashicons-admin-comments"></span>
-                    </div>
-                    <div class="expoxr-premium-info">
-                        <h4>Interactive Annotations</h4>
-                        <p>Add clickable hotspots with rich content to guide your users through your 3D models.</p>
-                    </div>
-                </div>
-                <div class="expoxr-premium-feature">
-                    <div class="expoxr-premium-icon">
-                        <span class="dashicons dashicons-format-video"></span>
-                    </div>
-                    <div class="expoxr-premium-info">
-                        <h4>Advanced Animations</h4>
-                        <p>Control multiple animations, create custom sequences, and add smooth transitions.</p>
-                    </div>
-                </div>
-                <div class="expoxr-premium-feature">
-                    <div class="expoxr-premium-icon">
                         <span class="dashicons dashicons-smartphone"></span>
                     </div>
                     <div class="expoxr-premium-info">
@@ -327,16 +308,7 @@ function expoxr_dashboard_page() {
                     </div>
                     <div class="expoxr-premium-info">
                         <h4>Professional Camera Controls</h4>
-                        <p>Custom camera paths, smooth animations, and advanced view controls for cinematic experiences.</p>
-                    </div>
-                </div>
-                <div class="expoxr-premium-feature">
-                    <div class="expoxr-premium-icon">
-                        <span class="dashicons dashicons-art"></span>
-                    </div>
-                    <div class="expoxr-premium-info">
-                        <h4>Material Variants</h4>
-                        <p>Switch between different textures, colors, and materials for product customization.</p>
+                        <p>Custom camera paths, smooth transitions, and advanced view controls for cinematic experiences.</p>
                     </div>
                 </div>
                 <div class="expoxr-premium-feature">
@@ -346,15 +318,6 @@ function expoxr_dashboard_page() {
                     <div class="expoxr-premium-info">
                         <h4>Loading Customization</h4>
                         <p>Customize loading screens, progress bars, and transitions for better user experience.</p>
-                    </div>
-                </div>
-                <div class="expoxr-premium-feature">
-                    <div class="expoxr-premium-icon">
-                        <span class="dashicons dashicons-cart"></span>
-                    </div>
-                    <div class="expoxr-premium-info">
-                        <h4>WooCommerce Integration</h4>
-                        <p>Seamlessly integrate 3D models with your online store for immersive product experiences.</p>
                     </div>
                 </div>
                 <div class="expoxr-premium-feature">

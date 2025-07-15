@@ -140,9 +140,8 @@ function expoxr_edit_model_page() {
     $enable_interactions = get_post_meta($model_id, '_expoxr_enable_interactions', true) === 'on';
     
     $auto_rotate = get_post_meta($model_id, '_expoxr_auto_rotate', true) === 'on';
-    $animation_enabled = get_post_meta($model_id, '_expoxr_animation_enabled', true) === 'on';
-    $animation_autoplay = get_post_meta($model_id, '_expoxr_animation_autoplay', true) === 'on';
-    $animation_name = get_post_meta($model_id, '_expoxr_animation_name', true);
+    // Animation settings are not available in the Free version
+    // This feature is available in the Pro version only
     
     // Get available existing models (for model dropdown)
     $uploaded_files = expoxr_get_model_files_from_directory();
@@ -292,52 +291,8 @@ function expoxr_edit_model_page() {
                 }
             }
             
-            // Handle animation settings
-            $animation_enabled_value = isset($_POST['expoxr_animation_enabled']) ? 'on' : 'off';
-            update_post_meta($model_id, '_expoxr_animation_enabled', $animation_enabled_value);
-            
-            $animation_autoplay_value = isset($_POST['expoxr_animation_autoplay']) ? 'on' : 'off';
-            update_post_meta($model_id, '_expoxr_animation_autoplay', $animation_autoplay_value);
-              if (isset($_POST['expoxr_animation_name'])) {
-                update_post_meta($model_id, '_expoxr_animation_name', sanitize_text_field(wp_unslash($_POST['expoxr_animation_name'])));
-            }
-            
-            // Handle animation repeat mode
-            if (isset($_POST['expoxr_animation_repeat'])) {
-                update_post_meta($model_id, '_expoxr_animation_repeat', sanitize_text_field(wp_unslash($_POST['expoxr_animation_repeat'])));
-            }
-            
-            // Handle advanced animation settings (from Animation Addon)
-            $animation_loop_value = isset($_POST['expoxr_animation_loop']) ? 'on' : 'off';
-            update_post_meta($model_id, '_expoxr_animation_loop', $animation_loop_value);
-            
-            $multiple_animations_enabled_value = isset($_POST['expoxr_multiple_animations_enabled']) ? 'on' : 'off';
-            update_post_meta($model_id, '_expoxr_multiple_animations_enabled', $multiple_animations_enabled_value);
-            
-            // Handle selected animations (array)
-            if (isset($_POST['expoxr_selected_animations']) && is_array($_POST['expoxr_selected_animations'])) {
-                // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Array is sanitized using array_map below
-                $selected_animations = array_map('sanitize_text_field', array_map('wp_unslash', wp_unslash($_POST['expoxr_selected_animations'])));
-                update_post_meta($model_id, '_expoxr_selected_animations', $selected_animations);
-            } else {
-                update_post_meta($model_id, '_expoxr_selected_animations', array());
-            }
-            
-            // Handle frontend control settings
-            $show_frontend_controls_value = isset($_POST['expoxr_animation_show_frontend_controls']) ? 'on' : 'off';
-            update_post_meta($model_id, '_expoxr_animation_show_frontend_controls', $show_frontend_controls_value);
-            
-            if (isset($_POST['expoxr_animation_control_position'])) {
-                update_post_meta($model_id, '_expoxr_animation_control_position', sanitize_text_field(wp_unslash($_POST['expoxr_animation_control_position'])));
-            }
-            
-            if (isset($_POST['expoxr_animation_control_style'])) {
-                update_post_meta($model_id, '_expoxr_animation_control_style', sanitize_text_field(wp_unslash($_POST['expoxr_animation_control_style'])));
-            }
-            
-            if (isset($_POST['expoxr_animation_control_size'])) {
-                update_post_meta($model_id, '_expoxr_animation_control_size', sanitize_text_field(wp_unslash($_POST['expoxr_animation_control_size'])));
-            }
+            // Animation settings are not available in the Free version
+            // This feature is available in the Pro version only
 
             // Loading options are handled by the core plugin in free version
             // Premium features like individual loading options per model are not available
@@ -371,9 +326,7 @@ function expoxr_edit_model_page() {
             $auto_rotate = get_post_meta($model_id, '_expoxr_auto_rotate', true) === 'on';
             $auto_rotate_delay = get_post_meta($model_id, '_expoxr_auto_rotate_delay', true) ?: '5000';
             $auto_rotate_speed = get_post_meta($model_id, '_expoxr_rotation_per_second', true) ?: '30deg';
-            $animation_enabled = get_post_meta($model_id, '_expoxr_animation_enabled', true) === 'on';
-            $animation_autoplay = get_post_meta($model_id, '_expoxr_animation_autoplay', true) === 'on';
-            $animation_name = get_post_meta($model_id, '_expoxr_animation_name', true);
+            // Animation settings are not available in the Free version
         } else {
             $error_message = 'Unable to update model: ' . $update_result->get_error_message();
         }
@@ -424,10 +377,8 @@ function expoxr_edit_model_page() {
             'model_file' => $model_file,
             'poster_url' => $poster_url,
             'auto_rotate' => $auto_rotate,
-            'camera_controls' => $camera_controls,
-            'animation_enabled' => $animation_enabled,
-            'animation_name' => $animation_name,
-            'animation_autoplay' => $animation_autoplay
+            'camera_controls' => $camera_controls
+            // Animation settings are not available in the Free version
         );
         expoxr_safe_include_template(EXPOXR_PLUGIN_DIR . 'admin/templates/edit-model/model-preview-card.php', '', $template_vars); 
         ?>

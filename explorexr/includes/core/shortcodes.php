@@ -109,7 +109,7 @@ function expoxr_build_model_attributes($model_id, $model_file, $alt_text, $width
         $attributes['interaction-prompt-threshold'] = $interaction_prompt_threshold;
     }
     
-    // Add advanced camera settings if provided
+    // Basic camera settings (advanced camera controls are not available in free version)
     $camera_orbit = get_post_meta($model_id, '_expoxr_camera_orbit', true);
     if (!empty($camera_orbit)) {
         $attributes['camera-orbit'] = $camera_orbit;
@@ -145,41 +145,8 @@ function expoxr_build_model_attributes($model_id, $model_file, $alt_text, $width
         $attributes['min-field-of-view'] = $min_field_of_view;
     }
     
-    // Add animation settings if enabled
-    $animation_enabled = get_post_meta($model_id, '_expoxr_animation_enabled', true) === 'on';
-    if ($animation_enabled) {
-        $animation_name = get_post_meta($model_id, '_expoxr_animation_name', true);
-        if (!empty($animation_name)) {
-            $attributes['animation-name'] = $animation_name;
-        }
-        
-        $animation_crossfade_duration = get_post_meta($model_id, '_expoxr_animation_crossfade_duration', true);
-        if (!empty($animation_crossfade_duration)) {
-            $attributes['animation-crossfade-duration'] = $animation_crossfade_duration;
-        }
-        
-        $animation_autoplay = get_post_meta($model_id, '_expoxr_animation_autoplay', true) === 'on';
-        if ($animation_autoplay) {
-            $attributes['autoplay'] = '';
-        }
-        
-        $animation_repeat = get_post_meta($model_id, '_expoxr_animation_repeat', true);
-        if (!empty($animation_repeat)) {
-            // model-viewer uses different attribute formats for the repeat modes
-            switch($animation_repeat) {
-                case 'once':
-                    // Default behavior, no attribute needed
-                    break;
-                case 'loop':
-                    $attributes['animation-loop'] = '';
-                    break;
-                case 'pingpong':
-                    $attributes['animation-loop'] = '';
-                    $attributes['animation-ping-pong'] = '';
-                    break;
-            }
-        }
-    }
+    // Animation features are not available in the Free version
+    // This feature is available in the Pro version only
 
     // AR features are available in premium version only
     // Free version does not include AR support
@@ -195,8 +162,8 @@ function expoxr_generate_attributes_html($attributes) {
     $html = '';
     
     foreach ($attributes as $key => $value) {
+        // Annotations are not available in the Free version
         if ($key === 'annotations') {
-            // Skip the annotations as they are rendered separately
             continue;
         }
         
@@ -214,10 +181,8 @@ function expoxr_generate_attributes_html($attributes) {
 // Register a shortcode to display 3D models
 add_shortcode('expoxr_model', function ($atts) {
     // Include helper functions when needed
-    if (!function_exists('expoxr_process_annotations')) {
-        if (file_exists(EXPOXR_PLUGIN_DIR . 'includes/models/model-helper.php')) {
-            require_once EXPOXR_PLUGIN_DIR . 'includes/models/model-helper.php';
-        }
+    if (file_exists(EXPOXR_PLUGIN_DIR . 'includes/models/model-helper.php')) {
+        require_once EXPOXR_PLUGIN_DIR . 'includes/models/model-helper.php';
     }
     
     $atts = shortcode_atts(['id' => ''], $atts, 'expoxr_model');
@@ -370,15 +335,8 @@ add_shortcode('expoxr_model', function ($atts) {
         // Add unique CSS ID for responsive styling
         $model_attributes['id'] = $model_css_id;
         
-        // If there are annotations, process them and add to model attributes
-        if (!empty($annotations) && is_array($annotations)) {
-            $processed_annotations = expoxr_process_annotations($annotations);
-            
-            // Add annotations to model attributes for JavaScript to process
-            if (!empty($processed_annotations)) {
-                $model_attributes['annotations'] = $processed_annotations;
-            }
-        }
+        // Annotations are not available in the Free version
+        // This feature is available in the Pro version only
         
         // Pass the model-viewer attributes to the JavaScript
         $model_attributes_json = json_encode($model_attributes);
@@ -414,12 +372,8 @@ add_shortcode('expoxr_model', function ($atts) {
         // Convert attributes to HTML string
         $attributes_html = expoxr_generate_attributes_html($model_attributes);
         
-        // Generate annotations HTML if any
+        // Annotations are not available in the Free version
         $annotations_html = '';
-        if (!empty($annotations) && is_array($annotations)) {
-            $processed_annotations = expoxr_process_annotations($annotations);
-            $annotations_html = expoxr_generate_annotations_html($processed_annotations);
-        }
         
         // Load the standard model template
         ob_start();

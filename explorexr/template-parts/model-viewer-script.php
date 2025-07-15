@@ -287,19 +287,17 @@ wp_add_inline_script('expoxr-model-viewer-wrapper', $ar_fix_js, 'after');
 $debug_mode = get_option('expoxr_debug_mode', false);
 $debug_ar = get_option('expoxr_debug_ar_features', false);
 $debug_camera = get_option('expoxr_debug_camera_controls', false);
-$debug_animations = get_option('expoxr_debug_animations', false);
-$debug_annotations = get_option('expoxr_debug_annotations', false);
+// Animation and annotation debug features are not available in the Free version
 $debug_loading = get_option('expoxr_debug_loading_info', false);
 $console_logging = get_option('expoxr_console_logging', false);
 
 // Only add debug settings if at least one debug option is enabled
-if ($debug_mode || $debug_ar || $debug_camera || $debug_animations || $debug_annotations || $debug_loading || $console_logging) {
+if ($debug_mode || $debug_ar || $debug_camera || $debug_loading || $console_logging) {
     wp_localize_script('expoxr-model-handler', 'exploreXRDebug', array(
         'enabled' => $debug_mode ? true : false,
         'ar' => $debug_ar ? true : false,
         'camera' => $debug_camera ? true : false,
-        'animations' => $debug_animations ? true : false,
-        'annotations' => $debug_annotations ? true : false,
+        // Animation and annotation debug features are not available in the Free version
         'loading' => $debug_loading ? true : false,
         'version' => EXPOXR_VERSION
     ));

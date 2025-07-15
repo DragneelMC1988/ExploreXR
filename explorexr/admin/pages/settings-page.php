@@ -85,8 +85,7 @@ function expoxr_settings_page() {
             'expoxr_console_logging',
             'expoxr_debug_ar_features',
             'expoxr_debug_camera_controls',
-            'expoxr_debug_animations',
-            'expoxr_debug_annotations',
+            // Animation and annotation debug features are not available in the Free version
             'expoxr_debug_loading_info',
             'expoxr_debug_mode'
         );
@@ -206,7 +205,7 @@ function expoxr_settings_page() {
                             <input type="checkbox" name="expoxr_debug_mode" id="expoxr_debug_mode" value="1" <?php checked(get_option('expoxr_debug_mode', false)); ?>>
                             Enable debugging features
                         </label>
-                        <p class="description">Enable debug mode to access advanced debugging options and troubleshooting tools.</p>
+                        <p class="description">Enable debug mode to access debugging options and troubleshooting tools.</p>
                     </td>
                 </tr>
             </table>
@@ -218,8 +217,7 @@ function expoxr_settings_page() {
             <input type="hidden" id="expoxr_console_logging_hidden" name="expoxr_console_logging" value="<?php echo esc_attr(get_option('expoxr_console_logging', '') ? '1' : ''); ?>">
             <input type="hidden" id="expoxr_debug_ar_features_hidden" name="expoxr_debug_ar_features" value="<?php echo esc_attr(get_option('expoxr_debug_ar_features', '') ? '1' : ''); ?>">
             <input type="hidden" id="expoxr_debug_camera_controls_hidden" name="expoxr_debug_camera_controls" value="<?php echo esc_attr(get_option('expoxr_debug_camera_controls', '') ? '1' : ''); ?>">
-            <input type="hidden" id="expoxr_debug_animations_hidden" name="expoxr_debug_animations" value="<?php echo esc_attr(get_option('expoxr_debug_animations', '') ? '1' : ''); ?>">
-            <input type="hidden" id="expoxr_debug_annotations_hidden" name="expoxr_debug_annotations" value="<?php echo esc_attr(get_option('expoxr_debug_annotations', '') ? '1' : ''); ?>">
+            <!-- Animation and annotation debug features are not available in the Free version -->
             <input type="hidden" id="expoxr_debug_loading_info_hidden" name="expoxr_debug_loading_info" value="<?php echo esc_attr(get_option('expoxr_debug_loading_info', '') ? '1' : ''); ?>">
             
             <?php submit_button('Save General Settings'); ?>

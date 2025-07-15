@@ -27,11 +27,8 @@ function expoxr_debug_log_post_data($post_id) {
         'expoxr_camera_controls',
         'expoxr_camera_controls_state',
         'expoxr_auto_rotate',
-        'expoxr_auto_rotate_state',
-        'expoxr_animation_enabled',
-        'expoxr_animation_enabled_state',
-        'expoxr_animation_autoplay',
-        'expoxr_animation_autoplay_state'
+        'expoxr_auto_rotate_state'
+        // Animation features are not available in the Free version
     );
     
     // Create comprehensive debug data
@@ -65,9 +62,8 @@ function expoxr_debug_log_post_data($post_id) {
     // Check for checkbox states - this is crucial for debugging checkbox issues
     $checkbox_fields = array(
         'expoxr_camera_controls',
-        'expoxr_auto_rotate',
-        'expoxr_animation_enabled',
-        'expoxr_animation_autoplay'
+        'expoxr_auto_rotate'
+        // Animation features are not available in the Free version
     );
     
     $checkbox_states = array();

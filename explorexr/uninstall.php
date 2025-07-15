@@ -64,7 +64,7 @@ function expoxr_free_uninstall() {
         'expoxr_loading_text',
         'expoxr_loading_background_color',
         'expoxr_enable_loading_screen',
-        'expoxr_loading_animation_type',
+        // Animation features are not available in the Free version
         'expoxr_loading_bar_color',
         'expoxr_loading_bar_background',
         'expoxr_loading_logo_url',

@@ -206,32 +206,9 @@ function expoxr_admin_body_class($classes) {
 add_filter('admin_body_class', 'expoxr_admin_body_class');
 
 /**
- * Add premium upgrade notice to admin pages (disabled - using upgrade-system.php version instead)
+ * Premium upgrade notice has been moved to upgrade-system.php
+ * Now shows globally across WordPress dashboard as a proper dismissible notice
  */
-/*
-function expoxr_premium_upgrade_notice() {
-    $screen = get_current_screen();
-    
-    if (strpos($screen->base, 'explorexr') !== false && $screen->base !== 'toplevel_page_expoxr-premium') {
-        ?>
-        <div class="notice notice-info expoxr-premium-notice" style="margin: 20px 0; padding: 15px; border-left: 4px solid #00a0d2;">
-            <div style="display: flex; align-items: center; gap: 15px;">
-                <div style="font-size: 24px;">🚀</div>
-                <div>
-                    <h3 style="margin: 0 0 5px 0;">Unlock Premium Features</h3>
-                    <p style="margin: 0;">Get access to advanced features like AR, Animations, Annotations, Camera Controls, and more with ExploreXR Premium!</p>
-                </div>
-                <div>
-                    <a href="<?php echo esc_url(admin_url('admin.php?page=expoxr-premium')); ?>" class="button button-primary">Learn More</a>
-                </div>
-            </div>
-        </div>
-        <?php
-    }
-}
-add_action('admin_notices', 'expoxr_premium_upgrade_notice');
-*/
-
 
 // Register plugin settings
 add_action('admin_init', function() {
@@ -415,30 +392,10 @@ function expoxr_ajax_get_premium_info() {
                 'description' => 'Augmented Reality experiences for mobile devices',
                 'icon' => '📱'
             ),
-            'animations' => array(
-                'name' => 'Animations',
-                'description' => 'Interactive model animations and sequences',
-                'icon' => '🎬'
-            ),
-            'annotations' => array(
-                'name' => 'Annotations',
-                'description' => 'Smart hotspots and information overlays',
-                'icon' => '💬'
-            ),
             'camera-controls' => array(
                 'name' => 'Camera Controls',
-                'description' => 'Advanced camera interaction controls',
+                'description' => 'Camera interaction controls',
                 'icon' => '📷'
-            ),
-            'materials' => array(
-                'name' => 'Materials Editor',
-                'description' => 'Real-time material editing and customization',
-                'icon' => '🎨'
-            ),
-            'woocommerce' => array(
-                'name' => 'WooCommerce Integration',
-                'description' => 'Advanced e-commerce features and product showcasing',
-                'icon' => '🛒'
             )
         ),
         'pricing_tiers' => array(
@@ -454,7 +411,7 @@ function expoxr_ajax_get_premium_info() {
                 'price' => '99',
                 'currency' => 'EUR',
                 'period' => 'year',
-                'features' => array('4 Premium Features', 'Priority Support', 'Advanced License Management', 'Custom Branding'),
+                'features' => array('2 Premium Features', 'Priority Support', 'License Management', 'Custom Branding'),
                 'popular' => true
             ),
             'ultra' => array(
@@ -488,12 +445,8 @@ function expoxr_ajax_get_premium_features() {
     
     // Free version response - premium features available for upgrade
     $premium_features = array(
-        'ar' => 'AR Support',
-        'animations' => '3D Animations', 
-        'annotations' => 'Interactive Annotations',
-        'camera-controls' => 'Advanced Camera Controls',
-        'materials' => 'Material Editor',
-        'woocommerce' => 'WooCommerce Integration'
+        'camera-controls' => 'Camera Controls',
+        'ar' => 'AR Support'
     );
     
     $feature_status = array();
@@ -538,11 +491,10 @@ function expoxr_ajax_clear_all_debug_logs() {
         
         // Clear debug logs
         $debug_options = array(
-            'expoxr_debug_annotations_log',
             'expoxr_debug_ar_log',
             'expoxr_debug_camera_log',
-            'expoxr_debug_loading_log',
-            'expoxr_debug_animation_log'
+            'expoxr_debug_loading_log'
+            // Animation and annotation debug features are not available in the Free version
         );
         
         foreach ($debug_options as $option) {
@@ -717,8 +669,7 @@ function expoxr_generate_debug_export() {
         'expoxr_console_logging' => 'Console Logging',
         'expoxr_debug_ar_features' => 'AR Features Debug',
         'expoxr_debug_camera_controls' => 'Camera Controls Debug',
-        'expoxr_debug_animations' => 'Animations Debug',
-        'expoxr_debug_annotations' => 'Annotations Debug',
+        // Animation and annotation debug features are not available in the Free version
         'expoxr_debug_loading_info' => 'Loading Info Debug'
     );
     

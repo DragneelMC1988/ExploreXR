@@ -36,8 +36,7 @@ function expoxr_custom_ui_page() {
     // Get latest version
     $current_version = EXPOXR_VERSION;
     
-    // Check if WooCommerce is active
-    $woocommerce_active = is_plugin_active('woocommerce/woocommerce.php');
+    // Basic functionality check
     
     // Check if Elementor is active
     $elementor_active = is_plugin_active('elementor/elementor.php');
@@ -231,9 +230,9 @@ function expoxr_custom_ui_page() {
                         <code style="background: #ffffff; padding: 5px; border-radius: 3px; font-size: 14px;">[expoxr_model id="123"]</code>
                     </div>
                     <p style="margin: 0; color: #646970; font-size: 13px;">
-                        <strong>Want WooCommerce or Elementor integration?</strong> 
+                        <strong>Want more features?</strong> 
                         <a href="<?php echo esc_url(admin_url('admin.php?page=expoxr-premium')); ?>">Upgrade to Premium</a> 
-                        to unlock advanced integrations and features.
+                        to unlock additional features.
                     </p>
                 </div>
             </div>

@@ -13,14 +13,13 @@ if (!defined('ABSPATH')) {
 /**
  * Available variables:
  * $attributes_html - HTML string of attributes for model-viewer
- * $annotations_html - HTML string of annotation hotspots
  * $model_attributes - Array of model attributes
  */
 ?>
 
 <div class="expoxr-model-container">
     <model-viewer<?php echo wp_kses($attributes_html, 'post'); ?>>
-        <?php echo wp_kses_post($annotations_html); ?>
+        <!-- Annotations are not available in the Free version -->
           <?php if (isset($model_attributes['ar'])) : ?>
             <?php if (isset($model_attributes['ar-button-image']) && !empty($model_attributes['ar-button-image'])) : ?>
                 <!-- Custom AR button with image -->

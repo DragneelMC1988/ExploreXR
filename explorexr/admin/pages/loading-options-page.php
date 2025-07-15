@@ -122,7 +122,7 @@ function expoxr_loading_display_callback() {
         <?php 
         printf(
             // translators: %s: Link to Premium version
-            esc_html__('For advanced styling options and more loading effects, consider upgrading to %s.', 'explorexr'),
+            esc_html__('For more styling options and effects, consider upgrading to %s.', 'explorexr'),
             '<a href="' . esc_url(admin_url('admin.php?page=expoxr-premium')) . '">' . esc_html__('ExploreXR Premium', 'explorexr') . '</a>'
         ); ?>
     </p>
@@ -210,6 +210,8 @@ function expoxr_loading_options_page() {
     }
     
     // Check if Loading Add-On is active and show notice
+    $notice_content = '';
+    
     // Prepare settings page structure using the standardized template
     $settings_args = array(
         'page_title'    => esc_html__('Loading Options', 'explorexr'),
@@ -224,7 +226,7 @@ function expoxr_loading_options_page() {
                 'title'       => esc_html__('Customize Loading Experience', 'explorexr'),
                 'description' => esc_html__('Customize how models appear while loading to provide the best experience for your users.', 'explorexr'),
                 'icon'        => 'performance',
-                'content'     => $addon_notice_content,
+                'content'     => $notice_content,
                 'section_id'  => 'expoxr_loading_core_section'
             ),
             array(
@@ -304,7 +306,7 @@ function expoxr_loading_options_page() {
                             <?php 
                             printf(
                                 // translators: %s: Link to Premium version
-                                esc_html__('For advanced styling options and more loading effects, consider upgrading to %s.', 'explorexr'),
+                                esc_html__('For more styling options and effects, consider upgrading to %s.', 'explorexr'),
                                 '<a href="' . esc_url(admin_url('admin.php?page=expoxr-premium')) . '">' . esc_html__('ExploreXR Premium', 'explorexr') . '</a>'
                             ); ?>
                         </p>

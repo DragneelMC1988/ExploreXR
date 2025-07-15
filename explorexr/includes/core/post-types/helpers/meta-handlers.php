@@ -17,7 +17,15 @@ if (!defined('ABSPATH')) {
  * @return int|bool The post ID on success, false on failure
  */
 function expoxr_save_all_post_meta($post_id) {
-    // Don't process auto-saves or revisions
+    // Don't process/**
+ * Check if a premium feature is available
+ *
+ * @param string $feature_slug The feature slug
+ * @param string $license_key The license key
+ * @return bool Whether the feature is ready to use
+ */
+function expoxr_is_addon_available($feature_slug, $license_key) {
+    // Premium features are not available in the Free versiones or revisions
     if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
         return $post_id;
     }
@@ -157,8 +165,9 @@ function expoxr_save_all_post_meta($post_id) {
     
     // Save poster settings
     expoxr_save_poster_settings($post_id);
-      // Save camera and accessibility settings - only if Camera addon is available
-    if (function_exists('expoxr_is_addon_available') && expoxr_is_addon_available('expoxr-camera-addon', 'camera')) {
+      // Save camera and accessibility settings - basic functionality only
+    // Camera settings - basic functionality only
+    if (false) { // Premium camera features disabled in free version
         // First run debug functions if they exist
         if (function_exists('expoxr_debug_camera_settings') && $edit_mode) {
             // Include additional debug file
@@ -173,12 +182,8 @@ function expoxr_save_all_post_meta($post_id) {
         expoxr_save_camera_settings($post_id, $edit_mode);
     }
     
-    // Save annotations - only if Annotations addon is available
-    if (function_exists('expoxr_is_addon_available') && expoxr_is_addon_available('expoxr-annotations-addon', 'annotations')) {
-        expoxr_save_annotation_settings($post_id);
-    }
-      // Save animation settings
-    expoxr_save_animation_settings($post_id, $edit_mode);
+    // Annotations and Animation functionality are not available in the Free version
+    // These features are available in the Pro version only
     
     // Create a comprehensive checkbox debug report if in edit mode
     if ($edit_mode && function_exists('expoxr_debug_checkbox_processing')) {
@@ -385,104 +390,9 @@ function expoxr_save_camera_settings($post_id, $edit_mode = false) {
         update_post_meta($post_id, '_expoxr_rotation_per_second', $speed_value);
     }
     
-    // Check if Camera add-on is active for saving advanced settings
-    if (function_exists('expoxr_is_camera_addon_active') && expoxr_is_camera_addon_active() && function_exists('expoxr_camera_save_advanced_settings')) {
-        expoxr_camera_save_advanced_settings($post_id, $edit_mode);
-    }
-}
-
-/**
- * Save annotation settings
- * 
- * @param int $post_id The post ID
- */
-function expoxr_save_annotation_settings($post_id) {
-    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
-    if (isset($_POST['expoxr_annotations']) && is_array($_POST['expoxr_annotations'])) {
-        $annotations = array();
-        
-        // Clean up the array by filtering out empty annotations and sanitizing values
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
-        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Array is sanitized in the loop below
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Processing form data with nonce verification handled in parent function
-        foreach (wp_unslash($_POST['expoxr_annotations']) as $index => $annotation) {
-            // Only add annotations with all required position values
-            // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
-            if (!empty($annotation['position_x']) && !empty($annotation['position_y']) && !empty($annotation['position_z'])) {
-                $annotations[] = array(
-                    'title' => sanitize_text_field(isset($annotation['title']) ? $annotation['title'] : ''),
-                    'heading_type' => sanitize_text_field(isset($annotation['heading_type']) ? $annotation['heading_type'] : ''),
-                    'text' => wp_kses_post(isset($annotation['text']) ? $annotation['text'] : ''),
-                    'text_color' => sanitize_hex_color(isset($annotation['text_color']) && $annotation['text_color'] ? $annotation['text_color'] : '#ffffff'),
-                    'bg_color' => sanitize_hex_color(isset($annotation['bg_color']) && $annotation['bg_color'] ? $annotation['bg_color'] : '#000000'),
-                    'position_x' => (float) sanitize_text_field($annotation['position_x']),
-                    'position_y' => (float) sanitize_text_field($annotation['position_y']),
-                    'position_z' => (float) sanitize_text_field($annotation['position_z'])
-                );
-            }
-        }
-        
-        // Save cleaned annotations array
-        update_post_meta($post_id, '_expoxr_model_annotations', $annotations);
-    } else {
-        // If no annotations were submitted, empty the annotations array
-        update_post_meta($post_id, '_expoxr_model_annotations', array());
-    }
-}
-
-/**
- * Save animation settings
- * 
- * @param int $post_id The post ID
- * @param bool $edit_mode Whether edit mode is enabled
- */
-function expoxr_save_animation_settings($post_id, $edit_mode = false) {
-    // Animation enabled - support both checkbox and state field
-    $animation_enabled = 'off';
-    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
-    if (isset($_POST['expoxr_animation_enabled']) || (isset($_POST['expoxr_animation_enabled_state']) && $_POST['expoxr_animation_enabled_state'] === '1')) {
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
-        $animation_enabled = 'on';
-    }
-    update_post_meta($post_id, '_expoxr_animation_enabled', $animation_enabled);
-    
-    if ($edit_mode) {
-        if (get_option('expoxr_debug_mode', false)) {
-            expoxr_log('ExpoXR: Animation enabled setting: ' . $animation_enabled);
-        }
-    }
-    
-    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
-    if (array_key_exists('expoxr_animation_name', $_POST)) {
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
-        update_post_meta($post_id, '_expoxr_animation_name', sanitize_text_field(wp_unslash($_POST['expoxr_animation_name'])));
-    }
-    
-    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
-    if (array_key_exists('expoxr_animation_crossfade_duration', $_POST)) {
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
-        update_post_meta($post_id, '_expoxr_animation_crossfade_duration', sanitize_text_field(wp_unslash($_POST['expoxr_animation_crossfade_duration'])));
-    }
-    
-    // Animation autoplay - support both checkbox and state field
-    $animation_autoplay = 'off';
-    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
-    if (isset($_POST['expoxr_animation_autoplay']) || (isset($_POST['expoxr_animation_autoplay_state']) && $_POST['expoxr_animation_autoplay_state'] === '1')) {
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
-        $animation_autoplay = 'on';
-    }
-    update_post_meta($post_id, '_expoxr_animation_autoplay', $animation_autoplay);
-    
-    if ($edit_mode) {
-        if (get_option('expoxr_debug_mode', false)) {
-            expoxr_log('ExpoXR: Animation autoplay setting: ' . $animation_autoplay);
-        }
-    }
-    
-    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
-    if (array_key_exists('expoxr_animation_repeat', $_POST)) {
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
-        update_post_meta($post_id, '_expoxr_animation_repeat', sanitize_text_field(wp_unslash($_POST['expoxr_animation_repeat'])));
+    // Camera settings - premium features are not available in the free version
+    if (false) { // Premium camera features disabled in free version
+        // Premium camera features are not available in the free version
     }
 }
 

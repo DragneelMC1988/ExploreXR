@@ -84,7 +84,7 @@ function expoxr_validate_model_input($data, $allowed_fields = array()) {
     $sanitization_rules = array(
         // Text fields
         'text_fields' => array(
-            'title', 'description', 'model_alt', 'animation_name', 
+            'title', 'description', 'model_alt', 
             'ar_button_text', 'loading_text', 'error_message'
         ),
         
@@ -95,29 +95,27 @@ function expoxr_validate_model_input($data, $allowed_fields = array()) {
         
         // Numeric fields
         'numeric_fields' => array(
-            'rotation_speed', 'animation_duration', 'field_of_view',
-            'min_field_of_view', 'max_field_of_view', 'animation_crossfade_duration'
+            'rotation_speed', 'field_of_view',
+            'min_field_of_view', 'max_field_of_view'
         ),
         
         // Boolean/checkbox fields
         'boolean_fields' => array(
-            'camera_controls', 'auto_rotate', 'ar_enabled', 'animation_enabled',
-            'animation_autoplay', 'animation_crossfade', 'show_progress',
-            'show_loading_dots', 'enable_draco', 'debug_mode', 'disable_pan',
+            'camera_controls', 'auto_rotate', 'ar_enabled',
+            'show_progress', 'show_loading_dots', 'enable_draco', 'debug_mode', 'disable_pan',
             'disable_tap', 'disable_zoom'
         ),
         
         // Color fields
         'color_fields' => array(
-            'background_color', 'loading_color', 'annotation_color'
+            'background_color', 'loading_color'
         ),
         
         // Select fields with allowed values
         'select_fields' => array(
             'viewer_size' => array('small', 'medium', 'large', 'custom'),
             'ar_scale' => array('auto', 'fixed'),
-            'ar_placement' => array('floor', 'wall'),
-            'animation_behavior' => array('pause', 'stop', 'continue')
+            'ar_placement' => array('floor', 'wall')
         ),
         
         // Dimension fields (CSS units allowed)
@@ -127,7 +125,7 @@ function expoxr_validate_model_input($data, $allowed_fields = array()) {
         
         // Array fields (multi-select)
         'array_fields' => array(
-            'ar_modes', 'animation_list', 'annotation_data'
+            'ar_modes'
         )
     );
     

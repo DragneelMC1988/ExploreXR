@@ -77,9 +77,9 @@ if (!function_exists('expoxr_is_addon_licensed')) {
  * Show admin notice to promote premium upgrade
  */
 function expoxr_show_premium_upgrade_notice() {
-    // Only show on ExploreXR pages
+    // Don't show on ExploreXR premium page to avoid redundancy
     $screen = get_current_screen();
-    if (!$screen || strpos($screen->id, 'explorexr') === false) {
+    if ($screen && $screen->id === 'toplevel_page_expoxr-premium') {
         return;
     }
     
@@ -92,7 +92,7 @@ function expoxr_show_premium_upgrade_notice() {
                 <div style="font-size: 32px;">🚀</div>
                 <div style="flex: 1;">
                     <h3 style="margin: 0 0 5px 0;">Unlock Advanced 3D Features</h3>
-                    <p style="margin: 0;">Add AR, Animations, Annotations, and more to your 3D models with ExploreXR Premium. Transform how users interact with your content!</p>
+                    <p style="margin: 0;">Add AR and Camera Controls to your 3D models with ExploreXR Premium. Transform how users interact with your content!</p>
                 </div>
                 <div>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=expoxr-premium')); ?>" class="button button-primary">Upgrade Now</a>
@@ -140,28 +140,8 @@ function expoxr_premium_addons_metabox($post) {
                     <span class="premium-badge">Premium</span>
                 </div>
                 <div class="premium-addon-item">
-                    <span class="addon-icon">🎬</span>
-                    <span class="addon-name">Animations</span>
-                    <span class="premium-badge">Premium</span>
-                </div>
-                <div class="premium-addon-item">
-                    <span class="addon-icon">💬</span>
-                    <span class="addon-name">Annotations</span>
-                    <span class="premium-badge">Premium</span>
-                </div>
-                <div class="premium-addon-item">
                     <span class="addon-icon">📷</span>
                     <span class="addon-name">Camera Controls</span>
-                    <span class="premium-badge">Premium</span>
-                </div>
-                <div class="premium-addon-item">
-                    <span class="addon-icon">🎨</span>
-                    <span class="addon-name">Materials Editor</span>
-                    <span class="premium-badge">Premium</span>
-                </div>
-                <div class="premium-addon-item">
-                    <span class="addon-icon">🛒</span>
-                    <span class="addon-name">WooCommerce</span>
                     <span class="premium-badge">Premium</span>
                 </div>
             </div>
@@ -170,11 +150,7 @@ function expoxr_premium_addons_metabox($post) {
                 <p><strong>Unlock these powerful features:</strong></p>
                 <ul>
                     <li>✅ Interactive AR experiences</li>
-                    <li>✅ Smooth model animations</li>
-                    <li>✅ Informative hotspots</li>
                     <li>✅ Advanced camera controls</li>
-                    <li>✅ Material customization</li>
-                    <li>✅ E-commerce integration</li>
                 </ul>
                 
                 <a href="<?php echo esc_url(admin_url('admin.php?page=expoxr-premium')); ?>" class="button button-primary button-large" style="width: 100%; text-align: center; margin-top: 15px;">
@@ -241,7 +217,7 @@ function expoxr_premium_addons_metabox($post) {
  */
 function expoxr_filter_premium_shortcode_attributes($atts, $model_id) {
         // Remove premium attributes
-        $premium_attributes = array('ar', 'animations', 'annotations', 'camera-controls');
+        $premium_attributes = array('ar', 'camera-controls');
         
         foreach ($premium_attributes as $premium_attr) {
             if (isset($atts[$premium_attr])) {
@@ -274,8 +250,6 @@ function expoxr_add_frontend_upgrade_prompts() {
                         <p>Upgrade now to unlock:</p>
                         <ul>
                             <li>✅ AR experiences</li>
-                            <li>✅ Interactive animations</li>
-                            <li>✅ Hotspot annotations</li>
                             <li>✅ Advanced controls</li>
                             <li>✅ And much more!</li>
                         </ul>
@@ -401,30 +375,10 @@ function expoxr_get_premium_features() {
                 'description' => 'Augmented Reality experiences',
                 'icon' => '📱'
             ),
-            'animations' => array(
-                'name' => 'Animations',
-                'description' => 'Interactive model animations',
-                'icon' => '🎬'
-            ),
-            'annotations' => array(
-                'name' => 'Annotations',
-                'description' => 'Interactive hotspots and labels',
-                'icon' => '💬'
-            ),
             'camera-controls' => array(
                 'name' => 'Camera Controls',
                 'description' => 'Advanced viewing controls',
                 'icon' => '📷'
-            ),
-            'materials' => array(
-                'name' => 'Materials Editor',
-                'description' => 'Real-time material customization',
-                'icon' => '🎨'
-            ),
-            'woocommerce' => array(
-                'name' => 'WooCommerce',
-                'description' => 'E-commerce integration',
-                'icon' => '🛒'
             )
         );
     }
@@ -461,6 +415,13 @@ function expoxr_premium_upgrade_message($feature = '') {
         admin_url('admin.php?page=expoxr-premium'),
         expoxr_get_premium_upgrade_url()
     );
+}
+
+/**
+ * Reset premium notice dismissal for current user (for testing purposes)
+ */
+function expoxr_reset_premium_notice_dismissal() {
+    delete_user_meta(get_current_user_id(), 'expoxr_premium_notice_dismissed');
 }
 
 /**

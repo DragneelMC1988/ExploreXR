@@ -311,7 +311,7 @@ function expoxr_get_model_data($post_id) {
         'interaction_prompt_style' => get_post_meta($post_id, '_expoxr_interaction_prompt_style', true),
         'interaction_prompt_threshold' => get_post_meta($post_id, '_expoxr_interaction_prompt_threshold', true),
         
-        // Advanced camera settings
+        // Basic camera settings (advanced camera controls are not available in free version)
         'camera_orbit' => get_post_meta($post_id, '_expoxr_camera_orbit', true),
         'camera_target' => get_post_meta($post_id, '_expoxr_camera_target', true),
         'field_of_view' => get_post_meta($post_id, '_expoxr_field_of_view', true),
@@ -321,12 +321,8 @@ function expoxr_get_model_data($post_id) {
         'min_field_of_view' => get_post_meta($post_id, '_expoxr_min_field_of_view', true),
         'interpolation_decay' => get_post_meta($post_id, '_expoxr_interpolation_decay', true),
         
-        // Animation settings
-        'animation_enabled' => get_post_meta($post_id, '_expoxr_animation_enabled', true),
-        'animation_name' => get_post_meta($post_id, '_expoxr_animation_name', true),
-        'animation_crossfade_duration' => get_post_meta($post_id, '_expoxr_animation_crossfade_duration', true),
-        'animation_autoplay' => get_post_meta($post_id, '_expoxr_animation_autoplay', true),
-        'animation_repeat' => get_post_meta($post_id, '_expoxr_animation_repeat', true),
+        // Animation settings are not available in the Free version
+        // This feature is available in the Pro version only
         
         // AR settings
         // AR features are not available in the free version
@@ -357,9 +353,8 @@ function expoxr_get_model_data($post_id) {
         $model_data['auto_rotate'] = 'off';
     }
     
-    if (empty($model_data['animation_repeat'])) {
-        $model_data['animation_repeat'] = '1';
-    }
+    // Animation features are not available in the Free version
+    // This feature is available in the Pro version only
     
     // For free version, disable premium features
     $model_data['ar_enabled'] = false;
@@ -372,8 +367,7 @@ function expoxr_get_model_data($post_id) {
         $log_data = array(
             'model_file' => $model_data['model_file'],
             'camera_controls' => $model_data['camera_controls'],
-            'auto_rotate' => $model_data['auto_rotate'],
-            'animation_enabled' => $model_data['animation_enabled']
+            'auto_rotate' => $model_data['auto_rotate']
         );
         expoxr_log('ExpoXR: Retrieved model data for post #' . $post_id . ': ' . json_encode($log_data));
     }
