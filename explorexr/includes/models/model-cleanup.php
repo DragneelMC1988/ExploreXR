@@ -143,6 +143,7 @@ function expoxr_orphaned_models_notice() {
         'post_type' => 'expoxr_model',
         'post_status' => 'publish',
         'posts_per_page' => 50,
+        // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Required for cleanup functionality to find orphaned models
         'meta_query' => [
             [
                 'key' => '_expoxr_file_missing',
@@ -207,6 +208,7 @@ function expoxr_orphaned_models_widget_callback() {
             'post_type' => 'expoxr_model',
             'post_status' => 'publish',
             'posts_per_page' => 10,
+            // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Required for cleanup functionality to find orphaned models
             'meta_query' => [
                 [
                     'key' => '_expoxr_file_missing',

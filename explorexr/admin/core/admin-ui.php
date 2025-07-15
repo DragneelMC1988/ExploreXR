@@ -271,6 +271,7 @@ function expoxr_custom_ui_page() {
                 'posts_per_page' => 3,
                 'orderby' => 'date',
                 'order' => 'DESC',
+                // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Required for filtering 3D models with files
                 'meta_query' => [
                     [
                         'key' => '_expoxr_model_file',

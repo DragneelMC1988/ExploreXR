@@ -1,7 +1,7 @@
-=== ExploreXR - 3D Model Viewer ===
+=== ExploreXR ===
 Contributors: ayalothman
 Donate link: https://expoxr.com/donate/
-Tags: 3d, model-viewer, glb, gltf, usdz, ar, augmented reality, 3d model, interactive, product viewer
+Tags: 3d, model-viewer, glb, gltf, ar
 Requires at least: 5.0
 Tested up to: 6.8
 Requires PHP: 7.4

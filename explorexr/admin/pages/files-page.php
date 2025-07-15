@@ -39,6 +39,7 @@ function expoxr_files_page() {
                     'post_type' => 'expoxr_model',
                     'post_status' => 'publish',
                     'posts_per_page' => 1,
+                    // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Required for checking if file is in use before deletion
                     'meta_query' => [
                         [
                             'key' => '_expoxr_model_file',
@@ -58,6 +59,7 @@ function expoxr_files_page() {
                         'post_type' => 'expoxr_model',
                         'post_status' => 'publish',
                         'posts_per_page' => 5,
+                        // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Required for displaying which models use the file
                         'meta_query' => [
                             [
                                 'key' => '_expoxr_model_file',

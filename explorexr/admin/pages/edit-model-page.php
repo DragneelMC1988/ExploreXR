@@ -316,6 +316,7 @@ function expoxr_edit_model_page() {
             
             // Handle selected animations (array)
             if (isset($_POST['expoxr_selected_animations']) && is_array($_POST['expoxr_selected_animations'])) {
+                // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Array is sanitized using array_map below
                 $selected_animations = array_map('sanitize_text_field', array_map('wp_unslash', wp_unslash($_POST['expoxr_selected_animations'])));
                 update_post_meta($model_id, '_expoxr_selected_animations', $selected_animations);
             } else {
