@@ -5,7 +5,7 @@ Tags: 3d, model-viewer, glb, gltf, ar
 Requires at least: 5.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -115,6 +115,14 @@ Basic integration is available in the free version. Advanced features like the E
 
 == Changelog ==
 
+= 1.0.1 =
+* Fixed: AR support attributes removed from free version model-viewer tags
+* Fixed: 3D model delete functionality - added missing AJAX handler
+* Fixed: Modal viewer now displays models at full container size
+* Fixed: Removed troubleshooting tips from model preview overlays
+* Improved: Enhanced security validation for model deletion
+* Improved: Better error handling for AJAX operations
+
 = 1.0.0 =
 * Initial stable release with complete feature set
 * Modern admin interface with comprehensive model management
@@ -128,6 +136,9 @@ Basic integration is available in the free version. Advanced features like the E
 * Comprehensive documentation and help system
 
 == Upgrade Notice ==
+
+= 1.0.1 =
+Bug fixes and improvements: Fixed model deletion, AR support cleanup, and enhanced modal display. Recommended update for all users.
 
 = 1.0.0 =
 Initial release of ExploreXR. Transform your WordPress website with immersive 3D experiences!

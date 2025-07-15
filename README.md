@@ -3,7 +3,7 @@
 [![WordPress Compatible](https://img.shields.io/badge/WordPress-5.0%2B-0073aa.svg)](https://wordpress.org/)
 [![PHP Version](https://img.shields.io/badge/PHP-7.4%2B-8892bf.svg)](https://php.net/)
 [![License](https://img.shields.io/badge/License-GPL%20v2-007ec6.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
-[![Version](https://img.shields.io/badge/Version-1.0.0-brightgreen.svg)](https://github.com/DragneelMC1988/explorexr/releases)
+[![Version](https://img.shields.io/badge/Version-1.0.1-brightgreen.svg)](https://github.com/DragneelMC1988/explorexr/releases)
 
 ## 🌐 Transform Your WordPress Site with Interactive 3D Content
 

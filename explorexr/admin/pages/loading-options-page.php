@@ -216,7 +216,7 @@ function expoxr_loading_options_page() {
     $settings_args = array(
         'page_title'    => esc_html__('Loading Options', 'explorexr'),
         'plugin_name'   => esc_html__('ExploreXR', 'explorexr'),
-        'plugin_version' => defined('EXPOXR_VERSION') ? EXPOXR_VERSION : '1.0.0',
+        'plugin_version' => defined('EXPOXR_VERSION') ? EXPOXR_VERSION : '1.0.1',
         'doc_url'       => 'https://expoxr.com/explorexr/documentation/loading-options',
         'settings_group' => 'expoxr_loading_settings',
         'settings_page' => 'expoxr-loading-settings',

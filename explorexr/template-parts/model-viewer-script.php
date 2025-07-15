@@ -28,7 +28,7 @@ if (!function_exists('expoxr_get_loading_options')) {
 
 // Define version fallback if EXPOXR_VERSION is not defined
 if (!defined('EXPOXR_VERSION')) {
-    define('EXPOXR_VERSION', '1.0.0');
+    define('EXPOXR_VERSION', '1.0.1');
 }
 
 // Get settings from options
