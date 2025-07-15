@@ -15,6 +15,7 @@ if (!defined('ABSPATH')) {
     <div class="expoxr-footer-content">
         <div class="expoxr-footer-branding">
             <?php 
+            // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage -- Plugin logo for admin footer
             printf('<img src="%s" alt="%s" class="expoxr-footer-logo" loading="lazy">', 
                 esc_url(EXPOXR_PLUGIN_URL . 'assets/img/logos/ExpoXR-Logo.png'), 
                 esc_attr__('ExpoXR Logo', 'explorexr')

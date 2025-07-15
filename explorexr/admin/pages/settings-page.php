@@ -508,6 +508,7 @@ function expoxr_settings_page() {
         ?>        <div class="expoxr-about-section">
             <div class="expoxr-logo-container">
                 <?php 
+                // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage -- Plugin logo for admin interface
                 printf('<img src="%s" alt="%s" class="expoxr-logo" loading="lazy">', 
                     esc_url(EXPOXR_PLUGIN_URL . 'assets/img/logos/exploreXR-Logo-Dark.png'), 
                     esc_attr__('ExploreXR Logo', 'explorexr')

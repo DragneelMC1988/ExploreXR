@@ -26,6 +26,7 @@ if (!defined('ABSPATH')) {
                 <!-- Custom AR button with image -->
                 <button slot="ar-button" class="expoxr-ar-button" data-expoxr-ar-button="true">
                     <?php 
+                    // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage -- AR button image from user settings
                     printf('<img src="%s" alt="%s" loading="lazy">', 
                         esc_url($model_attributes['ar-button-image']), 
                         esc_attr(isset($model_attributes['ar-button-text']) ? $model_attributes['ar-button-text'] : esc_html__('View in AR', 'explorexr'))

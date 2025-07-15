@@ -69,6 +69,7 @@ if (!isset($poster_id)) {
                         echo wp_get_attachment_image($poster_id, 'medium', false, array('alt' => esc_attr__('Poster preview', 'explorexr')));
                     } elseif (!empty($poster_url)) {
                         // Fallback for cases where we have URL but no attachment ID
+                        // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage -- Fallback for external URL posters
                         printf('<img src="%s" alt="%s" loading="lazy">', 
                             esc_url($poster_url), 
                             esc_attr__('Poster preview', 'explorexr')
