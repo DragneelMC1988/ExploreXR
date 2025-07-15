@@ -89,6 +89,7 @@ function expoxr_free_uninstall() {
     // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Required for complete plugin cleanup during uninstall
     // phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Uninstall script doesn't require caching
     // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is properly escaped via wpdb property
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Direct database call required for complete plugin cleanup during uninstall
     $wpdb->query($wpdb->prepare(
         "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s",
         'expoxr_%'

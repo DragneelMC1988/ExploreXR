@@ -404,6 +404,7 @@ function expoxr_save_annotation_settings($post_id) {
         // Clean up the array by filtering out empty annotations and sanitizing values
         // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
         // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Array is sanitized in the loop below
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Processing form data with nonce verification handled in parent function
         foreach (wp_unslash($_POST['expoxr_annotations']) as $index => $annotation) {
             // Only add annotations with all required position values
             // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
