@@ -18,6 +18,7 @@ if (!defined('ABSPATH')) {
 function expoxr_init_debugging() {
     // Register AJAX handlers for debug log operations
     add_action('wp_ajax_expoxr_get_debug_log', 'expoxr_ajax_get_debug_log');
+    add_action('wp_ajax_expoxr_clear_debug_log', 'expoxr_ajax_clear_debug_log');
 }
 
 /**
@@ -54,8 +55,6 @@ function expoxr_log($message, $level = 'info') {
     // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Used for debug logging functionality
     error_log($formatted_message);
 }
-    add_action('wp_ajax_expoxr_clear_debug_log', 'expoxr_ajax_clear_debug_log');
-    
     // Add console logging if enabled
     if (get_option('expoxr_console_logging', false)) {
         add_action('wp_footer', 'expoxr_add_console_logging');
@@ -83,6 +82,7 @@ function expoxr_log($message, $level = 'info') {
         // Also register a shutdown function to catch fatal errors
         register_shutdown_function('expoxr_shutdown_function');
     }
+}
 }
 
 /**
