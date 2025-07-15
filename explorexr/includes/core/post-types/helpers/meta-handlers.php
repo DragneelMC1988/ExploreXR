@@ -410,14 +410,14 @@ function expoxr_save_annotation_settings($post_id) {
             // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
             if (!empty($annotation['position_x']) && !empty($annotation['position_y']) && !empty($annotation['position_z'])) {
                 $annotations[] = array(
-                    'title' => sanitize_text_field($annotation['title']),
-                    'heading_type' => sanitize_text_field($annotation['heading_type']),
+                    'title' => sanitize_text_field(isset($annotation['title']) ? $annotation['title'] : ''),
+                    'heading_type' => sanitize_text_field(isset($annotation['heading_type']) ? $annotation['heading_type'] : ''),
                     'text' => wp_kses_post(isset($annotation['text']) ? $annotation['text'] : ''),
                     'text_color' => sanitize_hex_color(isset($annotation['text_color']) && $annotation['text_color'] ? $annotation['text_color'] : '#ffffff'),
                     'bg_color' => sanitize_hex_color(isset($annotation['bg_color']) && $annotation['bg_color'] ? $annotation['bg_color'] : '#000000'),
-                    'position_x' => (float) $annotation['position_x'],
-                    'position_y' => (float) $annotation['position_y'],
-                    'position_z' => (float) $annotation['position_z']
+                    'position_x' => (float) sanitize_text_field($annotation['position_x']),
+                    'position_y' => (float) sanitize_text_field($annotation['position_y']),
+                    'position_z' => (float) sanitize_text_field($annotation['position_z'])
                 );
             }
         }

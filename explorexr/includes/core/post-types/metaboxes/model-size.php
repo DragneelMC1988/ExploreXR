@@ -205,7 +205,7 @@ function expoxr_edit_model_size_box($post) {
                                 <?php if (!empty($poster_id)) : ?>
                                     <?php echo wp_get_attachment_image($poster_id, 'medium', false, array('alt' => esc_attr__('Poster preview', 'explorexr'), 'loading' => 'lazy')); ?>
                                 <?php else : ?>
-                                    <!-- phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage -- Fallback for external URL posters -->
+                                    <!-- phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage -- Fallback for external URL posters when attachment ID unavailable -->
                                     <img src="<?php echo esc_url($poster_url); ?>" alt="<?php esc_attr_e('Poster preview', 'explorexr'); ?>" loading="lazy">
                                 <?php endif; ?>
                             <?php endif; ?>
