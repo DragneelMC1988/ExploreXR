@@ -1,0 +1,635 @@
+/**
+ * ExpoXR Button System - Enhanced Functional Button Styling
+ * 
+ * This file provides consistent button styling across the main plugin and all addons
+ * with clear visual hierarchy based on button functions while maintaining brand colors
+ */
+
+/* ========================================
+   Plugin Brand Colors Definition
+   ======================================== */
+:root {
+    --expoxr-primary: #2AACE2;
+    --expoxr-primary-dark: #1e8bb8;
+    --expoxr-primary-darker: #156a8a;
+    --expoxr-secondary: #0D152C;
+    --expoxr-success: #28a745;
+    --expoxr-success-dark: #218838;
+    --expoxr-warning: #ffc107;
+    --expoxr-warning-dark: #e0a800;
+    --expoxr-danger: #dc3545;
+    --expoxr-danger-dark: #c82333;
+    --expoxr-light: #f8f9fa;
+    --expoxr-dark: #343a40;
+}
+
+/* ========================================
+   Base ExpoXR Button Styles
+   ======================================== */
+
+.expoxr-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, var(--expoxr-primary) 0%, var(--expoxr-primary-dark) 100%);
+    border: 1px solid transparent;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(42, 172, 226, 0.3);
+    text-shadow: none;
+    line-height: 1;
+}
+
+.expoxr-button:hover {
+    background: linear-gradient(135deg, var(--expoxr-primary-dark) 0%, var(--expoxr-primary-darker) 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(42, 172, 226, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+.expoxr-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(42, 172, 226, 0.2);
+}
+
+.expoxr-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(42, 172, 226, 0.3);
+}
+
+/* ========================================
+   Functional Button Variants
+   ======================================== */
+
+/* PRIMARY ACTIONS - Main CTAs, Create, Save, Upgrade */
+.expoxr-button-primary,
+.expoxr-button.primary {
+    background: linear-gradient(135deg, var(--expoxr-primary) 0%, var(--expoxr-primary-dark) 100%);
+    box-shadow: 0 3px 6px rgba(42, 172, 226, 0.4);
+    font-weight: 600;
+}
+
+.expoxr-button-primary:hover,
+.expoxr-button.primary:hover {
+    background: linear-gradient(135deg, var(--expoxr-primary-dark) 0%, var(--expoxr-primary-darker) 100%);
+    box-shadow: 0 5px 10px rgba(42, 172, 226, 0.5);
+    transform: translateY(-2px);
+}
+
+/* SECONDARY ACTIONS - Cancel, Back, View */
+.expoxr-button-secondary,
+.expoxr-button.secondary {
+    background: linear-gradient(135deg, var(--expoxr-secondary) 0%, #1a2332 100%);
+    box-shadow: 0 2px 4px rgba(13, 21, 44, 0.3);
+    font-weight: 500;
+}
+
+.expoxr-button-secondary:hover,
+.expoxr-button.secondary:hover {
+    background: linear-gradient(135deg, #1a2332 0%, #262d3d 100%);
+    box-shadow: 0 4px 8px rgba(13, 21, 44, 0.4);
+    color: white;
+}
+
+/* SUCCESS ACTIONS - Activate, Enable, Confirm */
+.expoxr-button-success,
+.expoxr-button.success {
+    background: linear-gradient(135deg, var(--expoxr-success) 0%, var(--expoxr-success-dark) 100%);
+    box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+    font-weight: 500;
+}
+
+.expoxr-button-success:hover,
+.expoxr-button.success:hover {
+    background: linear-gradient(135deg, var(--expoxr-success-dark) 0%, #1e7e34 100%);
+    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.4);
+    color: white;
+}
+
+/* WARNING ACTIONS - Settings, Manage, Configure */
+.expoxr-button-warning,
+.expoxr-button.warning {
+    background: linear-gradient(135deg, var(--expoxr-warning) 0%, var(--expoxr-warning-dark) 100%);
+    color: var(--expoxr-secondary);
+    box-shadow: 0 2px 4px rgba(255, 193, 7, 0.3);
+    font-weight: 500;
+}
+
+.expoxr-button-warning:hover,
+.expoxr-button.warning:hover {
+    background: linear-gradient(135deg, var(--expoxr-warning-dark) 0%, #d39e00 100%);
+    color: var(--expoxr-secondary);
+    box-shadow: 0 4px 8px rgba(255, 193, 7, 0.4);
+}
+
+/* DANGER ACTIONS - Delete, Remove, Deactivate */
+.expoxr-button-danger,
+.expoxr-button.danger,
+.expoxr-button-link {
+    background: transparent;
+    color: var(--expoxr-danger);
+    border: 1px solid var(--expoxr-danger);
+    box-shadow: none;
+    font-weight: 500;
+}
+
+.expoxr-button-danger:hover,
+.expoxr-button.danger:hover,
+.expoxr-button-link:hover {
+    background: var(--expoxr-danger);
+    color: white;
+    transform: none;
+    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
+}
+
+/* UTILITY ACTIONS - Copy, Download, Info */
+.expoxr-button-utility,
+.expoxr-button.utility {
+    background: var(--expoxr-light);
+    color: var(--expoxr-dark);
+    border: 1px solid #dee2e6;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    font-weight: 500;
+}
+
+.expoxr-button-utility:hover,
+.expoxr-button.utility:hover {
+    background: #e9ecef;
+    color: var(--expoxr-dark);
+    border-color: #adb5bd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+}
+
+/* ========================================
+   Button Sizes
+   ======================================== */
+
+.expoxr-button-small {
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+.expoxr-button-large {
+    padding: 12px 24px;
+    font-size: 16px;
+}
+
+/* ========================================
+   WordPress Button Override for ExpoXR Context
+   ======================================== */
+
+/* Apply ExpoXR styling to WordPress buttons within ExpoXR contexts */
+.expoxr-admin-container .button:not(.expoxr-button):not(.copy-shortcode):not(.expoxr-dismiss-fix-notice),
+.expoxr-card .button:not(.expoxr-button),
+.expoxr-form-group .button:not(.expoxr-button),
+.expoxr-media-field .button:not(.expoxr-button),
+.wrap[class*="expoxr-"] .button:not(.expoxr-button):not(.copy-shortcode):not(.expoxr-dismiss-fix-notice) {
+    background: linear-gradient(135deg, var(--expoxr-secondary) 0%, #1a2332 100%) !important;
+    border: 1px solid transparent !important;
+    color: white !important;
+    border-radius: 4px !important;
+    font-weight: 500 !important;
+    padding: 8px 16px !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 2px 4px rgba(13, 21, 44, 0.3) !important;
+    text-shadow: none !important; 
+}
+
+.expoxr-admin-container .button:not(.expoxr-button):hover,
+.expoxr-card .button:not(.expoxr-button):hover,
+.expoxr-form-group .button:not(.expoxr-button):hover,
+.expoxr-media-field .button:not(.expoxr-button):hover,
+.wrap[class*="expoxr-"] .button:not(.expoxr-button):hover {
+    background: linear-gradient(135deg, #1a2332 0%, #262d3d 100%) !important;
+    color: white !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 8px rgba(13, 21, 44, 0.4) !important;
+}
+
+/* Button Primary Override for WordPress buttons */
+.expoxr-admin-container .button-primary:not(.expoxr-button),
+.expoxr-card .button-primary:not(.expoxr-button),
+.expoxr-form-group .button-primary:not(.expoxr-button),
+.wrap[class*="expoxr-"] .button-primary:not(.expoxr-button) {
+    background: linear-gradient(135deg, var(--expoxr-primary) 0%, var(--expoxr-primary-dark) 100%) !important;
+    box-shadow: 0 3px 6px rgba(42, 172, 226, 0.4) !important;
+    font-weight: 600 !important;
+}
+
+.expoxr-admin-container .button-primary:not(.expoxr-button):hover,
+.expoxr-card .button-primary:not(.expoxr-button):hover,
+.expoxr-form-group .button-primary:not(.expoxr-button):hover,
+.wrap[class*="expoxr-"] .button-primary:not(.expoxr-button):hover {
+    background: linear-gradient(135deg, var(--expoxr-primary-dark) 0%, var(--expoxr-primary-darker) 100%) !important;
+    box-shadow: 0 5px 10px rgba(42, 172, 226, 0.5) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* Button Secondary Override for WordPress buttons */
+.expoxr-admin-container .button-secondary:not(.expoxr-button),
+.expoxr-card .button-secondary:not(.expoxr-button),
+.expoxr-form-group .button-secondary:not(.expoxr-button),
+.wrap[class*="expoxr-"] .button-secondary:not(.expoxr-button) {
+    background: var(--expoxr-light) !important;
+    color: var(--expoxr-dark) !important;
+    border: 1px solid #dee2e6 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+    font-weight: 500 !important;
+}
+
+.expoxr-admin-container .button-secondary:not(.expoxr-button):hover,
+.expoxr-card .button-secondary:not(.expoxr-button):hover,
+.expoxr-form-group .button-secondary:not(.expoxr-button):hover,
+.wrap[class*="expoxr-"] .button-secondary:not(.expoxr-button):hover {
+    background: #e9ecef !important;
+    color: var(--expoxr-dark) !important;
+    border-color: #adb5bd !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* ========================================
+   Context-Specific Button Styling
+   ======================================== */
+
+/* Copy Shortcode Button */
+.copy-shortcode {
+    background: var(--expoxr-light) !important;
+    color: var(--expoxr-primary) !important;
+    border: 1px solid var(--expoxr-primary) !important;
+    box-shadow: 0 1px 3px rgba(42, 172, 226, 0.2) !important;
+    font-weight: 500 !important;
+}
+
+.copy-shortcode:hover {
+    background: var(--expoxr-primary) !important;
+    color: white !important;
+    box-shadow: 0 2px 4px rgba(42, 172, 226, 0.3) !important;
+}
+
+/* Model Action Buttons */
+.expoxr-action-buttons .button {
+    margin-right: 5px;
+}
+
+.expoxr-action-buttons .button[href*="edit"] {
+    background: linear-gradient(135deg, var(--expoxr-warning) 0%, var(--expoxr-warning-dark) 100%) !important;
+    color: var(--expoxr-secondary) !important;
+    box-shadow: 0 2px 4px rgba(255, 193, 7, 0.3) !important;
+}
+
+.expoxr-action-buttons .button.view-3d-model {
+    background: linear-gradient(135deg, var(--expoxr-primary) 0%, var(--expoxr-primary-dark) 100%) !important;
+    color: white !important;
+    box-shadow: 0 2px 4px rgba(42, 172, 226, 0.3) !important;
+}
+
+.expoxr-action-buttons .button[target="_blank"] {
+    background: var(--expoxr-light) !important;
+    color: var(--expoxr-dark) !important;
+    border: 1px solid #dee2e6 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Delete button styling */
+.expoxr-action-buttons .button.button-link-delete,
+.expoxr-action-buttons .button.delete-model {
+    background: transparent !important;
+    color: var(--expoxr-danger) !important;
+    border: 1px solid var(--expoxr-danger) !important;
+    box-shadow: none !important;
+}
+
+.expoxr-action-buttons .button.button-link-delete:hover,
+.expoxr-action-buttons .button.delete-model:hover {
+    background: var(--expoxr-danger) !important;
+    color: white !important;
+    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3) !important;
+}
+
+/* Premium Banner Button */
+.expoxr-pro-banner .button {
+    background: linear-gradient(135deg, var(--expoxr-primary) 0%, var(--expoxr-primary-dark) 100%) !important;
+    color: white !important;
+    font-weight: 600 !important;
+    box-shadow: 0 3px 6px rgba(42, 172, 226, 0.4) !important;
+    padding: 10px 20px !important;
+}
+
+.expoxr-pro-banner .button:hover {
+    background: linear-gradient(135deg, var(--expoxr-primary-dark) 0%, var(--expoxr-primary-darker) 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 5px 10px rgba(42, 172, 226, 0.5) !important;
+}
+
+/* Header Action Buttons */
+.expoxr-header-actions .button-primary {
+    background: linear-gradient(135deg, var(--expoxr-primary) 0%, var(--expoxr-primary-dark) 100%) !important;
+    color: white !important;
+    font-weight: 600 !important;
+    box-shadow: 0 3px 6px rgba(42, 172, 226, 0.4) !important;
+}
+
+.expoxr-header-actions .button:not(.button-primary) {
+    background: var(--expoxr-light) !important;
+    color: var(--expoxr-dark) !important;
+    border: 1px solid #dee2e6 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Banner Dismiss Button */
+.expoxr-banner-dismiss {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 50% !important;
+    width: 30px !important;
+    height: 30px !important;
+    padding: 0 !important;
+    font-size: 18px !important;
+    line-height: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.expoxr-banner-dismiss:hover {
+    background: rgba(255, 255, 255, 0.3) !important;
+    color: white !important;
+    transform: scale(1.1) !important;
+}
+
+/* Form Submit Buttons */
+.expoxr-form-group input[type="submit"],
+.expoxr-form-group button[type="submit"] {
+    background: linear-gradient(135deg, var(--expoxr-primary) 0%, var(--expoxr-primary-dark) 100%) !important;
+    color: white !important;
+    font-weight: 600 !important;
+    box-shadow: 0 3px 6px rgba(42, 172, 226, 0.4) !important;
+    padding: 12px 24px !important;
+}
+
+/* ========================================
+   Icon Support
+   ======================================== */
+
+.expoxr-button .dashicons {
+    margin-right: 6px;
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+}
+
+.expoxr-button-small .dashicons {
+    margin-right: 4px;
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+.expoxr-button-large .dashicons {
+    margin-right: 8px;
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+/* ========================================
+   Disabled State
+   ======================================== */
+
+.expoxr-button:disabled,
+.expoxr-button.disabled {
+    background: #e9ecef !important;
+    color: #6c757d !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.expoxr-button:disabled:hover,
+.expoxr-button.disabled:hover {
+    background: #e9ecef !important;
+    color: #6c757d !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* ========================================
+   Functional Button Classes for WordPress Buttons
+   ======================================== */
+
+/* Activate/Confirm actions */
+.expoxr-admin-container .button.expoxr-function-activate,
+.expoxr-admin-container .button.expoxr-function-confirm {
+    background: linear-gradient(135deg, var(--expoxr-success) 0%, var(--expoxr-success-dark) 100%) !important;
+    color: white !important;
+    box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3) !important;
+}
+
+/* Settings/Manage/Configure actions */
+.expoxr-admin-container .button.expoxr-function-settings,
+.expoxr-admin-container .button.expoxr-function-manage,
+.expoxr-admin-container .button.expoxr-function-configure {
+    background: linear-gradient(135deg, var(--expoxr-warning) 0%, var(--expoxr-warning-dark) 100%) !important;
+    color: var(--expoxr-secondary) !important;
+    box-shadow: 0 2px 4px rgba(255, 193, 7, 0.3) !important;
+}
+
+/* Delete/Remove/Deactivate actions */
+.expoxr-admin-container .button.expoxr-function-delete,
+.expoxr-admin-container .button.expoxr-function-remove,
+.expoxr-admin-container .button.expoxr-function-deactivate {
+    background: transparent !important;
+    color: var(--expoxr-danger) !important;
+    border: 1px solid var(--expoxr-danger) !important;
+    box-shadow: none !important;
+}
+
+/* Copy/Download/Info actions */
+.expoxr-admin-container .button.expoxr-function-copy,
+.expoxr-admin-container .button.expoxr-function-download,
+.expoxr-admin-container .button.expoxr-function-info {
+    background: var(--expoxr-light) !important;
+    color: var(--expoxr-dark) !important;
+    border: 1px solid #dee2e6 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Special License Deactivation Button */
+.expoxr-deactivate-license {
+    background: linear-gradient(135deg, #F36E24 0%, #EF4681 100%) !important;
+    color: white !important;
+    font-weight: 600 !important;
+    box-shadow: 0 2px 4px rgba(243, 110, 36, 0.3) !important;
+}
+
+/* ========================================
+   Responsive Design
+   ======================================== */
+
+@media (max-width: 768px) {
+    .expoxr-button {
+        padding: 10px 16px;
+        font-size: 14px;
+    }
+    
+    .expoxr-button-small {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+    
+    .expoxr-button-large {
+        padding: 14px 20px;
+        font-size: 16px;
+    }
+}
+
+/* ========================================
+   Fallback Styles (in case main CSS fails to load)
+   ======================================== */
+
+/* Fallback for expoxr-button classes */
+.expoxr-button:not([style*="background"]) {
+    background: #2AACE2 !important;
+    color: white !important;
+    border: 1px solid #2AACE2 !important;
+    padding: 8px 16px !important;
+    cursor: pointer !important;
+    text-decoration: none !important;
+    border-radius: 4px !important;
+}
+
+.expoxr-button-secondary:not([style*="background"]) {
+    background: #0D152C !important;
+    border-color: #0D152C !important;
+    color: white !important;
+}
+
+.expoxr-button-success:not([style*="background"]) {
+    background: #28a745 !important;
+    border-color: #28a745 !important;
+    color: white !important;
+}
+
+.expoxr-button-warning:not([style*="background"]) {
+    background: #ffc107 !important;
+    border-color: #ffc107 !important;
+    color: #0D152C !important;
+}
+
+.expoxr-button-danger:not([style*="background"]),
+.expoxr-button-link:not([style*="background"]) {
+    background: transparent !important;
+    color: #dc3545 !important;
+    border: 1px solid #dc3545 !important;
+}
+
+.expoxr-button-utility:not([style*="background"]) {
+    background: #f8f9fa !important;
+    color: #343a40 !important;
+    border: 1px solid #dee2e6 !important;
+}
+
+/* Fallback for WordPress buttons in ExpoXR context */
+[class*="expoxr-"] .button:not(.expoxr-button):not([style*="background"]) {
+    background: #0D152C !important;
+    color: white !important;
+    border: 1px solid #0D152C !important;
+    padding: 8px 16px !important;
+    cursor: pointer !important;
+    border-radius: 4px !important;
+}
+
+[class*="expoxr-"] .button-primary:not(.expoxr-button):not([style*="background"]) {
+    background: #2AACE2 !important;
+    border-color: #2AACE2 !important;
+    color: white !important;
+}
+
+[class*="expoxr-"] .button-secondary:not(.expoxr-button):not([style*="background"]) {
+    background: #f8f9fa !important;
+    color: #343a40 !important;
+    border: 1px solid #dee2e6 !important;
+}
+
+/* ========================================
+   Addon-Specific Fallback Styles
+   ======================================== */
+
+/* Universal fallback for all addon contexts - ensures consistent styling even if main button styles fail to load */
+.expoxr-ar-addon .expoxr-button:not([style*="background"]),
+.expoxr-camera-addon .expoxr-button:not([style*="background"]),
+.expoxr-annotations-addon .expoxr-button:not([style*="background"]),
+.expoxr-materials-addon .expoxr-button:not([style*="background"]),
+.expoxr-loading-addon .expoxr-button:not([style*="background"]),
+.expoxr-animation-addon .expoxr-button:not([style*="background"]),
+.expoxr-woocommerce-addon .expoxr-button:not([style*="background"]),
+.wrap[class*="expoxr-"] .expoxr-button:not([style*="background"]) {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 8px 16px !important;
+    background: linear-gradient(135deg, #2AACE2 0%, #1e8bb8 100%) !important;
+    border: none !important;
+    color: white !important;
+    text-decoration: none !important;
+    border-radius: 4px !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+}
+
+/* Fallback for WordPress native buttons in addon contexts */
+.expoxr-ar-addon .button:not(.expoxr-button):not([style*="background"]),
+.expoxr-camera-addon .button:not(.expoxr-button):not([style*="background"]),
+.expoxr-annotations-addon .button:not(.expoxr-button):not([style*="background"]),
+.expoxr-materials-addon .button:not(.expoxr-button):not([style*="background"]),
+.expoxr-loading-addon .button:not(.expoxr-button):not([style*="background"]),
+.expoxr-animation-addon .button:not(.expoxr-button):not([style*="background"]),
+.expoxr-woocommerce-addon .button:not(.expoxr-button):not([style*="background"]),
+.wrap[class*="expoxr-"] .button:not(.expoxr-button):not([style*="background"]) {
+    background: linear-gradient(135deg, #2AACE2 0%, #1e8bb8 100%) !important;
+    border: none !important;
+    color: white !important;
+    border-radius: 4px !important;
+    font-weight: 600 !important;
+    padding: 8px 16px !important;
+}
+
+/* Fallback for button variants */
+.expoxr-ar-addon .expoxr-button-small:not([style*="background"]),
+.expoxr-camera-addon .expoxr-button-small:not([style*="background"]),
+.expoxr-annotations-addon .expoxr-button-small:not([style*="background"]),
+.expoxr-materials-addon .expoxr-button-small:not([style*="background"]),
+.expoxr-loading-addon .expoxr-button-small:not([style*="background"]),
+.expoxr-animation-addon .expoxr-button-small:not([style*="background"]),
+.expoxr-woocommerce-addon .expoxr-button-small:not([style*="background"]),
+.wrap[class*="expoxr-"] .expoxr-button-small:not([style*="background"]) {
+    padding: 6px 12px !important;
+    font-size: 12px !important;
+}
+
+.expoxr-ar-addon .expoxr-button-link:not([style*="background"]),
+.expoxr-camera-addon .expoxr-button-link:not([style*="background"]),
+.expoxr-annotations-addon .expoxr-button-link:not([style*="background"]),
+.expoxr-materials-addon .expoxr-button-link:not([style*="background"]),
+.expoxr-loading-addon .expoxr-button-link:not([style*="background"]),
+.expoxr-animation-addon .expoxr-button-link:not([style*="background"]),
+.expoxr-woocommerce-addon .expoxr-button-link:not([style*="background"]),
+.wrap[class*="expoxr-"] .expoxr-button-link:not([style*="background"]) {
+    background: transparent !important;
+    color: #dc3545 !important;
+    border: 1px solid #dc3545 !important;
+}

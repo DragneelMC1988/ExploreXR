@@ -1,0 +1,427 @@
+/**
+ * Create Model Page CSS
+ * Styles specific to the Create Model admin page
+ */
+
+/* Responsive size options grid */
+.expoxr-size-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.expoxr-size-option {
+    cursor: pointer;
+    padding: 10px;
+    border: 2px solid #e2e4e7;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.expoxr-size-option:hover {
+    background-color: #0d152c;
+    border-color: #c8c8c8;
+    color: white;
+}
+
+.expoxr-size-option input {
+    display: none;
+}
+
+.expoxr-size-option input:checked + .expoxr-size-preview {
+    color: #2271b1;
+}
+
+.expoxr-size-option input:checked + .expoxr-size-preview .expoxr-size-box {
+    border-color: #2271b1;
+    background-color: rgba(34, 113, 177, 0.1);
+}
+
+.expoxr-size-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.expoxr-size-box {
+    background-color: #f0f0f0;
+    border: 2px solid #c8c8c8;
+    border-radius: 4px;
+}
+
+/* Media fields */
+.expoxr-media-field {
+    display: flex;
+    gap: 10px;
+}
+
+.expoxr-media-field input[type="text"] {
+    flex-grow: 1;
+}
+
+/* Form actions */
+.expoxr-form-actions {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Optional field indicator */
+span.optional {
+    font-size: 12px;
+    font-weight: normal;
+    color: #646970;
+    margin-left: 5px;
+}
+
+/* ExpoXR Create Model Styles
+ * Styles for the Create Model page
+ */
+
+/* Form Layout */
+.expoxr-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.expoxr-form-group {
+    margin-bottom: 20px;
+}
+
+.expoxr-form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.expoxr-form-group .description {
+    margin-top: 5px;
+    color: #646970;
+    font-style: italic;
+}
+
+.expoxr-form-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.expoxr-form-row label {
+    width: 80px;
+    margin-bottom: 0;
+}
+
+.expoxr-form-row .description {
+    margin-top: 0;
+    margin-left: 10px;
+}
+
+/* Tabs Navigation */
+.expoxr-tabs {
+    display: flex;
+    border-bottom: 1px solid #c3c4c7;
+    margin-bottom: 20px;
+    gap: 2px;
+}
+
+.expoxr-tab {
+    padding: 10px 15px;
+    cursor: pointer;
+    margin-bottom: -1px;
+    border: 1px solid transparent;
+    border-bottom: none;
+    background: #E4E9EC;
+    color: #2c3338;
+    font-weight: 500;
+    border-radius: 4px 4px 0 0;
+    transition: all 0.2s ease;
+}
+
+.expoxr-tab:hover {
+    background: #0D152C;
+    color: #E4E9EC;
+}
+
+.expoxr-tab.active {
+    background: white;
+    border-color: #c3c4c7;
+    border-bottom: 1px solid white;
+    color: #2271b1;
+}
+
+.expoxr-tab-content {
+    display: none;
+    padding: 20px 0;
+}
+
+.expoxr-tab-content.active {
+    display: block;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 782px) {
+    .expoxr-form-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .expoxr-form-row label {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+    
+    .expoxr-form-row .description {
+        margin-left: 0;
+        margin-top: 5px;
+    }
+}
+
+/* Device Tabs for Responsive Sizes */
+.expoxr-device-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.expoxr-device-tab {
+    cursor: pointer;
+    padding: 10px 15px;
+    border: 1px solid #e2e4e7;
+    border-radius: 5px;
+    background-color: #f8f9fa;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.expoxr-device-tab .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+.expoxr-device-tab.active {
+    background-color: #2271b1;
+    color: #fff;
+    border-color: #2271b1;
+}
+
+.expoxr-device-content {
+    display: none;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    border: 1px solid #e2e4e7;
+}
+
+.expoxr-device-content.active {
+    display: block;
+}
+
+.expoxr-device-content h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+/* Input elements styling */
+.expoxr-form-group input[type="text"],
+.expoxr-form-group input[type="number"],
+.expoxr-form-group input[type="email"],
+.expoxr-form-group input[type="url"],
+.expoxr-form-group select,
+.expoxr-form-group textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #dcdcde;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #2c3338;
+    font-size: 14px;
+    transition: border-color 0.2s ease;
+}
+
+.expoxr-form-group input[type="text"]:focus,
+.expoxr-form-group input[type="number"]:focus,
+.expoxr-form-group input[type="email"]:focus,
+.expoxr-form-group input[type="url"]:focus,
+.expoxr-form-group select:focus,
+.expoxr-form-group textarea:focus {
+    border-color: #2271b1;
+    box-shadow: 0 0 0 1px #2271b1;
+    outline: none;
+}
+
+.expoxr-form-group input.small-text {
+    width: 120px;
+}
+
+/* File input styling */
+.expoxr-form-group input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px dashed #dcdcde;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+}
+
+.expoxr-form-group input[type="file"]:hover {
+    border-color: #2271b1;
+    background-color: #f0f7fc;
+}
+
+/* Custom styled file input */
+.expoxr-file-input-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 12px;
+}
+
+.expoxr-styled-file-input {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    z-index: 3;
+}
+
+.expoxr-file-input-decoration {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    border: 2px dashed #dcdcde;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    transition: all 0.3s ease;
+    min-height: 80px;
+}
+
+.expoxr-file-input-wrapper:hover .expoxr-file-input-decoration {
+    border-color: #2271b1;
+    background-color: #f0f7fc;
+}
+
+.expoxr-file-input-decoration .dashicons {
+    margin-right: 10px;
+    font-size: 24px;
+    color: #646970;
+}
+
+.expoxr-file-input-text {
+    font-size: 14px;
+    color: #646970;
+}
+
+.expoxr-file-input-wrapper.file-selected .expoxr-file-input-decoration {
+    border-color: #2271b1;
+    background-color: rgba(34, 113, 177, 0.05);
+}
+
+.expoxr-file-input-wrapper.file-selected .expoxr-file-input-text {
+    color: #2271b1;
+    font-weight: 500;
+}
+
+/* Card note styling */
+.expoxr-card-note {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-style: italic;
+    color: #646970;
+    padding-left: 10px;
+    border-left: 3px solid #e2e4e7;
+}
+
+/* Button styling */
+.expoxr-form-actions .button,
+.expoxr-form-group .button,
+.expoxr-media-field .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    background-color: #f6f7f7;
+    border: 1px solid #dcdcde;
+    border-radius: 4px;
+    color: #2c3338;
+    font-weight: 500;
+    font-size: 14px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    height: auto;
+    line-height: normal;
+}
+
+.expoxr-form-actions .button:hover,
+.expoxr-form-group .button:hover,
+.expoxr-media-field .button:hover {
+    /*background-color: #0D152C; */
+    border-color: #c3c4c7;
+}
+
+/* Button styles are defined in admin-styles.css and inherited globally */
+
+.expoxr-form-actions .button-large {
+    padding: 10px 20px;
+    font-size: 15px;
+}
+
+.expoxr-form-actions .button .dashicons,
+.expoxr-form-group .button .dashicons,
+.expoxr-media-field .button .dashicons {
+    margin-right: 8px;
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+/* Input group styling */
+.expoxr-input-group {
+    display: flex;
+    align-items: center;
+}
+
+.expoxr-input-group input {
+    flex: 1;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.expoxr-input-group .button {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-left: none;
+}
+
+/* Improvement for checkbox and radio inputs */
+.expoxr-checkbox-group,
+.expoxr-radio-group {
+    margin-bottom: 8px;
+}
+
+.expoxr-checkbox-group label,
+.expoxr-radio-group label {
+    display: flex;
+    align-items: center;
+    font-weight: normal;
+}
+
+.expoxr-checkbox-group input[type="checkbox"],
+.expoxr-radio-group input[type="radio"] {
+    margin-right: 8px;
+}

@@ -1,0 +1,611 @@
+/**
+ * ExpoXR Model Viewer Styles
+ */
+
+/* ExpoXR Model Viewer Custom Loading Styles */
+.expoxr-model-viewer-container {
+    position: relative;
+    width: 100%;
+    min-height: 300px;
+    margin-bottom: 20px;
+}
+
+.expoxr-model-viewer-container .expoxr-model{
+    background-color: rgba(0, 0, 0, 0) !important;
+}
+/* Script Loading Indicator Styles */
+.model-loading-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: 100;
+    transition: opacity 0.5s ease;
+}
+
+.script-loading-progress {
+    width: 80%;
+    height: 8px;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 10px 0;
+}
+
+.script-loading-progress-bar {
+    height: 100%;
+    width: 0%;
+    background-color: #1e88e5;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.script-loading-percentage {
+    font-size: 24px;
+    font-family: Arial, sans-serif;
+    color: #333333;
+    font-weight: bold;
+    margin-top: 10px;
+    transition: opacity 0.3s ease;
+}
+
+/* Model Loading Container Styles */
+.expoxr-loading-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.9);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+}
+
+/* Loading status text */
+.loading-status-text {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+    text-align: center;
+    margin-bottom: 15px;
+    z-index: 20;
+}
+
+/* Loading Bar Styles */
+.expoxr-loading-bar-container {
+    position: relative;
+    width: 80%;
+    height: 8px; /* Default medium size */
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 10px 0;
+}
+
+.expoxr-loading-bar-container.expoxr-bar-position-top {
+    margin-top: -20%;
+}
+
+.expoxr-loading-bar-container.expoxr-bar-position-bottom {
+    margin-top: 20%;
+}
+
+.expoxr-loading-bar {
+    height: 100%;
+    width: 0%;
+    background-color: #1e88e5; /* Default color */
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+/* Percentage Counter Styles */
+.expoxr-percentage-counter {
+    position: relative;
+    font-size: 24px; /* Default size */
+    font-family: Arial, sans-serif; /* Default font */
+    color: #333333; /* Default color */
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+/* Poster and Transition Styles */
+.expoxr-model-poster-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.expoxr-model-poster-button {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.expoxr-model-poster-button:hover {
+    background-color: rgba(0, 0, 0, 0.85);
+}
+
+.expoxr-model-poster-button-icon {
+    font-size: 24px;
+}
+
+.expoxr-model-poster {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 1;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+    z-index: 10;
+}
+
+.expoxr-model-poster.poster-hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.expoxr-loading-container.loading-hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+model-viewer.expoxr-model {
+    width: 100%;
+    height: 100%;
+    min-height: 300px;
+    --progress-bar-height: 10px;
+    --progress-bar-color: #1e88e5;
+    --poster-color: #ffffff;
+    transition: opacity 0.8s ease;
+}
+
+model-viewer.expoxr-model[data-loaded="true"] {
+    opacity: 1 !important;
+}
+
+/* Remove the default grey loading bar at the top */
+model-viewer::part(default-progress-bar) {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+/* Load Model Button Styling */
+.expoxr-load-model-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 12px 24px;
+    background-color: #0073aa;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    z-index: 10;
+    /* Improve touch target size for mobile */
+    min-width: 150px;
+    min-height: 44px;
+    /* Prevent text selection on double-tap */
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.expoxr-load-model-btn:hover {
+    background-color: #005177;
+}
+
+/* Active state for better mobile feedback */
+.expoxr-load-model-btn:active {
+    background-color: #003f5e;
+    transform: translate(-50%, -50%) scale(0.98);
+}
+
+/* Animation for the loading bar and percentage during model loading */
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+.expoxr-loading-bar.loading,
+.expoxr-percentage-counter.loading {
+    animation: pulse 1.5s infinite;
+}
+
+/* Prevent model flickering during scene transition - keeping progress bar hidden */
+model-viewer::part(default-progress-bar) {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+/* Force model visibility in AR mode */
+model-viewer[ar-status="session-started"] {
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Model container styling */
+.expoxr-model-container {
+    position: relative;
+    width: 100%;
+    height: auto;
+}
+
+/* Error Message Styling */
+.expoxr-model-error {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 300px;
+    background-color: #f5f5f5;
+    padding: 20px;
+    text-align: center;
+}
+
+.expoxr-model-error-icon {
+    font-size: 48px;
+    margin-bottom: 10px;
+}
+
+.expoxr-model-error-message {
+    color: #d32f2f;
+    font-size: 16px;
+    max-width: 80%;
+}
+
+.expoxr-error {
+    text-align: center;
+    color: #721c24;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+    padding: 15px;
+    margin: 10px;
+}
+
+.expoxr-retry-btn {
+    background-color: #0073aa;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 15px;
+    margin-top: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.expoxr-retry-btn:hover {
+    background-color: #005177;
+}
+
+/* Hotspot styling */
+.expoxr-hotspot {
+    display: block;
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    border: none;
+    background-color: #ff0000;
+    box-sizing: border-box;
+    pointer-events: all;
+    --min-hotspot-opacity: 0.4;
+    transition: transform 0.2s;
+}
+
+.expoxr-hotspot:hover {
+    transform: scale(1.2);
+}
+
+/* Annotation styling */
+.expoxr-annotation {
+    position: absolute;
+    top: 0;
+    left: 25px;
+    width: 300px;
+    max-width: calc(100vw - 50px);
+    border-radius: 6px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+    transform: translateY(-50%);
+    pointer-events: none;
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 999;
+    background-color: #000000;
+    color: #ffffff;
+    padding: 10px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.expoxr-annotation h1,
+.expoxr-annotation h2, 
+.expoxr-annotation h3, 
+.expoxr-annotation h4, 
+.expoxr-annotation h5, 
+.expoxr-annotation h6 {
+    margin: 0 0 10px;
+}
+
+.expoxr-hotspot:hover .expoxr-annotation {
+    opacity: 1;
+}
+
+/* Model viewer custom styling */
+model-viewer {
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+}
+
+/* Animation Controls */
+.expoxr-animation-controls {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-top: 1px solid #ddd;
+}
+
+.expoxr-animation-button {
+    background-color: #1e88e5;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.expoxr-animation-button:hover {
+    background-color: #1976d2;
+}
+
+.expoxr-animation-icon {
+    font-size: 16px;
+}
+
+.expoxr-animation-name {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* AR Mode fixes */
+.expoxr-model-container.expoxr-ar-session-active model-viewer {
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 9999 !important;
+}
+
+.expoxr-ar-button {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    background: rgba(0, 0, 0, 0.7);
+    border: none;
+    border-radius: 4px;
+    color: white;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    cursor: pointer;
+    z-index: 10;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    transition: background 0.3s ease;
+}
+
+.expoxr-ar-button:hover {
+    background: rgba(0, 0, 0, 0.9);
+}
+
+.expoxr-ar-button img {
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
+}
+
+.expoxr-ar-not-supported {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: opacity 0.5s ease;
+    z-index: 20;
+}
+
+/* AR Controls Styling */
+.expoxr-ar-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 1000;
+    opacity: 0;
+    animation: fadeIn 0.5s ease forwards;
+    animation-delay: 0.5s;
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 10px;
+    border-radius: 0;
+}
+
+.expoxr-ar-move-btn, 
+.expoxr-ar-scale-btn {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 14px;
+}
+
+.expoxr-ar-move-btn {
+    background-color: #4caf50;
+    color: white;
+}
+
+.expoxr-ar-scale-btn {
+    background-color: #2196f3;
+    color: white;
+}
+
+.expoxr-ar-move-btn:hover {
+    background-color: #388e3c;
+}
+
+.expoxr-ar-scale-btn:hover {
+    background-color: #1976d2;
+}
+
+.expoxr-ar-move-btn.active {
+    background-color: #388e3c;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.5);
+}
+
+.expoxr-ar-scale-btn.active {
+    background-color: #1976d2;
+    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.5);
+}
+
+/* Scale Indicator Styling */
+.expoxr-scale-indicator {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    z-index: 1001;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.expoxr-scale-indicator.visible {
+    opacity: 1;
+}
+
+/* Animation for UI elements in AR mode */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+    .expoxr-load-model-btn {
+        /* Larger touch target for mobile */
+        padding: 14px 28px;
+        font-size: 18px;
+        min-width: 180px;
+        min-height: 50px;
+    }
+    
+    /* Ensure loading indicators are visible on mobile screens */
+    .expoxr-loading-container {
+        background-color: rgba(255, 255, 255, 0.85); /* Slightly more opaque for better visibility */
+    }
+    
+    .loading-status-text {
+        font-size: 18px;
+        margin-bottom: 20px;
+    }
+    
+    .expoxr-loading-bar-container {
+        width: 85%;
+        height: 10px;
+    }
+    
+    .expoxr-percentage-counter {
+        font-size: 28px;
+        margin-top: 15px;
+    }
+    
+    /* Fix AR button for mobile */
+    .expoxr-ar-button {
+        padding: 10px 16px;
+        font-size: 16px;
+    }
+    
+    /* Ensure annotations don't overflow on mobile */
+    .expoxr-annotation {
+        max-width: 80vw;
+        width: 250px;
+    }
+}
+
+/* Extra styles for very small screens */
+@media (max-width: 480px) {
+    .expoxr-loading-bar-container {
+        width: 90%;
+    }
+    
+    .expoxr-ar-controls {
+        flex-direction: column;
+        gap: 5px;
+    }
+}

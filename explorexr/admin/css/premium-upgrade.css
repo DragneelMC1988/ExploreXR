@@ -1,0 +1,861 @@
+/* Premium Upgrade Styles for ExploreXR */
+
+.expoxr-premium-notice {
+    border: none !important;
+    border-left: 4px solid #667eea !important;
+    background: white;
+}
+
+.expoxr-premium-notice h3 {
+    color: #333;
+    font-size: 16px;
+}
+
+.expoxr-premium-notice p {
+    color: #666;
+    line-height: 1.5;
+}
+
+.expoxr-premium-notice .button-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+    transition: all 0.3s ease;
+}
+
+.expoxr-premium-notice .button-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.4);
+}
+
+/* Premium Feature Cards */
+.expoxr-premium-card {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 15px 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.expoxr-premium-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+}
+
+.expoxr-premium-card.disabled {
+    opacity: 0.6;
+    background: #f9f9f9;
+}
+
+.premium-feature-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.premium-feature-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    font-size: 18px;
+}
+
+.premium-feature-icon {
+    font-size: 24px;
+}
+
+.premium-badge {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.premium-feature-description {
+    color: #666;
+    margin: 10px 0 15px 0;
+    line-height: 1.6;
+}
+
+.premium-feature-benefits,
+.feature-card ul,
+.addon-features {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0;
+}
+
+.premium-feature-benefits li,
+.feature-card li,
+.addon-features li {
+    padding: 5px 0;
+    position: relative;
+    padding-left: 25px;
+    color: #555;
+}
+
+.premium-feature-benefits li::before,
+.feature-card li:before,
+.addon-features li:before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #4CAF50;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.premium-upgrade-button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+}
+
+.premium-upgrade-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+/* Premium Model Edit Page Styles */
+.expoxr-free-version .addon-card {
+    position: relative;
+    opacity: 0.7;
+}
+
+.expoxr-free-version .addon-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #667eea;
+    font-size: 14px;
+}
+
+.premium-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.95);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    z-index: 10;
+}
+
+.premium-overlay-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+}
+
+.premium-overlay-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0 0 10px 0;
+    color: #333;
+}
+
+.premium-overlay-description {
+    color: #666;
+    text-align: center;
+    margin: 0 0 20px 0;
+    line-height: 1.5;
+}
+
+/* Admin Menu Styling */
+.wp-menu-name .premium-menu-icon {
+    color: #f39c12;
+    font-size: 16px;
+    margin-right: 5px;
+}
+
+/* Dashboard Premium Widgets */
+.expoxr-premium-widget {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 25px;
+    border-radius: 12px;
+    margin: 20px 0;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.expoxr-premium-widget h3 {
+    color: white;
+    margin: 0 0 15px 0;
+    font-size: 24px;
+}
+
+.expoxr-premium-widget p {
+    margin: 0 0 20px 0;
+    opacity: 0.9;
+    line-height: 1.6;
+}
+
+.expoxr-premium-widget .button {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    padding: 12px 24px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.expoxr-premium-widget .button:hover {
+    background: white;
+    color: #667eea;
+    text-decoration: none;
+    transform: translateY(-2px);
+}
+
+/* Feature Teasers */
+.expoxr-feature-teaser {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    margin: 10px 0;
+    transition: all 0.3s ease;
+}
+
+.expoxr-feature-teaser:hover {
+    border-color: #667eea;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+}
+
+.feature-teaser-icon {
+    font-size: 32px;
+    margin-right: 15px;
+}
+
+.feature-teaser-content {
+    flex: 1;
+}
+
+.feature-teaser-title {
+    font-weight: bold;
+    margin: 0 0 5px 0;
+    color: #333;
+}
+
+.feature-teaser-description {
+    color: #666;
+    margin: 0;
+    font-size: 14px;
+}
+
+.feature-teaser-cta {
+    margin-left: 15px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .expoxr-premium-notice > div {
+        flex-direction: column !important;
+        gap: 15px !important;
+    }
+    
+    .expoxr-premium-notice .button {
+        align-self: flex-start;
+    }
+    
+    .premium-feature-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .expoxr-feature-teaser {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .feature-teaser-icon {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+    
+    .feature-teaser-cta {
+        margin-left: 0;
+        margin-top: 10px;
+    }
+    
+    .expoxr-premium-hero {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .hero-content h1 {
+        font-size: 2em;
+    }
+
+    .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .comparison-table {
+        overflow-x: auto;
+    }
+
+    .addon-tier-overview {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .tier-overview-card {
+        min-width: auto;
+    }
+
+    .addons-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .pricing-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Animation Effects */
+@keyframes premium-glow {
+    0% { box-shadow: 0 0 5px rgba(102, 126, 234, 0.5); }
+    50% { box-shadow: 0 0 20px rgba(102, 126, 234, 0.8); }
+    100% { box-shadow: 0 0 5px rgba(102, 126, 234, 0.5); }
+}
+
+.premium-highlight {
+    animation: premium-glow 2s infinite;
+}
+
+/* Premium Feature Indicators */
+.has-premium-feature {
+    position: relative;
+}
+
+.has-premium-feature::before {
+    content: "PREMIUM";
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: bold;
+    z-index: 5;
+    transform: rotate(15deg);
+}
+
+/* Disabled State for Premium Features */
+.premium-disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.premium-disabled::after {
+    content: "🔒 Premium Feature";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(102, 126, 234, 0.9);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 10;
+}
+
+
+
+    .expoxr-premium-upgrade-page {
+        max-width: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .expoxr-premium-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 40px 20px;
+        margin: 0 -20px 30px -20px;
+    }
+
+    .expoxr-premium-hero {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 40px;
+    }
+
+    .hero-content {
+        flex: 1;
+    }
+
+    .hero-content h1 {
+        font-size: 3em;
+        margin: 0 0 20px 0;
+        color: white;
+    }
+
+    .hero-subtitle {
+        font-size: 1.4em;
+        margin: 0 0 30px 0;
+        opacity: 0.9;
+    }
+
+    .hero-cta {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .button-hero {
+        padding: 15px 30px !important;
+        font-size: 18px !important;
+        height: auto !important;
+    }
+
+    .price-info {
+        color: rgba(255,255,255,0.8);
+        font-size: 14px;
+    }
+
+    .hero-image {
+        flex: 1;
+        text-align: center;
+    }
+
+    .hero-image img {
+        max-width: 50%;
+        height: auto;
+    }
+
+    .expoxr-premium-content {
+        margin: 0 auto;
+        padding: 0;
+    }
+
+    .addon-summary {
+        text-align: center;
+        margin-bottom: 40px;
+        padding: 30px;
+        background: #f8f9fa;
+        border-radius: 12px;
+    }
+
+    .summary-description {
+        font-size: 1.1em;
+        color: #666;
+        margin: 15px 0 30px 0;
+        line-height: 1.6;
+    }
+
+    .addon-tier-overview {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        flex-wrap: wrap;
+    }
+
+    .tier-overview-card {
+        background: white;
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        padding: 20px;
+        min-width: 150px;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .tier-overview-card:hover {
+        border-color: #667eea;
+        transform: translateY(-2px);
+    }
+
+    .tier-overview-card h4 {
+        margin: 0 0 15px 0;
+        color: #333;
+        font-size: 1.1em;
+    }
+
+    .tier-number {
+        font-size: 2.5em;
+        font-weight: bold;
+        color: #667eea;
+        margin: 0 0 10px 0;
+    }
+
+    .tier-overview-card p {
+        margin: 0;
+        color: #666;
+        font-size: 0.9em;
+    }
+
+    .comparison-table {
+        margin: 30px 0;
+    }
+
+    .comparison-table table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .comparison-table th,
+    .comparison-table td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .free-column {
+        background-color: #f9f9f9;
+        text-align: center;
+    }
+
+    .premium-column {
+        background-color: #e8f5e8;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin: 30px 0;
+    }
+
+    .feature-card {
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 25px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: transform 0.2s;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    .feature-icon {
+        font-size: 3em;
+        margin-bottom: 15px;
+    }
+
+    .feature-card h3 {
+        margin: 0 0 15px 0;
+        color: #333;
+    }
+
+    .feature-card p {
+        margin: 0 0 15px 0;
+        color: #666;
+        line-height: 1.6;
+    }
+
+    .pricing-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin: 30px 0;
+    }
+
+    .pricing-card {
+        background: white;
+        border: 2px solid #ddd;
+        border-radius: 12px;
+        padding: 30px;
+        text-align: center;
+        position: relative;
+        transition: transform 0.2s;
+    }
+
+    .pricing-card:hover {
+        transform: translateY(-4px);
+    }
+
+    .pricing-card.featured {
+        border-color: #667eea;
+        transform: scale(1.05);
+    }
+
+    .pricing-card .badge {
+        position: absolute;
+        top: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #667eea;
+        color: white;
+        padding: 5px 15px;
+        border-radius: 15px;
+        font-size: 12px;
+    }
+
+    .pricing-card h3 {
+        margin: 0 0 20px 0;
+        font-size: 1.5em;
+    }
+
+    .price {
+        font-size: 2.5em;
+        font-weight: bold;
+        color: #333;
+        margin: 0 0 20px 0;
+    }
+
+    .price span {
+        font-size: 0.4em;
+        color: #666;
+    }
+
+    .addon-count {
+        background: #e8f5e8;
+        color: #2d7a2d;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: bold;
+        margin: 0 0 20px 0;
+        display: inline-block;
+    }
+
+    .pricing-card.featured .addon-count {
+        background: #667eea;
+        color: white;
+    }
+
+    .testimonials-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin: 30px 0;
+    }
+
+    blockquote {
+        background: #f9f9f9;
+        border-left: 4px solid #667eea;
+        margin: 0;
+        padding: 20px;
+        border-radius: 4px;
+        font-style: italic;
+    }
+
+    cite {
+        display: block;
+        margin-top: 10px;
+        font-style: normal;
+        font-weight: bold;
+        color: #666;
+    }
+
+    .upgrade-cta {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 60px 40px;
+        margin: 60px -20px 0 -20px;
+        text-align: center;
+        border-radius: 8px;
+    }
+
+    .cta-content h2 {
+        color: white;
+        margin: 0 0 20px 0;
+        font-size: 2.5em;
+    }
+
+    .cta-content p {
+        font-size: 1.2em;
+        margin: 0 0 30px 0;
+        opacity: 0.9;
+    }
+    .cta-content span {
+        color: white
+    }
+
+    .cta-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 20px;
+        align-content: center;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        align-items: center;
+    }
+
+    .guarantee {
+        font-size: 14px;
+        opacity: 0.8;
+    }
+
+    .addons-note {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 30px;
+    }
+
+    .tier-addon-list {
+        list-style: none;
+        padding: 0;
+        margin: 15px 0;
+    }
+
+    .tier-addon-list li {
+        padding: 8px 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .tier-addon-list li:last-child {
+        border-bottom: none;
+    }
+
+    .addons-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 25px;
+        margin: 30px 0;
+    }
+
+    .addon-card {
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+
+    .addon-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
+
+    /* Coming Soon Addon Card Styles */
+    .addon-card.addon-coming-soon {
+        background: linear-gradient(135deg, #f8f9ff 0%, #e8f4f8 100%);
+        border: 2px solid #667eea;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .addon-card.addon-coming-soon::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .addon-card.addon-coming-soon .addon-icon {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        font-size: 3em;
+        margin-bottom: 10px;
+    }
+
+    .addon-card.addon-coming-soon h3 {
+        color: #667eea;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .addon-card.addon-coming-soon .addon-description {
+        color: #555;
+        font-style: italic;
+    }
+
+    .coming-soon-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.8em;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+    }
+
+    .addon-card.addon-coming-soon .addon-features li {
+        color: #666;
+        font-size: 0.95em;
+    }
+
+    .addon-card.addon-coming-soon:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
+    }
+
+    .addon-icon {
+        font-size: 2.5em;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+
+    .addon-card h3 {
+        margin: 0 0 15px 0;
+        color: #333;
+        font-size: 1.3em;
+        text-align: center;
+    }
+
+    .addon-description {
+        color: #666;
+        line-height: 1.6;
+        margin: 0 0 15px 0;
+        text-align: center;
+    }

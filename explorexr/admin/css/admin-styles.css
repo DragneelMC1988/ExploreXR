@@ -1,0 +1,2002 @@
+/* ExploreXR Admin Styles
+ * Main styles for admin interface
+ */
+
+/* Admin menu hover behavior - improved version */
+/* Only apply the submenu positioning when the admin menu is collapsed */
+.folded #adminmenu li#toplevel_page_expoxr:hover .wp-submenu {
+    display: block !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 100% !important;
+    margin-top: 0 !important;
+}
+
+/* Do not apply special hover behavior when menu is expanded */
+#adminmenu:not(.folded) li#toplevel_page_expoxr:hover .wp-submenu {      
+    top: 0 !important;
+    margin-top: auto !important;
+}
+
+/* Prevent WordPress admin notices from appearing inside ExploreXR plugin content areas */
+/* But allow them to show above the plugin header */
+.expoxr-admin-container .notice,
+.expoxr-admin-container .error,
+.expoxr-admin-container .updated,
+.expoxr-admin-container .notice-error,
+.expoxr-admin-container .notice-warning,
+.expoxr-admin-container .notice-success,
+.expoxr-admin-container .notice-info,
+.wrap.expoxr-addons-page .notice,
+.wrap.expoxr-addons-page .error,
+.wrap.expoxr-addons-page .updated,
+.wrap.expoxr-addons-page .notice-error,
+.wrap.expoxr-addons-page .notice-warning,
+.wrap.expoxr-addons-page .notice-success,
+.wrap.expoxr-addons-page .notice-info,
+.wrap.expoxr-license-page .notice,
+.wrap.expoxr-license-page .error,
+.wrap.expoxr-license-page .updated,
+.wrap.expoxr-license-page .notice-error,
+.wrap.expoxr-license-page .notice-warning,
+.wrap.expoxr-license-page .notice-success,
+.wrap.expoxr-license-page .notice-info,
+.wrap.expoxr-edit-model-page .notice,
+.wrap.expoxr-edit-model-page .error,
+.wrap.expoxr-edit-model-page .updated,
+.wrap.expoxr-edit-model-page .notice-error,
+.wrap.expoxr-edit-model-page .notice-warning,
+.wrap.expoxr-edit-model-page .notice-success,
+.wrap.expoxr-edit-model-page .notice-info {
+    display: none !important;
+}
+
+/* Ensure ExploreXR specific notices still appear */
+.expoxr-admin-container .expoxr-notice,
+.wrap.expoxr-addons-page .expoxr-notice,
+.wrap.expoxr-license-page .expoxr-notice,
+.wrap.expoxr-edit-model-page .expoxr-notice,
+.notice.expoxr-premium-notice,
+.notice-info.expoxr-premium-notice {
+    display: block !important;
+}
+
+/* Additional rule to ensure premium notices always show regardless of location */
+.expoxr-premium-notice.notice,
+.expoxr-premium-notice.notice-info,
+div.expoxr-premium-notice,
+.wrap .expoxr-premium-notice {
+    display: flex !important;
+    flex-direction: row !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Notifications area positioning and styling */
+.expoxr-notifications-wrapper {
+    position: relative;
+    z-index: 1000;
+    margin: 20px 0 20px 0;
+    clear: both;
+}
+
+/* Allow WordPress notices that appear above the admin container to be visible */
+/* Only hide notices that appear inside the actual plugin content areas */
+
+/* Ensure our notifications area notices are visible */
+.expoxr-notifications-wrapper .notice,
+.expoxr-notifications-wrapper .error,
+.expoxr-notifications-wrapper .updated {
+    display: block !important;
+}
+
+/* Moving Gradient Banner for Dashboard */
+.expoxr-gradient-banner {
+    background: linear-gradient(270deg, #4555A5, #13BCD4, #F36E24, #EF4681, #4555A5);
+    background-size: 400% 400%;
+    animation: gradientMove 26s ease infinite;
+    margin: 0 0 30px 0;
+    border-radius: 0;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.expoxr-gradient-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.1);
+    pointer-events: none;
+}
+
+.expoxr-gradient-banner-content {
+    position: relative;
+    z-index: 2;
+}
+
+.expoxr-banner-logo {
+    height: 120px;
+    
+}
+
+.expoxr-gradient-banner h2 {
+    color: white;
+    font-size: 28px;
+    font-weight: 600;
+    margin: 0 0 10px 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.expoxr-gradient-banner p {
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 16px;
+    margin: 0;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes gradientMove {
+    0% {
+        background-position: 0% 50%;
+    }
+    25% {
+        background-position: 100% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    75% {
+        background-position: 0% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Card and Container Styles */
+.expoxr-admin-container {
+    margin: 20px 20px 0 0;
+}
+
+.expoxr-card {
+    background: white;
+    border-radius: 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);
+    margin-bottom: 20px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.expoxr-card:hover {
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.expoxr-card-header {
+    padding: 12px 20px;
+    background-color: #E4E9EC;
+    border-bottom: 1px solid #0D152C;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.card-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.card-header-actions .button {
+    margin-left: 10px;
+}
+
+.expoxr-card-header h2 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.expoxr-card-header .dashicons {
+    color: #8062AA;
+}
+
+
+.expoxr-card-content {
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.expoxr-card-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #0D152C;
+    background-color: #E4E9EC;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: auto;
+}
+
+/* Full-width card footer buttons */
+.expoxr-card-footer-fullwidth {
+    padding: 0;
+    display: block;
+}
+
+.expoxr-card-footer-fullwidth a,
+.expoxr-card-footer-fullwidth button {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 12px 20px;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    border-top: 1px solid #0D152C;
+    background-color: #E4E9EC;
+    color: #2AACE2;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.expoxr-card-footer-fullwidth a:hover,
+.expoxr-card-footer-fullwidth button:hover {
+    background-color: #0D152C;
+    color: #1e40af;
+}
+
+.expoxr-card-footer-fullwidth .button-primary {
+    background-color: #2AACE2;
+    color: white;
+}
+
+.expoxr-card-footer-fullwidth .button-primary:hover {
+    background-color: #1e40af;
+    color: white;
+}
+
+/* Dashboard grid */
+.expoxr-dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.expoxr-dashboard-grid .expoxr-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 220px;
+}
+
+/* Make sure model cards render properly */
+.expoxr-model-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.expoxr-model-thumb {
+    height: 180px;
+    background-color: #0D152C;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.expoxr-model-thumb img {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+.expoxr-model-actions {
+    position: inherit;
+    bottom: 10px;
+    right: 10px;
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    opacity: 1;
+    transition: opacity 0.2s ease;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+}
+
+.expoxr-model-thumb:hover .expoxr-model-actions {
+    opacity: 1;
+}
+
+.expoxr-model-actions button,
+.expoxr-model-actions a {
+    background: white;
+    border: none;
+    border-radius: 50%;    
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.expoxr-model-actions button:hover,
+.expoxr-model-actions a:hover {
+    background: #f7f7f7;
+}
+
+.expoxr-model-actions button .dashicons,
+.expoxr-model-actions a .dashicons {
+    font-size: 16px;
+}
+
+.expoxr-model-details {
+    padding: 15px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.expoxr-model-title {
+    font-size: 15px;
+    font-weight: 500;
+    margin: 0 0 5px 0;
+}
+
+.expoxr-model-meta {
+    color: #646970;
+    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+    margin-top: auto;
+}
+
+/* Enhanced Admin Header with Plugin UI Styling - Override all instances */
+.expoxr-admin-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin: 0 0 25px 0 !important;
+    padding: 25px 30px !important;
+    background: linear-gradient(135deg, #4555A5 0%, #13BCD4 25%, #F36E24 50%, #EF4681 75%, #4555A5 100%) !important;
+    background-size: 400% 400% !important;
+    animation: gradientMove 30s ease infinite !important;
+    border-radius: 12px 12px 0 0 !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    border-bottom: none !important;
+}
+
+.expoxr-admin-header::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    pointer-events: none !important;
+}
+
+.expoxr-admin-header * {
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+.expoxr-admin-header h1 {
+    font-size: 28px !important;
+    font-weight: 600 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1.3 !important;
+    color: white !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+}
+
+.expoxr-admin-header .expoxr-version {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+    padding: 4px 12px !important;
+    border-radius: 0px !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    margin-left: 10px !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+.expoxr-header-actions a,
+.expoxr-header-actions button {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    padding: 8px 16px !important;
+    border-radius: 6px !important;
+    text-decoration: none !important;
+    font-weight: 500 !important;
+    transition: all 0.3s ease !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+.expoxr-header-actions a:hover,
+.expoxr-header-actions button:hover {
+    background: rgba(255, 255, 255, 0.3) !important;
+    border-color: rgba(255, 255, 255, 0.5) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Enhanced Pro Banner Styling for Dashboard */
+.expoxr-pro-banner {
+    background-color: #f9f9f9 !important;
+    color: #23282d;
+    border-radius: 12px !important;
+    padding: 30px !important;
+    margin: 0 0 30px 0 !important;
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.expoxr-pro-banner::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%) !important;
+    animation: shimmer 3s ease-in-out infinite !important;
+    pointer-events: none !important;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.expoxr-pro-banner-content {
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+.expoxr-pro-banner h3 {
+    color: #1d2327 !important;
+    font-size: 24px !important;
+    font-weight: 600 !important;
+    margin: 0 0 15px 0 !important;   
+}
+
+.expoxr-pro-banner p {
+    color: #1d2327 !important;
+    font-size: 16px !important;
+    margin: 0 0 20px 0 !important;    
+}
+
+.expoxr-pro-features {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 0 25px 0 !important;
+}
+
+.expoxr-pro-features li {
+    color: #1d2327 !important;
+    font-size: 14px !important;
+    padding: 8px 0 !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.expoxr-pro-features li .dashicons {
+    color: #4ade80 !important;
+    margin-right: 10px !important;
+    font-size: 16px !important;
+    text-shadow: none !important;
+}
+
+.expoxr-pro-banner .button {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    padding: 12px 24px !important;
+    border-radius: 0 !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
+    backdrop-filter: blur(10px) !important;
+    text-shadow: none !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+.expoxr-pro-banner .button:hover {
+    background: rgba(255, 255, 255, 0.3) !important;
+    border-color: rgba(255, 255, 255, 0.5) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Premium Action Button Styling */
+.expoxr-quick-actions .expoxr-premium-action {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    border-radius: 6px !important;
+    padding: 8px 12px !important;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3) !important;
+    transition: all 0.3s ease !important;
+    font-weight: 600 !important;
+}
+
+.expoxr-quick-actions .expoxr-premium-action:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4) !important;
+    color: white !important;
+}
+
+.expoxr-quick-actions .expoxr-premium-action .dashicons {
+    color: #fbbf24 !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Button styles are now handled by button-system.css - see admin/css/button-system.css for all button styling */
+
+/* ========================================
+   END ENHANCED PLUGIN UI STYLING
+======================================== */
+
+/* Card and Container Styles */
+.expoxr-admin-container {
+    margin: 20px 20px 0 0;
+}
+
+.expoxr-card {
+    background: white;
+    border-radius: 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);
+    margin-bottom: 20px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.expoxr-card:hover {
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.expoxr-card-header {
+    padding: 12px 20px;
+    background-color: #E4E9EC;
+    border-bottom: 1px solid #0D152C;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.card-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.card-header-actions .button {
+    margin-left: 10px;
+}
+
+.expoxr-card-header h2 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.expoxr-card-header .dashicons {
+    color: #8062AA;
+}
+
+
+.expoxr-card-content {
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.expoxr-card-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #0D152C;
+    background-color: #E4E9EC;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: auto;
+}
+
+/* Full-width card footer buttons */
+.expoxr-card-footer-fullwidth {
+    padding: 0;
+    display: block;
+}
+
+.expoxr-card-footer-fullwidth a,
+.expoxr-card-footer-fullwidth button {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 12px 20px;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    border-top: 1px solid #0D152C;
+    background-color: #E4E9EC;
+    color: #2AACE2;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.expoxr-card-footer-fullwidth a:hover,
+.expoxr-card-footer-fullwidth button:hover {
+    background-color: #0D152C;
+    color: #1e40af;
+}
+
+.expoxr-card-footer-fullwidth .button-primary {
+    background-color: #2AACE2;
+    color: white;
+}
+
+.expoxr-card-footer-fullwidth .button-primary:hover {
+    background-color: #1e40af;
+    color: white;
+}
+
+/* Dashboard grid */
+.expoxr-dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.expoxr-dashboard-grid .expoxr-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 220px;
+}
+
+/* Duplicate model card styles removed - see the comprehensive definition above */
+
+/* Badges */
+.expoxr-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    color: #50575e;
+    background: #d1e7dd;
+    margin-left: 5px;
+}
+
+.expoxr-badge.ar {
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.expoxr-badge.error {
+    background: #f8d7da;
+    color: #842029;
+}
+
+/* Alert boxes */
+.expoxr-alert {
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: flex-start;
+}
+
+.expoxr-alert.info {
+    background-color: #e5f5fa;
+    border-left: 4px solid #00a0d2;
+}
+
+.expoxr-alert.success {
+    background-color: #ecf7ed;
+    border-left: 4px solid #2AACE2;
+}
+
+.expoxr-alert.warning {
+    background-color: #fff8e5;
+    border-left: 4px solid #ffb900;
+}
+
+.expoxr-alert.error {
+    background-color: #fbeaea;
+    border-left: 4px solid #8062AA;
+}
+
+.expoxr-alert .dashicons {
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+/* Stats items - vertical layout */
+.expoxr-stats-vertical {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.expoxr-stat-item-vertical {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 5px;
+    border-bottom: 1px solid #0D152C;
+    width: 100%;
+}
+
+.expoxr-stat-item-vertical:last-child {
+    border-bottom: none;
+}
+
+.expoxr-stat-item-vertical .expoxr-stat-label {
+    font-size: 14px;
+    font-weight: 400;
+    color: #23282d;
+}
+
+.expoxr-stat-item-vertical .expoxr-stat-number {
+    font-size: 16px;
+    font-weight: 600;
+    color: #2AACE2;
+    display: flex;
+    align-items: center;
+}
+
+/* Quick Actions */
+.expoxr-quick-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.expoxr-quick-actions a {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    background: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    color: #2AACE2;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.expoxr-quick-actions a:hover {
+    background: #f7f7f7;
+    color: #1e40af;
+}
+
+.expoxr-quick-actions a .dashicons {
+    margin-right: 8px;
+    font-size: 18px;
+}
+
+/* System information table */
+.expoxr-admin-container .widefat {
+    border: 1px solid #e2e4e7;
+    border-spacing: 0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.expoxr-admin-container .widefat th {
+    font-weight: 600;
+    text-align: left;
+    padding: 10px 12px;
+}
+
+.expoxr-admin-container .widefat td {
+    padding: 10px 12px;
+}
+
+/* Make sure the notifications are properly styles */
+.shortcode-copied-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #ecf7ed;
+    color: #0f5132;
+    padding: 10px 20px;
+    border-radius: 4px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    display: none;
+}
+
+/* Status overview grid */
+.expoxr-status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.expoxr-status-card {
+    display: flex;
+    flex-direction: column;
+    border-radius: 0;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);
+    transition: all 0.2s ease;
+}
+
+.expoxr-status-card:hover {
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.expoxr-status-card-inner {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.expoxr-status-icon {
+    background-color: #f0f7fc;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+}
+
+.expoxr-status-icon .dashicons {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    color: #2AACE2;
+}
+
+.expoxr-status-details {
+    flex-grow: 1;
+}
+
+.expoxr-status-details h2 {
+    margin: 0 0 5px 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: #1d2327;
+    line-height: 1.2;
+}
+
+.expoxr-status-details p {
+    margin: 0;
+    color: #646970;
+    font-size: 14px;
+}
+
+.expoxr-status-action {
+    padding: 10px;
+    border-top: 1px solid #0D152C;
+    background-color: #E4E9EC;
+    text-align: center;
+}
+
+.expoxr-status-action a {
+    text-decoration: none;
+    color: #2AACE2;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.expoxr-status-action a:hover {
+    text-decoration: underline;
+}
+
+/* Card grid for smaller cards side by side */
+.expoxr-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+/* Dashboard tables */
+.expoxr-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+}
+
+.expoxr-table th {
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #e2e4e7;
+    padding: 10px;
+    text-align: left;
+    font-weight: 600;
+    color: #23282d;
+}
+
+.expoxr-table td {
+    padding: 12px 10px;
+    vertical-align: middle !important;;
+}
+
+.expoxr-table code{
+    padding: auto;
+    vertical-align: middle !important;;
+}
+
+.expoxr-table tr:last-child td {
+    border-bottom: none;
+}
+
+.expoxr-action-buttons {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.expoxr-view-all {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.expoxr-actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+/* Fix for small buttons */
+.button-small .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    margin-top: 2px;
+    padding-bottom:  2px;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 782px) {
+    .expoxr-dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .expoxr-admin-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .expoxr-admin-header .expoxr-header-actions {
+        margin-top: 15px;
+    }
+    
+    .expoxr-quick-actions a {
+        width: 100%;
+    }
+}
+
+/* Model Viewer Modal Styles */
+.expoxr-model-modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    overflow: auto;
+}
+
+.expoxr-model-modal-content {
+    position: relative;
+    background-color: #fefefe;
+    margin: 50px auto;
+    padding: 20px;
+    border-radius: 5px;
+    width: 80%;
+    height: 80%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.expoxr-model-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    color: #555;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 1;
+    text-decoration: none;
+}
+
+.expoxr-model-close:hover {
+    color: #000;
+}
+
+.expoxr-model-title {
+    margin-top: 0;
+    padding-right: 30px;
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+#expoxr-model-viewer {
+    width: 100%;
+    height: calc(100% - 60px);
+    margin-top: 10px;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+#expoxr-model-viewer .error {
+    padding: 20px;
+    background-color: rgba(255, 0, 0, 0.1);
+    border: 1px solid rgba(255, 0, 0, 0.2);
+    border-radius: 4px;
+    color: #721c24;
+    margin: 20px auto;
+    max-width: 70%;
+    text-align: center;
+}
+
+#expoxr-model-viewer .error-details {
+    font-family: monospace;
+    font-size: 12px;
+    color: #666;
+    margin-top: 10px;
+}
+
+/* Debugging Card Styles */
+.expoxr-debugging-card {
+    background-color: #f9f9f9;
+    border: 1px solid #e2e4e7;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.expoxr-settings-section-title {
+    margin-top: 30px;
+    border-bottom: 1px solid #e2e4e7;
+    padding-bottom: 10px;
+    color: #23282d;
+}
+
+.expoxr-debugging-tools {
+    margin-top: 20px;
+    border-top: 1px solid #e2e4e7;
+    padding-top: 15px;
+}
+
+.expoxr-debug-tool-actions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.expoxr-debug-tool-actions .button {
+    display: flex;
+    align-items: center;
+}
+
+.expoxr-debug-tool-actions .dashicons {
+    margin-right: 5px;
+}
+
+#expoxr-debug-log-viewer {
+    margin-top: 15px;
+    padding: 15px;
+    background-color: #0D152C;
+    border-radius: 4px;
+}
+
+.expoxr-log-container {
+    max-height: 300px;
+    overflow-y: auto;
+    background-color: #fff;
+    border: 1px solid #dcdcde;
+    border-radius: 4px;
+    padding: 10px;
+}
+
+#expoxr-log-content {
+    margin: 0;
+    white-space: pre-wrap;
+    font-family: Consolas, Monaco, monospace;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.expoxr-debug-info {
+    margin-top: 20px;
+}
+
+.expoxr-debug-status-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.expoxr-debug-status-list li {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #e2e4e7;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.expoxr-debug-status-list li:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.expoxr-debug-status-label {
+    font-weight: 500;
+    margin-right: 10px;
+}
+
+.expoxr-debug-status-value {
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.expoxr-debug-status-value.active {
+    background-color: #dff0d8;
+    color: #3c763d;
+}
+
+.expoxr-debug-status-value.inactive {
+    background-color: #f2dede;
+    color: #a94442;
+}
+
+/* Add-ons Status Card Styles */
+.expoxr-addons-list {
+    margin: 15px 0;
+}
+
+.expoxr-addon-item {
+    display: flex;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    transition: all 0.2s ease;
+}
+
+.expoxr-addon-item:last-child {
+    margin-bottom: 0;
+}
+
+.expoxr-addon-item.addon-active {
+    background-color: #f0f7f0;
+    border-left: 3px solid #2AACE2;
+}
+
+.expoxr-addon-item.addon-installed {
+    background-color: #faf5e8;
+    border-left: 3px solid #ffb900;
+}
+
+.expoxr-addon-item.addon-not-installed {
+    background-color: #f9f9f9;
+    border-left: 3px solid #dcdcde;
+}
+
+.expoxr-addon-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: #fff;
+    border-radius: 50%;
+    margin-right: 15px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.expoxr-addon-icon .dashicons {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: #2AACE2;
+}
+
+.expoxr-addon-info {
+    flex: 1;
+}
+
+.expoxr-addon-info h3 {
+    margin: 0 0 5px 0;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.expoxr-addon-info p {
+    margin: 0 0 10px 0;
+    color: #646970;
+    font-size: 13px;
+}
+
+.expoxr-addon-status {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.status-indicator {     
+    display: inline-flex;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 3px 8px;    
+}
+
+.status-indicator .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    margin-right: 3px;
+}
+
+.status-indicator.active {
+    background-color: #d1e7dd;
+    color: #0f5132;
+}
+
+.status-indicator.installed {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.status-indicator.not-installed {
+    background-color: #f8d7da;
+    color: #842029;
+}
+
+/* Dashboard Addon Status Badges - Specific styling to avoid conflicts with addons page */
+.addon-status-badge {     
+    display: inline-flex;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 3px;
+}
+
+.addon-status-badge .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    margin-right: 3px;
+}
+
+.addon-status-badge.active {
+    background-color: #d1e7dd;
+    color: #0f5132;
+}
+
+.addon-status-badge.installed {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.addon-status-badge.not-installed {
+    background-color: #f8d7da;
+    color: #842029;
+}
+
+/* License Management Page Styles */
+.expoxr-license-intro {
+    margin-bottom: 30px;
+}
+
+.expoxr-license-intro h2 {
+    margin-bottom: 10px;
+}
+
+.expoxr-license-card {
+    background-color: white;
+    border-radius: 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+    margin-bottom: 30px;
+    overflow: hidden;
+}
+
+.expoxr-license-active {
+    border-top: 4px solid #2AACE2;
+}
+
+.expoxr-license-inactive {
+    border-top: 4px solid #dcdcde;
+}
+
+.expoxr-license-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #0D152C;
+}
+
+.expoxr-license-title {
+    display: flex;
+    align-items: center;
+}
+
+.expoxr-license-title .dashicons {
+    color: #2AACE2;
+    font-size: 24px;
+    margin-right: 10px;
+    width: 24px;
+    height: 24px;
+}
+
+.expoxr-license-title h3 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+}
+
+.expoxr-license-tier {
+    display: block;
+    background-color: #8062AA;
+    color: white;
+    padding: 12px 8px;
+    font-size: 12px;
+    margin-left: 8px;
+}
+
+.expoxr-license-status {
+    display: flex;
+    align-items: center;
+}
+
+.expoxr-status {
+    display: flex;
+    align-items: center;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.expoxr-status.active {
+    background-color: #d1e7dd;
+    color: #0f5132;
+}
+
+.expoxr-status.inactive {
+    background-color: #f8d7da;
+    color: #842029;
+}
+
+.expoxr-status .dashicons {
+    margin-right: 5px;
+}
+
+.expoxr-license-body {
+    padding: 20px;
+}
+
+.expoxr-license-description {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #3c434a;
+}
+
+.expoxr-license-form {
+    display: flex;
+    margin-bottom: 20px;
+    flex-direction: row;
+    gap: 20px;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: space-between;
+    align-items: stretch;
+}
+
+.expoxr-license-key {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #dcdcde;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+.expoxr-license-actions {
+    display: flex;
+}
+
+.expoxr-license-message {
+    margin-bottom: 20px;
+    min-height: 24px;
+}
+
+.expoxr-license-error {
+    background-color: #f8d7da;
+    color: #842029;
+    padding: 10px 15px;
+    border-radius: 4px;
+    border-left: 4px solid #dc3545;
+}
+
+.expoxr-license-success {
+    background-color: #d1e7dd;
+    color: #0f5132;
+    padding: 10px 15px;
+    border-radius: 4px;
+    border-left: 4px solid #2AACE2;
+}
+
+.expoxr-license-footer {
+    padding: 15px 20px;
+    background-color: #f8f9fa;
+    border-top: 1px solid #0D152C;
+    text-align: center;
+}
+
+.expoxr-license-success-message {
+    margin: 0;
+    color: #0f5132;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.expoxr-license-success-message .dashicons {
+    margin-right: 5px;
+    color: #2AACE2;
+}
+
+/* Add-on Selection Styles */
+.expoxr-addon-selection {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #0D152C;
+}
+
+.expoxr-addon-selection h4 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.expoxr-addon-limit {
+    font-size: 12px;
+    font-weight: normal;
+    color: #666;
+    margin-left: 10px;
+}
+
+.expoxr-addon-selection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.expoxr-addon-option {
+    border: 1px solid #dcdcde;
+    border-radius: 5px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.expoxr-addon-option.selected {
+    border-color: #2AACE2;
+    background-color: #f0f7f0;
+}
+
+.expoxr-addon-option label {
+    display: flex;
+    width: 100%;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+}
+
+.expoxr-addon-option input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+}
+
+.expoxr-addon-option-content {
+    display: flex;
+    padding: 15px;
+    width: 100%;
+}
+
+.expoxr-addon-option-icon {
+    margin-right: 15px;
+}
+
+.expoxr-addon-option-icon .dashicons {
+    color: #2AACE2;
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+}
+
+.expoxr-addon-option-info {
+    flex: 1;
+}
+
+.expoxr-addon-option-info h5 {
+    margin: 0 0 5px 0;
+    font-size: 14px;
+}
+
+.expoxr-addon-option-info p {
+    margin: 0;
+    font-size: 12px;
+    color: #646970;
+}
+
+.expoxr-addon-option.selected .expoxr-addon-option-icon .dashicons {
+    color: #2AACE2;
+}
+
+/* Add-on Selection Actions */
+.expoxr-addon-selection-actions {
+    display: flex;
+    align-items: center;
+}
+
+.expoxr-addon-selection-message {
+    margin-left: 15px;
+    flex: 1;
+}
+
+/* Included Add-ons Display */
+.expoxr-included-addons {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #0D152C;
+}
+
+.expoxr-included-addons h4 {
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.expoxr-ultra-message {
+    background-color: #d1e7dd;
+    color: #0f5132;
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.expoxr-ultra-message .dashicons {
+    margin-right: 10px;
+    color: #2AACE2;
+}
+
+.expoxr-addons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.expoxr-addon-item {
+    display: flex;
+    padding: 15px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    align-items: center;
+}
+
+.expoxr-addon-item.addon-included {
+    background-color: #f0f7f0;
+    border-left: 3px solid #2AACE2;
+}
+
+.expoxr-addon-item.addon-not-included {
+    background-color: #f9f9f9;
+    border-left: 3px solid #dcdcde;
+    opacity: 0.7;
+}
+
+/* Premium Pricing Section Styling */
+.expoxr-premium-pricing {
+    margin: 30px 0 20px 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 6px;
+    color: white;
+    text-align: center;
+}
+
+.expoxr-pricing-tiers {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.expoxr-pricing-tier {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 20px;
+    min-width: 150px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.expoxr-pricing-tier.featured {
+    position: relative;
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    transform: scale(1.05);
+}
+
+.expoxr-pricing-tier:hover {
+    transform: translateY(-3px) scale(1.02);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.expoxr-pricing-tier.featured:hover {
+    transform: translateY(-3px) scale(1.07);
+}
+
+.expoxr-pricing-tier h4 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.expoxr-price {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #fbbf24;
+}
+
+.expoxr-pricing-tier p {
+    margin: 0;
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+/* Responsive Design for Premium Features */
+@media screen and (max-width: 782px) {
+    .expoxr-premium-features {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .expoxr-pricing-tiers {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .expoxr-pricing-tier {
+        width: 100%;
+        max-width: 200px;
+        position: relative;
+    }
+    
+    .expoxr-pricing-tier.featured {
+        transform: none;
+        margin: 10px 0;
+    }
+    
+    .expoxr-popular-badge {
+        position: static;
+        transform: none;
+        display: inline-block;
+        margin-bottom: 10px;
+    }
+    
+    .expoxr-addon-note {
+        text-align: left;
+    }
+}
+
+/* ExpoXR Admin Footer */
+.expoxr-admin-footer {
+    margin: 20px 20px 0 0 !important;
+    padding: 30px 20px !important;
+    background: linear-gradient(135deg, #F8FAFC 0%, #E5E7F2 100%) !important;
+    border-radius: 0 !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.expoxr-admin-footer::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 2px !important;
+    background: linear-gradient(270deg, #4555A5, #13BCD4, #F36E24, #EF4681, #4555A5) !important;
+    background-size: 400% 400% !important;
+    animation: gradientMove 20s ease infinite !important;
+}
+
+.expoxr-footer-content {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+.expoxr-footer-branding {
+    display: flex !important;
+    align-items: center !important;
+    gap: 25px !important;
+}
+
+.expoxr-footer-logo {
+    height: 40px !important;
+    width: auto !important;
+}
+
+.expoxr-footer-text {
+    margin: 0 !important;
+    color: #0D152C !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    padding-left: 26px !important;
+}
+
+.expoxr-footer-text strong {
+    color: #2AACE2 !important;
+    font-weight: 600 !important;
+}
+
+.expoxr-footer-links {
+    display: flex !important;
+    gap: 20px !important;
+}
+
+.expoxr-footer-links a {
+    color: #2AACE2 !important;
+    text-decoration: none !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    transition: color 0.3s ease !important;
+}
+
+.expoxr-footer-links a:hover {
+    color: #1e40af !important;
+    text-decoration: underline !important;
+}
+
+/* Responsive footer */
+@media screen and (max-width: 782px) {
+    .expoxr-footer-content {
+        flex-direction: column !important;
+        text-align: center !important;
+        gap: 20px !important;
+    }
+    
+    .expoxr-footer-branding {
+        flex-direction: column !important;
+        gap: 10px !important;
+    }
+    
+    .expoxr-footer-links {
+        justify-content: center !important;
+    }
+}
+
+
+/* Hide the default WordPress admin footer since we have our own ExpoXR footer */
+#wpfooter {
+    display: none !important;
+}
+
+/* Premium Features Card Styling */
+.expoxr-premium-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.expoxr-premium-feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 0;
+    border-left: 4px solid #2AACE2;
+    transition: all 0.3s ease;
+}
+
+.expoxr-premium-feature:hover {
+    background: #e3f2fd;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(42, 172, 226, 0.15);
+}
+
+.expoxr-premium-icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #2AACE2;
+    border-radius: 50%;
+    color: white;
+}
+
+.expoxr-premium-icon .dashicons {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+.expoxr-premium-info h4 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1e3a8a;
+}
+
+.expoxr-premium-info p {
+    margin: 0;
+    color: #64748b;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.expoxr-addon-count {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fbbf24;
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: bold;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.expoxr-pricing-tier.featured .expoxr-addon-count {
+    background: rgba(255, 255, 255, 0.3);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.expoxr-popular-badge {
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fbbf24;
+    color: #1f2937;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.expoxr-pricing-tier.featured {
+    position: relative;
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    transform: scale(1.05);
+}
+
+.expoxr-addon-note {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.expoxr-addon-note p {
+    margin: 0;
+    font-size: 13px;
+    opacity: 0.9;
+    line-height: 1.5;
+}
+.expoxr-notifications-wrapper {
+    margin: 0 0 20px 0;
+    position: relative;
+    z-index: 1000;
+}
+
+.expoxr-notifications-wrapper .notice {
+    margin: 5px 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.expoxr-notifications-wrapper .notice-success {
+    border-left-color: #00a32a;
+}
+
+.expoxr-notifications-wrapper .notice-error {
+    border-left-color: #d63638;
+}
+
+.expoxr-notifications-wrapper .notice-warning {
+    border-left-color: #dba617;
+}
+
+.expoxr-notifications-wrapper .notice-info {
+    border-left-color: #72aee6;
+}
+
+/* Style the notice dismiss button */
+.expoxr-notifications-wrapper .notice-dismiss {
+    padding: 9px;
+    text-decoration: none;
+}
+
+.expoxr-notifications-wrapper .notice-dismiss:before {
+    content: '\f153';
+    font-family: dashicons;
+    font-size: 16px;
+    color: #787c82;
+}
+
+.expoxr-notifications-wrapper .notice-dismiss:hover:before {
+    color: #d63638;
+}
+
+/* Ensure WordPress notices moved here display properly */
+.expoxr-notifications-wrapper .notice.is-dismissible {
+    position: relative;
+    padding-right: 38px;
+}
+
+/* Make sure moved notices have proper spacing and appearance */
+.expoxr-notifications-wrapper .notice p {
+    margin: 0.5em 0;
+    padding: 2px;
+}
+
+/* Special styling for common plugin notices that are moved here */
+.expoxr-notifications-wrapper .notice .dashicons {
+    margin-right: 8px;
+    vertical-align: middle;
+}

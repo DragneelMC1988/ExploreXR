@@ -1,0 +1,752 @@
+/* ExploreXR License Page Styles
+ * Styles for license management interface
+ */
+
+.expoxr-license-page {
+    margin: 20px 20px 0 0;
+}
+
+.expoxr-license-page h1 {
+    display: flex;
+    align-items: center;
+    font-size: 23px;
+    font-weight: 400;
+    margin: 0 0 20px 0;
+    padding-bottom: 15px;
+}
+
+.expoxr-license-page h1 .dashicons {
+    margin-right: 10px;
+    color: #2AACE2;
+}
+
+.expoxr-license-section,
+.expoxr-upgrade-section,
+.expoxr-addons-section,
+.expoxr-help-section {
+    background: white;
+    border-radius: 0px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);
+    margin-bottom: 20px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+    position: relative;
+}
+.expoxr-license-section-content {
+    padding: 20px;
+}
+
+.expoxr-license-section:hover,
+.expoxr-upgrade-section:hover,
+.expoxr-addons-section:hover,
+.expoxr-help-section:hover {
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.expoxr-license-section h2,
+.expoxr-upgrade-section h2,
+.expoxr-addons-section h2,
+.expoxr-help-section h2 {
+    padding: 12px 20px;
+    margin: 0;
+    background-color: #E4E9EC;
+    border-bottom: 1px solid #0D152C;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.expoxr-license-section h2 .dashicons,
+.expoxr-upgrade-section h2 .dashicons,
+.expoxr-addons-section h2 .dashicons,
+.expoxr-help-section h2 .dashicons {
+    margin-right: 8px;
+    color: #8062AA;
+}
+
+/* License Info Styles */
+.expoxr-license-info {
+    padding: 20px;
+}
+
+.expoxr-license-info.active {
+    border-left: 4px solid #2AACE2;
+}
+
+.expoxr-license-info.inactive {
+    border-left: 4px solid #8062AA;
+}
+
+.expoxr-license-tier {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.expoxr-license-tier .dashicons {
+    margin-right: 10px;
+    font-size: 24px;
+}
+
+.expoxr-license-tier .dashicons-yes-alt {
+    color: #ecf7ed;
+}
+
+.expoxr-license-tier .dashicons-warning {
+    color: #8062AA;
+}
+
+.expoxr-license-tier .tier-name {
+    font-size: 18px;
+    font-weight: 600;
+    margin-right: 10px;
+}
+
+.expoxr-license-tier .license-active,
+.expoxr-license-tier .license-inactive {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.expoxr-license-tier .license-active {
+    background-color: #ecf7ed;
+    color: #0f5132;
+}
+
+.expoxr-license-tier .license-inactive {
+    background-color: #fbeaea;
+    color: #842029;
+}
+
+.expoxr-license-details {
+    margin-bottom: 20px;
+}
+
+.expoxr-license-details p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+.expoxr-license-form.deactivate {
+    text-align: right;
+}
+
+.expoxr-license-input-group {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+    margin-bottom: 15px;
+}
+
+.expoxr-license-input-group input[type="text"] {
+    flex: 1;
+    min-width: 0;
+}
+
+.expoxr-license-input-group .button {
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.expoxr-license-input-group .expoxr-validate-license {
+    background-color: #0073aa;
+    border-color: #0073aa;
+    color: white;
+}
+
+.expoxr-license-input-group .expoxr-validate-license:hover {
+    background-color: #005a87;
+    border-color: #005a87;
+}
+
+.expoxr-license-input-group .expoxr-validate-license:disabled {
+    background-color: #ccc;
+    border-color: #ccc;
+    color: #666;
+}
+
+.expoxr-license-error {
+    color: #8062AA;
+    font-size: 13px;
+    margin: 5px 0;
+}
+
+/* License Validation Result Styles */
+.expoxr-license-validation-result {
+    margin: 15px 0;
+}
+
+/* Force visibility when there's content */
+.expoxr-license-validation-result:not(:empty) {
+    display: block !important;
+    visibility: visible !important;
+}
+
+.expoxr-license-validation-result .notice {
+    margin: 0;
+    border-radius: 4px;
+    padding: 12px 16px;
+    display: block !important;
+}
+
+.expoxr-license-validation-result .notice.inline {
+    display: block !important;
+    margin: 0;
+}
+
+.expoxr-license-validation-result .notice-success {
+    border-left: 4px solid #2AACE2;
+    background-color: #f0f9ff;
+    color: #1e3a8a;
+}
+
+.expoxr-license-validation-result .notice-error {
+    border-left: 4px solid #dc3545;
+    background-color: #fff5f5;
+    color: #dc3545;
+}
+
+.expoxr-license-validation-result .notice-warning {
+    border-left: 4px solid #ffc107;
+    background-color: #fffbf0;
+    color: #856404;
+}
+
+.expoxr-license-validation-result .notice-info {
+    border-left: 4px solid #0dcaf0;
+    background-color: #e7f3ff;
+    color: #055160;
+}
+
+.expoxr-license-validation-result ul {
+    margin: 8px 0 0 0;
+    padding-left: 20px;
+}
+
+.expoxr-license-validation-result li {
+    margin-bottom: 4px;
+}
+
+.expoxr-license-validation-result em {
+    color: #666;
+    font-size: 0.9em;
+}
+
+/* License Tiers Grid */
+.expoxr-tiers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.expoxr-tier-card {
+    border: 1px solid #e2e4e7;
+    border-radius: 0px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.expoxr-tier-card .button{
+    display: block;
+   margin: 12px;
+}
+
+.expoxr-tier-card:hover {
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.expoxr-tier-card.current-tier {    
+    box-shadow: 0 0 0 1px #8062AA;
+}
+
+.tier-header {
+    padding: 15px;
+    background-color: #E4E9EC;
+    border-bottom: 1px solid #0D152C;
+    position: relative;
+}
+
+.tier-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.current-tier-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    background-color: #8062AA;
+    color: white;
+}
+
+.tier-features {
+    padding: 15px;
+    flex: 1;
+}
+
+.tier-features p {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+}
+
+/* Tier button styles */
+.tier-upgrade-btn,
+.tier-downgrade-btn,
+.tier-change-btn {
+    display: block;
+    text-align: center;
+    padding: 10px;
+    border-top: 1px solid #0D152C;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+.tier-upgrade-btn {
+    background-color: #2AACE2;
+    border-color: #2AACE2;
+    color: white;
+}
+
+.tier-upgrade-btn:hover {
+    background-color: #1e8bb8;
+    border-color: #1e8bb8;
+    color: white;
+}
+
+.tier-downgrade-btn {
+    background-color: #8062AA;
+    border-color: #8062AA;
+    color: white;
+}
+
+.tier-downgrade-btn:hover {
+    background-color: #6a4f91;
+    border-color: #6a4f91;
+    color: white;
+}
+
+.tier-change-btn {
+    background-color: #E4E9EC;
+    font-weight: normal;
+}
+
+.tier-change-btn:hover {
+    background-color: #2AACE2;
+    color: white;
+}
+
+/* Add-ons Section */
+.addon-limit {
+    font-size: 13px;
+    font-weight: normal;
+    color: #646970;
+    margin-left: 10px;
+}
+
+
+
+.expoxr-addons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.expoxr-addon-card {
+    border: 1px solid #e2e4e7;
+    border-radius: 0px;
+    background: white;
+    overflow: hidden;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    min-height: 200px;
+}
+
+.expoxr-addon-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.expoxr-addon-card.selected {
+    box-shadow: 0 0 0 2px #2AACE2;
+}
+
+.expoxr-addon-card.disabled {
+    opacity: 0.6;
+    background: #f9f9f9;
+}
+
+.expoxr-addon-card.activated {
+    border-color: #2AACE2;
+    background: linear-gradient(135deg, #f8fcff 0%, #ffffff 100%);
+}
+
+.addon-status-indicator {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 2;
+}
+
+.addon-status-indicator .dashicons {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: #2AACE2;
+}
+
+.addon-checkbox {
+    margin-right: 15px;
+    margin-top: 3px;
+}
+
+.addon-info {
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.addon-info h3 {
+    margin: 0 0 12px 0;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    padding-right: 30px; /* Space for status indicator */
+}
+
+.addon-info h3 .dashicons {
+    margin-right: 10px;
+    color: #2AACE2;
+    font-size: 18px;
+}
+
+.addon-info p {
+    margin: 0 0 15px 0;
+    font-size: 14px;
+    color: #646970;
+    line-height: 1.5;
+    flex: 1;
+}
+
+.addon-actions {
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #E4E9EC;
+    border-top: 1px solid #0D152C;
+}
+
+/* Quick License Keys Section */
+.expoxr-test-keys-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 15px;
+    padding: 20px;
+}
+
+.expoxr-test-key-card {
+    border: 1px solid #e2e4e7;
+    border-radius: 6px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.expoxr-test-key-card:hover {
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.test-key-header {
+    padding: 10px 15px;
+    background-color: #f0f7ff;
+    border-bottom: 1px solid #e2e4e7;
+}
+
+.test-key-header h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #2271b1;
+}
+
+.test-key-content {
+    padding: 15px;
+    flex: 1;
+}
+
+.test-key-content code {
+    display: block;
+    background: #f6f7f7;
+    padding: 8px;
+    margin-bottom: 10px;
+    text-align: center;
+    font-family: monospace;
+    font-size: 13px;
+    border-radius: 4px;
+    border: 1px dashed #ddd;
+    word-break: break-all;
+}
+
+.test-key-content p {
+    margin: 5px 0 0;
+    font-size: 12px;
+    text-align: center;
+    color: #646970;
+}
+
+.expoxr-test-key-card .button {
+    margin: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    display: block;
+    text-align: center;
+}
+
+.expiry-note {
+    padding: 0 20px 15px;
+    text-align: center;
+    color: #646970;
+    margin: 0;
+}
+
+/* Help Section Styles - inherits from general section styles */
+
+/* Moving Gradient Banner for Help Section */
+.expoxr-help-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(270deg, #4555A5, #13BCD4, #F36E24, #EF4681, #4555A5);
+    background-size: 400% 400%;
+    animation: gradientMove 8s ease infinite;
+    z-index: 1;
+}
+
+@keyframes gradientMove {
+    0% {
+        background-position: 0% 50%;
+    }
+    25% {
+        background-position: 100% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    75% {
+        background-position: 0% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.expoxr-help-section h2 {
+    padding: 12px 20px;
+    margin: 0;
+    background-color: #E4E9EC;
+    border-bottom: 1px solid #0D152C;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    z-index: 2;
+}
+
+.help-grid {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;    
+    gap: 20px;
+    padding: 20px;
+}
+
+.help-item h3 {
+    margin: 0 0 10px 0;
+    color: #1d2327;
+    font-size: 16px;
+}
+
+.help-item p {
+    margin: 0;
+    color: #646970;
+    line-height: 1.6;
+}
+
+.help-item a {
+    color: #0073aa;
+    text-decoration: none;
+}
+
+.help-item a:hover {
+    text-decoration: underline;
+}
+
+/* License Format Info */
+.license-format-info {
+    margin-top: 10px !important;
+    margin-bottom: 0 !important;
+    padding: 10px;
+    background: #f0f6fc;
+    border: 1px solid #c3dbf0;
+    border-radius: 4px;
+}
+
+.license-format-info code {
+    background: #ffffff;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 12px;
+    border: 1px solid #ddd;
+}
+
+/* Button styles are defined in admin-styles.css and inherited globally */
+
+/* ExpoXR specific button styles */
+.expoxr-button-primary {
+    background: linear-gradient(135deg, #2AACE2 0%, #8062AA 100%);
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+.expoxr-button-primary:hover {
+    background: linear-gradient(135deg, #1e8bb8 0%, #6a4f91 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    color: white;
+}
+
+.expoxr-button-gradient {
+    background: linear-gradient(270deg, #4555A5, #13BCD4, #F36E24, #EF4681);
+    background-size: 400% 400%;
+    animation: gradientMove 8s ease infinite;
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 0;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+/* Content Areas - Match Standard Card Structure */
+.expoxr-upgrade-section .expoxr-tiers-grid,
+.expoxr-addons-section .expoxr-addons-grid,
+.expoxr-help-section .help-grid {
+    padding: 20px;
+}
+
+/* Addon Actions Footer - Match Card Footer Style */
+.addon-actions {
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #E4E9EC;
+    border-top: 1px solid #0D152C;
+    margin-top: auto;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .help-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .expoxr-license-page {
+        margin-right: 10px;
+    }
+}
+
+@media screen and (max-width: 782px) {
+    .expoxr-license-input-group {
+        flex-direction: column;
+    }
+    
+    .addon-actions {
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
+    }
+    
+    .addon-actions .button {
+        text-align: center;
+    }
+}
+
+.addon-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    margin-top: auto;
+    padding-top: 10px;
+    border-top: 1px solid #f0f0f1;
+}
+
+.status-text {
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.addon-version {
+    color: #646970;
+    font-size: 12px;
+}
+
+/* Additional Addon Limit Text */
+.addon-limit {
+    color: #646970;
+    font-size: 14px;
+    font-weight: 500;
+    background: #f0f0f1;
+    padding: 2px 8px;
+    border-radius: 12px;
+    margin-left: 10px;
+}
+
+.addon-note {
+    padding: 20px;
+    margin: 0;
+    color: #646970;
+    font-size: 14px;
+    line-height: 1.5;
+}

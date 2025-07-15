@@ -1,0 +1,30 @@
+/**
+ * ExpoXR AR Integration CSS
+ * 
+ * Styling for AR addon notices and metabox placeholders
+ */
+
+/* AR Metabox Placeholder Styles */
+.expoxr-ar-metabox-placeholder {
+    padding: 15px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.expoxr-addon-features ul {
+    list-style: disc;
+    margin-left: 20px;
+}
+
+.expoxr-ar-cta {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.expoxr-ar-data-info {
+    background: #f0f6fc;
+    padding: 10px;
+    border-left: 4px solid #72aee6;
+    margin-top: 15px;
+}

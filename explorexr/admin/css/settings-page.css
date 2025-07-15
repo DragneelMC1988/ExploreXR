@@ -1,0 +1,74 @@
+/**
+ * ExploreXR Settings Page Styles
+ */
+
+/* Global settings styles */
+.settings-icon {
+    margin-right: 5px;
+}
+
+/* Debug log section */
+#expoxr-debug-log-viewer {
+    display: none;
+}
+
+/* About section */
+.expoxr-about-section {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.expoxr-logo-container {
+    margin-right: 20px;
+}
+
+.expoxr-logo-container .expoxr-logo{
+    height: 120px;
+}
+
+.expoxr-logo {
+    height: auto;
+}
+
+.expoxr-version-info {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.expoxr-description {
+    margin-top: 0;
+}
+
+/* System info copy button */
+.copy-system-info-button {
+    margin-bottom: 15px;
+}
+
+/* Addon status styles */
+.addon-status {
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.addon-status.active-compatible {
+    background: #2AACE2;
+    color: white;
+}
+
+.addon-status.active-incompatible {
+    background: #8062AA;
+    color: white;
+}
+
+.addon-status.inactive {
+    background: #ddd;
+    color: #666;
+}
+
+.expoxr-addon-status table {
+    margin-top: 10px;
+}

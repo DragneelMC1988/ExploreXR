@@ -1,0 +1,67 @@
+/**
+ * ExploreXR Elementor Editor Styles
+ */
+
+/* Widget Preview Styles */
+.expoxr-elementor-preview {
+    background-color: #f7f7f7;
+    border: 1px dashed #ccc;
+    padding: 30px;
+    text-align: center;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.expoxr-preview-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.expoxr-preview-placeholder i {
+    font-size: 50px;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+.expoxr-preview-text {
+    color: #555;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+/* Notice and Error Styles */
+.expoxr-elementor-notice,
+.expoxr-elementor-error {
+    padding: 15px;
+    text-align: center;
+    border-radius: 4px;
+    margin: 15px 0;
+}
+
+.expoxr-elementor-notice {
+    background-color: #e7f6ff;
+    border: 1px solid #b2e0ff;
+    color: #0073aa;
+}
+
+.expoxr-elementor-error {
+    background-color: #ffeaea;
+    border: 1px solid #ffb8b8;
+    color: #d63638;
+}
+
+/* Custom ExploreXR icon for widget */
+.elementor-element .icon .expoxr-icon:before {
+    content: '\e800';
+    font-family: 'elementor-icons';
+    font-style: normal;
+}
+
+/* Style for widget in panel */
+.elementor-panel .elementor-element-wrapper .elementor-element.elementor-element-expoxr_3d_model .icon i:before {
+    color: #0073aa;
+}

@@ -1,0 +1,19 @@
+.qodo
+.vscode/
+sftp.json
+expoxr/models/
+/index.php
+docs/quick_commands.md
+# Ignore all model file types regardless of location
+*.glb
+*.gltf
+*.usdz
+docs/git-commands.md
+to-do.md
+plugin-check/
+wp-optimize/
+woocommerce/
+akismet/
+/git-commands.md
+/hello.php
+/quick_commands.md
