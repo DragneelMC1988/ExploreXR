@@ -30,7 +30,30 @@ function expoxr_save_all_post_meta($post_id) {
         return $post_id;
     }
     
-    // Check if this is an edit mode submission
+    // Security check: verify nonce first before processing any POST data
+    if (isset($_POST['expoxr_nonce'])) {
+        $nonce_verified = wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['expoxr_nonce'])), 'expoxr_save_model');
+        if (!$nonce_verified) {
+            if (get_option('expoxr_debug_mode', false)) {
+                error_log('ExpoXR: Security check failed for post ' . $post_id . '. Nonce verification failed.');
+            }
+            
+            // Create a detailed debug log for nonce failures
+            $nonce_debug = array(
+                'post_id' => $post_id,
+                'nonce_value' => sanitize_text_field(wp_unslash($_POST['expoxr_nonce'])),
+                'nonce_action' => 'expoxr_save_model',
+                'verification_result' => $nonce_verified,
+                'user_id' => get_current_user_id(),
+                'post_data' => array_keys($_POST)
+            );
+            expoxr_create_debug_log($nonce_debug, 'nonce-failure-' . $post_id);
+            
+            return false;
+        }
+    }
+    
+    // Check if this is an edit mode submission (after nonce verification)
     $edit_mode = isset($_POST['expoxr_edit_mode']) ? true : false;
     
     // Enable debug logging regardless of mode to help troubleshoot
@@ -44,30 +67,9 @@ function expoxr_save_all_post_meta($post_id) {
         
         // Save diagnostic data if provided
         if (isset($_POST['expoxr_edit_diagnostic'])) {
-            update_post_meta($post_id, '_expoxr_last_edit_diagnostic', $_POST['expoxr_edit_diagnostic']);
+            update_post_meta($post_id, '_expoxr_last_edit_diagnostic', sanitize_text_field(wp_unslash($_POST['expoxr_edit_diagnostic'])));
         }
     }
-      // Security check: verify nonce if it exists
-    // Note: We do this after initial logging so we can debug nonce failures better
-    if (isset($_POST['expoxr_nonce'])) {
-        $nonce_verified = wp_verify_nonce($_POST['expoxr_nonce'], 'expoxr_save_model');
-        if (!$nonce_verified) {
-            if (get_option('expoxr_debug_mode', false)) {
-                error_log('ExpoXR: Security check failed for post ' . $post_id . '. Nonce verification failed.');
-            }
-            
-            // Create a detailed debug log for nonce failures
-            $nonce_debug = array(
-                'post_id' => $post_id,
-                'nonce_value' => $_POST['expoxr_nonce'],
-                'nonce_action' => 'expoxr_save_model',
-                'verification_result' => $nonce_verified,
-                'user_id' => get_current_user_id(),
-                'post_data' => array_keys($_POST)
-            );
-            expoxr_create_debug_log($nonce_debug, 'nonce-failure-' . $post_id);
-            
-            return false;
         }
     } else if ($edit_mode) {
         // Enforce nonce requirement in edit mode for security
@@ -108,20 +110,20 @@ function expoxr_save_all_post_meta($post_id) {
     }
       // Basic fields
     if (array_key_exists('expoxr_model_file', $_POST)) {
-        update_post_meta($post_id, '_expoxr_model_file', sanitize_text_field($_POST['expoxr_model_file']));
+        update_post_meta($post_id, '_expoxr_model_file', sanitize_text_field(wp_unslash($_POST['expoxr_model_file'])));
         if ($edit_mode) {
             if (get_option('expoxr_debug_mode', false)) {
-                error_log('ExpoXR: Updated model file: ' . $_POST['expoxr_model_file']);
+                error_log('ExpoXR: Updated model file: ' . sanitize_text_field(wp_unslash($_POST['expoxr_model_file'])));
             }
         }
     }
     
     if (array_key_exists('expoxr_model_name', $_POST)) {
-        update_post_meta($post_id, '_expoxr_model_name', sanitize_text_field($_POST['expoxr_model_name']));
+        update_post_meta($post_id, '_expoxr_model_name', sanitize_text_field(wp_unslash($_POST['expoxr_model_name'])));
     }
     
     if (array_key_exists('expoxr_model_alt_text', $_POST)) {
-        update_post_meta($post_id, '_expoxr_model_alt_text', sanitize_text_field($_POST['expoxr_model_alt_text']));
+        update_post_meta($post_id, '_expoxr_model_alt_text', sanitize_text_field(wp_unslash($_POST['expoxr_model_alt_text'])));
     }
     
     // Handle new model file upload
@@ -230,31 +232,31 @@ function expoxr_save_all_post_meta($post_id) {
  */
 function expoxr_save_size_settings($post_id) {
     if (array_key_exists('viewer_size', $_POST)) {
-        update_post_meta($post_id, '_expoxr_viewer_size', sanitize_text_field($_POST['viewer_size']));
+        update_post_meta($post_id, '_expoxr_viewer_size', sanitize_text_field(wp_unslash($_POST['viewer_size'])));
     }
     
     if (array_key_exists('viewer_width', $_POST)) {
-        update_post_meta($post_id, '_expoxr_viewer_width', sanitize_text_field($_POST['viewer_width']));
+        update_post_meta($post_id, '_expoxr_viewer_width', sanitize_text_field(wp_unslash($_POST['viewer_width'])));
     }
     
     if (array_key_exists('viewer_height', $_POST)) {
-        update_post_meta($post_id, '_expoxr_viewer_height', sanitize_text_field($_POST['viewer_height']));
+        update_post_meta($post_id, '_expoxr_viewer_height', sanitize_text_field(wp_unslash($_POST['viewer_height'])));
     }
     
     if (array_key_exists('tablet_viewer_width', $_POST)) {
-        update_post_meta($post_id, '_expoxr_tablet_viewer_width', sanitize_text_field($_POST['tablet_viewer_width']));
+        update_post_meta($post_id, '_expoxr_tablet_viewer_width', sanitize_text_field(wp_unslash($_POST['tablet_viewer_width'])));
     }
     
     if (array_key_exists('tablet_viewer_height', $_POST)) {
-        update_post_meta($post_id, '_expoxr_tablet_viewer_height', sanitize_text_field($_POST['tablet_viewer_height']));
+        update_post_meta($post_id, '_expoxr_tablet_viewer_height', sanitize_text_field(wp_unslash($_POST['tablet_viewer_height'])));
     }
     
     if (array_key_exists('mobile_viewer_width', $_POST)) {
-        update_post_meta($post_id, '_expoxr_mobile_viewer_width', sanitize_text_field($_POST['mobile_viewer_width']));
+        update_post_meta($post_id, '_expoxr_mobile_viewer_width', sanitize_text_field(wp_unslash($_POST['mobile_viewer_width'])));
     }
     
     if (array_key_exists('mobile_viewer_height', $_POST)) {
-        update_post_meta($post_id, '_expoxr_mobile_viewer_height', sanitize_text_field($_POST['mobile_viewer_height']));
+        update_post_meta($post_id, '_expoxr_mobile_viewer_height', sanitize_text_field(wp_unslash($_POST['mobile_viewer_height'])));
     }
 }
 
@@ -280,14 +282,14 @@ function expoxr_save_poster_settings($post_id) {
     }
     
     // Handle removing poster if checkbox is checked
-    if (isset($_POST['remove_poster']) && $_POST['remove_poster'] == '1') {
+    if (isset($_POST['remove_poster']) && sanitize_text_field(wp_unslash($_POST['remove_poster'])) == '1') {
         delete_post_meta($post_id, '_expoxr_model_poster');
         delete_post_meta($post_id, '_expoxr_model_poster_id');
     }
     
     // Handle poster from media library
     if (isset($_POST['model_poster_id']) && !empty($_POST['model_poster_id'])) {
-        $poster_id = sanitize_text_field($_POST['model_poster_id']);
+        $poster_id = sanitize_text_field(wp_unslash($_POST['model_poster_id']));
         $poster_url = wp_get_attachment_url($poster_id);
         update_post_meta($post_id, '_expoxr_model_poster', $poster_url);
         update_post_meta($post_id, '_expoxr_model_poster_id', $poster_id);

@@ -98,7 +98,7 @@ function expoxr_cleanup_orphaned_models() {
  */
 function expoxr_ajax_cleanup_models() {
     // Check nonce
-    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'expoxr_admin_nonce')) {
+    if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'expoxr_admin_nonce')) {
         wp_send_json_error(['message' => 'Security check failed']);
         return;
     }
@@ -138,23 +138,22 @@ function expoxr_orphaned_models_notice() {
         return;
     }
     
-    // Check if we have orphaned models using direct DB query for better performance
-    $orphaned_count = 0;
+    // Check if we have orphaned models using WP_Query for WordPress standards compliance
+    $orphaned_query = new WP_Query([
+        'post_type' => 'expoxr_model',
+        'post_status' => 'publish',
+        'posts_per_page' => 50,
+        'meta_query' => [
+            [
+                'key' => '_expoxr_file_missing',
+                'value' => '1'
+            ]
+        ],
+        'fields' => 'ids'
+    ]);
     
-    // Use direct DB query instead of meta_query for better performance
-    global $wpdb;
-    $orphaned_count = $wpdb->get_var($wpdb->prepare("
-        SELECT COUNT(DISTINCT p.ID) 
-        FROM {$wpdb->posts} p 
-        INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id 
-        WHERE p.post_type = %s 
-        AND p.post_status = 'publish' 
-        AND pm.meta_key = '_expoxr_file_missing'
-        AND pm.meta_value = '1'
-        LIMIT 50
-    ", 'expoxr_model'));
-    
-    $orphaned_count = (int) $orphaned_count;
+    $orphaned_count = $orphaned_query->found_posts;
+    wp_reset_postdata();
     
     if ($orphaned_count > 0) {
         ?>
@@ -198,26 +197,27 @@ function expoxr_register_orphaned_models_widget() {
  * Dashboard widget callback
  */
 function expoxr_orphaned_models_widget_callback() {
-    // Use direct DB query for better performance instead of meta_query
-    global $wpdb;
-    
+    // Use WP_Query for WordPress standards compliance
     // Cache the results for 5 minutes to improve dashboard performance
     $cache_key = 'expoxr_orphaned_models_widget';
     $cached_data = wp_cache_get($cache_key, 'explorexr');
     
     if (false === $cached_data) {
-        $orphaned_count = $wpdb->get_var($wpdb->prepare("
-            SELECT COUNT(DISTINCT p.ID) 
-            FROM {$wpdb->posts} p 
-            INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id 
-            WHERE p.post_type = %s 
-            AND p.post_status = 'publish' 
-            AND pm.meta_key = '_expoxr_file_missing'
-            AND pm.meta_value = '1'
-            LIMIT 10
-        ", 'expoxr_model'));
+        $orphaned_query = new WP_Query([
+            'post_type' => 'expoxr_model',
+            'post_status' => 'publish',
+            'posts_per_page' => 10,
+            'meta_query' => [
+                [
+                    'key' => '_expoxr_file_missing',
+                    'value' => '1'
+                ]
+            ],
+            'fields' => 'ids'
+        ]);
         
-        $orphaned_count = (int) $orphaned_count;
+        $orphaned_count = $orphaned_query->found_posts;
+        wp_reset_postdata();
         wp_cache_set($cache_key, $orphaned_count, 'explorexr', 300); // Cache for 5 minutes
     } else {
         $orphaned_count = $cached_data;

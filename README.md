@@ -1,4 +1,4 @@
-# 🌟 ExploreXR - WordPress 3D Model Viewer Plugin
+# 🌟 ExploreXR - 3D Model Viewer Plugin
 
 [![WordPress Compatible](https://img.shields.io/badge/WordPress-5.0%2B-0073aa.svg)](https://wordpress.org/)
 [![PHP Version](https://img.shields.io/badge/PHP-7.4%2B-8892bf.svg)](https://php.net/)

@@ -264,19 +264,23 @@ function expoxr_custom_ui_page() {
         $featured_models_ids = wp_cache_get($cache_key, 'explorexr');
         
         if (false === $featured_models_ids) {
-            // Use direct DB query for better performance instead of meta_query
-            global $wpdb;
-            $featured_models_ids = $wpdb->get_col($wpdb->prepare("
-                SELECT p.ID 
-                FROM {$wpdb->posts} p 
-                INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id 
-                WHERE p.post_type = %s 
-                AND p.post_status = 'publish' 
-                AND pm.meta_key = '_expoxr_model_file'
-                ORDER BY p.post_date DESC 
-                LIMIT 3
-            ", 'expoxr_model'));
+            // Use WP_Query with meta_query for WordPress standards compliance
+            $featured_query = new WP_Query([
+                'post_type' => 'expoxr_model',
+                'post_status' => 'publish',
+                'posts_per_page' => 3,
+                'orderby' => 'date',
+                'order' => 'DESC',
+                'meta_query' => [
+                    [
+                        'key' => '_expoxr_model_file',
+                        'compare' => 'EXISTS'
+                    ]
+                ],
+                'fields' => 'ids'
+            ]);
             
+            $featured_models_ids = $featured_query->posts;
             wp_cache_set($cache_key, $featured_models_ids, 'explorexr', 300); // Cache for 5 minutes
         }
         

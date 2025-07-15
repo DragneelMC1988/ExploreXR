@@ -120,9 +120,18 @@ function expoxr_handle_settings_export() {
         wp_die(esc_html__('You do not have sufficient permissions to export settings.', 'explorexr'));
     }
 
-    // Get all options that start with 'expoxr_'
-    global $wpdb;
-    $options = $wpdb->get_results($wpdb->prepare("SELECT option_name, option_value FROM {$wpdb->options} WHERE option_name LIKE %s", 'expoxr_%'));
+    // Get all options that start with 'expoxr_' using WordPress functions
+    $expoxr_options = wp_load_alloptions();
+    $options = [];
+    
+    foreach ($expoxr_options as $option_name => $option_value) {
+        if (strpos($option_name, 'expoxr_') === 0) {
+            $options[] = (object) [
+                'option_name' => $option_name,
+                'option_value' => $option_value
+            ];
+        }
+    }
 
     // Prepare export data with organized categories
     $export_data = array(

@@ -8,12 +8,17 @@ if (!defined('ABSPATH')) {
 function expoxr_files_page() {
     // Handle file upload
     if (isset($_POST['upload_file_submit']) && isset($_FILES['model_file_upload']) && $_FILES['model_file_upload']['size'] > 0) {
-        $upload_result = expoxr_handle_model_upload($_FILES['model_file_upload']);
-        
-        if ($upload_result) {
-            echo '<div class="notice notice-success"><p>File uploaded successfully! Refresh the page to see it in the list.</p></div>';
+        // Verify nonce for security
+        if (!isset($_POST['_wpnonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_wpnonce'])), 'expoxr_upload_file')) {
+            echo '<div class="notice notice-error"><p>Security check failed. Please try again.</p></div>';
         } else {
-            echo '<div class="notice notice-error"><p>Failed to upload file.</p></div>';
+            $upload_result = expoxr_handle_model_upload($_FILES['model_file_upload']);
+            
+            if ($upload_result) {
+                echo '<div class="notice notice-success"><p>File uploaded successfully! Refresh the page to see it in the list.</p></div>';
+            } else {
+                echo '<div class="notice notice-error"><p>Failed to upload file.</p></div>';
+            }
         }
     }
     
@@ -26,41 +31,49 @@ function expoxr_files_page() {
             
             // Check if the file exists and is within our models directory to prevent path traversal
             if (file_exists($file_path) && strpos(realpath($file_path), realpath(EXPOXR_MODELS_DIR)) === 0) {
-                // Check if the file is being used by any models (optimized query)
-                $is_used = false;
+                // Check if the file is being used by any models using WP_Query
+                $file_url = EXPOXR_MODELS_URL . $file_name;
                 
-                // Use direct DB query for better performance instead of meta_query
-                global $wpdb;
-                $model_count = $wpdb->get_var($wpdb->prepare("
-                    SELECT COUNT(DISTINCT p.ID) 
-                    FROM {$wpdb->posts} p 
-                    INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id 
-                    WHERE p.post_type = %s 
-                    AND p.post_status = 'publish' 
-                    AND pm.meta_key = '_expoxr_model_file'
-                    AND pm.meta_value LIKE %s
-                    LIMIT 1
-                ", 'expoxr_model', '%' . $wpdb->esc_like(EXPOXR_MODELS_URL . $file_name) . '%'));
+                $usage_query = new WP_Query([
+                    'post_type' => 'expoxr_model',
+                    'post_status' => 'publish',
+                    'posts_per_page' => 1,
+                    'meta_query' => [
+                        [
+                            'key' => '_expoxr_model_file',
+                            'value' => $file_url,
+                            'compare' => 'LIKE'
+                        ]
+                    ],
+                    'fields' => 'ids'
+                ]);
                 
-                $is_used = ($model_count > 0);
+                $is_used = $usage_query->have_posts();
+                wp_reset_postdata();
                 
                 // Get model names if the file is used
                 if ($is_used) {
-                    $model_posts = $wpdb->get_results($wpdb->prepare("
-                        SELECT p.ID, p.post_title 
-                        FROM {$wpdb->posts} p 
-                        INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id 
-                        WHERE p.post_type = %s 
-                        AND p.post_status = 'publish' 
-                        AND pm.meta_key = '_expoxr_model_file'
-                        AND pm.meta_value LIKE %s
-                        LIMIT 5
-                    ", 'expoxr_model', '%' . $wpdb->esc_like(EXPOXR_MODELS_URL . $file_name) . '%'));
+                    $model_query = new WP_Query([
+                        'post_type' => 'expoxr_model',
+                        'post_status' => 'publish',
+                        'posts_per_page' => 5,
+                        'meta_query' => [
+                            [
+                                'key' => '_expoxr_model_file',
+                                'value' => $file_url,
+                                'compare' => 'LIKE'
+                            ]
+                        ]
+                    ]);
                     
                     $model_names = [];
-                    foreach ($model_posts as $model_post) {
-                        $model_names[] = '<a href="' . esc_url(get_edit_post_link($model_post->ID)) . '">' . esc_html($model_post->post_title) . '</a>';
+                    if ($model_query->have_posts()) {
+                        while ($model_query->have_posts()) {
+                            $model_query->the_post();
+                            $model_names[] = '<a href="' . esc_url(get_edit_post_link(get_the_ID())) . '">' . esc_html(get_the_title()) . '</a>';
+                        }
                     }
+                    wp_reset_postdata();
                     
                     echo '<div class="notice notice-error"><p>Cannot delete file because it is being used by the following 3D models: ' . esc_html(implode(', ', $model_names)) . '.</p></div>';
                 } else {
@@ -102,6 +115,7 @@ function expoxr_files_page() {
             </div>
             <div class="expoxr-card-content">
                 <form method="post" enctype="multipart/form-data">
+                    <?php wp_nonce_field('expoxr_upload_file'); ?>
                     <div class="expoxr-form-group">
                         <label for="model_file_upload">Select 3D Model File</label>
                         <input name="model_file_upload" type="file" id="model_file_upload" accept=".glb,.gltf,.usdz" required />
