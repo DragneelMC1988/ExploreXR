@@ -23,7 +23,7 @@ function expoxr_emergency_script_fix() {
     
     // Log the emergency fix activation
     if (get_option('expoxr_debug_mode', false)) {
-        error_log('ExpoXR: Emergency script fix activated - all scripts disabled to prevent WordPress core corruption');
+        expoxr_log('ExpoXR: Emergency script fix activated - all scripts disabled to prevent WordPress core corruption', 'error');
     }
 }
 
@@ -36,7 +36,8 @@ function expoxr_should_activate_emergency_mode() {
         return true;
     }
     
-    if (isset($_GET['expoxr_emergency']) && $_GET['expoxr_emergency'] === '1') {
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Emergency mode check for corrupted installations
+    if (isset($_GET['expoxr_emergency']) && sanitize_text_field(wp_unslash($_GET['expoxr_emergency'])) === '1') {
         return true;
     }
     
@@ -46,7 +47,7 @@ function expoxr_should_activate_emergency_mode() {
         !function_exists('wp_enqueue_script'),
         !function_exists('wp_script_is'),
         // Check for specific error conditions that indicate core corruption
-        (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], 'wp-admin') !== false && 
+        (isset($_SERVER['REQUEST_URI']) && strpos(sanitize_text_field(wp_unslash($_SERVER['REQUEST_URI'])), 'wp-admin') !== false && 
          !function_exists('wp_admin_css_uri'))
     );
     
@@ -120,7 +121,8 @@ function expoxr_gradual_script_enable() {
  * Check if gradual recovery mode should be used
  */
 function expoxr_use_gradual_recovery() {
-    return isset($_GET['expoxr_recovery']) && $_GET['expoxr_recovery'] === '1';
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Emergency recovery mode check for corrupted installations
+    return isset($_GET['expoxr_recovery']) && sanitize_text_field(wp_unslash($_GET['expoxr_recovery'])) === '1';
 }
 
 // Activate emergency mode or gradual recovery

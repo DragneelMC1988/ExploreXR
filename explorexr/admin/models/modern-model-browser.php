@@ -22,9 +22,9 @@ function expoxr_modern_model_browser_page() {
     include EXPOXR_PLUGIN_DIR . 'template-parts/model-viewer-script.php';
     
     // Handle model deletion if requested
-    if (isset($_GET['action']) && sanitize_text_field($_GET['action']) === 'delete' && isset($_GET['model_id'])) {
+    if (isset($_GET['action']) && sanitize_text_field(wp_unslash($_GET['action'])) === 'delete' && isset($_GET['model_id'])) {
         $model_id = intval($_GET['model_id']);
-        $nonce = isset($_GET['_wpnonce']) ? sanitize_text_field($_GET['_wpnonce']) : '';
+        $nonce = isset($_GET['_wpnonce']) ? sanitize_text_field(wp_unslash($_GET['_wpnonce'])) : '';
         
         if (wp_verify_nonce($nonce, 'delete_model_' . $model_id)) {
             wp_delete_post($model_id, true);
@@ -43,9 +43,9 @@ function expoxr_modern_model_browser_page() {
     }
     
     // Get filters
-    $search_term = isset($_GET['search']) ? sanitize_text_field($_GET['search']) : '';
-    $sort_by = isset($_GET['sort_by']) ? sanitize_text_field($_GET['sort_by']) : 'date';
-    $sort_order = isset($_GET['sort_order']) ? sanitize_text_field($_GET['sort_order']) : 'desc';
+    $search_term = isset($_GET['search']) ? sanitize_text_field(wp_unslash($_GET['search'])) : '';
+    $sort_by = isset($_GET['sort_by']) ? sanitize_text_field(wp_unslash($_GET['sort_by'])) : 'date';
+    $sort_order = isset($_GET['sort_order']) ? sanitize_text_field(wp_unslash($_GET['sort_order'])) : 'desc';
     
     // Get total models count
     $total_models = wp_count_posts('expoxr_model')->publish;

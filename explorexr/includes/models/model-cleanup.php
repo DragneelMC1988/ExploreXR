@@ -77,11 +77,11 @@ function expoxr_cleanup_orphaned_models() {
             
             // Log for debugging
             if (get_option('expoxr_debug_mode', false)) {
-                error_log(sprintf(
+                expoxr_log(sprintf(
                     'ExpoXR: Model #%d has a missing file: %s',
                     $model_id,
                     $model_file
-                ));
+                ), 'warning');
             }
         } else {
             // File exists, clear any previous missing flag

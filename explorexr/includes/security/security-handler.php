@@ -36,9 +36,9 @@ function expoxr_validate_ajax_security($nonce_action, $capability = 'edit_posts'
         // Check for nonce in both 'nonce' and 'security' parameters (for compatibility)
         $nonce = '';
         if (isset($_POST['nonce'])) {
-            $nonce = sanitize_text_field($_POST['nonce']);
+            $nonce = sanitize_text_field(wp_unslash($_POST['nonce']));
         } elseif (isset($_POST['security'])) {
-            $nonce = sanitize_text_field($_POST['security']);
+            $nonce = sanitize_text_field(wp_unslash($_POST['security']));
         }
         
         if (empty($nonce)) {
@@ -294,7 +294,7 @@ function expoxr_get_client_ip() {
     
     foreach ($ip_keys as $key) {
         if (array_key_exists($key, $_SERVER) === true) {
-            $ip = $_SERVER[$key];
+            $ip = sanitize_text_field(wp_unslash($_SERVER[$key]));
             if (strpos($ip, ',') !== false) {
                 $ip = explode(',', $ip)[0];
             }
@@ -305,7 +305,7 @@ function expoxr_get_client_ip() {
         }
     }
     
-    return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '0.0.0.0';
+    return isset($_SERVER['REMOTE_ADDR']) ? sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'])) : '0.0.0.0';
 }
 
 /**
@@ -335,12 +335,12 @@ function expoxr_log_security_event($event_type, $message, $context = array()) {
         'message' => $message,
         'user_id' => get_current_user_id(),
         'ip_address' => expoxr_get_client_ip(),
-        'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
+        'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'])) : '',
         'context' => $context
     );
     
     if (get_option('expoxr_debug_mode', false)) {
-        error_log('ExpoXR Security Event: ' . json_encode($log_entry));
+        expoxr_log('ExpoXR Security Event: ' . $log_entry, 'warning');
     }
 }
 
@@ -370,8 +370,10 @@ function expoxr_add_security_headers() {
     }
     
     // Only add headers on ExpoXR admin pages
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only check for admin page identification
     if (is_admin() && isset($_GET['page']) && 
-        is_string($_GET['page']) && strpos($_GET['page'], 'explorexr') !== false) {
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only check for admin page identification
+        is_string($_GET['page']) && strpos(sanitize_text_field(wp_unslash($_GET['page'])), 'explorexr') !== false) {
         header('X-Content-Type-Options: nosniff');
         header('X-Frame-Options: SAMEORIGIN');
         header('X-XSS-Protection: 1; mode=block');

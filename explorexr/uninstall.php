@@ -86,6 +86,8 @@ function expoxr_free_uninstall() {
     }
 
     // Remove any remaining options that start with 'expoxr_'
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Required for complete plugin cleanup during uninstall
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Uninstall script doesn't require caching
     $wpdb->query($wpdb->prepare(
         "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s",
         'expoxr_%'

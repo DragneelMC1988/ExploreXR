@@ -18,6 +18,42 @@ if (!defined('ABSPATH')) {
 function expoxr_init_debugging() {
     // Register AJAX handlers for debug log operations
     add_action('wp_ajax_expoxr_get_debug_log', 'expoxr_ajax_get_debug_log');
+}
+
+/**
+ * Custom logging function that respects WordPress debug settings
+ * 
+ * @param mixed $message The message to log (string, array, object, etc.)
+ * @param string $level Optional log level (info, warning, error)
+ */
+function expoxr_log($message, $level = 'info') {
+    // Only log if WordPress debugging is enabled
+    if (!defined('WP_DEBUG') || !WP_DEBUG || !defined('WP_DEBUG_LOG') || !WP_DEBUG_LOG) {
+        return;
+    }
+    
+    // Convert arrays/objects to readable strings
+    if (is_array($message) || is_object($message)) {
+        $message = wp_json_encode($message, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        if ($message === false) {
+            // Fallback to print_r if JSON encoding fails
+            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Only used in debug mode when JSON encoding fails
+            $message = print_r($message, true);
+        }
+    }
+    
+    // Format the message with timestamp and level
+    $formatted_message = sprintf(
+        '[%s] [%s] %s',
+        gmdate('Y-m-d H:i:s'),
+        strtoupper($level),
+        $message
+    );
+    
+    // Log to WordPress debug log
+    // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Used for debug logging functionality
+    error_log($formatted_message);
+}
     add_action('wp_ajax_expoxr_clear_debug_log', 'expoxr_ajax_clear_debug_log');
     
     // Add console logging if enabled
@@ -26,15 +62,22 @@ function expoxr_init_debugging() {
         add_action('admin_footer', 'expoxr_add_console_logging');
     }
     
-    // Display PHP errors for admins if enabled
-    if (get_option('expoxr_view_php_errors', false) && current_user_can('manage_options') && get_option('expoxr_debug_mode', false)) {
-        ini_set('display_errors', 1);
-        ini_set('display_startup_errors', 1);
-        error_reporting(E_ALL);
+    // Display PHP errors for admins if enabled (only in development environments)
+    if (get_option('expoxr_view_php_errors', false) && current_user_can('manage_options') && get_option('expoxr_debug_mode', false) && defined('WP_DEBUG') && WP_DEBUG) {
+        // Only modify error reporting in development environments
+        if (defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY) {
+            // phpcs:ignore Squiz.PHP.DiscouragedFunctions.Discouraged -- Required for debugging functionality
+            ini_set('display_errors', 1);
+            // phpcs:ignore Squiz.PHP.DiscouragedFunctions.Discouraged -- Required for debugging functionality
+            ini_set('display_startup_errors', 1);
+            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.prevent_path_disclosure_error_reporting -- Only used in debug mode
+            error_reporting(E_ALL);
+        }
     }
     
-    // Set up error handler to catch and log string function errors
-    if (get_option('expoxr_debug_mode', false)) {
+    // Set up error handler to catch and log string function errors (only in debug mode)
+    if (get_option('expoxr_debug_mode', false) && defined('WP_DEBUG') && WP_DEBUG) {
+        // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_set_error_handler -- Used for debug error handling
         set_error_handler('expoxr_error_handler', E_WARNING | E_NOTICE | E_DEPRECATED);
         
         // Also register a shutdown function to catch fatal errors
@@ -160,7 +203,10 @@ function expoxr_debug_log($message, $level = 'info') {
     $formatted_message = sprintf("[%s] [%s] %s\n", $timestamp, strtoupper($level), $message);
     
     // Append to log file
-    error_log($formatted_message, 3, $log_file);
+    if (defined('WP_DEBUG') && WP_DEBUG && defined('WP_DEBUG_LOG') && WP_DEBUG_LOG) {
+        // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Used for debug logging functionality
+        error_log($formatted_message, 3, $log_file);
+    }
 }
 
 /**
@@ -207,6 +253,8 @@ function expoxr_ajax_clear_debug_log() {
         expoxr_log_security_event(
             'ajax_security_failure',
             'Debug log clear blocked: ' . $security_check->get_error_message(),
+            // Note: nonce verification is handled by expoxr_validate_ajax_security() function
+            // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_validate_ajax_security()
             array('action' => 'clear_debug_log', 'nonce_provided' => isset($_POST['nonce']))
         );
         wp_send_json_error(array('message' => $security_check->get_error_message()));

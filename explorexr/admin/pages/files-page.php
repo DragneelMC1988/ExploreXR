@@ -7,11 +7,12 @@ if (!defined('ABSPATH')) {
 // Files page callback
 function expoxr_files_page() {
     // Handle file upload
-    if (isset($_POST['upload_file_submit']) && isset($_FILES['model_file_upload']) && $_FILES['model_file_upload']['size'] > 0) {
+    if (isset($_POST['upload_file_submit']) && isset($_FILES['model_file_upload']) && isset($_FILES['model_file_upload']['size']) && $_FILES['model_file_upload']['size'] > 0) {
         // Verify nonce for security
         if (!isset($_POST['_wpnonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_wpnonce'])), 'expoxr_upload_file')) {
             echo '<div class="notice notice-error"><p>Security check failed. Please try again.</p></div>';
         } else {
+            // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- File upload array is handled by expoxr_handle_model_upload()
             $upload_result = expoxr_handle_model_upload($_FILES['model_file_upload']);
             
             if ($upload_result) {
@@ -23,10 +24,10 @@ function expoxr_files_page() {
     }
     
     // Handle file deletion
-    if (isset($_GET['action']) && sanitize_text_field($_GET['action']) === 'delete' && isset($_GET['file'])) {
+    if (isset($_GET['action']) && sanitize_text_field(wp_unslash($_GET['action'])) === 'delete' && isset($_GET['file'])) {
         // Verify nonce for security
-        if (isset($_GET['_wpnonce']) && wp_verify_nonce($_GET['_wpnonce'], 'expoxr_delete_file')) {
-            $file_name = sanitize_file_name($_GET['file']);
+        if (isset($_GET['_wpnonce']) && wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['_wpnonce'])), 'expoxr_delete_file')) {
+            $file_name = sanitize_file_name(wp_unslash($_GET['file']));
             $file_path = EXPOXR_MODELS_DIR . $file_name;
             
             // Check if the file exists and is within our models directory to prevent path traversal

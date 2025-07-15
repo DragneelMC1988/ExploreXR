@@ -31,26 +31,25 @@ function expoxr_save_all_post_meta($post_id) {
     }
     
     // Security check: verify nonce first before processing any POST data
-    if (isset($_POST['expoxr_nonce'])) {
-        $nonce_verified = wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['expoxr_nonce'])), 'expoxr_save_model');
-        if (!$nonce_verified) {
-            if (get_option('expoxr_debug_mode', false)) {
-                error_log('ExpoXR: Security check failed for post ' . $post_id . '. Nonce verification failed.');
-            }
-            
-            // Create a detailed debug log for nonce failures
-            $nonce_debug = array(
-                'post_id' => $post_id,
-                'nonce_value' => sanitize_text_field(wp_unslash($_POST['expoxr_nonce'])),
-                'nonce_action' => 'expoxr_save_model',
-                'verification_result' => $nonce_verified,
-                'user_id' => get_current_user_id(),
-                'post_data' => array_keys($_POST)
-            );
-            expoxr_create_debug_log($nonce_debug, 'nonce-failure-' . $post_id);
-            
-            return false;
+    // Require nonce for ALL form submissions, not just edit mode
+    if (!isset($_POST['expoxr_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['expoxr_nonce'])), 'expoxr_save_model')) {
+        if (get_option('expoxr_debug_mode', false)) {
+            $nonce_value = isset($_POST['expoxr_nonce']) ? sanitize_text_field(wp_unslash($_POST['expoxr_nonce'])) : 'not provided';
+            expoxr_log('ExpoXR: Security check failed for post ' . $post_id . '. Nonce verification failed. Nonce: ' . $nonce_value, 'error');
         }
+        
+        // Create a detailed debug log for nonce failures
+        $nonce_debug = array(
+            'post_id' => $post_id,
+            'nonce_value' => isset($_POST['expoxr_nonce']) ? sanitize_text_field(wp_unslash($_POST['expoxr_nonce'])) : 'not provided',
+            'nonce_action' => 'expoxr_save_model',
+            'verification_result' => false,
+            'user_id' => get_current_user_id(),
+            'post_data' => array_keys($_POST)
+        );
+        expoxr_create_debug_log($nonce_debug, 'nonce-failure-' . $post_id);
+        
+        return false;
     }
     
     // Check if this is an edit mode submission (after nonce verification)
@@ -62,7 +61,7 @@ function expoxr_save_all_post_meta($post_id) {
     // Add extra logging for edit mode
     if ($edit_mode) {
         if (get_option('expoxr_debug_mode', false)) {
-            error_log('ExpoXR: Processing edit mode submission for post ' . $post_id);
+            expoxr_log('ExpoXR: Processing edit mode submission for post ' . $post_id);
         }
         
         // Save diagnostic data if provided
@@ -70,31 +69,11 @@ function expoxr_save_all_post_meta($post_id) {
             update_post_meta($post_id, '_expoxr_last_edit_diagnostic', sanitize_text_field(wp_unslash($_POST['expoxr_edit_diagnostic'])));
         }
     }
-        }
-    } else if ($edit_mode) {
-        // Enforce nonce requirement in edit mode for security
-        if (get_option('expoxr_debug_mode', false)) {
-            error_log('ExpoXR: No nonce provided for edit mode submission for post ' . $post_id . ' - blocking for security');
-        }
-        
-        // Create a debug log file for missing nonce
-        $no_nonce_debug = array(
-            'post_id' => $post_id,
-            'edit_mode' => $edit_mode,
-            'post_data' => array_keys($_POST),
-            'user_id' => get_current_user_id(),
-            'security_action' => 'blocked_missing_nonce'
-        );
-        expoxr_create_debug_log($no_nonce_debug, 'missing-nonce-' . $post_id);
-        
-        // Block execution for security - nonce is required in edit mode
-        return false;
-    }
 
     // Check user permissions
     if (!current_user_can('edit_post', $post_id)) {
         if (get_option('expoxr_debug_mode', false)) {
-            error_log('ExpoXR: User lacks permission to edit post ' . $post_id);
+            expoxr_log('ExpoXR: User lacks permission to edit post ' . $post_id, 'warning');
         }
         
         // Log permission issue
@@ -113,7 +92,7 @@ function expoxr_save_all_post_meta($post_id) {
         update_post_meta($post_id, '_expoxr_model_file', sanitize_text_field(wp_unslash($_POST['expoxr_model_file'])));
         if ($edit_mode) {
             if (get_option('expoxr_debug_mode', false)) {
-                error_log('ExpoXR: Updated model file: ' . sanitize_text_field(wp_unslash($_POST['expoxr_model_file'])));
+                expoxr_log('ExpoXR: Updated model file: ' . sanitize_text_field(wp_unslash($_POST['expoxr_model_file'])));
             }
         }
     }
@@ -127,7 +106,8 @@ function expoxr_save_all_post_meta($post_id) {
     }
     
     // Handle new model file upload
-    if (isset($_FILES['expoxr_new_model']) && $_FILES['expoxr_new_model']['size'] > 0) {
+    if (isset($_FILES['expoxr_new_model']) && isset($_FILES['expoxr_new_model']['size']) && $_FILES['expoxr_new_model']['size'] > 0) {
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- File upload array is handled by expoxr_handle_model_upload()
         $upload_result = expoxr_handle_model_upload($_FILES['expoxr_new_model']);
         
         if ($upload_result && !empty($upload_result['file_url'])) {
@@ -143,14 +123,14 @@ function expoxr_save_all_post_meta($post_id) {
             
             if ($edit_mode) {
                 if (get_option('expoxr_debug_mode', false)) {
-                    error_log('ExpoXR: Uploaded new model file: ' . $upload_result['file_url']);
+                    expoxr_log('ExpoXR: Uploaded new model file: ' . $upload_result['file_url']);
                 }
             }
         } else {
             // Log upload failures
             $upload_error = isset($upload_result['error']) ? $upload_result['error'] : 'Unknown error';
             if (get_option('expoxr_debug_mode', false)) {
-                error_log('ExpoXR: Model upload failed: ' . $upload_error);
+                expoxr_log('ExpoXR: Model upload failed: ' . $upload_error, 'error');
             }
             
             // Create a debug log for the upload issue
@@ -158,10 +138,10 @@ function expoxr_save_all_post_meta($post_id) {
                 $upload_debug = array(
                     'post_id' => $post_id,
                     'file_info' => array(
-                        'name' => $_FILES['expoxr_new_model']['name'],
-                        'type' => $_FILES['expoxr_new_model']['type'],
-                        'size' => $_FILES['expoxr_new_model']['size'],
-                        'error' => $_FILES['expoxr_new_model']['error']
+                        'name' => isset($_FILES['expoxr_new_model']['name']) ? sanitize_file_name($_FILES['expoxr_new_model']['name']) : '',
+                        'type' => isset($_FILES['expoxr_new_model']['type']) ? sanitize_mime_type($_FILES['expoxr_new_model']['type']) : '',
+                        'size' => isset($_FILES['expoxr_new_model']['size']) ? intval($_FILES['expoxr_new_model']['size']) : 0,
+                        'error' => isset($_FILES['expoxr_new_model']['error']) ? intval($_FILES['expoxr_new_model']['error']) : 0
                     ),
                     'upload_result' => $upload_result,
                     'php_version' => phpversion(),
@@ -185,7 +165,7 @@ function expoxr_save_all_post_meta($post_id) {
             require_once plugin_dir_path(__FILE__) . 'debug-camera-settings.php';
             $camera_debug = expoxr_debug_camera_settings($post_id, $edit_mode);
             if (get_option('expoxr_debug_mode', false)) {
-                error_log('ExpoXR: Camera settings debug collected for post ' . $post_id);
+                expoxr_log('ExpoXR: Camera settings debug collected for post ' . $post_id);
             }
         }
         
@@ -209,7 +189,7 @@ function expoxr_save_all_post_meta($post_id) {
         
         $checkbox_report = expoxr_debug_checkbox_processing($post_id);
         if (get_option('expoxr_debug_mode', false)) {
-            error_log('ExpoXR: Generated checkbox debug report for post ' . $post_id);
+            expoxr_log('ExpoXR: Generated checkbox debug report for post ' . $post_id);
         }
     }
     
@@ -218,7 +198,7 @@ function expoxr_save_all_post_meta($post_id) {
     // If in edit mode, log the save operation for debugging
     if ($edit_mode) {
         if (get_option('expoxr_debug_mode', false)) {
-            error_log('ExpoXR: Edit mode meta save completed for post ' . $post_id);
+            expoxr_log('ExpoXR: Edit mode meta save completed for post ' . $post_id);
         }
     }
     
@@ -231,31 +211,45 @@ function expoxr_save_all_post_meta($post_id) {
  * @param int $post_id The post ID
  */
 function expoxr_save_size_settings($post_id) {
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
     if (array_key_exists('viewer_size', $_POST)) {
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
         update_post_meta($post_id, '_expoxr_viewer_size', sanitize_text_field(wp_unslash($_POST['viewer_size'])));
     }
     
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
     if (array_key_exists('viewer_width', $_POST)) {
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
         update_post_meta($post_id, '_expoxr_viewer_width', sanitize_text_field(wp_unslash($_POST['viewer_width'])));
     }
     
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
     if (array_key_exists('viewer_height', $_POST)) {
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
         update_post_meta($post_id, '_expoxr_viewer_height', sanitize_text_field(wp_unslash($_POST['viewer_height'])));
     }
     
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
     if (array_key_exists('tablet_viewer_width', $_POST)) {
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
         update_post_meta($post_id, '_expoxr_tablet_viewer_width', sanitize_text_field(wp_unslash($_POST['tablet_viewer_width'])));
     }
     
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
     if (array_key_exists('tablet_viewer_height', $_POST)) {
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
         update_post_meta($post_id, '_expoxr_tablet_viewer_height', sanitize_text_field(wp_unslash($_POST['tablet_viewer_height'])));
     }
     
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
     if (array_key_exists('mobile_viewer_width', $_POST)) {
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
         update_post_meta($post_id, '_expoxr_mobile_viewer_width', sanitize_text_field(wp_unslash($_POST['mobile_viewer_width'])));
     }
     
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
     if (array_key_exists('mobile_viewer_height', $_POST)) {
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
         update_post_meta($post_id, '_expoxr_mobile_viewer_height', sanitize_text_field(wp_unslash($_POST['mobile_viewer_height'])));
     }
 }
@@ -267,7 +261,8 @@ function expoxr_save_size_settings($post_id) {
  */
 function expoxr_save_poster_settings($post_id) {
     // Handle poster image
-    if (isset($_FILES['model_poster']) && $_FILES['model_poster']['size'] > 0) {
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
+    if (isset($_FILES['model_poster']) && isset($_FILES['model_poster']['size']) && $_FILES['model_poster']['size'] > 0) {
         // Use WordPress media handling for the image
         require_once(ABSPATH . 'wp-admin/includes/image.php');
         require_once(ABSPATH . 'wp-admin/includes/file.php');
@@ -282,13 +277,16 @@ function expoxr_save_poster_settings($post_id) {
     }
     
     // Handle removing poster if checkbox is checked
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
     if (isset($_POST['remove_poster']) && sanitize_text_field(wp_unslash($_POST['remove_poster'])) == '1') {
         delete_post_meta($post_id, '_expoxr_model_poster');
         delete_post_meta($post_id, '_expoxr_model_poster_id');
     }
     
     // Handle poster from media library
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
     if (isset($_POST['model_poster_id']) && !empty($_POST['model_poster_id'])) {
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
         $poster_id = sanitize_text_field(wp_unslash($_POST['model_poster_id']));
         $poster_url = wp_get_attachment_url($poster_id);
         update_post_meta($post_id, '_expoxr_model_poster', $poster_url);
@@ -306,11 +304,14 @@ function expoxr_save_poster_settings($post_id) {
  * Save camera settings to post meta
  */
 function expoxr_save_camera_settings($post_id, $edit_mode = false) {
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
     if (array_key_exists('expoxr_model_alt_text', $_POST)) {
-        update_post_meta($post_id, '_expoxr_model_alt_text', sanitize_text_field($_POST['expoxr_model_alt_text']));
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
+        update_post_meta($post_id, '_expoxr_model_alt_text', sanitize_text_field(wp_unslash($_POST['expoxr_model_alt_text'])));
     }
     
     // Interaction controls - new enable interactions logic (same pattern as auto-rotate)
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
     $enable_interactions = isset($_POST['expoxr_enable_interactions']) ? 'on' : 'off';
     update_post_meta($post_id, '_expoxr_enable_interactions', $enable_interactions);
     
@@ -320,27 +321,33 @@ function expoxr_save_camera_settings($post_id, $edit_mode = false) {
     
     // Camera controls - for backwards compatibility and addon support
     $camera_controls = 'off';
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
     if (isset($_POST['expoxr_camera_controls']) || (isset($_POST['expoxr_camera_controls_state']) && $_POST['expoxr_camera_controls_state'] === '1')) {
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
         $camera_controls = 'on';
     }
     update_post_meta($post_id, '_expoxr_camera_controls', $camera_controls);
     
     if ($edit_mode) {
         if (get_option('expoxr_debug_mode', false)) {
-            error_log('ExpoXR: Interactions enabled: ' . $enable_interactions . ', Camera controls setting: ' . $camera_controls);
+            expoxr_log('ExpoXR: Interactions enabled: ' . $enable_interactions . ', Camera controls setting: ' . $camera_controls);
         }
     }
     
     // Auto-rotate settings - support both checkbox and state field
     $auto_rotate = 'off';
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
     if (isset($_POST['expoxr_auto_rotate']) || (isset($_POST['expoxr_auto_rotate_state']) && $_POST['expoxr_auto_rotate_state'] === '1')) {
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
         $auto_rotate = 'on';
     }
     update_post_meta($post_id, '_expoxr_auto_rotate', $auto_rotate);
     
     // Handle auto-rotate delay with validation
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
     if (array_key_exists('expoxr_auto_rotate_delay', $_POST)) {
-        $delay_value = sanitize_text_field($_POST['expoxr_auto_rotate_delay']);
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
+        $delay_value = sanitize_text_field(wp_unslash($_POST['expoxr_auto_rotate_delay']));
         // Ensure the delay is a numeric value
         if (is_numeric($delay_value)) {
             update_post_meta($post_id, '_expoxr_auto_rotate_delay', $delay_value);
@@ -351,26 +358,30 @@ function expoxr_save_camera_settings($post_id, $edit_mode = false) {
         
         if ($edit_mode) {
             if (get_option('expoxr_debug_mode', false)) {
-                error_log('ExpoXR: Updated auto-rotate delay: ' . $delay_value);
+                expoxr_log('ExpoXR: Updated auto-rotate delay: ' . $delay_value);
             }
         }
     }
     
     // Handle auto-rotate speed (map from form field to database field)
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
     if (array_key_exists('expoxr_auto_rotate_speed', $_POST)) {
-        $speed_value = sanitize_text_field($_POST['expoxr_auto_rotate_speed']);
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
+        $speed_value = sanitize_text_field(wp_unslash($_POST['expoxr_auto_rotate_speed']));
         update_post_meta($post_id, '_expoxr_rotation_per_second', $speed_value);
         
         if ($edit_mode) {
             if (get_option('expoxr_debug_mode', false)) {
-                error_log('ExpoXR: Updated rotation speed: ' . $speed_value);
+                expoxr_log('ExpoXR: Updated rotation speed: ' . $speed_value);
             }
         }
     }
     
     // Legacy field support
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
     if (array_key_exists('expoxr_rotation_per_second', $_POST)) {
-        $speed_value = sanitize_text_field($_POST['expoxr_rotation_per_second']);
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
+        $speed_value = sanitize_text_field(wp_unslash($_POST['expoxr_rotation_per_second']));
         update_post_meta($post_id, '_expoxr_rotation_per_second', $speed_value);
     }
     
@@ -386,11 +397,14 @@ function expoxr_save_camera_settings($post_id, $edit_mode = false) {
  * @param int $post_id The post ID
  */
 function expoxr_save_annotation_settings($post_id) {
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
     if (isset($_POST['expoxr_annotations']) && is_array($_POST['expoxr_annotations'])) {
         $annotations = array();
         
         // Clean up the array by filtering out empty annotations and sanitizing values
-        foreach ($_POST['expoxr_annotations'] as $index => $annotation) {
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Array is sanitized in the loop below
+        foreach (wp_unslash($_POST['expoxr_annotations']) as $index => $annotation) {
             // Only add annotations with all required position values
             if (!empty($annotation['position_x']) && !empty($annotation['position_y']) && !empty($annotation['position_z'])) {                $annotations[] = array(                    'title' => sanitize_text_field($annotation['title']),
                     'heading_type' => sanitize_text_field($annotation['heading_type']),
@@ -421,40 +435,50 @@ function expoxr_save_annotation_settings($post_id) {
 function expoxr_save_animation_settings($post_id, $edit_mode = false) {
     // Animation enabled - support both checkbox and state field
     $animation_enabled = 'off';
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
     if (isset($_POST['expoxr_animation_enabled']) || (isset($_POST['expoxr_animation_enabled_state']) && $_POST['expoxr_animation_enabled_state'] === '1')) {
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
         $animation_enabled = 'on';
     }
     update_post_meta($post_id, '_expoxr_animation_enabled', $animation_enabled);
     
     if ($edit_mode) {
         if (get_option('expoxr_debug_mode', false)) {
-            error_log('ExpoXR: Animation enabled setting: ' . $animation_enabled);
+            expoxr_log('ExpoXR: Animation enabled setting: ' . $animation_enabled);
         }
     }
     
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
     if (array_key_exists('expoxr_animation_name', $_POST)) {
-        update_post_meta($post_id, '_expoxr_animation_name', sanitize_text_field($_POST['expoxr_animation_name']));
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
+        update_post_meta($post_id, '_expoxr_animation_name', sanitize_text_field(wp_unslash($_POST['expoxr_animation_name'])));
     }
     
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
     if (array_key_exists('expoxr_animation_crossfade_duration', $_POST)) {
-        update_post_meta($post_id, '_expoxr_animation_crossfade_duration', sanitize_text_field($_POST['expoxr_animation_crossfade_duration']));
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
+        update_post_meta($post_id, '_expoxr_animation_crossfade_duration', sanitize_text_field(wp_unslash($_POST['expoxr_animation_crossfade_duration'])));
     }
     
     // Animation autoplay - support both checkbox and state field
     $animation_autoplay = 'off';
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
     if (isset($_POST['expoxr_animation_autoplay']) || (isset($_POST['expoxr_animation_autoplay_state']) && $_POST['expoxr_animation_autoplay_state'] === '1')) {
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
         $animation_autoplay = 'on';
     }
     update_post_meta($post_id, '_expoxr_animation_autoplay', $animation_autoplay);
     
     if ($edit_mode) {
         if (get_option('expoxr_debug_mode', false)) {
-            error_log('ExpoXR: Animation autoplay setting: ' . $animation_autoplay);
+            expoxr_log('ExpoXR: Animation autoplay setting: ' . $animation_autoplay);
         }
     }
     
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
     if (array_key_exists('expoxr_animation_repeat', $_POST)) {
-        update_post_meta($post_id, '_expoxr_animation_repeat', sanitize_text_field($_POST['expoxr_animation_repeat']));
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
+        update_post_meta($post_id, '_expoxr_animation_repeat', sanitize_text_field(wp_unslash($_POST['expoxr_animation_repeat'])));
     }
 }
 

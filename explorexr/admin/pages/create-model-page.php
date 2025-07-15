@@ -16,17 +16,17 @@ if (!function_exists('expoxr_handle_model_upload')) {
  */
 function expoxr_handle_model_creation() {
     // Only process if we're on the right page and have form submission
-    if (!isset($_GET['page']) || $_GET['page'] !== 'expoxr-create-model' || !isset($_POST['create_model_submit'])) {
+    if (!isset($_GET['page']) || sanitize_text_field(wp_unslash($_GET['page'])) !== 'expoxr-create-model' || !isset($_POST['create_model_submit'])) {
         return;
     }
     
-    // Verify nonce if it exists (for security)
-    if (isset($_POST['expoxr_create_model_nonce']) && !wp_verify_nonce($_POST['expoxr_create_model_nonce'], 'expoxr_create_model')) {
+    // Verify nonce - REQUIRED for security
+    if (!isset($_POST['expoxr_create_model_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['expoxr_create_model_nonce'])), 'expoxr_create_model')) {
         wp_die('Security check failed. Please try again.');
     }
     
-    $model_title = sanitize_text_field($_POST['model_title']);
-    $model_description = wp_kses_post($_POST['model_description']);
+    $model_title = isset($_POST['model_title']) ? sanitize_text_field(wp_unslash($_POST['model_title'])) : '';
+    $model_description = isset($_POST['model_description']) ? wp_kses_post(wp_unslash($_POST['model_description'])) : '';
     
     // Ensure the post type is registered
     if (!post_type_exists('expoxr_model')) {
@@ -41,61 +41,62 @@ function expoxr_handle_model_creation() {
     ]);
     
     if ($post_id && !is_wp_error($post_id)) {
-        $model_source = isset($_POST['model_source']) ? $_POST['model_source'] : 'upload';
+        $model_source = isset($_POST['model_source']) ? sanitize_text_field(wp_unslash($_POST['model_source'])) : 'upload';
         
         // Save model viewer size settings
         if (isset($_POST['viewer_width']) && !empty($_POST['viewer_width'])) {
-            update_post_meta($post_id, '_expoxr_viewer_width', sanitize_text_field($_POST['viewer_width']));
+            update_post_meta($post_id, '_expoxr_viewer_width', sanitize_text_field(wp_unslash($_POST['viewer_width'])));
         }
         
         if (isset($_POST['viewer_height']) && !empty($_POST['viewer_height'])) {
-            update_post_meta($post_id, '_expoxr_viewer_height', sanitize_text_field($_POST['viewer_height']));
+            update_post_meta($post_id, '_expoxr_viewer_height', sanitize_text_field(wp_unslash($_POST['viewer_height'])));
         }
         
         // Save tablet size settings
         if (isset($_POST['tablet_viewer_width']) && !empty($_POST['tablet_viewer_width'])) {
-            update_post_meta($post_id, '_expoxr_tablet_viewer_width', sanitize_text_field($_POST['tablet_viewer_width']));
+            update_post_meta($post_id, '_expoxr_tablet_viewer_width', sanitize_text_field(wp_unslash($_POST['tablet_viewer_width'])));
         }
         
         if (isset($_POST['tablet_viewer_height']) && !empty($_POST['tablet_viewer_height'])) {
-            update_post_meta($post_id, '_expoxr_tablet_viewer_height', sanitize_text_field($_POST['tablet_viewer_height']));
+            update_post_meta($post_id, '_expoxr_tablet_viewer_height', sanitize_text_field(wp_unslash($_POST['tablet_viewer_height'])));
         }
         
         // Save mobile size settings
         if (isset($_POST['mobile_viewer_width']) && !empty($_POST['mobile_viewer_width'])) {
-            update_post_meta($post_id, '_expoxr_mobile_viewer_width', sanitize_text_field($_POST['mobile_viewer_width']));
+            update_post_meta($post_id, '_expoxr_mobile_viewer_width', sanitize_text_field(wp_unslash($_POST['mobile_viewer_width'])));
         }
         
         if (isset($_POST['mobile_viewer_height']) && !empty($_POST['mobile_viewer_height'])) {
-            update_post_meta($post_id, '_expoxr_mobile_viewer_height', sanitize_text_field($_POST['mobile_viewer_height']));
+            update_post_meta($post_id, '_expoxr_mobile_viewer_height', sanitize_text_field(wp_unslash($_POST['mobile_viewer_height'])));
         }
         
         // Save predefined size if selected
         if (isset($_POST['viewer_size']) && !empty($_POST['viewer_size'])) {
-            update_post_meta($post_id, '_expoxr_viewer_size', sanitize_text_field($_POST['viewer_size']));
+            update_post_meta($post_id, '_expoxr_viewer_size', sanitize_text_field(wp_unslash($_POST['viewer_size'])));
         }
         
         // Handle poster image upload if available
-        if (isset($_POST['poster_method']) && $_POST['poster_method'] === 'upload' && isset($_FILES['model_poster']) && $_FILES['model_poster']['size'] > 0) {
+        if (isset($_POST['poster_method']) && $_POST['poster_method'] === 'upload' && isset($_FILES['model_poster']) && isset($_FILES['model_poster']['size']) && $_FILES['model_poster']['size'] > 0) {
             $poster_attachment_id = media_handle_upload('model_poster', $post_id);
             if (!is_wp_error($poster_attachment_id)) {
                 $poster_url = wp_get_attachment_url($poster_attachment_id);
                 update_post_meta($post_id, '_expoxr_model_poster', $poster_url);
             }
         } elseif (isset($_POST['poster_method']) && $_POST['poster_method'] === 'library' && !empty($_POST['model_poster_id'])) {
-            $poster_url = wp_get_attachment_url(sanitize_text_field($_POST['model_poster_id']));
+            $poster_url = wp_get_attachment_url(sanitize_text_field(wp_unslash($_POST['model_poster_id'])));
             update_post_meta($post_id, '_expoxr_model_poster', $poster_url);
         }
         
         // Handle model file assignment
         if ($model_source === 'existing' && !empty($_POST['existing_model'])) {
-            $model_file_url = EXPOXR_MODELS_URL . sanitize_text_field($_POST['existing_model']);
+            $model_file_url = EXPOXR_MODELS_URL . sanitize_text_field(wp_unslash($_POST['existing_model']));
             update_post_meta($post_id, '_expoxr_model_file', $model_file_url);
             set_transient('expoxr_model_created', array('type' => 'success', 'message' => 'Model created successfully with existing file.'), 30);
             wp_safe_redirect(admin_url('admin.php?page=expoxr-browse-models&created=true'));
             exit;
-        } else if ($model_source === 'upload' && isset($_FILES['model_file']) && $_FILES['model_file']['size'] > 0) {
+        } else if ($model_source === 'upload' && isset($_FILES['model_file']) && isset($_FILES['model_file']['size']) && $_FILES['model_file']['size'] > 0) {
             if (function_exists('expoxr_handle_model_upload')) {
+                // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- File upload array is handled by expoxr_handle_model_upload()
                 $upload_result = expoxr_handle_model_upload($_FILES['model_file']);
                 
                 if ($upload_result && !is_wp_error($upload_result)) {
@@ -139,7 +140,10 @@ function expoxr_create_model_page() {
     $success_message = '';
     
     // Check for error messages from redirects
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used for display purposes only
     if (isset($_GET['error'])) {
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used for display purposes only
+        $error_param = sanitize_text_field(wp_unslash($_GET['error']));
         $error_transient = get_transient('expoxr_model_error');
         if ($error_transient) {
             $error_message = $error_transient;

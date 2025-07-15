@@ -106,12 +106,12 @@ function expoxr_import_export_callback() {
  * Handle export request
  */
 function expoxr_handle_settings_export() {
-    if (!isset($_POST['expoxr_action']) || sanitize_text_field($_POST['expoxr_action']) !== 'export_settings') {
+    if (!isset($_POST['expoxr_action']) || sanitize_text_field(wp_unslash($_POST['expoxr_action'])) !== 'export_settings') {
         return;
     }
 
     // Verify nonce
-    if (!isset($_POST['expoxr_export_nonce']) || !wp_verify_nonce(sanitize_text_field($_POST['expoxr_export_nonce']), 'expoxr_export_nonce')) {
+    if (!isset($_POST['expoxr_export_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['expoxr_export_nonce'])), 'expoxr_export_nonce')) {
         wp_die(esc_html__('Security check failed. Please try again.', 'explorexr'));
     }
 
@@ -224,12 +224,12 @@ add_action('admin_init', 'expoxr_handle_settings_export');
  * Handle import request
  */
 function expoxr_handle_settings_import() {
-    if (!isset($_POST['expoxr_action']) || sanitize_text_field($_POST['expoxr_action']) !== 'import_settings') {
+    if (!isset($_POST['expoxr_action']) || sanitize_text_field(wp_unslash($_POST['expoxr_action'])) !== 'import_settings') {
         return;
     }
 
     // Verify nonce
-    if (!isset($_POST['expoxr_import_nonce']) || !wp_verify_nonce(sanitize_text_field($_POST['expoxr_import_nonce']), 'expoxr_import_nonce')) {
+    if (!isset($_POST['expoxr_import_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['expoxr_import_nonce'])), 'expoxr_import_nonce')) {
         add_settings_error('expoxr_messages', 'expoxr_import_error', esc_html__('Security check failed. Please try again.', 'explorexr'), 'error');
         return;
     }
@@ -247,7 +247,7 @@ function expoxr_handle_settings_import() {
     }
 
     // Check for upload errors
-    if ($_FILES['expoxr_import_file']['error'] !== UPLOAD_ERR_OK) {
+    if (isset($_FILES['expoxr_import_file']['error']) && $_FILES['expoxr_import_file']['error'] !== UPLOAD_ERR_OK) {
         $upload_error_messages = array(
             UPLOAD_ERR_INI_SIZE => 'The uploaded file exceeds the upload_max_filesize directive in php.ini.',
             UPLOAD_ERR_FORM_SIZE => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form.',
@@ -257,8 +257,9 @@ function expoxr_handle_settings_import() {
             UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk.',
             UPLOAD_ERR_EXTENSION => 'A PHP extension stopped the file upload.'
         );
-        $error_message = isset($upload_error_messages[$_FILES['expoxr_import_file']['error']]) ? 
-                         $upload_error_messages[$_FILES['expoxr_import_file']['error']] : 
+        $file_error = isset($_FILES['expoxr_import_file']['error']) ? intval($_FILES['expoxr_import_file']['error']) : UPLOAD_ERR_NO_FILE;
+        $error_message = isset($upload_error_messages[$file_error]) ? 
+                         $upload_error_messages[$file_error] : 
                          'Unknown upload error.';
         
         /* translators: %s: Error message from file upload */
@@ -267,20 +268,27 @@ function expoxr_handle_settings_import() {
     }
 
     // Check file size
-    if ($_FILES['expoxr_import_file']['size'] > 5242880) { // 5MB limit
+    if (isset($_FILES['expoxr_import_file']['size']) && $_FILES['expoxr_import_file']['size'] > 5242880) { // 5MB limit
         add_settings_error('expoxr_messages', 'expoxr_import_error', esc_html__('File is too large. Maximum size is 5MB.', 'explorexr'), 'error');
         return;
     }
 
     // Check file extension
-    $file_extension = strtolower(pathinfo($_FILES['expoxr_import_file']['name'], PATHINFO_EXTENSION));
-    if ($file_extension !== 'json') {
-        add_settings_error('expoxr_messages', 'expoxr_import_error', esc_html__('Invalid file format. Please upload a JSON file.', 'explorexr'), 'error');
-        return;
+    if (isset($_FILES['expoxr_import_file']['name'])) {
+        $file_extension = strtolower(pathinfo(sanitize_file_name($_FILES['expoxr_import_file']['name']), PATHINFO_EXTENSION));
+        if ($file_extension !== 'json') {
+            add_settings_error('expoxr_messages', 'expoxr_import_error', esc_html__('Invalid file format. Please upload a JSON file.', 'explorexr'), 'error');
+            return;
+        }
     }
 
     // Get file contents
-    $import_file = file_get_contents($_FILES['expoxr_import_file']['tmp_name']);
+    if (isset($_FILES['expoxr_import_file']['tmp_name'])) {
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- File path is handled by WordPress file upload
+        $import_file = file_get_contents($_FILES['expoxr_import_file']['tmp_name']);
+    } else {
+        $import_file = false;
+    }
     if (!$import_file) {
         add_settings_error('expoxr_messages', 'expoxr_import_error', esc_html__('Could not read the import file. Please try again.', 'explorexr'), 'error');
         return;
@@ -311,7 +319,7 @@ function expoxr_handle_settings_import() {
     }
 
     // Check if override is enabled
-    $override = isset($_POST['expoxr_import_override']) && sanitize_text_field($_POST['expoxr_import_override']) === '1';
+    $override = isset($_POST['expoxr_import_override']) && sanitize_text_field(wp_unslash($_POST['expoxr_import_override'])) === '1';
     
     // Import counts
     $imported = 0;

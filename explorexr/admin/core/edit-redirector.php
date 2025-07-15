@@ -47,10 +47,12 @@ function expoxr_redirect_standard_edit_page() {
     global $pagenow, $typenow;
     
     // Check if we're on the post edit page and the post ID is set
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used for redirection purposes only
     if (is_admin() && ($pagenow === 'post.php' || $pagenow === 'post-new.php') && isset($_GET['post'])) {
         
         // Get the post ID and validate it
-        $post_id = intval(sanitize_text_field($_GET['post']));
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used for redirection purposes only
+        $post_id = intval(sanitize_text_field(wp_unslash($_GET['post'])));
         $post_type = get_post_type($post_id);
         
         // Check if this is a 3D model post type and if the custom edit page function exists

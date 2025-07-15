@@ -40,12 +40,12 @@ function expoxr_process_form_submission($post_data, $post_id = 0, $edit_mode = f
     
     // Log for debugging
     if (get_option('expoxr_debug_mode')) {
-        error_log('ExpoXR Form Handler: Processing form submission for post ID ' . $post_id);
-        error_log('ExpoXR Form Handler: Edit mode: ' . ($edit_mode ? 'enabled' : 'disabled'));
+        expoxr_log('ExpoXR Form Handler: Processing form submission for post ID ' . $post_id);
+        expoxr_log('ExpoXR Form Handler: Edit mode: ' . ($edit_mode ? 'enabled' : 'disabled'));
         
         // Only log POST data in debug mode
         if (get_option('expoxr_view_php_errors')) {
-            error_log('ExpoXR Form Handler: POST data: ' . print_r($post_data, true));
+            expoxr_log('ExpoXR Form Handler: POST data: ' . $post_data);
         }
     }
     
@@ -58,7 +58,7 @@ function expoxr_process_form_submission($post_data, $post_id = 0, $edit_mode = f
                 $post_data[$original_key] = $value;
                 
                 if (get_option('expoxr_debug_mode')) {
-                    error_log("ExpoXR Edit Mode Handler: Setting {$original_key} to {$post_data[$original_key]} based on state field");
+                    expoxr_log("ExpoXR Edit Mode Handler: Setting {$original_key} to {$post_data[$original_key]} based on state field");
                 }
             }
         }
@@ -71,7 +71,7 @@ function expoxr_process_form_submission($post_data, $post_id = 0, $edit_mode = f
             $post_data['viewer_size'] = $post_data['viewer_size_value'];
             
             if (get_option('expoxr_debug_mode')) {
-                error_log('ExpoXR Form Handler: Using viewer_size_value: ' . $post_data['viewer_size_value']);
+                expoxr_log('ExpoXR Form Handler: Using viewer_size_value: ' . $post_data['viewer_size_value']);
             }
         }
         // Handle viewer_size_preset (preset size)
@@ -80,7 +80,7 @@ function expoxr_process_form_submission($post_data, $post_id = 0, $edit_mode = f
             $post_data['viewer_size'] = $post_data['viewer_size_preset'];
             
             if (get_option('expoxr_debug_mode')) {
-                error_log('ExpoXR Form Handler: Using viewer_size_preset: ' . $post_data['viewer_size_preset']);
+                expoxr_log('ExpoXR Form Handler: Using viewer_size_preset: ' . $post_data['viewer_size_preset']);
             }
         }
         // Handle if viewer_size is directly provided as an array
@@ -90,7 +90,7 @@ function expoxr_process_form_submission($post_data, $post_id = 0, $edit_mode = f
             $post_data['viewer_size'] = implode(',', $post_data['viewer_size']);
             
             if (get_option('expoxr_debug_mode')) {
-                error_log('ExpoXR Form Handler: viewer_size is an array: ' . json_encode($post_data['viewer_size']));
+                expoxr_log('ExpoXR Form Handler: viewer_size is an array: ' . $post_data['viewer_size']);
             }
         }
         // Default fallback
@@ -99,7 +99,7 @@ function expoxr_process_form_submission($post_data, $post_id = 0, $edit_mode = f
             $post_data['viewer_size'] = 'medium';
             
             if (get_option('expoxr_debug_mode')) {
-                error_log('ExpoXR Form Handler: Setting default viewer_size to medium');
+                expoxr_log('ExpoXR Form Handler: Setting default viewer_size to medium');
             }
         }
         
@@ -132,14 +132,14 @@ function expoxr_process_form_submission($post_data, $post_id = 0, $edit_mode = f
                 if (isset($post_data[$field])) {
                     // Checkbox is present in the form submission
                     if (get_option('expoxr_debug_mode')) {
-                        error_log("ExpoXR Form Handler: Setting {$field} to {$post_data[$field]} based on state field");
+                        expoxr_log("ExpoXR Form Handler: Setting {$field} to {$post_data[$field]} based on state field");
                     }
                 } else {
                     // Checkbox was not submitted, which means it's unchecked
                     $post_data[$field] = 'off';
                     
                     if (get_option('expoxr_debug_mode')) {
-                        error_log("ExpoXR Form Handler: Setting {$field} to 'off' (not in form data)");
+                        expoxr_log("ExpoXR Form Handler: Setting {$field} to 'off' (not in form data)");
                     }
                 }
                 

@@ -39,11 +39,11 @@ function expoxr_debug_log_post_data($post_id) {
         'post_id' => $post_id,
         'timestamp' => current_time('mysql'),
         'user_id' => get_current_user_id(),
-        'request_time' => isset($_SERVER['REQUEST_TIME']) ? gmdate('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']) : 'unknown',
-        'referring_page' => isset($_SERVER['HTTP_REFERER']) ? sanitize_text_field($_SERVER['HTTP_REFERER']) : 'unknown',
+        'request_time' => isset($_SERVER['REQUEST_TIME']) ? gmdate('Y-m-d H:i:s', sanitize_text_field(wp_unslash($_SERVER['REQUEST_TIME']))) : 'unknown',
+        'referring_page' => isset($_SERVER['HTTP_REFERER']) ? sanitize_text_field(wp_unslash($_SERVER['HTTP_REFERER'])) : 'unknown',
         'post_status' => get_post_status($post_id),
         'form_data' => array(),
-        'nonce_status' => isset($_POST['expoxr_nonce']) ? wp_verify_nonce($_POST['expoxr_nonce'], 'expoxr_save_model') : 'not provided',
+        'nonce_status' => isset($_POST['expoxr_nonce']) ? wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['expoxr_nonce'])), 'expoxr_save_model') : 'not provided',
         'memory_usage' => memory_get_usage() / 1024 / 1024 . ' MB',
     );
     
@@ -51,7 +51,7 @@ function expoxr_debug_log_post_data($post_id) {
     $missing_fields = array();
     foreach ($important_keys as $key) {
         if (isset($_POST[$key])) {
-            $log_data['form_data'][$key] = $_POST[$key];
+            $log_data['form_data'][$key] = sanitize_text_field(wp_unslash($_POST[$key]));
         } else {
             $missing_fields[] = $key;
         }
@@ -76,7 +76,7 @@ function expoxr_debug_log_post_data($post_id) {
         $checkbox_states[$field] = array(
             'checkbox_present' => isset($_POST[$field]),
             'state_field_present' => isset($_POST[$state_field]),
-            'state_value' => isset($_POST[$state_field]) ? $_POST[$state_field] : 'not set'
+            'state_value' => isset($_POST[$state_field]) ? sanitize_text_field(wp_unslash($_POST[$state_field])) : 'not set'
         );
     }
     $log_data['checkbox_states'] = $checkbox_states;
@@ -94,7 +94,7 @@ function expoxr_debug_log_post_data($post_id) {
     
     // Log the data
     if (get_option('expoxr_debug_mode', false)) {
-        error_log('ExpoXR: Edit mode submission debug for post ' . $post_id . ': ' . $json_log_data);
+        expoxr_log('ExpoXR: Edit mode submission debug for post ' . $post_id . ': ' . $json_log_data);
     }
     
     // Save the debug info to post meta for troubleshooting
@@ -139,7 +139,7 @@ function expoxr_create_debug_log($data, $label = '') {
     if (!file_exists($log_dir)) {
         if (!wp_mkdir_p($log_dir)) {
             if (get_option('expoxr_debug_mode', false)) {
-                error_log('ExpoXR: Failed to create log directory at ' . $log_dir);
+                expoxr_log('ExpoXR: Failed to create log directory at ' . $log_dir, 'error');
             }
             return false;
         }
@@ -161,7 +161,7 @@ function expoxr_create_debug_log($data, $label = '') {
         'PHP Version' => phpversion(),
         'Memory Limit' => ini_get('memory_limit'),
         'ExpoXR Version' => defined('EXPOXR_VERSION') ? EXPOXR_VERSION : 'unknown',
-        'Server Software' => isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : 'unknown',
+        'Server Software' => isset($_SERVER['SERVER_SOFTWARE']) ? sanitize_text_field(wp_unslash($_SERVER['SERVER_SOFTWARE'])) : 'unknown',
         'Active Plugins' => array()
     );
     
@@ -190,7 +190,7 @@ function expoxr_create_debug_log($data, $label = '') {
     
     if ($result === false) {
         if (get_option('expoxr_debug_mode', false)) {
-            error_log('ExpoXR: Failed to write to log file ' . $log_file);
+            expoxr_log('ExpoXR: Failed to write to log file ' . $log_file, 'error');
         }
         return false;
     }

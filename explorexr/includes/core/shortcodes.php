@@ -387,7 +387,7 @@ add_shortcode('expoxr_model', function ($atts) {
         if ($model_attributes_json === false) {
             // Log error and fall back to empty object
             if (get_option('expoxr_debug_mode', false)) {
-                error_log('ExpoXR: JSON encoding error in model attributes for model ID: ' . $model_id);
+                expoxr_log('ExpoXR: JSON encoding error in model attributes for model ID: ' . $model_id, 'error');
             }
             $model_attributes_json = '{}';
         }

@@ -10,6 +10,9 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Include debugging functions
+require_once EXPOXR_PLUGIN_DIR . 'includes/utils/debugging.php';
+
 /**
  * Handle model file upload
  * 
@@ -28,7 +31,7 @@ function expoxr_handle_model_upload($file) {
     // Check if a valid file was uploaded
     if (!isset($file['tmp_name']) || empty($file['tmp_name'])) {
         if (get_option('expoxr_debug_mode', false)) {
-            error_log('ExpoXR: No file was uploaded or file is empty');
+            expoxr_log('ExpoXR: No file was uploaded or file is empty', 'warning');
         }
         return false;
     }
@@ -50,7 +53,7 @@ function expoxr_handle_model_upload($file) {
     }
       if (!$valid_mime) {
         if (get_option('expoxr_debug_mode', false)) {
-            error_log('ExpoXR: Invalid file format. Only GLB and GLTF files are allowed. Received: ' . $mime_type . ' with extension ' . $file_ext);
+            expoxr_log('ExpoXR: Invalid file format. Only GLB and GLTF files are allowed. Received: ' . $mime_type . ' with extension ' . $file_ext, 'error');
         }
         return false;
     }
@@ -76,7 +79,7 @@ function expoxr_handle_model_upload($file) {
     
     if (!$upload_result || isset($upload_result['error'])) {
         if (get_option('expoxr_debug_mode', false)) {
-            error_log('ExpoXR: Failed to move uploaded file: ' . (isset($upload_result['error']) ? $upload_result['error'] : 'Unknown error'));
+            expoxr_log('ExpoXR: Failed to move uploaded file: ' . (isset($upload_result['error']) ? $upload_result['error'] : 'Unknown error'), 'error');
         }
         return false;
     }
@@ -86,7 +89,7 @@ function expoxr_handle_model_upload($file) {
     if (!copy($upload_result['file'], $new_file)) {
         wp_delete_file($upload_result['file']); // Clean up temp file
         if (get_option('expoxr_debug_mode', false)) {
-            error_log('ExpoXR: Failed to copy file to models directory: ' . $new_file);
+            expoxr_log('ExpoXR: Failed to copy file to models directory: ' . $new_file, 'error');
         }
         return false;
     }
@@ -107,7 +110,7 @@ function expoxr_handle_model_upload($file) {
     } else {
         // Log error if WP_Filesystem is not available for chmod operation
         if (function_exists('error_log') && get_option('expoxr_debug_mode', false)) {
-            error_log('ExploreXR: WP_Filesystem not available for chmod operation');
+            expoxr_log('ExploreXR: WP_Filesystem not available for chmod operation', 'error');
         }
     }
     
@@ -116,7 +119,7 @@ function expoxr_handle_model_upload($file) {
     
     // Debug log for successful upload
     if (get_option('expoxr_debug_mode', false)) {
-        error_log('ExpoXR: Successfully uploaded model file to: ' . $file_url);
+        expoxr_log('ExpoXR: Successfully uploaded model file to: ' . $file_url);
     }
       return array(
         'file_path' => $new_file,
@@ -137,7 +140,7 @@ function expoxr_handle_usdz_upload($file, $model_id = null) {
     // Check for upload errors first
     if (!isset($file['error']) || is_array($file['error'])) {
         if (get_option('expoxr_debug_mode', false)) {
-            error_log('ExpoXR: Invalid file parameters for USDZ upload');
+            expoxr_log('ExpoXR: Invalid file parameters for USDZ upload', 'error');
         }
         return false;
     }
@@ -148,18 +151,18 @@ function expoxr_handle_usdz_upload($file, $model_id = null) {
             break;
         case UPLOAD_ERR_NO_FILE:
             if (get_option('expoxr_debug_mode', false)) {
-                error_log('ExpoXR: No USDZ file was uploaded');
+                expoxr_log('ExpoXR: No USDZ file was uploaded', 'warning');
             }
             return false;
         case UPLOAD_ERR_INI_SIZE:
         case UPLOAD_ERR_FORM_SIZE:
             if (get_option('expoxr_debug_mode', false)) {
-                error_log('ExpoXR: USDZ file exceeded the upload size limit');
+                expoxr_log('ExpoXR: USDZ file exceeded the upload size limit', 'error');
             }
             return false;
         default:
             if (get_option('expoxr_debug_mode', false)) {
-                error_log('ExpoXR: Unknown error during USDZ file upload');
+                expoxr_log('ExpoXR: Unknown error during USDZ file upload', 'error');
             }
             return false;
     }
@@ -170,7 +173,7 @@ function expoxr_handle_usdz_upload($file, $model_id = null) {
     
     if ($file_ext !== 'usdz') {
         if (get_option('expoxr_debug_mode', false)) {
-            error_log('ExpoXR: Invalid USDZ file extension: ' . $file_ext);
+            expoxr_log('ExpoXR: Invalid USDZ file extension: ' . $file_ext, 'error');
         }
         return false;
     }
@@ -179,7 +182,7 @@ function expoxr_handle_usdz_upload($file, $model_id = null) {
     $max_size = get_option('expoxr_max_upload_size', 50) * 1024 * 1024; // Convert to bytes
     if ($file['size'] > $max_size) {
         if (get_option('expoxr_debug_mode', false)) {
-            error_log('ExpoXR: USDZ file size exceeds limit: ' . $file['size']);
+            expoxr_log('ExpoXR: USDZ file size exceeds limit: ' . $file['size'], 'error');
         }
         return false;
     }
@@ -215,7 +218,7 @@ function expoxr_handle_usdz_upload($file, $model_id = null) {
     
     if (!$upload_result || isset($upload_result['error'])) {
         if (get_option('expoxr_debug_mode', false)) {
-            error_log('ExpoXR: Failed to move uploaded USDZ file: ' . (isset($upload_result['error']) ? $upload_result['error'] : 'Unknown error'));
+            expoxr_log('ExpoXR: Failed to move uploaded USDZ file: ' . (isset($upload_result['error']) ? $upload_result['error'] : 'Unknown error'), 'error');
         }
         return false;
     }
@@ -224,7 +227,7 @@ function expoxr_handle_usdz_upload($file, $model_id = null) {
     if (!copy($upload_result['file'], $new_file)) {
         wp_delete_file($upload_result['file']); // Clean up temp file
         if (get_option('expoxr_debug_mode', false)) {
-            error_log('ExpoXR: Failed to copy USDZ file to models directory: ' . $new_file);
+            expoxr_log('ExpoXR: Failed to copy USDZ file to models directory: ' . $new_file, 'error');
         }
         return false;
     }
@@ -245,7 +248,7 @@ function expoxr_handle_usdz_upload($file, $model_id = null) {
     } else {
         // Log error if WP_Filesystem is not available for chmod operation
         if (function_exists('error_log')) {
-            error_log('ExploreXR: WP_Filesystem not available for chmod operation');
+            expoxr_log('ExploreXR: WP_Filesystem not available for chmod operation', 'error');
         }
     }
     
@@ -254,7 +257,7 @@ function expoxr_handle_usdz_upload($file, $model_id = null) {
     
     // Debug log for successful upload
     if (get_option('expoxr_debug_mode', false)) {
-        error_log('ExpoXR: Successfully uploaded USDZ file to: ' . $file_url);
+        expoxr_log('ExpoXR: Successfully uploaded USDZ file to: ' . $file_url);
     }
     
     return array(
@@ -372,7 +375,7 @@ function expoxr_get_model_data($post_id) {
             'auto_rotate' => $model_data['auto_rotate'],
             'animation_enabled' => $model_data['animation_enabled']
         );
-        error_log('ExpoXR: Retrieved model data for post #' . $post_id . ': ' . json_encode($log_data));
+        expoxr_log('ExpoXR: Retrieved model data for post #' . $post_id . ': ' . json_encode($log_data));
     }
     
     return $model_data;

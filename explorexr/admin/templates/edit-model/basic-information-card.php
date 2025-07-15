@@ -14,7 +14,9 @@ if (!defined('ABSPATH')) {
 
 // Check if model_id is defined, if not try to get it from $_GET
 if (!isset($model_id) || empty($model_id)) {
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used for template display only
     $model_id = isset($_GET['model_id']) ? intval($_GET['model_id']) : 0;
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used for template display only
     if (!$model_id) {
         echo '<div class="notice notice-error"><p>Error: Model ID not provided to basic-information-card.php template.</p></div>';
         return;

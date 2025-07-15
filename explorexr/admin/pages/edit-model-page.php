@@ -25,9 +25,13 @@ function expoxr_safe_include_template($template_path, $fallback_path = '', $vars
         
         // Get variables from calling function's symbol table (only in debug mode)
         if (get_option('expoxr_debug_mode', false)) {
-            $backtrace = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 1);
-            if (isset($backtrace[0]['args'])) {
-                // Skip this as it could be resource intensive
+            // Gate debug_backtrace() behind WP_DEBUG check for WordPress coding standards
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace -- Used for debugging purposes only
+                $backtrace = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 1);
+                if (isset($backtrace[0]['args'])) {
+                    // Skip this as it could be resource intensive
+                }
             }
         }
 
@@ -152,8 +156,8 @@ function expoxr_edit_model_page() {
         // Update post title and content
         $updated_post = array(
             'ID' => $model_id,
-            'post_title' => sanitize_text_field($_POST['model_title']),
-            'post_content' => wp_kses_post($_POST['model_description'])
+            'post_title' => isset($_POST['model_title']) ? sanitize_text_field(wp_unslash($_POST['model_title'])) : '',
+            'post_content' => isset($_POST['model_description']) ? wp_kses_post(wp_unslash($_POST['model_description'])) : ''
         );
         
         $update_result = wp_update_post($updated_post);
@@ -161,8 +165,9 @@ function expoxr_edit_model_page() {
         if (!is_wp_error($update_result)) {
             // Process model file changes
             if (isset($_POST['model_source']) && $_POST['model_source'] === 'upload') {
-                if (isset($_FILES['model_file']) && $_FILES['model_file']['size'] > 0) {
+                if (isset($_FILES['model_file']) && isset($_FILES['model_file']['size']) && $_FILES['model_file']['size'] > 0) {
                     // Handle file upload
+                    // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- File upload array is handled by expoxr_handle_model_upload()
                     $upload_result = expoxr_handle_model_upload($_FILES['model_file']);
                     
                     if ($upload_result && !is_wp_error($upload_result)) {
@@ -180,50 +185,50 @@ function expoxr_edit_model_page() {
                 }
             } else if (isset($_POST['model_source']) && $_POST['model_source'] === 'existing' && !empty($_POST['existing_model'])) {
                 // Use existing model
-                update_post_meta($model_id, '_expoxr_model_file', sanitize_text_field($_POST['existing_model']));
+                update_post_meta($model_id, '_expoxr_model_file', sanitize_text_field(wp_unslash($_POST['existing_model'])));
             }
             
             // Process model name and alt text
             if (isset($_POST['model_name'])) {
-                update_post_meta($model_id, '_expoxr_model_name', sanitize_text_field($_POST['model_name']));
+                update_post_meta($model_id, '_expoxr_model_name', sanitize_text_field(wp_unslash($_POST['model_name'])));
             }
             
             if (isset($_POST['model_alt_text'])) {
-                update_post_meta($model_id, '_expoxr_model_alt_text', sanitize_text_field($_POST['model_alt_text']));
+                update_post_meta($model_id, '_expoxr_model_alt_text', sanitize_text_field(wp_unslash($_POST['model_alt_text'])));
             }
             
             // Process size settings
             if (isset($_POST['viewer_size'])) {
-                update_post_meta($model_id, '_expoxr_viewer_size', sanitize_text_field($_POST['viewer_size']));
+                update_post_meta($model_id, '_expoxr_viewer_size', sanitize_text_field(wp_unslash($_POST['viewer_size'])));
             }
             
             if (isset($_POST['viewer_width'])) {
-                update_post_meta($model_id, '_expoxr_viewer_width', sanitize_text_field($_POST['viewer_width']));
+                update_post_meta($model_id, '_expoxr_viewer_width', sanitize_text_field(wp_unslash($_POST['viewer_width'])));
             }
             
             if (isset($_POST['viewer_height'])) {
-                update_post_meta($model_id, '_expoxr_viewer_height', sanitize_text_field($_POST['viewer_height']));
+                update_post_meta($model_id, '_expoxr_viewer_height', sanitize_text_field(wp_unslash($_POST['viewer_height'])));
             }
             
             if (isset($_POST['tablet_viewer_width'])) {
-                update_post_meta($model_id, '_expoxr_tablet_viewer_width', sanitize_text_field($_POST['tablet_viewer_width']));
+                update_post_meta($model_id, '_expoxr_tablet_viewer_width', sanitize_text_field(wp_unslash($_POST['tablet_viewer_width'])));
             }
             
             if (isset($_POST['tablet_viewer_height'])) {
-                update_post_meta($model_id, '_expoxr_tablet_viewer_height', sanitize_text_field($_POST['tablet_viewer_height']));
+                update_post_meta($model_id, '_expoxr_tablet_viewer_height', sanitize_text_field(wp_unslash($_POST['tablet_viewer_height'])));
             }
             
             if (isset($_POST['mobile_viewer_width'])) {
-                update_post_meta($model_id, '_expoxr_mobile_viewer_width', sanitize_text_field($_POST['mobile_viewer_width']));
+                update_post_meta($model_id, '_expoxr_mobile_viewer_width', sanitize_text_field(wp_unslash($_POST['mobile_viewer_width'])));
             }
             
             if (isset($_POST['mobile_viewer_height'])) {
-                update_post_meta($model_id, '_expoxr_mobile_viewer_height', sanitize_text_field($_POST['mobile_viewer_height']));
+                update_post_meta($model_id, '_expoxr_mobile_viewer_height', sanitize_text_field(wp_unslash($_POST['mobile_viewer_height'])));
             }
             
             // Process poster image
             if (isset($_POST['poster_method']) && $_POST['poster_method'] === 'upload') {
-                if (isset($_FILES['model_poster']) && $_FILES['model_poster']['size'] > 0) {
+                if (isset($_FILES['model_poster']) && isset($_FILES['model_poster']['size']) && $_FILES['model_poster']['size'] > 0) {
                     // Upload new poster image
                     require_once(ABSPATH . 'wp-admin/includes/image.php');
                     require_once(ABSPATH . 'wp-admin/includes/file.php');
@@ -272,18 +277,18 @@ function expoxr_edit_model_page() {
             
             // Handle auto-rotate delay and speed
             if (isset($_POST['expoxr_auto_rotate_delay'])) {
-                $auto_rotate_delay = sanitize_text_field($_POST['expoxr_auto_rotate_delay']);
+                $auto_rotate_delay = sanitize_text_field(wp_unslash($_POST['expoxr_auto_rotate_delay']));
                 update_post_meta($model_id, '_expoxr_auto_rotate_delay', $auto_rotate_delay);
                 if (get_option('expoxr_debug_mode')) {
-                    error_log('ExpoXR: Explicitly saved auto-rotate delay: ' . $auto_rotate_delay);
+                    expoxr_log('ExpoXR: Explicitly saved auto-rotate delay: ' . $auto_rotate_delay);
                 }
             }
             
             if (isset($_POST['expoxr_auto_rotate_speed'])) {
-                $auto_rotate_speed = sanitize_text_field($_POST['expoxr_auto_rotate_speed']);
+                $auto_rotate_speed = sanitize_text_field(wp_unslash($_POST['expoxr_auto_rotate_speed']));
                 update_post_meta($model_id, '_expoxr_rotation_per_second', $auto_rotate_speed);
                 if (get_option('expoxr_debug_mode')) {
-                    error_log('ExpoXR: Explicitly saved rotation speed: ' . $auto_rotate_speed);
+                    expoxr_log('ExpoXR: Explicitly saved rotation speed: ' . $auto_rotate_speed);
                 }
             }
             
@@ -294,12 +299,12 @@ function expoxr_edit_model_page() {
             $animation_autoplay_value = isset($_POST['expoxr_animation_autoplay']) ? 'on' : 'off';
             update_post_meta($model_id, '_expoxr_animation_autoplay', $animation_autoplay_value);
               if (isset($_POST['expoxr_animation_name'])) {
-                update_post_meta($model_id, '_expoxr_animation_name', sanitize_text_field($_POST['expoxr_animation_name']));
+                update_post_meta($model_id, '_expoxr_animation_name', sanitize_text_field(wp_unslash($_POST['expoxr_animation_name'])));
             }
             
             // Handle animation repeat mode
             if (isset($_POST['expoxr_animation_repeat'])) {
-                update_post_meta($model_id, '_expoxr_animation_repeat', sanitize_text_field($_POST['expoxr_animation_repeat']));
+                update_post_meta($model_id, '_expoxr_animation_repeat', sanitize_text_field(wp_unslash($_POST['expoxr_animation_repeat'])));
             }
             
             // Handle advanced animation settings (from Animation Addon)
@@ -311,7 +316,7 @@ function expoxr_edit_model_page() {
             
             // Handle selected animations (array)
             if (isset($_POST['expoxr_selected_animations']) && is_array($_POST['expoxr_selected_animations'])) {
-                $selected_animations = array_map('sanitize_text_field', $_POST['expoxr_selected_animations']);
+                $selected_animations = array_map('sanitize_text_field', array_map('wp_unslash', wp_unslash($_POST['expoxr_selected_animations'])));
                 update_post_meta($model_id, '_expoxr_selected_animations', $selected_animations);
             } else {
                 update_post_meta($model_id, '_expoxr_selected_animations', array());
@@ -322,15 +327,15 @@ function expoxr_edit_model_page() {
             update_post_meta($model_id, '_expoxr_animation_show_frontend_controls', $show_frontend_controls_value);
             
             if (isset($_POST['expoxr_animation_control_position'])) {
-                update_post_meta($model_id, '_expoxr_animation_control_position', sanitize_text_field($_POST['expoxr_animation_control_position']));
+                update_post_meta($model_id, '_expoxr_animation_control_position', sanitize_text_field(wp_unslash($_POST['expoxr_animation_control_position'])));
             }
             
             if (isset($_POST['expoxr_animation_control_style'])) {
-                update_post_meta($model_id, '_expoxr_animation_control_style', sanitize_text_field($_POST['expoxr_animation_control_style']));
+                update_post_meta($model_id, '_expoxr_animation_control_style', sanitize_text_field(wp_unslash($_POST['expoxr_animation_control_style'])));
             }
             
             if (isset($_POST['expoxr_animation_control_size'])) {
-                update_post_meta($model_id, '_expoxr_animation_control_size', sanitize_text_field($_POST['expoxr_animation_control_size']));
+                update_post_meta($model_id, '_expoxr_animation_control_size', sanitize_text_field(wp_unslash($_POST['expoxr_animation_control_size'])));
             }
 
             // Loading options are handled by the core plugin in free version

@@ -108,7 +108,7 @@ function expoxr_display_verification_results() {
 }
 
 // Run verification if accessed directly
-if (basename($_SERVER['PHP_SELF']) === basename(__FILE__)) {
+if (isset($_SERVER['PHP_SELF']) && basename(sanitize_text_field(wp_unslash($_SERVER['PHP_SELF']))) === basename(__FILE__)) {
     ?>
     <!DOCTYPE html>
     <html>

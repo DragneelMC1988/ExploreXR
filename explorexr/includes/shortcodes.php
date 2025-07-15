@@ -17,6 +17,9 @@ if (file_exists(EXPOXR_PLUGIN_DIR . 'includes/models/model-helper.php')) {
     require_once EXPOXR_PLUGIN_DIR . 'includes/model-helper.php';
 }
 
+// Include debugging functions
+require_once EXPOXR_PLUGIN_DIR . 'includes/utils/debugging.php';
+
 // Make sure we have access to plugin functions
 if (!function_exists('is_plugin_active')) {
     include_once(ABSPATH . 'wp-admin/includes/plugin.php');
@@ -347,7 +350,7 @@ function expoxr_generate_attributes_html($attributes) {
         if ($model_attributes_json === false) {
             // Log error and fall back to empty object
             if (get_option('expoxr_debug_mode', false)) {
-                error_log('ExpoXR: JSON encoding error in model attributes for model ID: ' . $model_id);
+                expoxr_log('ExpoXR: JSON encoding error in model attributes for model ID: ' . $model_id, 'error');
             }
             $model_attributes_json = '{}';
         }

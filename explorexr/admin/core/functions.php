@@ -10,7 +10,8 @@ if (!defined('ABSPATH')) {
  */
 function expoxr_enqueue_edit_model_styles() {
     // Only run in admin and specifically on our edit model page
-    if (!is_admin() || !isset($_GET['page']) || sanitize_text_field($_GET['page']) !== 'expoxr-edit-model') {
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used for conditional style loading only
+    if (!is_admin() || !isset($_GET['page']) || sanitize_text_field(wp_unslash($_GET['page'])) !== 'expoxr-edit-model') {
         return;
     }
     

@@ -190,7 +190,7 @@ function expoxr_get_system_info() {
     $mysql_version = $wpdb->db_version();
     
     // Server info
-    $server_software = isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : '';
+    $server_software = isset($_SERVER['SERVER_SOFTWARE']) ? sanitize_text_field(wp_unslash($_SERVER['SERVER_SOFTWARE'])) : '';
     
     // Theme info
     $theme = wp_get_theme();

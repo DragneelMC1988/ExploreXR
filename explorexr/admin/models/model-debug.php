@@ -31,7 +31,7 @@ add_action('admin_init', 'expoxr_register_model_debug_ajax');
  */
 function expoxr_ajax_check_model_file() {
     // Validate security using centralized function (using 'security' field)
-    if (!isset($_POST['security']) || !wp_verify_nonce($_POST['security'], 'expoxr_admin_nonce')) {
+    if (!isset($_POST['security']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['security'])), 'expoxr_admin_nonce')) {
         expoxr_log_security_event(
             'ajax_security_failure',
             'Model file check blocked: Invalid nonce',
@@ -61,7 +61,7 @@ function expoxr_ajax_check_model_file() {
     }
     
     // Get the file URL
-    $file_url = isset($_POST['file_url']) ? sanitize_text_field($_POST['file_url']) : '';
+    $file_url = isset($_POST['file_url']) ? sanitize_text_field(wp_unslash($_POST['file_url'])) : '';
     if (empty($file_url)) {
         wp_send_json_error(array('message' => 'No file URL provided'));
     }
@@ -136,7 +136,8 @@ function expoxr_add_model_debug_script() {    // Only add on model-related pages
     
     // Only enable debug buttons on the edit model page where advanced debugging is needed
     // Exclude dashboard, browse models, and other regular pages
-    $current_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used for conditional debug display only
+    $current_page = isset($_GET['page']) ? sanitize_text_field(wp_unslash($_GET['page'])) : '';
     
     // Return early and show no debug buttons on any of these pages
     $excluded_pages = [

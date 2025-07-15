@@ -12,7 +12,7 @@ function expoxr_settings_page() {
     }
     
     // Process reset request
-    if (isset($_POST['expoxr_reset_settings']) && isset($_POST['expoxr_reset_nonce']) && wp_verify_nonce($_POST['expoxr_reset_nonce'], 'expoxr_reset_settings')) {
+    if (isset($_POST['expoxr_reset_settings']) && isset($_POST['expoxr_reset_nonce']) && wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['expoxr_reset_nonce'])), 'expoxr_reset_settings')) {
         // Reset option values to defaults
         $default_options = array(
             'expoxr_loading_display' => 'bar',
@@ -41,7 +41,7 @@ function expoxr_settings_page() {
         echo '<div class="notice notice-success is-dismissible"><p>All settings have been reset to default values!</p></div>';
     }
       // Process cache clearing
-    if (isset($_POST['expoxr_clear_cache'])) {
+    if (isset($_POST['expoxr_clear_cache']) && isset($_POST['expoxr_clear_cache_nonce']) && wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['expoxr_clear_cache_nonce'])), 'expoxr_clear_cache')) {
         // Clear any transients or stored cache
         delete_transient('expoxr_viewer_version_check');
         delete_option('expoxr_last_cdn_check');
@@ -52,13 +52,13 @@ function expoxr_settings_page() {
     }
     
     // Process general settings form submission
-    if (isset($_POST['expoxr_action']) && $_POST['expoxr_action'] === 'save_general_settings' && isset($_POST['expoxr_general_nonce']) && wp_verify_nonce($_POST['expoxr_general_nonce'], 'expoxr_general_settings')) {
+    if (isset($_POST['expoxr_action']) && $_POST['expoxr_action'] === 'save_general_settings' && isset($_POST['expoxr_general_nonce']) && wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['expoxr_general_nonce'])), 'expoxr_general_settings')) {
         // Process general settings fields
         if (isset($_POST['expoxr_cdn_source'])) {
-            update_option('expoxr_cdn_source', sanitize_text_field($_POST['expoxr_cdn_source']));
+            update_option('expoxr_cdn_source', sanitize_text_field(wp_unslash($_POST['expoxr_cdn_source'])));
         }
         if (isset($_POST['expoxr_model_viewer_version'])) {
-            update_option('expoxr_model_viewer_version', sanitize_text_field($_POST['expoxr_model_viewer_version']));
+            update_option('expoxr_model_viewer_version', sanitize_text_field(wp_unslash($_POST['expoxr_model_viewer_version'])));
         }
         if (isset($_POST['expoxr_max_upload_size'])) {
             $max_upload = absint($_POST['expoxr_max_upload_size']);
@@ -77,7 +77,7 @@ function expoxr_settings_page() {
     }
     
     // Process debug settings form submission
-    if (isset($_POST['submit']) && $_POST['submit'] === 'Save Debug Settings' && isset($_POST['_wpnonce']) && wp_verify_nonce($_POST['_wpnonce'], 'expoxr_settings-options')) {
+    if (isset($_POST['submit']) && $_POST['submit'] === 'Save Debug Settings' && isset($_POST['_wpnonce']) && wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_wpnonce'])), 'expoxr_settings-options')) {
         // Define debug setting fields
         $debug_fields = array(
             'expoxr_debug_log',
@@ -112,7 +112,7 @@ function expoxr_settings_page() {
         
         foreach ($other_fields as $field) {
             if (isset($_POST[$field])) {
-                update_option($field, sanitize_text_field($_POST[$field]));
+                update_option($field, sanitize_text_field(wp_unslash($_POST[$field])));
             }
         }
         
@@ -424,7 +424,7 @@ function expoxr_settings_page() {
                 </tr>
                 <tr>
                     <th>Browser</th>
-                    <td id="expoxr-user-agent"><?php echo esc_html($_SERVER['HTTP_USER_AGENT']); ?></td>
+                    <td id="expoxr-user-agent"><?php echo esc_html(isset($_SERVER['HTTP_USER_AGENT']) ? sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'])) : 'N/A'); ?></td>
                 </tr>
             </tbody>
         </table>
@@ -468,6 +468,7 @@ function expoxr_settings_page() {
         ?>
         <p>In some cases, clearing the model viewer cache can help resolve display issues with 3D models.</p>
         <form method="post" onsubmit="return confirm('Are you sure you want to clear the model viewer cache? This will not affect your saved settings.'));\">
+            <?php wp_nonce_field('expoxr_clear_cache', 'expoxr_clear_cache_nonce'); ?>
             <p class="submit">
                 <input type="submit" name="expoxr_clear_cache" class="button button-secondary" value="Clear Cache">
             </p>        </form>

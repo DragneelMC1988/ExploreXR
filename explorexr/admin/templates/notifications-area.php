@@ -19,7 +19,8 @@ if (!defined('ABSPATH')) {
     // This area will be populated by WordPress notices and ExploreXR notifications
     
     // Check for plugin-specific messages
-    if (isset($_GET['settings-updated']) && $_GET['settings-updated'] == 'true') {
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only display of URL parameters
+    if (isset($_GET['settings-updated']) && sanitize_text_field(wp_unslash($_GET['settings-updated'])) == 'true') {
         echo '<div class="notice notice-success is-dismissible">
                 <p><strong>Settings saved successfully!</strong></p>
                 <button type="button" class="notice-dismiss">
@@ -29,8 +30,10 @@ if (!defined('ABSPATH')) {
     }
     
     // Check for any error messages
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only display of URL parameters
     if (isset($_GET['error']) && !empty($_GET['error'])) {
-        $error_message = sanitize_text_field($_GET['error']);
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only display of URL parameters
+        $error_message = sanitize_text_field(wp_unslash($_GET['error']));
         echo '<div class="notice notice-error is-dismissible">
                 <p><strong>Error:</strong> ' . esc_html($error_message) . '</p>
                 <button type="button" class="notice-dismiss">
@@ -40,8 +43,10 @@ if (!defined('ABSPATH')) {
     }
     
     // Check for success messages
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only display of URL parameters
     if (isset($_GET['success']) && !empty($_GET['success'])) {
-        $success_message = sanitize_text_field($_GET['success']);
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only display of URL parameters
+        $success_message = sanitize_text_field(wp_unslash($_GET['success']));
         echo '<div class="notice notice-success is-dismissible">
                 <p><strong>Success:</strong> ' . esc_html($success_message) . '</p>
                 <button type="button" class="notice-dismiss">

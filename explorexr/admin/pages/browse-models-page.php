@@ -31,7 +31,8 @@ function expoxr_browse_models_page() {
         
         <?php
         // Display success/warning/error message when redirected after model creation
-        if (isset($_GET['created']) && $_GET['created'] === 'true') {
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used for display purposes only
+        if (isset($_GET['created']) && sanitize_text_field(wp_unslash($_GET['created'])) === 'true') {
             $creation_result = get_transient('expoxr_model_created');
             if ($creation_result) {
                 delete_transient('expoxr_model_created'); // Clean up transient

@@ -185,13 +185,13 @@ function expoxr_loading_options_page() {
     }
     
     // Process loading settings form submission
-    if (isset($_POST['expoxr_action']) && $_POST['expoxr_action'] === 'save_loading_options' && isset($_POST['expoxr_loading_nonce']) && wp_verify_nonce($_POST['expoxr_loading_nonce'], 'expoxr_loading_settings')) {
+    if (isset($_POST['expoxr_action']) && $_POST['expoxr_action'] === 'save_loading_options' && isset($_POST['expoxr_loading_nonce']) && wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['expoxr_loading_nonce'])), 'expoxr_loading_settings')) {
         // Process loading settings fields
         if (isset($_POST['expoxr_loading_display'])) {
-            update_option('expoxr_loading_display', sanitize_text_field($_POST['expoxr_loading_display']));
+            update_option('expoxr_loading_display', sanitize_text_field(wp_unslash($_POST['expoxr_loading_display'])));
         }
         if (isset($_POST['expoxr_large_model_handling'])) {
-            update_option('expoxr_large_model_handling', sanitize_text_field($_POST['expoxr_large_model_handling']));
+            update_option('expoxr_large_model_handling', sanitize_text_field(wp_unslash($_POST['expoxr_large_model_handling'])));
         }
         if (isset($_POST['expoxr_large_model_size_threshold'])) {
             $threshold = absint($_POST['expoxr_large_model_size_threshold']);

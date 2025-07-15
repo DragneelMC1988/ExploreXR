@@ -141,7 +141,8 @@ class ExpoXR_Post_Types {
         }
         
         // Check post type
-        if (!isset($_POST['post_type']) || 'expoxr_model' != $_POST['post_type']) {
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
+        if (!isset($_POST['post_type']) || 'expoxr_model' != sanitize_text_field(wp_unslash($_POST['post_type']))) {
             return;
         }
         
@@ -157,11 +158,11 @@ class ExpoXR_Post_Types {
             
             // Log the result for debugging
             if (get_option('expoxr_debug_mode', false)) {
-                error_log('ExpoXR: Meta save result for post ' . $post_id . ': ' . ($result ? 'Success' : 'Failed'));
+                expoxr_log('ExpoXR: Meta save result for post ' . $post_id . ': ' . ($result ? 'Success' : 'Failed'));
             }
         } else {
             if (get_option('expoxr_debug_mode', false)) {
-                error_log('ExpoXR: expoxr_save_all_post_meta function not found');
+                expoxr_log('ExpoXR: expoxr_save_all_post_meta function not found', 'error');
             }
         }
     }

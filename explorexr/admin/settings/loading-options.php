@@ -93,7 +93,7 @@ function expoxr_render_loading_options_page() {
     
     // Save settings if form is submitted
     if (isset($_POST['expoxr_save_loading_options']) && check_admin_referer('expoxr_loading_options_nonce')) {
-        $loading_type = sanitize_text_field($_POST['expoxr_loading_type']);
+        $loading_type = isset($_POST['expoxr_loading_type']) ? sanitize_text_field(wp_unslash($_POST['expoxr_loading_type'])) : 'both';
         
         // Save options
         update_option('expoxr_loading_type', $loading_type);

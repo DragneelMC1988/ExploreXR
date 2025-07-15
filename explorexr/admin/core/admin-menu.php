@@ -73,7 +73,8 @@ function expoxr_fix_admin_menu_highlighting($parent_file) {
     global $submenu_file;
     
     // Check if we're on the edit model page
-    if (isset($_GET['page']) && sanitize_text_field($_GET['page']) === 'expoxr-edit-model') {
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used for display purposes only
+    if (isset($_GET['page']) && sanitize_text_field(wp_unslash($_GET['page'])) === 'expoxr-edit-model') {
         $parent_file = 'explorexr'; // Set ExploreXR as the parent menu
         $submenu_file = 'expoxr-browse-models'; // Highlight Browse Models submenu
     }
