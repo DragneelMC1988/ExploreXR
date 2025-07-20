@@ -104,23 +104,29 @@ function ExploreXR_edit_model_page() {
         ));
         wp_redirect(admin_url('admin.php?page=ExploreXR-dashboard'));
         exit;
-    }// Include the model-viewer script
-    ExploreXR_safe_include_template(ExploreXR_PLUGIN_DIR . 'template-parts/model-viewer-script.php', '', array('model_id' => $model_id));
-      // Make sure the WordPress Media Library scripts are loaded
+    }
+    
+    // Include the model-viewer script (moved to later in the process to avoid header conflicts)
+    // ExploreXR_safe_include_template(EXPLOREXR_PLUGIN_DIR . 'template-parts/model-viewer-script.php', '', array('model_id' => $model_id));
+    
+    // Make sure the WordPress Media Library scripts are loaded
     wp_enqueue_media();
     
     // Initialize variables for messages
     $success_message = '';
     $error_message = '';
-      // Get the model data
+    
+    // Get the model data
     $model = get_post($model_id);
     $model_title = $model ? $model->post_title : '';
     $model_description = $model ? $model->post_content : '';
-      // Get model meta data
+    
+    // Get model meta data
     $model_file = get_post_meta($model_id, '_ExploreXR_model_file', true) ?: '';
     $model_name = get_post_meta($model_id, '_ExploreXR_model_name', true) ?: '';
     $model_alt_text = get_post_meta($model_id, '_ExploreXR_model_alt_text', true) ?: '';
-      // Get size settings
+    
+    // Get size settings
     $viewer_size = get_post_meta($model_id, '_ExploreXR_viewer_size', true) ?: 'custom';
     $viewer_width = get_post_meta($model_id, '_ExploreXR_viewer_width', true) ?: '100%';
     $viewer_height = get_post_meta($model_id, '_ExploreXR_viewer_height', true) ?: '500px';
@@ -340,7 +346,7 @@ function ExploreXR_edit_model_page() {
     <div class="wrap ExploreXR-admin-page ExploreXR-edit-model-page ExploreXR-admin-menu-fix">
         <!-- WordPress admin notices appear here automatically before our custom content -->
         
-        <?php include ExploreXR_PLUGIN_DIR . 'admin/templates/notifications-area.php'; ?>
+        <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/notifications-area.php'; ?>
         <?php 
         $page_title = 'Edit 3D Model';
         $header_actions = '<a href="' . esc_url(admin_url('admin.php?page=ExploreXR-browse-models')) . '" class="button">
@@ -349,7 +355,7 @@ function ExploreXR_edit_model_page() {
         <a href="' . esc_url(admin_url('admin.php?page=ExploreXR-create-model')) . '" class="button button-primary">
             <span class="dashicons dashicons-plus"></span> Create New Model
         </a>';
-        include ExploreXR_PLUGIN_DIR . 'admin/templates/admin-header.php'; 
+        include EXPLOREXR_PLUGIN_DIR . 'admin/templates/admin-header.php'; 
         ?>
         
         <?php if (!empty($success_message)) : ?>
@@ -380,7 +386,7 @@ function ExploreXR_edit_model_page() {
             'camera_controls' => $camera_controls
             // Animation settings are not available in the Free version
         );
-        ExploreXR_safe_include_template(ExploreXR_PLUGIN_DIR . 'admin/templates/edit-model/model-preview-card.php', '', $template_vars); 
+        ExploreXR_safe_include_template(EXPLOREXR_PLUGIN_DIR . 'admin/templates/edit-model/model-preview-card.php', '', $template_vars); 
         ?>
           <form method="post" enctype="multipart/form-data">
             <?php wp_nonce_field('ExploreXR_edit_model', 'ExploreXR_edit_nonce'); ?>
@@ -394,7 +400,7 @@ function ExploreXR_edit_model_page() {
                 'model_name' => $model_name,
                 'model_alt_text' => $model_alt_text
             );
-            ExploreXR_safe_include_template(ExploreXR_PLUGIN_DIR . 'admin/templates/edit-model/basic-information-card.php', '', $template_vars); 
+            ExploreXR_safe_include_template(EXPLOREXR_PLUGIN_DIR . 'admin/templates/edit-model/basic-information-card.php', '', $template_vars); 
             ?>
               <!-- Display Size Settings -->
             <?php 
@@ -408,7 +414,7 @@ function ExploreXR_edit_model_page() {
                 'mobile_viewer_width' => $mobile_viewer_width,
                 'mobile_viewer_height' => $mobile_viewer_height
             );
-            ExploreXR_safe_include_template(ExploreXR_PLUGIN_DIR . 'admin/templates/edit-model/display-size-card.php', '', $template_vars); 
+            ExploreXR_safe_include_template(EXPLOREXR_PLUGIN_DIR . 'admin/templates/edit-model/display-size-card.php', '', $template_vars); 
             ?>
               <!-- 3D Model File -->
             <?php 
@@ -418,7 +424,7 @@ function ExploreXR_edit_model_page() {
                 'existing_models' => $existing_models,
                 'poster_url' => $poster_url,
                 'poster_id' => $poster_id
-            );            ExploreXR_safe_include_template(ExploreXR_PLUGIN_DIR . 'admin/templates/edit-model/model-file-card.php', '', $template_vars); 
+            );            ExploreXR_safe_include_template(EXPLOREXR_PLUGIN_DIR . 'admin/templates/edit-model/model-file-card.php', '', $template_vars); 
             ?>
               <!-- Poster Image -->
             <?php 
@@ -427,7 +433,7 @@ function ExploreXR_edit_model_page() {
                 'poster_url' => $poster_url,
                 'poster_id' => $poster_id
             );
-            ExploreXR_safe_include_template(ExploreXR_PLUGIN_DIR . 'admin/templates/edit-model/poster-image-card.php', '', $template_vars); 
+            ExploreXR_safe_include_template(EXPLOREXR_PLUGIN_DIR . 'admin/templates/edit-model/poster-image-card.php', '', $template_vars); 
             ?>
               <!-- Viewer Controls -->
             <?php 
@@ -437,7 +443,7 @@ function ExploreXR_edit_model_page() {
                 'enable_interactions' => $enable_interactions,
                 'auto_rotate' => $auto_rotate
             );
-            ExploreXR_safe_include_template(ExploreXR_PLUGIN_DIR . 'admin/templates/edit-model/viewer-controls-card.php', '', $template_vars); 
+            ExploreXR_safe_include_template(EXPLOREXR_PLUGIN_DIR . 'admin/templates/edit-model/viewer-controls-card.php', '', $template_vars); 
             ?>
             
             <div class="ExploreXR-form-actions"><button type="submit" name="ExploreXR_edit_model_submit" class="button button-primary button-large">
@@ -449,7 +455,7 @@ function ExploreXR_edit_model_page() {
     <?php
     
     // Include the model viewer modal
-    include ExploreXR_PLUGIN_DIR . 'admin/templates/model-viewer-modal.php';
+    include EXPLOREXR_PLUGIN_DIR . 'admin/templates/model-viewer-modal.php';
 }
 
 // Function to get model files from uploads directory
@@ -481,7 +487,14 @@ function ExploreXR_get_model_files_from_directory() {
     return $files;
 }
 
-
-
-
-
+/**
+ * Function alias for WordPress admin menu compatibility
+ * 
+ * This provides a lowercase alias for the main edit model page function
+ * to ensure compatibility with the menu registration system.
+ */
+if (!function_exists('explorexr_edit_model_page')) {
+    function explorexr_edit_model_page() {
+        return ExploreXR_edit_model_page();
+    }
+}
