@@ -84,13 +84,13 @@ function ExploreXR_edit_model_page() {
     $model_id = isset($_GET['model_id']) ? intval($_GET['model_id']) : 0;
     
     // Check if the model exists and is valid
-    if (!$model_id || get_post_type($model_id) !== 'ExploreXR_model') {
+    if (!$model_id || get_post_type($model_id) !== 'explorexr_model') {
         // Set error notification and redirect to dashboard
         add_option('ExploreXR_admin_notice', array(
             'type' => 'error',
             'message' => 'The requested model could not be found. Please check the model ID and try again.'
         ));
-        wp_redirect(admin_url('admin.php?page=ExploreXR-dashboard'));
+        wp_redirect(admin_url('admin.php?page=explorexr'));
         exit;
     }
     
@@ -102,7 +102,7 @@ function ExploreXR_edit_model_page() {
             'type' => 'error',
             'message' => 'The requested model no longer exists. It may have been deleted.'
         ));
-        wp_redirect(admin_url('admin.php?page=ExploreXR-dashboard'));
+        wp_redirect(admin_url('admin.php?page=explorexr'));
         exit;
     }
     
@@ -337,8 +337,8 @@ function ExploreXR_edit_model_page() {
             $error_message = 'Unable to update model: ' . $update_result->get_error_message();
         }
     }
-      // Generate the shortcode
-    $shortcode = '[ExploreXR_model id="' . $model_id . '"]';
+    // Generate the shortcode
+    $shortcode = '[EXPLOREXR_model id="' . $model_id . '"]';
       // CSS styling is now handled by the functions.php file
     
     // Render the page
@@ -349,10 +349,10 @@ function ExploreXR_edit_model_page() {
         <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/notifications-area.php'; ?>
         <?php 
         $page_title = 'Edit 3D Model';
-        $header_actions = '<a href="' . esc_url(admin_url('admin.php?page=ExploreXR-browse-models')) . '" class="button">
+        $header_actions = '<a href="' . esc_url(admin_url('admin.php?page=explorexr-browse-models')) . '" class="button">
             <span class="dashicons dashicons-format-gallery"></span> Browse Models
         </a>
-        <a href="' . esc_url(admin_url('admin.php?page=ExploreXR-create-model')) . '" class="button button-primary">
+        <a href="' . esc_url(admin_url('admin.php?page=explorexr-create-model')) . '" class="button button-primary">
             <span class="dashicons dashicons-plus"></span> Create New Model
         </a>';
         include EXPLOREXR_PLUGIN_DIR . 'admin/templates/admin-header.php'; 
@@ -424,7 +424,8 @@ function ExploreXR_edit_model_page() {
                 'existing_models' => $existing_models,
                 'poster_url' => $poster_url,
                 'poster_id' => $poster_id
-            );            ExploreXR_safe_include_template(EXPLOREXR_PLUGIN_DIR . 'admin/templates/edit-model/model-file-card.php', '', $template_vars); 
+            );
+            ExploreXR_safe_include_template(EXPLOREXR_PLUGIN_DIR . 'admin/templates/edit-model/model-file-card.php', '', $template_vars); 
             ?>
               <!-- Poster Image -->
             <?php 
@@ -449,7 +450,7 @@ function ExploreXR_edit_model_page() {
             <div class="ExploreXR-form-actions"><button type="submit" name="ExploreXR_edit_model_submit" class="button button-primary button-large">
                     <span class="dashicons dashicons-update"></span> Update 3D Model
                 </button>
-                <a href="<?php echo esc_url(admin_url('admin.php?page=ExploreXR-browse-models')); ?>" class="button button-large">Cancel</a>            </div>        </form>
+                <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-browse-models')); ?>" class="button button-large">Cancel</a>            </div>        </form>
     </div>
     
     <?php
