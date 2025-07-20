@@ -281,6 +281,6 @@ This project is licensed under the GPL v2 or later - see the [LICENSE](LICENSE) 
 
 ---
 
-**Made with ❤️ by [Ayal Othman](https://expoxr.de)**
+**Made with ❤️ by [Ayal Othman](https://expoxr.com)**
 
 *Transform your WordPress website with immersive 3D experiences. Start with ExploreXR today!*

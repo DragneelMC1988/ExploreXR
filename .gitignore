@@ -1,7 +1,7 @@
 .qodo
 .vscode/
 sftp.json
-expoxr/models/
+explorexr/models/
 /index.php
 docs/quick_commands.md
 # Ignore all model file types regardless of location
