@@ -29,17 +29,19 @@ function expoxr_free_uninstall() {
     global $wpdb;
 
     // Clean up temporary transients only (temporary cached data)
-    // Direct database query is required here because:
-    // 1. WordPress has no bulk API for deleting transients by prefix
-    // 2. This is uninstall cleanup - one-time operation that doesn't need caching
-    // 3. Individual delete_transient() calls would be inefficient for bulk cleanup
-    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Required for bulk transient cleanup during uninstall, no WordPress API alternative
-    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Uninstall is one-time operation, caching not applicable  
-    $wpdb->query($wpdb->prepare(
-        "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s",
-        $wpdb->esc_like('_transient_expoxr_') . '%',
-        $wpdb->esc_like('_transient_timeout_expoxr_') . '%'
-    ));
+    // Use WordPress API to clean up transients individually for better compliance
+    $transient_options = get_option('exploxr_temp_transients', array());
+    if (!empty($transient_options)) {
+        foreach ($transient_options as $transient_key) {
+            delete_transient($transient_key);
+        }
+        delete_option('exploxr_temp_transients');
+    }
+    
+    // Alternative: Clean up known transients individually
+    delete_transient('expoxr_model_cache');
+    delete_transient('expoxr_admin_stats');
+    delete_transient('expoxr_file_validation');
 
     // Clean up temporary admin notices
     delete_option('expoxr_admin_notice');

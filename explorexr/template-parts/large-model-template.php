@@ -34,8 +34,18 @@ if (!defined('ABSPATH')) {
             ?>
         <?php elseif (!empty($model_poster)) : ?>
             <!-- Fallback for direct URL when attachment ID is not available -->
-            <!-- phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage -- Fallback for external URL posters when attachment ID unavailable -->
-            <?php printf('<img src="%s" alt="%s" style="width: 100%%; height: 100%%; object-fit: cover; position: absolute; top: 0; left: 0;">', esc_url($model_poster), esc_attr__('3D Model Poster', 'explorexr')); ?>
+            <div class="expoxr-model-poster-wrapper">
+                <?php
+                // phpcs:disable PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage
+                printf(
+                    '<img src="%s" alt="%s" style="%s">',
+                    esc_url($model_poster),
+                    esc_attr__('3D Model Poster', 'explorexr'),
+                    esc_attr('width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;')
+                );
+                // phpcs:enable PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage
+                ?>
+            </div>
         <?php endif; ?>
         <button class="expoxr-load-model-btn" id="<?php echo esc_attr($model_instance_id); ?>-btn" style="position: relative; z-index: 10;">
             <?php echo esc_html__('Load 3D Model', 'explorexr'); ?>
