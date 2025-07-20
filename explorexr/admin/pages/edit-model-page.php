@@ -61,8 +61,7 @@ function ExploreXR_safe_include_template($template_path, $fallback_path = '', $v
         include $fallback_path;
         return true;
     } else {
-        // Output HTML comment for debugging
-        echo '<!-- Template file not found: ' . esc_html($template_path) . ' -->';
+        // Silently fail for missing templates in admin area to prevent header issues
         // Log error if logging function is available
         if (function_exists('ExploreXR_log_error')) {
             ExploreXR_log_error('Template file not found: ' . $template_path);
@@ -172,8 +171,8 @@ function ExploreXR_edit_model_page() {
             if (isset($_POST['model_source']) && $_POST['model_source'] === 'upload') {
                 if (isset($_FILES['model_file']) && isset($_FILES['model_file']['size']) && $_FILES['model_file']['size'] > 0) {
                     // Handle file upload
-                    // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- File upload array is handled by ExploreXR_handle_model_upload()
-                    $upload_result = ExploreXR_handle_model_upload($_FILES['model_file']);
+                    // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- File upload array is handled by explorexr_handle_model_upload()
+                    $upload_result = explorexr_handle_model_upload($_FILES['model_file']);
                     
                     if ($upload_result && !is_wp_error($upload_result)) {
                         update_post_meta($model_id, '_ExploreXR_model_file', $upload_result['file_url']);
@@ -285,7 +284,7 @@ function ExploreXR_edit_model_page() {
                 $auto_rotate_delay = sanitize_text_field(wp_unslash($_POST['ExploreXR_auto_rotate_delay']));
                 update_post_meta($model_id, '_ExploreXR_auto_rotate_delay', $auto_rotate_delay);
                 if (get_option('ExploreXR_debug_mode')) {
-                    ExploreXR_log('ExploreXR: Explicitly saved auto-rotate delay: ' . $auto_rotate_delay);
+                    explorexr_log('ExploreXR: Explicitly saved auto-rotate delay: ' . $auto_rotate_delay);
                 }
             }
             
@@ -293,7 +292,7 @@ function ExploreXR_edit_model_page() {
                 $auto_rotate_speed = sanitize_text_field(wp_unslash($_POST['ExploreXR_auto_rotate_speed']));
                 update_post_meta($model_id, '_ExploreXR_rotation_per_second', $auto_rotate_speed);
                 if (get_option('ExploreXR_debug_mode')) {
-                    ExploreXR_log('ExploreXR: Explicitly saved rotation speed: ' . $auto_rotate_speed);
+                    explorexr_log('ExploreXR: Explicitly saved rotation speed: ' . $auto_rotate_speed);
                 }
             }
             
