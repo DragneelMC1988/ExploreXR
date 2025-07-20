@@ -287,24 +287,6 @@ function expoxr_premium_upgrade_page() {
                 </div>
             </section>
 
-            <section class="testimonials">
-                <h2>What Our Users Say</h2>
-                <div class="testimonials-grid">
-                    <blockquote>
-                        "ExploreXR Premium transformed how we showcase our products. The AR feature is a game-changer!"
-                        <cite>- Sarah K., E-commerce Store Owner</cite>
-                    </blockquote>
-                    <blockquote>
-                        "The 3D animations bring our models to life. Customers love the interactive experience."
-                        <cite>- Mike R., Product Designer</cite>
-                    </blockquote>
-                    <blockquote>
-                        "Interactive annotations help us explain complex products easily. Sales have increased significantly."
-                        <cite>- Lisa T., Marketing Manager</cite>
-                    </blockquote>
-                </div>
-            </section>
-
             <section class="upgrade-cta">
                 <div class="cta-content">
                     <h2>Ready to Upgrade?</h2>

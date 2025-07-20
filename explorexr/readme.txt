@@ -4,7 +4,7 @@ Tags: 3d, model-viewer, glb, gltf, ar
 Requires at least: 5.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -114,6 +114,20 @@ Basic integration is available in the free version. Advanced features like the E
 
 == Changelog ==
 
+= 1.0.2 =
+* MAJOR: Model storage relocated to WordPress uploads directory (wp-content/uploads/explorexr_models/)
+* SECURITY: Fixed all external CDN dependencies - now uses local files only
+* SECURITY: Added comprehensive ABSPATH protection to all PHP files
+* SECURITY: Enhanced .htaccess protection for models directory
+* FIXED: PHP syntax error in uninstall.php that prevented proper cleanup
+* FIXED: Function prefixing - renamed sanitize_hex_color to expoxr_sanitize_hex_color
+* FIXED: Removed all inline CSS/JS from upgrade system for WordPress compliance
+* IMPROVED: Streamlined uninstall process - preserves user settings and models
+* IMPROVED: Enhanced script/style enqueueing with proper dependencies
+* IMPROVED: All vendor dependencies now included locally (Draco, Basis Universal, Three.js)
+* COMPLIANCE: Full WordPress.org Plugin Directory guidelines compliance
+* GPL: Verified all dependencies are GPL-compatible
+
 = 1.0.1 =
 * Fixed: AR support attributes removed from free version model-viewer tags
 * Fixed: 3D model delete functionality - added missing AJAX handler
@@ -135,6 +149,9 @@ Basic integration is available in the free version. Advanced features like the E
 * Comprehensive documentation and help system
 
 == Upgrade Notice ==
+
+= 1.0.2 =
+Major release with WordPress.org compliance fixes: Model storage moved to uploads directory, all external dependencies localized, enhanced security, and streamlined uninstall. Full compliance with WordPress Plugin Directory guidelines. Recommended update for all users.
 
 = 1.0.1 =
 Bug fixes and improvements: Fixed model deletion, AR support cleanup, and enhanced modal display. Recommended update for all users.

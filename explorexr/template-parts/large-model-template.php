@@ -35,7 +35,7 @@ if (!defined('ABSPATH')) {
         <?php elseif (!empty($model_poster)) : ?>
             <!-- Fallback for direct URL when attachment ID is not available -->
             <!-- phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage -- Fallback for external URL posters when attachment ID unavailable -->
-            <img src="<?php echo esc_url($model_poster); ?>" alt="<?php esc_attr_e('3D Model Poster', 'explorexr'); ?>" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;">
+            <?php printf('<img src="%s" alt="%s" style="width: 100%%; height: 100%%; object-fit: cover; position: absolute; top: 0; left: 0;">', esc_url($model_poster), esc_attr__('3D Model Poster', 'explorexr')); ?>
         <?php endif; ?>
         <button class="expoxr-load-model-btn" id="<?php echo esc_attr($model_instance_id); ?>-btn" style="position: relative; z-index: 10;">
             <?php echo esc_html__('Load 3D Model', 'explorexr'); ?>

@@ -58,7 +58,7 @@ function expoxr_handle_model_upload($file) {
         return false;
     }
     
-    // Use the plugin's defined models directory
+    // Use the WordPress uploads models directory
     $models_dir = EXPOXR_MODELS_DIR;
     
     // Create models directory if it doesn't exist

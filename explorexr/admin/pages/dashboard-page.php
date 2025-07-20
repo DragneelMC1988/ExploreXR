@@ -325,8 +325,8 @@ function expoxr_dashboard_page() {
                         <span class="dashicons dashicons-info"></span>
                     </div>
                     <div class="expoxr-premium-info">
-                        <h4>And More Many Addons Coming Soon</h4>
-                        <p>We're constantly working on exciting new addons to enhance your 3D experience even further!</p>
+                        <h4>And Many More Addons Available Now</h4>
+                        <p>We're constantly adding powerful new addons to our current library to take your 3D experience to the next level!</p>
                     </div>
                 </div>
             </div>

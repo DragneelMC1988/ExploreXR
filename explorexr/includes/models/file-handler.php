@@ -12,7 +12,7 @@ add_filter('upload_mimes', function ($mimes) {
     return $mimes;
 });
 
-// Handle file uploads and save them in the 'models' folder
+// Handle file uploads and save them in the WordPress uploads models folder
 add_action('add_attachment', function ($post_id) {
     $file = get_attached_file($post_id);
     $filetype = wp_check_filetype($file);
@@ -21,12 +21,12 @@ add_action('add_attachment', function ($post_id) {
     if (in_array($filetype['ext'], ['glb', 'gltf', 'usdz'])) {
         $upload_dir = EXPOXR_MODELS_DIR;
         
-        // Create the 'models' folder if it doesn't exist
+        // Create the models folder if it doesn't exist
         if (!file_exists($upload_dir)) {
             wp_mkdir_p($upload_dir);
         }
 
-        // Move the uploaded file to the 'models' folder
+        // Move the uploaded file to the models folder
         $new_file = $upload_dir . basename($file);
         
         // Initialize WP_Filesystem

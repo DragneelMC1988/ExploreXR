@@ -454,7 +454,7 @@ function expoxr_edit_model_page() {
 
 // Function to get model files from uploads directory
 function expoxr_get_model_files_from_directory() {
-    // Use the plugin's defined models directory
+    // Use the WordPress uploads models directory
     $models_dir = EXPOXR_MODELS_DIR;
     $models_url = EXPOXR_MODELS_URL;
     

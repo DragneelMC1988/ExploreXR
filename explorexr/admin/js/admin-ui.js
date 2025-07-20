@@ -31,7 +31,7 @@ jQuery(document).ready(function($) {
         
         // If UMD loading fails, fallback to module version
         script.onload = function() {
-            console.log('Model Viewer loaded successfully (UMD)');
+            // Model Viewer loaded successfully
         };
         
         script.onerror = function() {

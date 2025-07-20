@@ -171,6 +171,11 @@ function expoxr_admin_enqueue_scripts($hook) {
             'ajax_url' => admin_url('admin-ajax.php')
         ));
         
+        // Localize script for admin vars (required by admin-ui.js)
+        wp_localize_script('expoxr-admin-ui', 'expoxrAdminVars', array(
+            'pluginUrl' => EXPOXR_PLUGIN_URL
+        ));
+        
         // Edit model page specific
         if (strpos($hook ?? '', 'expoxr-edit-model') !== false) {
             wp_enqueue_style('expoxr-edit-model-css', EXPOXR_PLUGIN_URL . 'admin/css/edit-model.css', array(), EXPOXR_VERSION);

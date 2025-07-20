@@ -399,8 +399,12 @@ function expoxr_create_model_page() {
                             </button>
                         </div>
                         <div id="expoxr-poster-preview" style="margin-top: 15px; display: none;">
-                            <!-- phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage -- Dynamic preview image for upload interface, no attachment ID available -->
-                            <img src="" alt="<?php esc_attr_e('Poster preview', 'explorexr'); ?>" style="max-width: 200px; max-height: 200px; border: 1px solid #ddd; border-radius: 4px;" loading="lazy">
+                            <?php 
+                            // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage -- Dynamic preview image for upload interface, no attachment ID available
+                            printf('<img src="" alt="%s" style="max-width: 200px; max-height: 200px; border: 1px solid #ddd; border-radius: 4px;" loading="lazy">', 
+                                esc_attr__('Poster preview', 'explorexr')
+                            );
+                            ?>
                         </div>
                     </div>
                 </div>

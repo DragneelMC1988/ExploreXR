@@ -3,7 +3,7 @@
  * Plugin Name: ExploreXR
  * Plugin URI: https://expoxr.com/explorexr/
  * Description: Bring your website to life with interactive 3D models. ExploreXR lets you showcase GLB, GLTF, and USDZ files with ease — no coding required. Start free, upgrade anytime.
- * Version: 1.0.1
+ * Version: 1.0.2
  * Requires at least: 5.0
  * Requires PHP: 7.4
  * Author: Ayal Othman
@@ -39,9 +39,13 @@ if (defined('EXPOXR_VERSION') || class_exists('ExpoXR_License_Handler')) {
 // Define plugin constants
 define('EXPOXR_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('EXPOXR_PLUGIN_URL', plugin_dir_url(__FILE__));
-define('EXPOXR_MODELS_DIR', EXPOXR_PLUGIN_DIR . 'models/');
-define('EXPOXR_MODELS_URL', EXPOXR_PLUGIN_URL . 'models/');
-define('EXPOXR_VERSION', '1.0.1');
+
+// Define models directory in WordPress uploads folder
+$upload_dir = wp_upload_dir();
+define('EXPOXR_MODELS_DIR', $upload_dir['basedir'] . '/explorexr_models/');
+define('EXPOXR_MODELS_URL', $upload_dir['baseurl'] . '/explorexr_models/');
+
+define('EXPOXR_VERSION', '1.0.2');
 
 // Development mode constant (set to false for production)
 define('EXPOXR_DEV_MODE', false);
@@ -154,9 +158,22 @@ register_activation_hook(__FILE__, 'expoxr_free_activate');
  * Plugin activation function
  */
 function expoxr_free_activate() {
-    // Create models directory
+    // Create models directory in WordPress uploads folder
     if (!file_exists(EXPOXR_MODELS_DIR)) {
         wp_mkdir_p(EXPOXR_MODELS_DIR);
+        
+        // Create index.php for security
+        $index_content = "<?php\n// Silence is golden.\n";
+        file_put_contents(EXPOXR_MODELS_DIR . 'index.php', $index_content);
+        
+        // Create .htaccess for additional security
+        $htaccess_content = "# ExploreXR Models Directory Protection\n";
+        $htaccess_content .= "Options -Indexes\n";
+        $htaccess_content .= "<FilesMatch \"\\.(php|php3|php4|php5|phtml|pl|py|jsp|asp|aspx|sh|cgi)$\">\n";
+        $htaccess_content .= "    Order Allow,Deny\n";
+        $htaccess_content .= "    Deny from all\n";
+        $htaccess_content .= "</FilesMatch>\n";
+        file_put_contents(EXPOXR_MODELS_DIR . '.htaccess', $htaccess_content);
     }
     
     // Set default options

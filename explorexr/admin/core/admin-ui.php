@@ -408,6 +408,15 @@ function expoxr_admin_ui_enqueue_scripts($hook) {
             )
         )
     );
+    
+    // Localize script for admin vars (required by admin-ui.js)
+    wp_localize_script(
+        'expoxr-admin-ui',
+        'expoxrAdminVars',
+        array(
+            'pluginUrl' => EXPOXR_PLUGIN_URL
+        )
+    );
 }
 add_action('admin_enqueue_scripts', 'expoxr_admin_ui_enqueue_scripts');
 
