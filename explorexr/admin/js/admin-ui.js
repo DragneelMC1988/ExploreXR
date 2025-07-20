@@ -10,7 +10,7 @@ jQuery(document).ready(function($) {
     // Use centralized loader if available
     if (window.loadModelViewer && !window.isModelViewerLoaded()) {
         window.loadModelViewer({
-            scriptUrl: 'https://unpkg.com/@google/model-viewer/dist/model-viewer-umd.js',
+            scriptUrl: expoxrAdminVars.pluginUrl + 'assets/js/model-viewer-umd.js',
             scriptType: 'umd'
         }).then(function() {
             console.log('Model Viewer loaded successfully via centralized loader');
@@ -27,7 +27,7 @@ jQuery(document).ready(function($) {
         var script = document.createElement('script');
         
         // Try to use UMD version for better compatibility
-        var scriptUrl = 'https://unpkg.com/@google/model-viewer/dist/model-viewer-umd.js';
+        var scriptUrl = expoxrAdminVars.pluginUrl + 'assets/js/model-viewer-umd.js';
         
         // If UMD loading fails, fallback to module version
         script.onload = function() {
@@ -38,7 +38,7 @@ jQuery(document).ready(function($) {
             console.warn('UMD version failed, loading module version...');
             var moduleScript = document.createElement('script');
             moduleScript.type = 'module';
-            moduleScript.src = 'https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js';
+            moduleScript.src = expoxrAdminVars.pluginUrl + 'assets/js/model-viewer.min.js';
             document.head.appendChild(moduleScript);
         };
         

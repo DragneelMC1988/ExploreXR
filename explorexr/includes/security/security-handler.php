@@ -155,7 +155,7 @@ function expoxr_validate_model_input($data, $allowed_fields = array()) {
             $sanitized[$key] = ($value === 'on' || $value === '1' || $value === 'true') ? 'on' : 'off';
             
         } elseif (in_array($key, $sanitization_rules['color_fields'])) {
-            $sanitized[$key] = sanitize_hex_color($value) ?: '#000000';
+            $sanitized[$key] = expoxr_sanitize_hex_color($value) ?: '#000000';
             
         } elseif (isset($sanitization_rules['select_fields'][$key])) {
             $allowed_values = $sanitization_rules['select_fields'][$key];

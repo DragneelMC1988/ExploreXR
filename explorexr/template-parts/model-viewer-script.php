@@ -165,11 +165,18 @@ if ($cdn_source === 'local') {
         $script_config['scriptType'] = 'module';
     }
 } else {
-    // CDN UMD version for better compatibility
-    $script_config['modelViewerScriptUrl'] = 'https://unpkg.com/@google/model-viewer@v' . $model_viewer_version . '/dist/model-viewer-umd.js';
+    // Local UMD version for better compatibility (WordPress.org compliance)
+    $script_config['modelViewerScriptUrl'] = EXPOXR_PLUGIN_URL . 'assets/js/model-viewer-umd.js';
     $script_config['scriptType'] = 'umd';
 }
+
+// Add plugin URL for local dependencies
+$script_config['pluginUrl'] = EXPOXR_PLUGIN_URL;
+
 wp_localize_script('expoxr-model-viewer-wrapper', 'expoxrScriptConfig', $script_config);
+
+// Set global plugin URL for Model Viewer dependencies (WordPress.org compliance)
+wp_add_inline_script('expoxr-model-viewer-wrapper', 'window.expoxrPluginUrl = "' . EXPOXR_PLUGIN_URL . '";', 'before');
 
 // Enqueue model-handler.js for debugging features
 wp_enqueue_script('expoxr-model-handler', EXPOXR_PLUGIN_URL . 'assets/js/model-handler.js', array('jquery'), EXPOXR_VERSION, true);
@@ -399,7 +406,7 @@ if (!function_exists('expoxr_add_ondemand_script_loader')) {
      */
     function expoxr_add_ondemand_script_loader() {
         $model_viewer_version = get_option('expoxr_model_viewer_version', '3.3.0');
-        $script_url = 'https://unpkg.com/@google/model-viewer@v' . $model_viewer_version . '/dist/model-viewer-umd.js';
+        $script_url = EXPOXR_PLUGIN_URL . 'assets/js/model-viewer-umd.js';
         
         // Check if local storage is preferred
         $cdn_source = get_option('expoxr_cdn_source', 'local');

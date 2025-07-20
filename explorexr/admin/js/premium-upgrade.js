@@ -270,9 +270,9 @@
      */
     function handleNoticeDismissal() {
         $(document).on('click', '.expoxr-premium-notice .notice-dismiss', function() {
-            $.post(ajaxurl, {
+            $.post(expoxr_premium.ajax_url, {
                 action: 'expoxr_dismiss_premium_notice',
-                nonce: expoxr_admin.nonce
+                nonce: expoxr_premium.dismiss_nonce
             });
         });
     }

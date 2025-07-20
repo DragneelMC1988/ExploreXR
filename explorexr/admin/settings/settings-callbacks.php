@@ -17,30 +17,6 @@ function expoxr_general_settings_callback() {
 }
 
 /**
- * CDN source field callback
- */
-function expoxr_cdn_source_callback() {
-    $cdn_source = get_option('expoxr_cdn_source', 'local');
-    ?>
-    <fieldset>
-        <label>
-            <input type="radio" name="expoxr_cdn_source" value="cdn" <?php checked($cdn_source, 'cdn'); ?>>
-            Use CDN (Recommended)
-        </label>
-        <p class="description">Load Model Viewer from unpkg.com CDN. Faster but requires internet connection.</p>
-        
-        <br><br>
-        
-        <label>
-            <input type="radio" name="expoxr_cdn_source" value="local" <?php checked($cdn_source, 'local'); ?>>
-            Use Local File
-        </label>
-        <p class="description">Load Model Viewer from your server. Works without internet but may be slower.</p>
-    </fieldset>
-    <?php
-}
-
-/**
  * Model Viewer version field callback
  */
 function expoxr_model_viewer_version_callback() {

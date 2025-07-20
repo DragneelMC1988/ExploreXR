@@ -27,7 +27,6 @@ function expoxr_settings_page() {
             'expoxr_large_model_size_threshold' => 16,
             'expoxr_overlay_bg_color' => '#FFFFFF',
             'expoxr_overlay_bg_opacity' => 70,
-            'expoxr_cdn_source' => 'local',
             'expoxr_model_viewer_version' => '3.3.0',
             'expoxr_max_upload_size' => 50,
             'expoxr_debug_mode' => false
@@ -54,9 +53,6 @@ function expoxr_settings_page() {
     // Process general settings form submission
     if (isset($_POST['expoxr_action']) && $_POST['expoxr_action'] === 'save_general_settings' && isset($_POST['expoxr_general_nonce']) && wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['expoxr_general_nonce'])), 'expoxr_general_settings')) {
         // Process general settings fields
-        if (isset($_POST['expoxr_cdn_source'])) {
-            update_option('expoxr_cdn_source', sanitize_text_field(wp_unslash($_POST['expoxr_cdn_source'])));
-        }
         if (isset($_POST['expoxr_model_viewer_version'])) {
             update_option('expoxr_model_viewer_version', sanitize_text_field(wp_unslash($_POST['expoxr_model_viewer_version'])));
         }
@@ -144,34 +140,12 @@ function expoxr_settings_page() {
             
             <!-- Get current option values -->
             <?php
-            $cdn_source = get_option('expoxr_cdn_source', 'local');
             $model_viewer_version = get_option('expoxr_model_viewer_version', '3.3.0');
             $max_upload_size = get_option('expoxr_max_upload_size', 50);
             $server_max = function_exists('expoxr_get_server_max_upload') ? expoxr_get_server_max_upload() : 50;
             ?>
             
             <table class="form-table" role="presentation">
-                <tr>
-                    <th scope="row">
-                        <label for="expoxr_cdn_source">Model Viewer Source</label>
-                    </th>
-                    <td>
-                        <fieldset>
-                            <label>
-                                <input type="radio" name="expoxr_cdn_source" id="expoxr_cdn_source_local" value="local" <?php checked($cdn_source, 'local'); ?>>
-                                Use Local File (Recommended)
-                            </label>
-                            <p class="description">Load Model Viewer from your server. Required for WordPress.org Plugin Check compliance.</p>
-                            
-                            <br><br>
-                            
-                            <label>
-                                <input type="radio" name="expoxr_cdn_source" id="expoxr_cdn_source_cdn" value="cdn" <?php checked($cdn_source, 'cdn'); ?>>
-                                Use CDN (Not Recommended)
-                            </label>                            
-                        </fieldset>
-                    </td>
-                </tr>
                 <tr>
                     <th scope="row">
                         <label for="expoxr_model_viewer_version">Model Viewer Version</label>
@@ -536,9 +510,6 @@ function expoxr_settings_page() {
  */
 function expoxr_general_settings_register_settings() {
     // Register general settings with sanitization callbacks
-    register_setting('expoxr_settings', 'expoxr_cdn_source', array(
-        'sanitize_callback' => 'sanitize_text_field'
-    ));
     register_setting('expoxr_settings', 'expoxr_model_viewer_version', array(
         'sanitize_callback' => 'sanitize_text_field'
     ));
@@ -555,14 +526,6 @@ function expoxr_general_settings_register_settings() {
     );
     
     // Add settings fields
-    add_settings_field(
-        'expoxr_cdn_source',
-        esc_html__('Model Viewer Source', 'explorexr'),
-        'expoxr_cdn_source_callback',
-        'expoxr-settings',
-        'expoxr_general_settings'
-    );
-    
     add_settings_field(
         'expoxr_model_viewer_version',
         esc_html__('Model Viewer Version', 'explorexr'),

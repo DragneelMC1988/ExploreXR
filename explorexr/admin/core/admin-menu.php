@@ -98,6 +98,15 @@ function expoxr_admin_enqueue_scripts($hook) {
     // Premium upgrade styles
     wp_enqueue_style('expoxr-premium-upgrade', EXPOXR_PLUGIN_URL . 'admin/css/premium-upgrade.css', array(), EXPOXR_VERSION);
     
+    // Premium upgrade scripts (needed for notice dismissal functionality)
+    wp_enqueue_script('expoxr-premium-upgrade-js', EXPOXR_PLUGIN_URL . 'admin/js/premium-upgrade.js', array('jquery'), EXPOXR_VERSION, true);
+    
+    // Localize script for premium upgrade functionality
+    wp_localize_script('expoxr-premium-upgrade-js', 'expoxr_premium', array(
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'dismiss_nonce' => wp_create_nonce('expoxr_dismiss_notice')
+    ));
+    
     // Page-specific styles and scripts
     if (strpos($hook, 'explorexr') !== false) {
         // Specific CSS files
@@ -139,10 +148,6 @@ function expoxr_admin_enqueue_scripts($hook) {
         if (strpos($hook ?? '', 'expoxr-settings') !== false) {
             wp_enqueue_style('expoxr-settings-page-css', EXPOXR_PLUGIN_URL . 'admin/css/settings-page.css', array(), EXPOXR_VERSION);
             wp_enqueue_script('expoxr-settings-page-js', EXPOXR_PLUGIN_URL . 'admin/js/settings-page.js', array('jquery'), EXPOXR_VERSION, true);
-        }
-        
-        if (strpos($hook ?? '', 'expoxr-premium') !== false) {
-            wp_enqueue_script('expoxr-premium-upgrade-js', EXPOXR_PLUGIN_URL . 'admin/js/premium-upgrade.js', array('jquery'), EXPOXR_VERSION, true);
         }
         
         // Dashboard page specific
@@ -309,9 +314,6 @@ add_action('admin_init', function() {
     );
     
     // Register settings with sanitization
-    register_setting('expoxr_settings', 'expoxr_cdn_source', array(
-        'sanitize_callback' => 'sanitize_text_field'
-    ));
     register_setting('expoxr_settings', 'expoxr_model_viewer_version', array(
         'sanitize_callback' => 'sanitize_text_field'
     ));

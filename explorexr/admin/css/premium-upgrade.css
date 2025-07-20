@@ -859,3 +859,125 @@
         margin: 0 0 15px 0;
         text-align: center;
     }
+
+    .expoxr-premium-metabox {
+            padding: 15px;
+        }
+        
+        .premium-addon-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .premium-addon-item:last-child {
+            border-bottom: none;
+        }
+        
+        .addon-icon {
+            margin-right: 10px;
+            font-size: 16px;
+        }
+        
+        .addon-name {
+            flex: 1;
+            font-weight: 500;
+        }
+        
+        .premium-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        
+        .premium-upgrade-cta ul {
+            margin: 10px 0;
+            padding-left: 0;
+            list-style: none;
+        }
+        
+        .premium-upgrade-cta li {
+            padding: 3px 0;
+            font-size: 13px;
+        }
+
+        .expoxr-premium-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 999999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .expoxr-premium-popup {
+            background: white;
+            border-radius: 12px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        
+        .premium-popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 25px 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .premium-popup-header h3 {
+            margin: 0;
+            font-size: 1.4em;
+        }
+        
+        .close-popup {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+        
+        .premium-popup-content {
+            padding: 20px 25px 25px;
+        }
+        
+        .premium-popup-content ul {
+            margin: 15px 0;
+            padding-left: 0;
+            list-style: none;
+        }
+        
+        .premium-popup-content li {
+            padding: 3px 0;
+            font-size: 14px;
+        }
+        
+        .premium-upgrade-btn {
+            display: block;
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 12px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 15px;
+            transition: transform 0.2s;
+        }
+        
+        .premium-upgrade-btn:hover {
+            transform: translateY(-2px);
+            text-decoration: none;
+            color: white;
+        }

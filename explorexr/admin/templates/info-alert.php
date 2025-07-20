@@ -1,3 +1,9 @@
+<?php
+// Prevent direct access
+if (!defined('ABSPATH')) {
+    exit;
+}
+?>
 <!-- Info alert box with configurable content -->
 <div class="expoxr-alert info">
     <span class="dashicons dashicons-info"></span>

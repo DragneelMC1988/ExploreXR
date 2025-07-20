@@ -1,3 +1,9 @@
+<?php
+// Prevent direct access
+if (!defined('ABSPATH')) {
+    exit;
+}
+?>
 <!-- Card component with header, content, and optional footer -->
 <div class="expoxr-card">    <div class="expoxr-card-header">
         <h2><?php echo esc_html($card_title); ?></h2>

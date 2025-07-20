@@ -1,3 +1,9 @@
+<?php
+// Exit if accessed directly
+if (!defined('ABSPATH')) {
+    exit;
+}
+?>
 <!-- Model viewer modal for previewing 3D models -->
 <div id="expoxr-model-modal" class="expoxr-model-modal">
     <div class="expoxr-model-modal-content">

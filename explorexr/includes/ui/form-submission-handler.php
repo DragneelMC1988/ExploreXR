@@ -198,7 +198,7 @@ function expoxr_sanitize_form_data($data) {
         }
         // Color fields
         elseif (in_array($key, array('background_color', 'loading_color'))) {
-            $sanitized[$key] = sanitize_hex_color($value);
+            $sanitized[$key] = expoxr_sanitize_hex_color($value);
         }
         // Select fields (specific options)
         elseif ($key === 'viewer_size') {

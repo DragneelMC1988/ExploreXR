@@ -34,7 +34,7 @@ function expoxr_register_loading_options_settings() {
         array(
             'type' => 'string',
             'default' => '#1e88e5',
-            'sanitize_callback' => 'sanitize_hex_color'
+            'sanitize_callback' => 'expoxr_sanitize_hex_color'
         )
     );
 }

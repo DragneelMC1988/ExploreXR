@@ -64,7 +64,6 @@ function expoxr_free_uninstall() {
         'expoxr_loading_text',
         'expoxr_loading_background_color',
         'expoxr_enable_loading_screen',
-        // Animation features are not available in the Free version
         'expoxr_loading_bar_color',
         'expoxr_loading_bar_background',
         'expoxr_loading_logo_url',
@@ -78,20 +77,65 @@ function expoxr_free_uninstall() {
         'expoxr_preload_models',
         'expoxr_lazy_loading',
         'expoxr_compression_enabled',
-        'expoxr_quality_settings'
+        'expoxr_quality_settings',
+        // Additional options found in codebase
+        'expoxr_debug_mode',
+        'expoxr_debug_log',
+        'expoxr_debug_log_data',
+        'expoxr_view_php_errors',
+        'expoxr_console_logging',
+        'expoxr_debug_ar_features',
+        'expoxr_debug_camera_controls',
+        'expoxr_debug_loading_info',
+        'expoxr_cdn_source',
+        'expoxr_max_upload_size',
+        'expoxr_script_location',
+        'expoxr_script_loading_timing',
+        'expoxr_lazy_load_poster',
+        'expoxr_lazy_load_model',
+        'expoxr_loading_display',
+        'expoxr_loading_bar_size',
+        'expoxr_loading_bar_position',
+        'expoxr_percentage_font_size',
+        'expoxr_percentage_font_family',
+        'expoxr_percentage_font_color',
+        'expoxr_percentage_position',
+        'expoxr_loading_text_position',
+        'expoxr_loading_text_font_size',
+        'expoxr_loading_text_font_family',
+        'expoxr_loading_text_font_color',
+        'expoxr_overlay_bg_color',
+        'expoxr_overlay_bg_opacity',
+        'expoxr_loading_type',
+        'expoxr_large_model_handling',
+        'expoxr_large_model_size_threshold',
+        'expoxr_admin_notice'
     );
 
     foreach ($options_to_delete as $option) {
         delete_option($option);
     }
 
-    // Remove any remaining options that start with 'expoxr_'
-    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Required for complete plugin cleanup during uninstall
-    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Uninstall script doesn't require caching as it's a one-time operation
-    // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is properly escaped via wpdb property
+    // Final cleanup: Remove any remaining options that start with 'expoxr_' not covered above
+    // This is required because:
+    // 1. WordPress.org Plugin Directory Guidelines mandate complete data removal on uninstall
+    // 2. Plugin may create transient/dynamic options during runtime that can't be statically tracked
+    // 3. No WordPress core API exists for bulk wildcard option deletion
+    // 4. This ensures 100% clean uninstall regardless of plugin usage patterns
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Necessary for complete plugin cleanup during uninstall, no alternative WordPress API for bulk wildcard deletion
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Uninstall is one-time operation, caching not applicable
     $wpdb->query($wpdb->prepare(
         "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s",
         $wpdb->esc_like('expoxr_') . '%'
+    ));
+
+    // Clean up transients (temporary cached data)
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Required for transient cleanup, no bulk WordPress API available
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Uninstall is one-time operation, caching not applicable  
+    $wpdb->query($wpdb->prepare(
+        "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s",
+        $wpdb->esc_like('_transient_expoxr_') . '%',
+        $wpdb->esc_like('_transient_timeout_expoxr_') . '%'
     ));
 
     // Clean up any uploaded model files
@@ -155,16 +199,6 @@ function expoxr_free_remove_directory($dir) {
                 $wp_filesystem->rmdir($dir, false);
             }
         }
-    } else {
-        // Only use WP_Filesystem if available
-        if (function_exists('WP_Filesystem')) {
-            WP_Filesystem();
-            global $wp_filesystem;
-            if ($wp_filesystem) {
-                $wp_filesystem->rmdir($dir, false);
-            }
-        }
-    }
     }
 }
 

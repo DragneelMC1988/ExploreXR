@@ -147,10 +147,12 @@
                 return window.expoxrScriptConfig.modelViewerScriptUrl;
             }
 
-            // Fallback to CDN UMD version
+            // Fallback to local UMD version (WordPress.org compliance)
             const version = '3.3.0';
             this.scriptType = 'umd';
-            return `https://unpkg.com/@google/model-viewer@v${version}/dist/model-viewer-umd.js`;
+            return (window.expoxrScriptConfig && window.expoxrScriptConfig.pluginUrl) 
+                ? window.expoxrScriptConfig.pluginUrl + 'assets/js/model-viewer-umd.js'
+                : '/wp-content/plugins/explorexr/assets/js/model-viewer-umd.js';
         },
 
         /**

@@ -16,8 +16,8 @@ if (!defined('ABSPATH')) {
  * @param string $color Color string to sanitize
  * @return string Sanitized color or default color
  */
-if (!function_exists('sanitize_hex_color')) {
-    function sanitize_hex_color($color) {
+if (!function_exists('expoxr_sanitize_hex_color')) {
+    function expoxr_sanitize_hex_color($color) {
         if ('' === $color) {
             return '';
         }

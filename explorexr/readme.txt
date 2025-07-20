@@ -1,6 +1,5 @@
 === ExploreXR ===
 Contributors: ayalothman
-Donate link: https://expoxr.com/donate/
 Tags: 3d, model-viewer, glb, gltf, ar
 Requires at least: 5.0
 Tested up to: 6.8
@@ -72,7 +71,7 @@ Whether you're showcasing products for e-commerce, architectural designs, artwor
 5. Save your model and copy the generated shortcode
 6. Paste the shortcode in any post, page, or widget area
 
-For detailed setup instructions, visit our [documentation](https://docs.expoxr.com).
+For detailed setup instructions, visit our [documentation](https://www.expoxr.com/explorexr/documentation/).
 
 == Frequently Asked Questions ==
 
@@ -154,7 +153,7 @@ Initial release of ExploreXR. Transform your WordPress website with immersive 3D
 For support inquiries, please visit [our support forum](https://wordpress.org/support/plugin/explorexr/) or contact us through [our website](https://expoxr.com/support/).
 
 = Documentation =
-For detailed documentation, visit [docs.expoxr.com](https://docs.expoxr.com).
+For detailed documentation, visit [expoxr.com](https://www.expoxr.com/explorexr/documentation/).
 
 = Credits =
 ExploreXR is powered by [Google's Model Viewer](https://modelviewer.dev/) web component.
