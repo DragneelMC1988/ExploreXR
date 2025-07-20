@@ -1,11 +1,11 @@
 /* Styles for the Browse Models Page */
 
 /* Hide debug buttons in model listings */
-.expoxr-debug-model {
+.explorexr-debug-model {
     display: none !important;
 }
 
-.expoxr-filter-bar {
+.explorexr-filter-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -14,23 +14,23 @@
     border-bottom: 1px solid #eee;
 }
 
-.expoxr-search-box {
+.explorexr-search-box {
     display: flex;
     align-items: center;
 }
 
-.expoxr-search-box input {
+.explorexr-search-box input {
     margin-right: 5px;
     width: 250px;
 }
 
-.expoxr-models-grid {
+.explorexr-models-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
     gap: 20px;
 }
 
-.expoxr-model-card {
+.explorexr-model-card {
     border: 1px solid #e0e0e0;
     border-radius: 4px;
     overflow: hidden;
@@ -40,11 +40,11 @@
     min-height: 350px; /* Set minimum height for consistency */
 }
 
-.expoxr-model-card:hover {
+.explorexr-model-card:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.expoxr-no-preview {
+.explorexr-no-preview {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -55,22 +55,22 @@
     border-radius: 4px 4px 0 0;
 }
 
-.expoxr-no-preview .dashicons {
+.explorexr-no-preview .dashicons {
     font-size: 48px;
     width: 48px;
     height: 48px;
 }
 
-.expoxr-model-info {
+.explorexr-model-info {
     padding: 15px;
 }
 
-.expoxr-model-info h3 {
+.explorexr-model-info h3 {
     margin: 0 0 10px 0;
     font-size: 16px;
 }
 
-.expoxr-model-meta {
+.explorexr-model-meta {
     font-size: 12px;
     color: #666;
     margin-bottom: 10px;
@@ -78,12 +78,12 @@
     gap: 10px;
 }
 
-.expoxr-model-meta span {
+.explorexr-model-meta span {
     display: flex;
     align-items: center;
 }
 
-.expoxr-model-meta .dashicons {
+.explorexr-model-meta .dashicons {
     font-size: 16px;
     width: 16px;
     height: 16px;
@@ -91,7 +91,7 @@
 }
 
 /* Model actions container */
-.expoxr-model-actions {
+.explorexr-model-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 5px;
@@ -99,7 +99,7 @@
 }
 
 /* Model action buttons */
-.expoxr-model-actions .button {
+.explorexr-model-actions .button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -108,25 +108,25 @@
     min-height: 30px;
 }
 
-.expoxr-model-actions .dashicons {
+.explorexr-model-actions .dashicons {
     font-size: 16px;
     width: 16px;
     height: 16px;
     margin-right: 2px;
 }
 
-.expoxr-usage-tips {
+.explorexr-usage-tips {
     margin-top: 20px;
     padding-top: 15px;
     border-top: 1px solid #eee;
 }
 
-.expoxr-usage-tips h3 {
+.explorexr-usage-tips h3 {
     margin-top: 0;
 }
 
 /* Make model action buttons always visible in Browse Models page */
-.admin-page-expoxr-browse-models .expoxr-model-actions {
+.admin-page-explorexr-browse-models .explorexr-model-actions {
     opacity: 1 !important; /* Force buttons to always be visible */
     display: flex;
     flex-wrap: wrap;
@@ -134,8 +134,8 @@
 }
 
 /* Enhance button appearance */
-.admin-page-expoxr-browse-models .expoxr-model-actions button,
-.admin-page-expoxr-browse-models .expoxr-model-actions a {
+.admin-page-explorexr-browse-models .explorexr-model-actions button,
+.admin-page-explorexr-browse-models .explorexr-model-actions a {
     margin: 2px;
     border-radius: 4px;
     display: inline-flex;
@@ -149,15 +149,15 @@
     padding: 2px 8px;
 }
 
-.admin-page-expoxr-browse-models .expoxr-model-actions button:hover,
-.admin-page-expoxr-browse-models .expoxr-model-actions a:hover {
+.admin-page-explorexr-browse-models .explorexr-model-actions button:hover,
+.admin-page-explorexr-browse-models .explorexr-model-actions a:hover {
     background: #f1f1f1;
     transform: translateY(-2px);
     border-color: #ccc;
 }
 
 /* Button icons */
-.admin-page-expoxr-browse-models .expoxr-model-actions .dashicons {
+.admin-page-explorexr-browse-models .explorexr-model-actions .dashicons {
     font-size: 16px;
     width: 16px;
     height: 16px;
@@ -165,33 +165,33 @@
 }
 
 /* Show button text */
-.admin-page-expoxr-browse-models .expoxr-model-actions button span:not(.dashicons),
-.admin-page-expoxr-browse-models .expoxr-model-actions a span:not(.dashicons) {
+.admin-page-explorexr-browse-models .explorexr-model-actions button span:not(.dashicons),
+.admin-page-explorexr-browse-models .explorexr-model-actions a span:not(.dashicons) {
     display: inline;
 }
 
 /* Different colors for different actions */
-.admin-page-expoxr-browse-models .view-3d-model .dashicons {
+.admin-page-explorexr-browse-models .view-3d-model .dashicons {
     color: #2AACE2;
 }
 
-.admin-page-expoxr-browse-models .copy-shortcode .dashicons {
+.admin-page-explorexr-browse-models .copy-shortcode .dashicons {
     color: #2AACE2;
 }
 
-.admin-page-expoxr-browse-models .delete-model .dashicons {
+.admin-page-explorexr-browse-models .delete-model .dashicons {
     color: #8062AA;
 }
 
 /* Ensure model title and details are clearly visible */
-.admin-page-expoxr-browse-models .expoxr-model-title {
+.admin-page-explorexr-browse-models .explorexr-model-title {
     font-size: 16px;
     font-weight: 600;
     color: #23282d;
     margin-bottom: 8px;
 }
 
-.admin-page-expoxr-browse-models .expoxr-model-meta {
+.admin-page-explorexr-browse-models .explorexr-model-meta {
     margin-bottom: 10px;
     display: flex;
     justify-content: space-between;
@@ -199,7 +199,7 @@
     color: #3c434a;
 }
 
-.admin-page-expoxr-browse-models .expoxr-model-info {
+.admin-page-explorexr-browse-models .explorexr-model-info {
     border-top: 1px solid #0D152C;
     padding-top: 10px;
     margin-top: 8px;
@@ -208,15 +208,15 @@
 }
 
 /* Make search and sort controls more visible */
-.admin-page-expoxr-browse-models .expoxr-form-group label {
+.admin-page-explorexr-browse-models .explorexr-form-group label {
     color: #23282d;
     font-weight: 500;
     display: block;
     margin-bottom: 5px;
 }
 
-.admin-page-expoxr-browse-models .expoxr-form-group input,
-.admin-page-expoxr-browse-models .expoxr-form-group select {
+.admin-page-explorexr-browse-models .explorexr-form-group input,
+.admin-page-explorexr-browse-models .explorexr-form-group select {
     border: 1px solid #8c8f94;
     border-radius: 4px;
     color: #2c3338;
@@ -224,13 +224,13 @@
 }
 
 /* Highlight model ID and other details */
-.admin-page-expoxr-browse-models .expoxr-model-info div {
+.admin-page-explorexr-browse-models .explorexr-model-info div {
     margin-bottom: 5px;
     font-weight: 500;
 }
 
 /* Enhance sorting info visibility */
-.admin-page-expoxr-browse-models .expoxr-card-content form {
+.admin-page-explorexr-browse-models .explorexr-card-content form {
     background: #f0f7fc;
     padding: 15px;
     border-radius: 6px;
@@ -238,7 +238,7 @@
 }
 
 /* Fix font and visibility on models count display */
-.admin-page-expoxr-browse-models .expoxr-admin-container > div:nth-child(3) {
+.admin-page-explorexr-browse-models .explorexr-admin-container > div:nth-child(3) {
     font-size: 15px !important;
     color: #1d2327 !important;
     background: #fff;
@@ -248,22 +248,22 @@
 }
 
 /* Delete button styling */
-.expoxr-model-actions .button-link-delete {
+.explorexr-model-actions .button-link-delete {
     color: #b32d2e;
     border-color: #b32d2e;
 }
 
-.expoxr-model-actions .button-link-delete:hover {
+.explorexr-model-actions .button-link-delete:hover {
     color: #fff;
     background-color: #b32d2e;
 }
 
 /* Spinning animation for delete process */
 .dashicons.spinning {
-    animation: expoxr-spin 2s infinite linear;
+    animation: explorexr-spin 2s infinite linear;
 }
 
-@keyframes expoxr-spin {
+@keyframes explorexr-spin {
     0% {
         transform: rotate(0deg);
     }

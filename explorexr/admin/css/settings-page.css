@@ -8,35 +8,35 @@
 }
 
 /* Debug log section */
-#expoxr-debug-log-viewer {
+#explorexr-debug-log-viewer {
     display: none;
 }
 
 /* About section */
-.expoxr-about-section {
+.explorexr-about-section {
     display: flex;
     align-items: center;
     margin-bottom: 20px;
 }
 
-.expoxr-logo-container {
+.explorexr-logo-container {
     margin-right: 20px;
 }
 
-.expoxr-logo-container .expoxr-logo{
+.explorexr-logo-container .explorexr-logo{
     height: 120px;
 }
 
-.expoxr-logo {
+.explorexr-logo {
     height: auto;
 }
 
-.expoxr-version-info {
+.explorexr-version-info {
     font-size: 16px;
     margin-bottom: 5px;
 }
 
-.expoxr-description {
+.explorexr-description {
     margin-top: 0;
 }
 
@@ -69,6 +69,6 @@
     color: #666;
 }
 
-.expoxr-addon-status table {
+.explorexr-addon-status table {
     margin-top: 10px;
 }

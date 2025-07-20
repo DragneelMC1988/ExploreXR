@@ -1,115 +1,113 @@
 <?php
 /**
- * Admin Toolbar Debug Functions for ExpoXR
- * 
+ * Admin Toolbar Debug Functions for ExploreXR
+ *
  * Adds a debug option to the WordPress admin toolbar to quickly check model submission data
  * for the model currently being edited.
- * 
- * @package ExpoXR
- */
-
-// Exit if accessed directly
+ *
+  * @package ExploreXR
+ */// Exit if accessed directly
 if (!defined('ABSPATH')) {
     exit;
 }
 
 /**
- * Add debug menu to admin toolbar when in ExpoXR model edit screen
+ * Add debug menu to admin toolbar when in ExploreXR model edit screen
  */
-function expoxr_add_debug_toolbar_item($admin_bar) {
+function explorexr_add_debug_toolbar_item($admin_bar) {
     global $pagenow, $post;
     
-    // Only show on post edit screens for expoxr_model post type
+    // Only show on post edit screens for explorexr_model post type
     if (($pagenow == 'post.php' || $pagenow == 'post-new.php') && 
-        isset($post) && $post->post_type == 'expoxr_model') {
+        isset($post) && $post->post_type == 'explorexr_model') {
         
         // Main debug menu
         $admin_bar->add_node(array(
-            'id'    => 'expoxr-debug',
-            'title' => 'ExpoXR Debug',
+            'id'    => 'explorexr-debug',
+            'title' => 'ExploreXR Debug',
             'href'  => '#',
         ));
         
         // Add model info submenu
         $admin_bar->add_node(array(
-            'id'     => 'expoxr-debug-model-info',
-            'parent' => 'expoxr-debug',
+            'id'     => 'explorexr-debug-model-info',
+            'parent' => 'explorexr-debug',
             'title'  => 'Model Info',
             'href'   => '#',
             'meta'   => array(
-                'onclick' => 'expoxrShowModelInfo(); return false;',
+                'onclick' => 'explorexrShowModelInfo(); return false;',
             ),
         ));
         
         // Add form data submenu
         $admin_bar->add_node(array(
-            'id'     => 'expoxr-debug-form-data',
-            'parent' => 'expoxr-debug',
+            'id'     => 'explorexr-debug-form-data',
+            'parent' => 'explorexr-debug',
             'title'  => 'Last Form Data',
             'href'   => '#',
             'meta'   => array(
-                'onclick' => 'expoxrShowFormData(); return false;',
+                'onclick' => 'explorexrShowFormData(); return false;',
             ),
         ));
         
         // Add checkbox state submenu
         $admin_bar->add_node(array(
-            'id'     => 'expoxr-debug-checkbox-state',
-            'parent' => 'expoxr-debug',
+            'id'     => 'explorexr-debug-checkbox-state',
+            'parent' => 'explorexr-debug',
             'title'  => 'Checkbox States',
             'href'   => '#',
             'meta'   => array(
-                'onclick' => 'expoxrShowCheckboxStates(); return false;',
+                'onclick' => 'explorexrShowCheckboxStates(); return false;',
             ),
         ));
         
         // Run form troubleshooter
         $admin_bar->add_node(array(
-            'id'     => 'expoxr-debug-troubleshoot',
-            'parent' => 'expoxr-debug',
+            'id'     => 'explorexr-debug-troubleshoot',
+            'parent' => 'explorexr-debug',
             'title'  => 'Troubleshoot Form',
             'href'   => '#',
             'meta'   => array(
-                'onclick' => 'troubleshootExpoXREditMode(); return false;',
+                'onclick' => 'troubleshootExploreXREditMode(); return false;',
             ),
         ));
     }
 }
-add_action('admin_bar_menu', 'expoxr_add_debug_toolbar_item', 100);
+add_action('admin_bar_menu', 'explorexr_add_debug_toolbar_item', 100);
 
 /**
  * Add debugging JavaScript to admin footer
  */
-function expoxr_add_debug_scripts() {
+function explorexr_add_debug_scripts() {
     global $pagenow, $post;
     
-    // Only show on post edit screens for expoxr_model post type
+    // Only show on post edit screens for explorexr_model post type
     if (($pagenow == 'post.php' || $pagenow == 'post-new.php') && 
-        isset($post) && $post->post_type == 'expoxr_model') {
+        isset($post) && $post->post_type == 'explorexr_model') {
         
         // Get debug data from meta
         $model_info = array(
             'post_id' => $post->ID,
-            'model_file' => get_post_meta($post->ID, '_expoxr_model_file', true),
-            'model_name' => get_post_meta($post->ID, '_expoxr_model_name', true),
-            'camera_controls' => get_post_meta($post->ID, '_expoxr_camera_controls', true),
-            'animation_enabled' => get_post_meta($post->ID, '_expoxr_animation_enabled', true),
-            'auto_rotate' => get_post_meta($post->ID, '_expoxr_auto_rotate', true)
+            'model_file' => get_post_meta($post->ID, '_explorexr_model_file', true),
+            'model_name' => get_post_meta($post->ID, '_explorexr_model_name', true),
+            'camera_controls' => get_post_meta($post->ID, '_explorexr_camera_controls', true),
+            'animation_enabled' => get_post_meta($post->ID, '_explorexr_animation_enabled', true),
+            'auto_rotate' => get_post_meta($post->ID, '_explorexr_auto_rotate', true)
         );
         
         // Get last edit debug data
-        $last_edit_debug = get_post_meta($post->ID, '_expoxr_last_edit_debug', true);
-        $last_edit_time = get_post_meta($post->ID, '_expoxr_last_edit_time', true);
+        $last_edit_debug = get_post_meta($post->ID, '_explorexr_last_edit_debug', true);
+        $last_edit_time = get_post_meta($post->ID, '_explorexr_last_edit_time', true);
         
         // Get checkbox debug data
-        $checkbox_debug = get_post_meta($post->ID, '_expoxr_checkbox_debug', true);
+        $checkbox_debug = get_post_meta($post->ID, '_explorexr_checkbox_debug', true);
         
         // Add JavaScript to display the data
         ?>
         <script>
             // Function to show model info
-            function expoxrShowModelInfo() {
-                console.group('ExpoXR Model Info');
+            function explorexrShowModelInfo() {
+                console.group('ExploreXR Model Info');
                 console.log('Model ID: <?php echo esc_js($post->ID); ?>');
                 console.log('Model Name: <?php echo esc_js($model_info['model_name']); ?>');
                 console.log('Model File: <?php echo esc_js($model_info['model_file']); ?>');
@@ -120,7 +118,7 @@ function expoxr_add_debug_scripts() {
                 console.groupEnd();
                 
                 // Also show an alert for users who don't have console open
-                alert('ExpoXR Model Info:\n\n' + 
+                alert('ExploreXR Model Info:\n\n' + 
                       'Model ID: <?php echo esc_js($post->ID); ?>\n' +
                       'Model Name: <?php echo esc_js($model_info['model_name']); ?>\n' +
                       'Model File: <?php echo esc_js($model_info['model_file']); ?>\n' +
@@ -131,14 +129,14 @@ function expoxr_add_debug_scripts() {
             }
             
             // Function to show last form data
-            function expoxrShowFormData() {
+            function explorexrShowFormData() {
                 <?php if (!empty($last_edit_debug)) : ?>
-                    console.group('ExpoXR Last Form Data (<?php echo esc_js($last_edit_time); ?>)');
+                    console.group('ExploreXR Last Form Data (<?php echo esc_js($last_edit_time); ?>)');
                     console.log(<?php echo wp_json_encode(json_decode($last_edit_debug, true)); ?>);
                     console.groupEnd();
                     
                     // Show a simple alert with some basic info
-                    alert('ExpoXR Last Form Data:\n\n' +
+                    alert('ExploreXR Last Form Data:\n\n' +
                           'Last Edit Time: <?php echo esc_js($last_edit_time); ?>\n\n' +
                           'See browser console for complete form data');
                 <?php else : ?>
@@ -148,14 +146,14 @@ function expoxr_add_debug_scripts() {
             }
             
             // Function to show checkbox states
-            function expoxrShowCheckboxStates() {
+            function explorexrShowCheckboxStates() {
                 <?php if (!empty($checkbox_debug)) : ?>
-                    console.group('ExpoXR Checkbox States');
+                    console.group('ExploreXR Checkbox States');
                     console.log(<?php echo wp_json_encode(json_decode($checkbox_debug, true)); ?>);
                     console.groupEnd();
                     
                     // Show a simple alert
-                    alert('ExpoXR Checkbox States:\n\n' +
+                    alert('ExploreXR Checkbox States:\n\n' +
                           'See browser console for complete checkbox debug data');
                 <?php else : ?>
                     console.log('No checkbox debug data available. Try saving the form first.');
@@ -166,7 +164,7 @@ function expoxr_add_debug_scripts() {
         <?php
     }
 }
-add_action('admin_footer', 'expoxr_add_debug_scripts');
+add_action('admin_footer', 'explorexr_add_debug_scripts');
 
 
 

@@ -5,7 +5,7 @@ if (!defined('ABSPATH')) {
 }
 ?>
 <!-- Card component with header, content, and optional footer -->
-<div class="expoxr-card">    <div class="expoxr-card-header">
+<div class="explorexr-card">    <div class="explorexr-card-header">
         <h2><?php echo esc_html($card_title); ?></h2>
         <?php if (!empty($card_icon)) : ?>
         <span class="dashicons dashicons-<?php echo esc_attr($card_icon); ?>"></span>
@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
         </div>
         <?php endif; ?>
     </div>
-    <div class="expoxr-card-content">
+    <div class="explorexr-card-content">
         <?php 
         // Admin content - allow form elements and other HTML
         $allowed_html = wp_kses_allowed_html('post');
@@ -80,7 +80,7 @@ if (!defined('ABSPATH')) {
         ?>
     </div>
     <?php if (!empty($card_footer)) : ?>
-    <div class="expoxr-card-footer expoxr-card-footer-fullwidth">
+    <div class="explorexr-card-footer explorexr-card-footer-fullwidth">
         <?php echo wp_kses_post($card_footer); ?>
     </div>
     <?php endif; ?>

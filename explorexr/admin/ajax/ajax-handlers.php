@@ -16,9 +16,9 @@ if (!defined('ABSPATH')) {
 /**
  * AJAX handler for deleting models
  */
-function expoxr_ajax_delete_model() {
+function explorexr_ajax_delete_model() {
     // Check nonce for security
-    if (!isset($_POST['security']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['security'])), 'expoxr_admin_nonce')) {
+    if (!isset($_POST['security']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['security'])), 'explorexr_admin_nonce')) {
         wp_send_json_error(array(
             'message' => 'Security check failed. Please refresh the page and try again.'
         ));
@@ -45,7 +45,7 @@ function expoxr_ajax_delete_model() {
 
     // Check if the post exists and is the correct post type
     $post = get_post($model_id);
-    if (!$post || $post->post_type !== 'expoxr_model') {
+    if (!$post || $post->post_type !== 'explorexr_model') {
         wp_send_json_error(array(
             'message' => 'Model not found or invalid model type.'
         ));
@@ -79,13 +79,13 @@ function expoxr_ajax_delete_model() {
 /**
  * Basic AJAX response for free version
  */
-function expoxr_free_ajax_response() {
+function explorexr_free_ajax_response() {
     wp_send_json_error(array(
         'message' => 'Premium features are not available in the free version.'
     ));
 }
 
 // Register AJAX handlers
-add_action('wp_ajax_expoxr_delete_model', 'expoxr_ajax_delete_model');
-add_action('wp_ajax_expoxr_save_addon_settings', 'expoxr_free_ajax_response');
-add_action('wp_ajax_nopriv_expoxr_save_addon_settings', 'expoxr_free_ajax_response');
+add_action('wp_ajax_explorexr_delete_model', 'explorexr_ajax_delete_model');
+add_action('wp_ajax_explorexr_save_addon_settings', 'explorexr_free_ajax_response');
+add_action('wp_ajax_nopriv_explorexr_save_addon_settings', 'explorexr_free_ajax_response');

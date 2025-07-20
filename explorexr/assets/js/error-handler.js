@@ -11,7 +11,7 @@
     'use strict';
     
     // Only initialize once
-    if (window.expoxrErrorHandlerInitialized) {
+    if (window.explorexrErrorHandlerInitialized) {
         return;
     }
     
@@ -35,5 +35,5 @@
     }, true);
     
     // Mark as initialized to prevent duplicate initialization
-    window.expoxrErrorHandlerInitialized = true;
+    window.explorexrErrorHandlerInitialized = true;
 })();

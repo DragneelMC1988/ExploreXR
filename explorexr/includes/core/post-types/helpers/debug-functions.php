@@ -1,8 +1,8 @@
 <?php
 /**
- * Debug functions for ExpoXR
+ * Debug functions for ExploreXR
  * 
- * @package ExpoXR
+  * @package ExploreXR
  */
 
 // Exit if accessed directly
@@ -16,18 +16,18 @@ if (!defined('ABSPATH')) {
  * @param int $post_id The post ID
  * @return array Debug information collected
  */
-function expoxr_debug_log_post_data($post_id) {
+function explorexr_debug_log_post_data($post_id) {
     // Only log essential info to avoid huge logs
     $important_keys = array(
-        'expoxr_model_file',
-        'expoxr_model_name',
+        'explorexr_model_file',
+        'explorexr_model_name',
         'viewer_size',
         'viewer_width',
         'viewer_height',
-        'expoxr_camera_controls',
-        'expoxr_camera_controls_state',
-        'expoxr_auto_rotate',
-        'expoxr_auto_rotate_state'
+        'explorexr_camera_controls',
+        'explorexr_camera_controls_state',
+        'explorexr_auto_rotate',
+        'explorexr_auto_rotate_state'
         // Animation features are not available in the Free version
     );
     
@@ -40,7 +40,7 @@ function expoxr_debug_log_post_data($post_id) {
         'referring_page' => isset($_SERVER['HTTP_REFERER']) ? sanitize_text_field(wp_unslash($_SERVER['HTTP_REFERER'])) : 'unknown',
         'post_status' => get_post_status($post_id),
         'form_data' => array(),
-        'nonce_status' => isset($_POST['expoxr_nonce']) ? wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['expoxr_nonce'])), 'expoxr_save_model') : 'not provided',
+        'nonce_status' => isset($_POST['explorexr_nonce']) ? wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['explorexr_nonce'])), 'explorexr_save_model') : 'not provided',
         'memory_usage' => memory_get_usage() / 1024 / 1024 . ' MB',
     );
     
@@ -61,8 +61,8 @@ function expoxr_debug_log_post_data($post_id) {
     
     // Check for checkbox states - this is crucial for debugging checkbox issues
     $checkbox_fields = array(
-        'expoxr_camera_controls',
-        'expoxr_auto_rotate'
+        'explorexr_camera_controls',
+        'explorexr_auto_rotate'
         // Animation features are not available in the Free version
     );
     
@@ -89,13 +89,13 @@ function expoxr_debug_log_post_data($post_id) {
     $json_log_data = json_encode($log_data, JSON_PRETTY_PRINT);
     
     // Log the data
-    if (get_option('expoxr_debug_mode', false)) {
-        expoxr_log('ExpoXR: Edit mode submission debug for post ' . $post_id . ': ' . $json_log_data);
+    if (get_option('explorexr_debug_mode', false)) {
+        explorexr_log('ExploreXR: Edit mode submission debug for post ' . $post_id . ': ' . $json_log_data);
     }
     
     // Save the debug info to post meta for troubleshooting
-    update_post_meta($post_id, '_expoxr_last_edit_debug', $json_log_data);
-    update_post_meta($post_id, '_expoxr_last_edit_time', current_time('mysql'));
+    update_post_meta($post_id, '_explorexr_last_edit_debug', $json_log_data);
+    update_post_meta($post_id, '_explorexr_last_edit_time', current_time('mysql'));
     
     return $log_data;
 }
@@ -106,16 +106,16 @@ function expoxr_debug_log_post_data($post_id) {
  * @param int $post_id The post ID
  * @return array|false Debug information or false if none found
  */
-function expoxr_get_debug_info($post_id) {
-    $debug_info = get_post_meta($post_id, '_expoxr_last_edit_debug', true);
-    $debug_time = get_post_meta($post_id, '_expoxr_last_edit_time', true);
+function explorexr_get_debug_info($post_id) {
+    $debug_info = get_post_meta($post_id, '_explorexr_last_edit_debug', true);
+    $debug_time = get_post_meta($post_id, '_explorexr_last_edit_time', true);
     
     if (empty($debug_info)) {
         return false;
     }
     
     $debug_data = json_decode($debug_info, true);
-    $debug_data['_expoxr_last_edit_time'] = $debug_time;
+    $debug_data['_explorexr_last_edit_time'] = $debug_time;
     
     return $debug_data;
 }
@@ -127,15 +127,15 @@ function expoxr_get_debug_info($post_id) {
  * @param string $label Optional label for the log entry
  * @return string|false Path to the log file or false on failure
  */
-function expoxr_create_debug_log($data, $label = '') {
+function explorexr_create_debug_log($data, $label = '') {
     $upload_dir = wp_upload_dir();
-    $log_dir = $upload_dir['basedir'] . '/expoxr-logs';
+    $log_dir = $upload_dir['basedir'] . '/explorexr-logs';
     
     // Create logs directory if it doesn't exist
     if (!file_exists($log_dir)) {
         if (!wp_mkdir_p($log_dir)) {
-            if (get_option('expoxr_debug_mode', false)) {
-                expoxr_log('ExpoXR: Failed to create log directory at ' . $log_dir, 'error');
+            if (get_option('explorexr_debug_mode', false)) {
+                explorexr_log('ExploreXR: Failed to create log directory at ' . $log_dir, 'error');
             }
             return false;
         }
@@ -148,7 +148,7 @@ function expoxr_create_debug_log($data, $label = '') {
     // Create log file
     $timestamp = gmdate('Y-m-d-H-i-s');
     $label = !empty($label) ? '-' . sanitize_file_name($label) : '';
-    $filename = 'expoxr-debug-' . $timestamp . $label . '.log';
+    $filename = 'explorexr-debug-' . $timestamp . $label . '.log';
     $log_file = $log_dir . '/' . $filename;
     
     // Add system info to the log
@@ -156,7 +156,7 @@ function expoxr_create_debug_log($data, $label = '') {
         'WordPress Version' => get_bloginfo('version'),
         'PHP Version' => phpversion(),
         'Memory Limit' => ini_get('memory_limit'),
-        'ExpoXR Version' => defined('EXPOXR_VERSION') ? EXPOXR_VERSION : 'unknown',
+        'ExploreXR Version' => defined('EXPLOREXR_VERSION') ? EXPLOREXR_VERSION : 'unknown',
         'Server Software' => isset($_SERVER['SERVER_SOFTWARE']) ? sanitize_text_field(wp_unslash($_SERVER['SERVER_SOFTWARE'])) : 'unknown',
         'Active Plugins' => array()
     );
@@ -185,8 +185,8 @@ function expoxr_create_debug_log($data, $label = '') {
     $result = @file_put_contents($log_file, json_encode($log_data, JSON_PRETTY_PRINT));
     
     if ($result === false) {
-        if (get_option('expoxr_debug_mode', false)) {
-            expoxr_log('ExpoXR: Failed to write to log file ' . $log_file, 'error');
+        if (get_option('explorexr_debug_mode', false)) {
+            explorexr_log('ExploreXR: Failed to write to log file ' . $log_file, 'error');
         }
         return false;
     }

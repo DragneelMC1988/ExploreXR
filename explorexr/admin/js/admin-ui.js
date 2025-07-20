@@ -1,5 +1,5 @@
 /**
- * ExpoXR Admin UI JavaScript
+ * ExploreXR Admin UI JavaScript
  * 
  * Handles modal functionality for 3D model previews and shortcode copying
  * in the admin dashboard.
@@ -10,7 +10,7 @@ jQuery(document).ready(function($) {
     // Use centralized loader if available
     if (window.loadModelViewer && !window.isModelViewerLoaded()) {
         window.loadModelViewer({
-            scriptUrl: expoxrAdminVars.pluginUrl + 'assets/js/model-viewer-umd.js',
+            scriptUrl: ExploreXRAdminVars.pluginUrl + 'assets/js/model-viewer-umd.js',
             scriptType: 'umd'
         }).then(function() {
             console.log('Model Viewer loaded successfully via centralized loader');
@@ -27,7 +27,7 @@ jQuery(document).ready(function($) {
         var script = document.createElement('script');
         
         // Try to use UMD version for better compatibility
-        var scriptUrl = expoxrAdminVars.pluginUrl + 'assets/js/model-viewer-umd.js';
+        var scriptUrl = ExploreXRAdminVars.pluginUrl + 'assets/js/model-viewer-umd.js';
         
         // If UMD loading fails, fallback to module version
         script.onload = function() {
@@ -38,7 +38,7 @@ jQuery(document).ready(function($) {
             console.warn('UMD version failed, loading module version...');
             var moduleScript = document.createElement('script');
             moduleScript.type = 'module';
-            moduleScript.src = expoxrAdminVars.pluginUrl + 'assets/js/model-viewer.min.js';
+            moduleScript.src = ExploreXRAdminVars.pluginUrl + 'assets/js/model-viewer.min.js';
             document.head.appendChild(moduleScript);
         };
         
@@ -47,9 +47,9 @@ jQuery(document).ready(function($) {
     }
     
     // Model viewer modal functionality
-    const modal = $('#expoxr-model-modal');
-    const modelViewer = $('#expoxr-model-viewer');
-    const modelTitle = $('#expoxr-model-title');
+    const modal = $('#ExploreXR-model-modal');
+    const modelViewer = $('#ExploreXR-model-viewer');
+    const modelTitle = $('#ExploreXR-model-title');
     
     // Open modal when clicking View Model
     $('.view-3d-model').on('click', function(e) {
@@ -60,7 +60,7 @@ jQuery(document).ready(function($) {
         
         // Update model viewer source and title
         modelViewer.attr('src', modelUrl);
-        modelTitle.text(expoxrAdminUI.strings.modelPreviewTitle + ': ' + modelName);
+        modelTitle.text(ExploreXRAdminUI.strings.modelPreviewTitle + ': ' + modelName);
         
         // Add poster if available
         if (posterUrl) {
@@ -74,7 +74,7 @@ jQuery(document).ready(function($) {
     });
     
     // Close modal
-    $('.expoxr-model-close').on('click', function() {
+    $('.ExploreXR-model-close').on('click', function() {
         modal.css('display', 'none');
         modelViewer.attr('src', '');
         modelViewer.removeAttr('poster');

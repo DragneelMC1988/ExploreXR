@@ -1,5 +1,5 @@
 /**
- * ExpoXR Model Viewer Preloader Script
+ * ExploreXR Model Viewer Preloader Script
  * Handles preloading UI before the model-viewer-umd.js script loads
  */
 (function() {
@@ -27,7 +27,7 @@
         // Find all model viewers
         const modelViewers = document.querySelectorAll('model-viewer');
         const modelViewerContainers = Array.from(modelViewers).map(modelViewer => {
-            return modelViewer.closest('.expoxr-model-viewer-container') || modelViewer.parentElement;
+            return modelViewer.closest('.explorexr-model-viewer-container') || modelViewer.parentElement;
         });
         
         // Store for later use
@@ -36,12 +36,12 @@
         console.log('ModelViewerPreloader: Found ' + modelViewerContainers.length + ' model viewers');
         
         // Use the centralized loader manager
-        if (!window.ExpoXRModelViewerLoader || !window.ExpoXRModelViewerLoader.isLoaded()) {
+        if (!window.ExploreXRModelViewerLoader || !window.ExploreXRModelViewerLoader.isLoaded()) {
             showLoadingIndicators();
             
             // Use centralized loading if available
             if (window.loadModelViewer) {
-                const scriptConfig = window.expoxrScriptConfig || {};
+                const scriptConfig = window.explorexrScriptConfig || {};
                 window.loadModelViewer(scriptConfig)
                     .then(handleScriptLoaded)
                     .catch(error => {
@@ -58,7 +58,7 @@
         }
         
         // Create event listeners for script loading completion
-        document.addEventListener('expoxr-script-loaded', handleScriptLoaded);
+        document.addEventListener('explorexr-script-loaded', handleScriptLoaded);
         
         // Set up a timeout just in case the script loading gets stuck
         state.loadTimeout = setTimeout(function() {
@@ -77,7 +77,7 @@
           console.log('ModelViewerPreloader: Loading model-viewer (attempt ' + window.modelViewerLoadAttempts + ')');
         
         // Get script configuration from localized data
-        const scriptConfig = window.expoxrScriptConfig || {};
+        const scriptConfig = window.explorexrScriptConfig || {};
         const scriptUrl = scriptConfig.modelViewerScriptUrl || window.modelViewerScriptUrl || 'https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js';
         const scriptType = scriptConfig.scriptType || 'module';
         
@@ -139,7 +139,7 @@
             console.log('ModelViewerPreloader: Loaded in ' + loadTime + 's');
             
             // Dispatch event that script is loaded
-            document.dispatchEvent(new CustomEvent('expoxr-script-loaded', {
+            document.dispatchEvent(new CustomEvent('explorexr-script-loaded', {
                 detail: { loadTime: loadTime }
             }));
         };
@@ -190,7 +190,7 @@
         updateProgress(state.estimatedTotalSize, state.estimatedTotalSize);
         
         // Dispatch a global event that script loading is complete
-        document.dispatchEvent(new CustomEvent('expoxr-model-viewer-ready', {
+        document.dispatchEvent(new CustomEvent('explorexr-model-viewer-ready', {
             detail: { timestamp: Date.now() }
         }));
         

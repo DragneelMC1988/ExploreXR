@@ -5,12 +5,12 @@
  */
 
 // Enable debugging based on WordPress debug setting
-const EXPOXR_DEBUG = (typeof expoXRDebugMode !== 'undefined' && expoXRDebugMode.debug) ? expoXRDebugMode.enabled : false;
+const EXPLOREXR_DEBUG = (typeof exploreXRDebugMode !== 'undefined' && exploreXRDebugMode.debug) ? exploreXRDebugMode.enabled : false;
 
 // Debug logging function
-function expoxrDebugLog(message) {
-    if (EXPOXR_DEBUG) {
-        console.log('ExpoXR Fix: ' + message);
+function explorexrDebugLog(message) {
+    if (EXPLOREXR_DEBUG) {
+        console.log('ExploreXR Fix: ' + message);
     }
 }
 
@@ -18,10 +18,10 @@ function expoxrDebugLog(message) {
 document.addEventListener('DOMContentLoaded', function() {
     // Get the form element
     const postForm = document.getElementById('post');
-    const isEditMode = document.body.classList.contains('post-type-expoxr_model') && 
+    const isEditMode = document.body.classList.contains('post-type-explorexr_model') && 
                       (document.body.classList.contains('post-php') || document.body.classList.contains('post-new-php'));
     
-    expoxrDebugLog('Edit mode detection - ' + (isEditMode ? 'Active' : 'Inactive'));
+    explorexrDebugLog('Edit mode detection - ' + (isEditMode ? 'Active' : 'Inactive'));
     
     if (postForm && isEditMode) {
         // Create a defensive submit handler
@@ -31,13 +31,13 @@ document.addEventListener('DOMContentLoaded', function() {
             processFormFields();
             processSpecialFields();
             markEditMode();
-            expoxrDebugLog('Defensive form submission handler executed');
+            explorexrDebugLog('Defensive form submission handler executed');
             return originalSubmit.apply(this, arguments);
         };
         
         // Add event listener for form submission
         postForm.addEventListener('submit', function(e) {
-            expoxrDebugLog('Form submission detected');
+            explorexrDebugLog('Form submission detected');
             
             // Process standard form fields first
             processFormFields();
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Track and mark edit mode
             markEditMode();
             
-            expoxrDebugLog('Form prepared for submission');
+            explorexrDebugLog('Form prepared for submission');
         });
         
         // Enable real-time tracking for checkboxes and other fields
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const publishButton = document.getElementById('publish');
         if (publishButton) {
             publishButton.addEventListener('click', function() {
-                expoxrDebugLog('Publish button clicked - preparing form data');
+                explorexrDebugLog('Publish button clicked - preparing form data');
                 processFormFields();
                 processSpecialFields();
                 markEditMode();
@@ -73,8 +73,8 @@ document.addEventListener('DOMContentLoaded', function() {
             postId: document.querySelector('#post_ID') ? document.querySelector('#post_ID').value : 'unknown'
         };
         
-        expoxrDebugLog('Edit mode fix loaded successfully');
-        expoxrDebugLog('Form info: ' + JSON.stringify(formInfo));
+        explorexrDebugLog('Edit mode fix loaded successfully');
+        explorexrDebugLog('Form info: ' + JSON.stringify(formInfo));
     }
 });
 
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
  */
 function processFormFields() {
     // Get all input elements in model metaboxes
-    const metaboxes = document.querySelectorAll('.postbox[id^="expoxr_model_"]');
+    const metaboxes = document.querySelectorAll('.postbox[id^="explorexr_model_"]');
     
     metaboxes.forEach(function(metabox) {
         const inputs = metabox.querySelectorAll('input:not([type="file"]), textarea, select');
@@ -108,35 +108,35 @@ function processFormFields() {
  * Process special fields that require custom handling (e.g., complex JSON data, arrays)
  */
 function processSpecialFields() {
-    expoxrDebugLog('Processing special fields');
+    explorexrDebugLog('Processing special fields');
     
     // 1. Handle annotations if they exist
-    const annotationItems = document.querySelectorAll('.expoxr-annotation-item');
+    const annotationItems = document.querySelectorAll('.explorexr-annotation-item');
     if (annotationItems.length > 0) {
         // Make sure the annotation count field is updated
-        const annotationCountField = document.getElementById('expoxr_annotation_count');
+        const annotationCountField = document.getElementById('explorexr_annotation_count');
         if (annotationCountField) {
             annotationCountField.value = annotationItems.length;
-            expoxrDebugLog('Updated annotation count: ' + annotationItems.length);
+            explorexrDebugLog('Updated annotation count: ' + annotationItems.length);
         }
         
         // Process any annotation data that might be stored in JSON format
-        const annotationDataFields = document.querySelectorAll('input[name*="expoxr_annotations"], textarea[name*="expoxr_annotations"]');
+        const annotationDataFields = document.querySelectorAll('input[name*="explorexr_annotations"], textarea[name*="explorexr_annotations"]');
         annotationDataFields.forEach(function(field) {
             // Force update to ensure values are tracked
             field.dispatchEvent(new Event('change'));
-            expoxrDebugLog('Processed annotation field: ' + field.name);
+            explorexrDebugLog('Processed annotation field: ' + field.name);
         });
     }
     
     // 2. Handle AR modes which are often multi-select
-    const arModesSelects = document.querySelectorAll('select[name="expoxr_ar_modes[]"]');
+    const arModesSelects = document.querySelectorAll('select[name="explorexr_ar_modes[]"]');
     if (arModesSelects.length > 0) {
         // Ensure multi-select values are properly tracked
         arModesSelects.forEach(function(select) {
             // Force a change event to ensure values are updated
             select.dispatchEvent(new Event('change'));
-            expoxrDebugLog('Forced change event on AR modes select: ' + select.name);
+            explorexrDebugLog('Forced change event on AR modes select: ' + select.name);
         });
     }
     
@@ -146,7 +146,7 @@ function processSpecialFields() {
         // Make sure JSON field has proper tracking
         if (field.name && !field.name.endsWith('_tracking')) {
             ensureFieldTracking(field);
-            expoxrDebugLog('Added tracking for JSON field: ' + field.name);
+            explorexrDebugLog('Added tracking for JSON field: ' + field.name);
         }
     });
     
@@ -154,7 +154,7 @@ function processSpecialFields() {
     const cameraPresetFields = document.querySelectorAll('input[name*="camera_preset"], input[name*="camera_orbit"]');
     cameraPresetFields.forEach(function(field) {
         ensureFieldTracking(field);
-        expoxrDebugLog('Added tracking for camera field: ' + field.name);
+        explorexrDebugLog('Added tracking for camera field: ' + field.name);
     });
 }
 
@@ -164,25 +164,25 @@ function processSpecialFields() {
 function markEditMode() {
     const postForm = document.getElementById('post');
     if (!postForm) {
-        console.error('ExpoXR Fix: Post form not found!');
+        console.error('ExploreXR Fix: Post form not found!');
         return;
     }
     
     // Add a hidden field to signal this is coming from the edit form
-    let editModeField = document.getElementById('expoxr_edit_mode_field');
+    let editModeField = document.getElementById('explorexr_edit_mode_field');
     if (!editModeField) {
         editModeField = document.createElement('input');
         editModeField.type = 'hidden';
-        editModeField.name = 'expoxr_edit_mode';
-        editModeField.id = 'expoxr_edit_mode_field';
+        editModeField.name = 'explorexr_edit_mode';
+        editModeField.id = 'explorexr_edit_mode_field';
         editModeField.value = '1';
         postForm.appendChild(editModeField);
-        expoxrDebugLog('Added edit mode marker');
+        explorexrDebugLog('Added edit mode marker');
     }
       // Ensure nonce field exists
-    const nonceField = document.querySelector('input[name="expoxr_nonce"]');
+    const nonceField = document.querySelector('input[name="explorexr_nonce"]');
     if (!nonceField) {
-        console.warn('ExpoXR Fix: No nonce field found - this will cause security validation to fail');
+        console.warn('ExploreXR Fix: No nonce field found - this will cause security validation to fail');
         
         // Try to find the nonce in any meta box
         const metaboxes = document.querySelectorAll('.postbox');
@@ -191,16 +191,16 @@ function markEditMode() {
         metaboxes.forEach(function(box) {
             const possibleNonceField = box.querySelector('input[name*="nonce"]');
             if (possibleNonceField) {
-                console.warn('ExpoXR Fix: Found potential nonce field: ' + possibleNonceField.name);
+                console.warn('ExploreXR Fix: Found potential nonce field: ' + possibleNonceField.name);
                 
                 // Create our specific nonce field as backup
                 const backupNonce = document.createElement('input');
                 backupNonce.type = 'hidden';
-                backupNonce.name = 'expoxr_nonce';
+                backupNonce.name = 'explorexr_nonce';
                 backupNonce.value = possibleNonceField.value;
                 postForm.appendChild(backupNonce);
                 
-                expoxrDebugLog('Created backup nonce field from: ' + possibleNonceField.name);
+                explorexrDebugLog('Created backup nonce field from: ' + possibleNonceField.name);
                 nonceFound = true;
             }
         });
@@ -209,34 +209,34 @@ function markEditMode() {
         if (!nonceFound) {
             const emptyNonce = document.createElement('input');
             emptyNonce.type = 'hidden';
-            emptyNonce.name = 'expoxr_nonce';
+            emptyNonce.name = 'explorexr_nonce';
             emptyNonce.value = ''; // Empty value will fail verification but prevent PHP errors
             postForm.appendChild(emptyNonce);
-            expoxrDebugLog('Created empty nonce field as last resort');
+            explorexrDebugLog('Created empty nonce field as last resort');
         }
     } else {
-        expoxrDebugLog('Nonce field found and validated');
+        explorexrDebugLog('Nonce field found and validated');
     }
     
     // Add diagnostic information
-    let diagnosticField = document.getElementById('expoxr_edit_diagnostic');
+    let diagnosticField = document.getElementById('explorexr_edit_diagnostic');
     if (!diagnosticField) {
         diagnosticField = document.createElement('input');
         diagnosticField.type = 'hidden';
-        diagnosticField.name = 'expoxr_edit_diagnostic';
-        diagnosticField.id = 'expoxr_edit_diagnostic';
+        diagnosticField.name = 'explorexr_edit_diagnostic';
+        diagnosticField.id = 'explorexr_edit_diagnostic';
         
         // Store some diagnostic data
         const data = {
             timestamp: new Date().toISOString(),
             browser: navigator.userAgent,
             fields: document.querySelectorAll('.postbox input, .postbox select, .postbox textarea').length,
-            metaboxes: document.querySelectorAll('.postbox[id^="expoxr_model_"]').length
+            metaboxes: document.querySelectorAll('.postbox[id^="explorexr_model_"]').length
         };
         
         diagnosticField.value = JSON.stringify(data);
         postForm.appendChild(diagnosticField);
-        expoxrDebugLog('Added diagnostic data');
+        explorexrDebugLog('Added diagnostic data');
     }
 }
 
@@ -244,11 +244,11 @@ function markEditMode() {
  * Set up tracking for all interactive fields
  */
 function setupFieldTracking() {
-    expoxrDebugLog('Setting up field tracking');
+    explorexrDebugLog('Setting up field tracking');
     
     // Track all checkboxes specifically
     const checkboxes = document.querySelectorAll('.postbox input[type="checkbox"]');
-    expoxrDebugLog('Found ' + checkboxes.length + ' checkboxes to track');
+    explorexrDebugLog('Found ' + checkboxes.length + ' checkboxes to track');
     
     checkboxes.forEach(function(checkbox) {
         ensureCheckboxTracking(checkbox);
@@ -258,14 +258,14 @@ function setupFieldTracking() {
             const stateField = document.getElementById(checkbox.id + '_state');
             if (stateField) {
                 stateField.value = checkbox.checked ? '1' : '0';
-                expoxrDebugLog('Updated checkbox state for ' + checkbox.name + ' to ' + (checkbox.checked ? 'checked' : 'unchecked'));
+                explorexrDebugLog('Updated checkbox state for ' + checkbox.name + ' to ' + (checkbox.checked ? 'checked' : 'unchecked'));
             }
         });
     });
     
     // Track all select fields
     const selects = document.querySelectorAll('.postbox select');
-    expoxrDebugLog('Found ' + selects.length + ' select fields to track');
+    explorexrDebugLog('Found ' + selects.length + ' select fields to track');
     
     selects.forEach(function(select) {
         ensureFieldTracking(select);
@@ -275,7 +275,7 @@ function setupFieldTracking() {
             const trackingField = document.getElementById(select.id + '_tracking');
             if (trackingField) {
                 trackingField.value = select.value;
-                expoxrDebugLog('Updated select value for ' + select.name + ' to ' + select.value);
+                explorexrDebugLog('Updated select value for ' + select.name + ' to ' + select.value);
             }
         });
     });
@@ -287,7 +287,7 @@ function setupFieldTracking() {
 function ensureCheckboxTracking(checkbox) {
     // Skip if checkbox has no ID or name
     if (!checkbox.id || !checkbox.name) {
-        expoxrDebugLog('Skipping checkbox without ID or name');
+        explorexrDebugLog('Skipping checkbox without ID or name');
         return;
     }
     
@@ -304,18 +304,18 @@ function ensureCheckboxTracking(checkbox) {
         // Insert right after the checkbox
         if (checkbox.form) {
             checkbox.form.appendChild(stateField);
-            expoxrDebugLog('Created tracking field for checkbox ' + checkbox.name + ' (added to form)');
+            explorexrDebugLog('Created tracking field for checkbox ' + checkbox.name + ' (added to form)');
         } else if (checkbox.parentNode) {
             checkbox.parentNode.insertBefore(stateField, checkbox.nextSibling);
-            expoxrDebugLog('Created tracking field for checkbox ' + checkbox.name + ' (added to parent)');
+            explorexrDebugLog('Created tracking field for checkbox ' + checkbox.name + ' (added to parent)');
         } else {
-            console.error('ExpoXR Fix: Cannot add tracking field for checkbox ' + checkbox.name);
+            console.error('ExploreXR Fix: Cannot add tracking field for checkbox ' + checkbox.name);
             return;
         }
     } else {
         // Update existing state field
         stateField.value = checkbox.checked ? '1' : '0';
-        expoxrDebugLog('Updated existing tracking field for checkbox ' + checkbox.name);
+        explorexrDebugLog('Updated existing tracking field for checkbox ' + checkbox.name);
     }
 }
 
@@ -340,7 +340,7 @@ function ensureFieldTracking(field) {
         
         // Insert right after the field
         field.parentNode.insertBefore(trackingField, field.nextSibling);
-        expoxrDebugLog('Created tracking field for ' + field.name);
+        explorexrDebugLog('Created tracking field for ' + field.name);
     } else {
         // Update existing tracking field
         trackingField.value = field.value;
@@ -353,26 +353,26 @@ function ensureFieldTracking(field) {
 
 // Function to check if all tracking fields are correctly associated
 function troubleshootEditMode() {
-    expoxrDebugLog('--- Starting Edit Mode Troubleshooting ---');
+    explorexrDebugLog('--- Starting Edit Mode Troubleshooting ---');
     
     // Check if we're in edit mode
     const isEditPage = document.body.classList.contains('post-php') || document.body.classList.contains('post-new-php');
-    const isExpoXRPost = document.body.classList.contains('post-type-expoxr_model');
+    const isExploreXRPost = document.body.classList.contains('post-type-explorexr_model');
     
-    expoxrDebugLog('Is edit page: ' + isEditPage);
-    expoxrDebugLog('Is ExpoXR model: ' + isExpoXRPost);
+    explorexrDebugLog('Is edit page: ' + isEditPage);
+    explorexrDebugLog('Is ExploreXR model: ' + isExploreXRPost);
     
     // Check if nonce exists
-    const hasNonce = !!document.querySelector('input[name="expoxr_nonce"]');
-    expoxrDebugLog('Has nonce field: ' + hasNonce);
+    const hasNonce = !!document.querySelector('input[name="explorexr_nonce"]');
+    explorexrDebugLog('Has nonce field: ' + hasNonce);
     
     // Check for form submission handler
     const hasForm = !!document.getElementById('post');
-    expoxrDebugLog('Has post form: ' + hasForm);
+    explorexrDebugLog('Has post form: ' + hasForm);
     
     // Check all metaboxes
     const metaboxes = document.querySelectorAll('.postbox');
-    expoxrDebugLog('Total metaboxes: ' + metaboxes.length);
+    explorexrDebugLog('Total metaboxes: ' + metaboxes.length);
     
     // Count fields by type
     let fieldCounts = {
@@ -395,11 +395,11 @@ function troubleshootEditMode() {
         else fieldCounts.other++;
     });
     
-    expoxrDebugLog('Field counts: ' + JSON.stringify(fieldCounts));
+    explorexrDebugLog('Field counts: ' + JSON.stringify(fieldCounts));
     
-    expoxrDebugLog('--- Edit Mode Troubleshooting Complete ---');
+    explorexrDebugLog('--- Edit Mode Troubleshooting Complete ---');
     return {
-        isEditMode: isEditPage && isExpoXRPost,
+        isEditMode: isEditPage && isExploreXRPost,
         hasNonce: hasNonce,
         hasForm: hasForm,
         metaboxCount: metaboxes.length,
@@ -408,4 +408,4 @@ function troubleshootEditMode() {
 }
 
 // Make troubleshooting function available globally for manual checks
-window.troubleshootExpoXREditMode = troubleshootEditMode;
+window.troubleshootExploreXREditMode = troubleshootEditMode;

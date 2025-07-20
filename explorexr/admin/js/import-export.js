@@ -1,15 +1,15 @@
 /**
- * ExpoXR Import/Export Settings Handler
+ * ExploreXR Import/Export Settings Handler
  * 
  * Handles the UI interactions for the import/export settings functionality
  */
 
 jQuery(document).ready(function($) {
     // File input handling
-    $('#expoxr-import-file').on('change', function() {
+    $('#explorexr-import-file').on('change', function() {
         const fileInput = $(this)[0];
-        const importPreview = $('#expoxr-import-preview');
-        const importForm = $('#expoxr-import-form');
+        const importPreview = $('#explorexr-import-preview');
+        const importForm = $('#explorexr-import-form');
         
         importPreview.empty();
         
@@ -41,10 +41,10 @@ jQuery(document).ready(function($) {
         reader.onload = function(e) {
             try {
                 const jsonData = JSON.parse(e.target.result);
-                
-                // Check if this is a valid ExpoXR settings file
+
+                // Check if this is a valid ExploreXR settings file
                 if (!jsonData._export_info) {
-                    importPreview.html('<div class="notice notice-error"><p>Invalid ExpoXR settings file.</p></div>');
+                    importPreview.html('<div class="notice notice-error"><p>Invalid ExploreXR settings file.</p></div>');
                     fileInput.value = '';
                     return;
                 }
@@ -59,7 +59,7 @@ jQuery(document).ready(function($) {
                             <strong>Plugin version:</strong> ${jsonData._export_info.plugin_version || 'Unknown'}<br>
                             <strong>Settings count:</strong> ${Object.keys(jsonData).length - 1} settings
                         </p>
-                        <div class="expoxr-import-settings-preview">
+                        <div class="explorexr-import-settings-preview">
                             <code>${JSON.stringify(jsonData, null, 2)}</code>
                         </div>
                         <p class="import-note"><span class="dashicons dashicons-info"></span> Please verify this is the correct settings file before importing.</p>
@@ -83,7 +83,7 @@ jQuery(document).ready(function($) {
     });
     
     // Confirm import
-    $('#expoxr-import-form').on('submit', function(e) {
+    $('#explorexr-import-form').on('submit', function(e) {
         if (!confirm('Are you sure you want to import these settings? This may override your current configuration.')) {
             e.preventDefault();
             return false;
@@ -94,7 +94,7 @@ jQuery(document).ready(function($) {
     });
     
     // Confirm export
-    $('#expoxr-export-form').on('submit', function() {
+    $('#explorexr-export-form').on('submit', function() {
         $(this).find('button[type="submit"]').html('<span class="spinner is-active"></span> Exporting...');
     });
 });

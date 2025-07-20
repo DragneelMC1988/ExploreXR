@@ -4,7 +4,7 @@
  * 
  * Displays a preview of the 3D model with the shortcode
  *
- * @package ExpoXR
+  * @package ExploreXR
  */
 
 // Prevent direct access
@@ -25,23 +25,23 @@ if (!isset($model_id) || empty($model_id)) {
 
 // Ensure required variables are defined
 if (!isset($shortcode)) {
-    $shortcode = '[expoxr_model id="' . $model_id . '"]';
+    $shortcode = '[explorexr_model id="' . $model_id . '"]';
 }
 
 if (!isset($model_file)) {
-    $model_file = get_post_meta($model_id, '_expoxr_model_file', true) ?: '';
+    $model_file = get_post_meta($model_id, '_explorexr_model_file', true) ?: '';
 }
 
 if (!isset($poster_url)) {
-    $poster_url = get_post_meta($model_id, '_expoxr_model_poster', true) ?: '';
+    $poster_url = get_post_meta($model_id, '_explorexr_model_poster', true) ?: '';
 }
 
 if (!isset($auto_rotate)) {
-    $auto_rotate = get_post_meta($model_id, '_expoxr_auto_rotate', true) === 'on';
+    $auto_rotate = get_post_meta($model_id, '_explorexr_auto_rotate', true) === 'on';
 }
 
 if (!isset($camera_controls)) {
-    $camera_controls = get_post_meta($model_id, '_expoxr_camera_controls', true) === 'on';
+    $camera_controls = get_post_meta($model_id, '_explorexr_camera_controls', true) === 'on';
 }
 
 // Animation settings are not available in the Free version
@@ -49,18 +49,18 @@ if (!isset($camera_controls)) {
 ?>
 
 <!-- Model Preview Section -->
-<div class="expoxr-card expoxr-preview-card">
-    <div class="expoxr-card-header">
+<div class="explorexr-card explorexr-preview-card">
+    <div class="explorexr-card-header">
         <h2><span class="dashicons dashicons-visibility"></span> Model Preview</h2>
-        <div class="expoxr-model-shortcode">
+        <div class="explorexr-model-shortcode">
             <code><?php echo esc_html($shortcode); ?></code>
             <button type="button" class="copy-shortcode" data-shortcode="<?php echo esc_attr($shortcode); ?>">
                 <span class="dashicons dashicons-clipboard"></span> Copy
             </button>
         </div>
     </div>
-    <div class="expoxr-card-content">
-        <div id="expoxr-model-preview-container">
+    <div class="explorexr-card-content">
+        <div id="explorexr-model-preview-container">
             <?php if (!empty($model_file)) : ?>                    
             <model-viewer 
                 src="<?php echo esc_url($model_file); ?>"
@@ -68,10 +68,10 @@ if (!isset($camera_controls)) {
                 <?php if ($auto_rotate) : ?>auto-rotate<?php endif; ?>
                 camera-controls
                 shadow-intensity="1"
-                class="expoxr-model-preview">
+                class="explorexr-model-preview">
             </model-viewer>
             <?php else : ?>
-            <div class="expoxr-empty-preview">
+            <div class="explorexr-empty-preview">
                 <span class="dashicons dashicons-format-image"></span>
                 <p>No model file available</p>
             </div>

@@ -1,11 +1,11 @@
 /**
- * ExpoXR Admin UI Styles
+ * ExploreXR Admin UI Styles
  * 
  * Styles for modal dialogs and UI elements in the admin dashboard.
  */
 
 /* Model Preview Modal */
-.expoxr-model-modal {
+.explorexr-model-modal {
     display: none;
     position: fixed;
     z-index: 9999;
@@ -17,7 +17,7 @@
     overflow: auto;
 }
 
-.expoxr-model-modal-content {
+.explorexr-model-modal-content {
     position: relative;
     background-color: #fefefe;
     margin: 20px auto;
@@ -29,7 +29,7 @@
     animation: modalFadeIn 0.3s ease-out;
 }
 
-.expoxr-model-modal-content model-viewer {
+.explorexr-model-modal-content model-viewer {
     width: 100%;
     height: calc(100% - 60px); /* Account for title and padding */
     min-height: 500px;
@@ -46,7 +46,7 @@
     }
 }
 
-.expoxr-model-close {
+.explorexr-model-close {
     position: absolute;
     top: 10px;
     right: 15px;
@@ -59,13 +59,13 @@
     transition: color 0.2s ease;
 }
 
-.expoxr-model-close:hover,
-.expoxr-model-close:focus {
+.explorexr-model-close:hover,
+.explorexr-model-close:focus {
     color: #000;
     text-decoration: none;
 }
 
-.expoxr-model-title {
+.explorexr-model-title {
     margin-top: 0;
     padding-right: 30px;
     font-size: 18px;
@@ -75,7 +75,7 @@
 }
 
 /* Model Viewer in Modal */
-#expoxr-model-viewer {
+#explorexr-model-viewer {
     width: 100%;
     margin-top: 10px;
     background-color: #f5f5f5;
@@ -102,26 +102,26 @@
 
 /* Responsive Modal */
 @media (max-width: 768px) {
-    .expoxr-model-modal-content {
+    .explorexr-model-modal-content {
         width: 95%;
         height: 90%;
         margin: 20px auto;
         padding: 15px;
     }
     
-    .expoxr-model-title {
+    .explorexr-model-title {
         font-size: 16px;
     }
 }
 
 /* Focus styles for accessibility */
-.expoxr-model-close:focus {
+.explorexr-model-close:focus {
     outline: 2px solid #0073aa;
     outline-offset: 2px;
 }
 
 /* Loading state for model viewer */
-#expoxr-model-viewer[src=""] {
+#explorexr-model-viewer[src=""] {
     background-color: #0D152C;
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23666"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>');
     background-repeat: no-repeat;

@@ -1,6 +1,6 @@
 /* Styles for the Loading Options Page */
 
-.expoxr-settings-section {
+.explorexr-settings-section {
     background: #fff;
     border: 1px solid #ccd0d4;
     padding: 15px;
@@ -8,25 +8,25 @@
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
 }
 
-.expoxr-settings-section h2 {
+.explorexr-settings-section h2 {
     margin-top: 0;
     padding-bottom: 10px;
     border-bottom: 1px solid #eee;
 }
 
-.expoxr-range {
+.explorexr-range {
     vertical-align: middle;
     width: 200px;
 }
 
-.expoxr-opacity-value {
+.explorexr-opacity-value {
     display: inline-block;
     width: 40px;
     text-align: center;
     margin-left: 5px;
 }
 
-.expoxr-settings-preview {
+.explorexr-settings-preview {
     background: #f5f5f5;
     border: 1px solid #e0e0e0;
     padding: 20px;
@@ -35,14 +35,14 @@
     min-height: 200px;
 }
 
-.expoxr-preview-title {
+.explorexr-preview-title {
     margin-top: 0;
     border-bottom: 1px solid #e0e0e0;
     padding-bottom: 10px;
     margin-bottom: 15px;
 }
 
-.expoxr-loading-preview-container {
+.explorexr-loading-preview-container {
     position: relative;
     height: 200px;
     background-color: #f9f9f9;
@@ -58,7 +58,7 @@
  */
 
 /* Loading container */
-.expoxr-loading-container {
+.explorexr-loading-container {
     position: absolute;
     top: 0;
     left: 0;
@@ -74,7 +74,7 @@
 }
 
 /* Progress bar */
-.expoxr-loading-progress-bar {
+.explorexr-loading-progress-bar {
     width: 80%;
     max-width: 300px;
     height: 10px;
@@ -84,7 +84,7 @@
     margin-bottom: 10px;
 }
 
-.expoxr-loading-progress {
+.explorexr-loading-progress {
     height: 100%;
     width: 0%;
     background-color: #1e88e5;
@@ -92,21 +92,21 @@
 }
 
 /* Percentage indicator */
-.expoxr-loading-percentage {
+.explorexr-loading-percentage {
     font-size: 16px;
     font-weight: bold;
     color: #1e88e5;
 }
 
 /* Admin preview */
-.expoxr-loading-preview-container {
+.explorexr-loading-preview-container {
     background-color: #f5f5f5;
     padding: 20px;
     border-radius: 5px;
     margin-bottom: 20px;
 }
 
-.expoxr-loading-preview {
+.explorexr-loading-preview {
     width: 100%;
     max-width: 500px;
     height: 150px;
@@ -120,23 +120,23 @@
     padding: 20px;
 }
 
-.expoxr-loading-preview[data-loading-type="bar"] .expoxr-loading-percentage {
+.explorexr-loading-preview[data-loading-type="bar"] .explorexr-loading-percentage {
     display: none;
 }
 
-.expoxr-loading-preview[data-loading-type="percentage"] .expoxr-loading-progress-bar {
+.explorexr-loading-preview[data-loading-type="percentage"] .explorexr-loading-progress-bar {
     display: none;
 }
 
 /* Free version notice */
-.expoxr-free-version-notice {
+.explorexr-free-version-notice {
     display: flex;
     align-items: center;
     color: #666;
     font-style: italic;
 }
 
-.expoxr-loading-color-preview {
+.explorexr-loading-color-preview {
     display: inline-block;
     width: 20px;
     height: 20px;

@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
  * @param mixed $message The message to log (string, array, object, etc.)
  * @param string $level Optional log level (info, warning, error)
  */
-function expoxr_log($message, $level = 'info') {
+function explorexr_log($message, $level = 'info') {
     // Only log if WordPress debugging is enabled
     if (!defined('WP_DEBUG') || !WP_DEBUG || !defined('WP_DEBUG_LOG') || !WP_DEBUG_LOG) {
         return;
@@ -50,18 +50,18 @@ function expoxr_log($message, $level = 'info') {
 /**
  * Initialize debugging functionality
  */
-function expoxr_init_debugging() {
+function explorexr_init_debugging() {
     // Register AJAX handlers for debug log operations
-    add_action('wp_ajax_expoxr_clear_debug_log', 'expoxr_ajax_clear_debug_log');
+    add_action('wp_ajax_explorexr_clear_debug_log', 'explorexr_ajax_clear_debug_log');
     
     // Add console logging if enabled
-    if (get_option('expoxr_console_logging', false)) {
-        add_action('wp_footer', 'expoxr_add_console_logging');
-        add_action('admin_footer', 'expoxr_add_console_logging');
+    if (get_option('explorexr_console_logging', false)) {
+        add_action('wp_footer', 'explorexr_add_console_logging');
+        add_action('admin_footer', 'explorexr_add_console_logging');
     }
     
     // Display PHP errors for admins if enabled (only in development environments)
-    if (get_option('expoxr_view_php_errors', false) && current_user_can('manage_options') && get_option('expoxr_debug_mode', false) && defined('WP_DEBUG') && WP_DEBUG) {
+    if (get_option('explorexr_view_php_errors', false) && current_user_can('manage_options') && get_option('explorexr_debug_mode', false) && defined('WP_DEBUG') && WP_DEBUG) {
         // Only modify error reporting in development environments
         if (defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY) {
             // phpcs:ignore Squiz.PHP.DiscouragedFunctions.Discouraged -- Required for debugging functionality
@@ -74,12 +74,12 @@ function expoxr_init_debugging() {
     }
     
     // Set up error handler to catch and log string function errors (only in debug mode)
-    if (get_option('expoxr_debug_mode', false) && defined('WP_DEBUG') && WP_DEBUG) {
+    if (get_option('explorexr_debug_mode', false) && defined('WP_DEBUG') && WP_DEBUG) {
         // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_set_error_handler -- Used for debug error handling
-        set_error_handler('expoxr_error_handler', E_WARNING | E_NOTICE | E_DEPRECATED);
+        set_error_handler('explorexr_error_handler', E_WARNING | E_NOTICE | E_DEPRECATED);
         
         // Also register a shutdown function to catch fatal errors
-        register_shutdown_function('expoxr_shutdown_function');
+        register_shutdown_function('explorexr_shutdown_function');
     }
 }
 
@@ -92,7 +92,7 @@ function expoxr_init_debugging() {
  * @param int $errline Line number where error occurred
  * @return bool Whether to continue with PHP internal error handler
  */
-function expoxr_error_handler($errno, $errstr, $errfile, $errline) {
+function explorexr_error_handler($errno, $errstr, $errfile, $errline) {
     // Check if error is related to string functions with null arguments
     if (strpos($errstr, 'strpos()') !== false || 
         strpos($errstr, 'str_replace()') !== false || 
@@ -106,7 +106,7 @@ function expoxr_error_handler($errno, $errstr, $errfile, $errline) {
             $errline
         );
         
-        expoxr_debug_log($log_message, 'warning');
+        explorexr_debug_log($log_message, 'warning');
     }
     
     // Return false to allow PHP to handle the error as well
@@ -116,7 +116,7 @@ function expoxr_error_handler($errno, $errstr, $errfile, $errline) {
 /**
  * Shutdown function to catch fatal errors
  */
-function expoxr_shutdown_function() {
+function explorexr_shutdown_function() {
     $error = error_get_last();
     
     if ($error !== null && in_array($error['type'], array(E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR))) {
@@ -127,31 +127,31 @@ function expoxr_shutdown_function() {
             $error['line']
         );
         
-        expoxr_debug_log($log_message, 'error');
+        explorexr_debug_log($log_message, 'error');
     }
 }
-add_action('init', 'expoxr_init_debugging');
+add_action('init', 'explorexr_init_debugging');
 
 /**
  * Add console logging to 3D model viewers
  */
-function expoxr_add_console_logging() {
+function explorexr_add_console_logging() {
     // Only add if we're on a page with a 3D model and the query has been run
     if (is_admin() || !is_main_query()) {
         return;
     }
     
     global $post;
-    if (!$post || (!has_shortcode($post->post_content ?? '', 'expoxr_model') && !has_shortcode($post->post_content ?? '', 'model-viewer'))) {
+    if (!$post || (!has_shortcode($post->post_content ?? '', 'explorexr_model') && !has_shortcode($post->post_content ?? '', 'model-viewer'))) {
         return;
     }
     
     // Get debugging options
-    $plugin_version = EXPOXR_VERSION;
-    $debug_ar = get_option('expoxr_debug_ar_features', false) ? 'true' : 'false';
-    $debug_camera = get_option('expoxr_debug_camera_controls', false) ? 'true' : 'false';
+    $plugin_version = EXPLOREXR_VERSION;
+    $debug_ar = get_option('explorexr_debug_ar_features', false) ? 'true' : 'false';
+    $debug_camera = get_option('explorexr_debug_camera_controls', false) ? 'true' : 'false';
     // Animation and annotation debug features are not available in the Free version
-    $debug_loading = get_option('expoxr_debug_loading_info', false) ? 'true' : 'false';
+    $debug_loading = get_option('explorexr_debug_loading_info', false) ? 'true' : 'false';
     
     ?>
     <script>
@@ -166,7 +166,7 @@ function expoxr_add_console_logging() {
         modelViewers.forEach((modelViewer, index) => {
             console.log(`Model Viewer #${index + 1}:`);
             
-            <?php if (get_option('expoxr_debug_loading_info', false)): ?>
+            <?php if (get_option('explorexr_debug_loading_info', false)): ?>
             // Loading Information Debugging
             console.log(`  Loading Attributes: loading=${modelViewer.loading}, poster=${modelViewer.hasAttribute('poster')}`);
             
@@ -189,13 +189,13 @@ function expoxr_add_console_logging() {
  * @param string $message The message to log
  * @param string $level The log level (info, warning, error)
  */
-function expoxr_debug_log($message, $level = 'info') {
+function explorexr_debug_log($message, $level = 'info') {
     // Only log if debug logging is enabled
-    if (!get_option('expoxr_debug_log', false) || !get_option('expoxr_debug_mode', false)) {
+    if (!get_option('explorexr_debug_log', false) || !get_option('explorexr_debug_mode', false)) {
         return;
     }
     
-    $log_file = EXPOXR_PLUGIN_DIR . 'debug.log';
+    $log_file = EXPLOREXR_PLUGIN_DIR . 'debug.log';
     $timestamp = current_time('mysql');
     $formatted_message = sprintf("[%s] [%s] %s\n", $timestamp, strtoupper($level), $message);
     
@@ -209,28 +209,28 @@ function expoxr_debug_log($message, $level = 'info') {
 /**
  * AJAX handler for getting debug log contents
  */
-function expoxr_ajax_get_debug_log() {
+function explorexr_ajax_get_debug_log() {
     // Use centralized security validation
-    $security_check = expoxr_validate_ajax_security('expoxr_debug_nonce', 'manage_options');
+    $security_check = explorexr_validate_ajax_security('explorexr_debug_nonce', 'manage_options');
     if (is_wp_error($security_check)) {
         wp_send_json_error(array('message' => $security_check->get_error_message()));
         return;
     }
     
     // Rate limiting - allow 10 requests per minute
-    if (!expoxr_check_rate_limit('debug_log_get', 10, 60)) {
+    if (!explorexr_check_rate_limit('debug_log_get', 10, 60)) {
         wp_send_json_error(array('message' => 'Rate limit exceeded. Please wait before requesting debug log again.'));
         return;
     }
     
     // Log security event
-    expoxr_log_security_event('debug_log_accessed', array(
+    explorexr_log_security_event('debug_log_accessed', array(
         'user_id' => get_current_user_id(),
-        'ip' => expoxr_get_client_ip(),
+        'ip' => explorexr_get_client_ip(),
         'timestamp' => current_time('mysql')
     ));
     
-    $log_file = EXPOXR_PLUGIN_DIR . 'debug.log';
+    $log_file = EXPLOREXR_PLUGIN_DIR . 'debug.log';
     
     if (file_exists($log_file)) {
         $content = file_get_contents($log_file);
@@ -243,23 +243,23 @@ function expoxr_ajax_get_debug_log() {
 /**
  * AJAX handler for clearing debug log
  */
-function expoxr_ajax_clear_debug_log() {
+function explorexr_ajax_clear_debug_log() {
     // Validate security using centralized function
-    $security_check = expoxr_validate_ajax_security('expoxr_debug_nonce', 'manage_options');
+    $security_check = explorexr_validate_ajax_security('explorexr_debug_nonce', 'manage_options');
     if (is_wp_error($security_check)) {
-        expoxr_log_security_event(
+        explorexr_log_security_event(
             'ajax_security_failure',
             'Debug log clear blocked: ' . $security_check->get_error_message(),
-            // Note: nonce verification is handled by expoxr_validate_ajax_security() function
-            // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_validate_ajax_security()
+            // Note: nonce verification is handled by explorexr_validate_ajax_security() function
+            // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in explorexr_validate_ajax_security()
             array('action' => 'clear_debug_log', 'nonce_provided' => isset($_POST['nonce']))
         );
         wp_send_json_error(array('message' => $security_check->get_error_message()));
     }
     
     // Check rate limiting (max 5 clear operations per minute)
-    if (!expoxr_check_rate_limit('clear_debug_log', 5, 60)) {
-        expoxr_log_security_event(
+    if (!explorexr_check_rate_limit('clear_debug_log', 5, 60)) {
+        explorexr_log_security_event(
             'rate_limit_exceeded',
             'Debug log clear rate limit exceeded',
             array('action' => 'clear_debug_log', 'limit' => 5)
@@ -268,13 +268,13 @@ function expoxr_ajax_clear_debug_log() {
     }
     
     // Log security event for debug log clearing
-    expoxr_log_security_event('debug_log_cleared', array(
+    explorexr_log_security_event('debug_log_cleared', array(
         'user_id' => get_current_user_id(),
-        'ip' => expoxr_get_client_ip(),
+        'ip' => explorexr_get_client_ip(),
         'timestamp' => current_time('mysql')
     ));
     
-    $log_file = EXPOXR_PLUGIN_DIR . 'debug.log';
+    $log_file = EXPLOREXR_PLUGIN_DIR . 'debug.log';
     
     if (file_exists($log_file)) {
         // Clear the file using WordPress file functions
@@ -294,23 +294,23 @@ function expoxr_ajax_clear_debug_log() {
  * Add sample debug entries to log file for testing
  * Only used during development/testing
  */
-function expoxr_add_sample_debug_entries() {
-    expoxr_debug_log('Plugin initialized', 'info');
-    expoxr_debug_log('Model viewer loaded: example-model.glb', 'info');
-    expoxr_debug_log('AR session started on iOS device', 'info');
-    expoxr_debug_log('Failed to load texture: texture-file.jpg', 'warning');
-    expoxr_debug_log('Model load error: Invalid file format', 'error');
-    expoxr_debug_log('Camera position changed: 0 1.5 2.5', 'info');
+function explorexr_add_sample_debug_entries() {
+    explorexr_debug_log('Plugin initialized', 'info');
+    explorexr_debug_log('Model viewer loaded: example-model.glb', 'info');
+    explorexr_debug_log('AR session started on iOS device', 'info');
+    explorexr_debug_log('Failed to load texture: texture-file.jpg', 'warning');
+    explorexr_debug_log('Model load error: Invalid file format', 'error');
+    explorexr_debug_log('Camera position changed: 0 1.5 2.5', 'info');
     // Animation and annotation sample logs are not available in the Free version
-    expoxr_debug_log('Loading progress: 75%', 'info');
-    expoxr_debug_log('Model successfully loaded after 3.2s', 'info');
+    explorexr_debug_log('Loading progress: 75%', 'info');
+    explorexr_debug_log('Model successfully loaded after 3.2s', 'info');
 }
 
 /**
  * Safe wrapper for WordPress conditional tags
  * Prevents "Function was called incorrectly" notices by checking if the main query is ready
  */
-function expoxr_safe_conditional_tag_check($tag_function, $args = array()) {
+function explorexr_safe_conditional_tag_check($tag_function, $args = array()) {
     // Only run the function if we're past the parse_query hook or in the admin
     if (did_action('parse_query') || is_admin()) {
         if (is_callable($tag_function)) {
@@ -326,8 +326,8 @@ function expoxr_safe_conditional_tag_check($tag_function, $args = array()) {
  * @param mixed $page Page ID, title, slug, or array of such
  * @return bool Whether the query is for an existing page
  */
-function expoxr_is_page($page = '') {
-    return expoxr_safe_conditional_tag_check('is_page', array($page));
+function explorexr_is_page($page = '') {
+    return explorexr_safe_conditional_tag_check('is_page', array($page));
 }
 
 /**
@@ -335,8 +335,8 @@ function expoxr_is_page($page = '') {
  * 
  * @return bool Whether the query is a search
  */
-function expoxr_is_search() {
-    return expoxr_safe_conditional_tag_check('is_search');
+function explorexr_is_search() {
+    return explorexr_safe_conditional_tag_check('is_search');
 }
 
 /**
@@ -344,8 +344,8 @@ function expoxr_is_search() {
  * 
  * @return bool Whether the query is for the blog homepage
  */
-function expoxr_is_home() {
-    return expoxr_safe_conditional_tag_check('is_home');
+function explorexr_is_home() {
+    return explorexr_safe_conditional_tag_check('is_home');
 }
 
 /**
@@ -354,8 +354,8 @@ function expoxr_is_home() {
  * @param mixed $post Post ID, title, slug, or array of such
  * @return bool Whether the query is for an existing single post
  */
-function expoxr_is_single($post = '') {
-    return expoxr_safe_conditional_tag_check('is_single', array($post));
+function explorexr_is_single($post = '') {
+    return explorexr_safe_conditional_tag_check('is_single', array($post));
 }
 
 

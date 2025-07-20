@@ -1,5 +1,5 @@
 /* Premium Banner Dismiss Button Styles */
-.expoxr-banner-dismiss {
+.explorexr-banner-dismiss {
     position: absolute !important;
     top: 15px !important;
     right: 15px !important;
@@ -22,20 +22,20 @@
     margin: 0 !important;
 }
 
-.expoxr-banner-dismiss:hover {
+.explorexr-banner-dismiss:hover {
     background: rgba(255, 255, 255, 1) !important;
     border-color: rgba(0, 0, 0, 0.3) !important;
     transform: scale(1.1) !important;
     color: #23282d !important;
 }
 
-.expoxr-banner-dismiss:focus {
+.explorexr-banner-dismiss:focus {
     outline: 2px solid rgba(0, 0, 0, 0.3) !important;
     outline-offset: 2px !important;
 }
 
 /* Banner slide out animation */
-.expoxr-pro-banner.banner-dismissing {
+.explorexr-pro-banner.banner-dismissing {
     animation: bannerSlideUp 0.3s ease-out forwards !important;
 }
 

@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
  * Check if a premium feature is available
  * Always returns false in free version
  */
-function expoxr_is_premium_feature_available($feature) {
+function explorexr_is_premium_feature_available($feature) {
     return false;
 }
 
@@ -22,7 +22,7 @@ function expoxr_is_premium_feature_available($feature) {
  * Check if an addon is licensed
  * Always returns false in free version
  */
-function expoxr_is_addon_licensed($addon) {
+function explorexr_is_addon_licensed($addon) {
     return false;
 }
 
@@ -30,7 +30,7 @@ function expoxr_is_addon_licensed($addon) {
  * Check if Camera add-on is installed, active, and licensed
  * Always returns false in free version
  */
-function expoxr_camera_addon_available() {
+function explorexr_camera_addon_available() {
     return false;
 }
 
@@ -38,7 +38,7 @@ function expoxr_camera_addon_available() {
  * Check if AR add-on is installed, active, and licensed
  * Always returns false in free version
  */
-function expoxr_ar_addon_available() {
+function explorexr_ar_addon_available() {
     return false;
 }
 
@@ -46,7 +46,7 @@ function expoxr_ar_addon_available() {
  * Check if Animation add-on is installed, active, and licensed
  * Always returns false in free version
  */
-function expoxr_animation_addon_available() {
+function explorexr_animation_addon_available() {
     return false;
 }
 
@@ -54,7 +54,7 @@ function expoxr_animation_addon_available() {
  * Check if Annotations add-on is installed, active, and licensed
  * Always returns false in free version
  */
-function expoxr_annotations_addon_available() {
+function explorexr_annotations_addon_available() {
     return false;
 }
 
@@ -62,32 +62,32 @@ function expoxr_annotations_addon_available() {
  * Dummy function for addon license check
  * Always returns false in free version
  */
-function expoxr_is_addon_licensed_function($addon) {
+function explorexr_is_addon_licensed_function($addon) {
     return false;
 }
 
 // Alias the function for backward compatibility
-if (!function_exists('expoxr_is_addon_licensed')) {
-    function expoxr_is_addon_licensed($addon) {
-        return expoxr_is_addon_licensed_function($addon);
+if (!function_exists('explorexr_is_addon_licensed')) {
+    function explorexr_is_addon_licensed($addon) {
+        return explorexr_is_addon_licensed_function($addon);
     }
 }
 
 /**
  * Show admin notice to promote premium upgrade
  */
-function expoxr_show_premium_upgrade_notice() {
+function explorexr_show_premium_upgrade_notice() {
     // Don't show on ExploreXR premium page to avoid redundancy
     $screen = get_current_screen();
-    if ($screen && $screen->id === 'toplevel_page_expoxr-premium') {
+    if ($screen && $screen->id === 'toplevel_page_explorexr-premium') {
         return;
     }
     
-    $dismissed = get_user_meta(get_current_user_id(), 'expoxr_premium_notice_dismissed', true);
+    $dismissed = get_user_meta(get_current_user_id(), 'explorexr_premium_notice_dismissed', true);
     
     if (!$dismissed) {
         ?>
-        <div class="notice notice-info expoxr-premium-notice is-dismissible" data-notice="premium-upgrade">
+        <div class="notice notice-info explorexr-premium-notice is-dismissible" data-notice="premium-upgrade">
             <div style="display: flex; align-items: center; gap: 15px; padding: 10px 0;">
                 <div style="font-size: 32px;">🚀</div>
                 <div style="flex: 1;">
@@ -95,7 +95,7 @@ function expoxr_show_premium_upgrade_notice() {
                     <p style="margin: 0;">Add AR and Camera Controls to your 3D models with ExploreXR Premium. Transform how users interact with your content!</p>
                 </div>
                 <div>
-                    <a href="<?php echo esc_url(admin_url('admin.php?page=expoxr-premium')); ?>" class="button button-primary">Upgrade Now</a>
+                    <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-premium')); ?>" class="button button-primary">Upgrade Now</a>
                 </div>
             </div>
         </div>
@@ -106,12 +106,12 @@ function expoxr_show_premium_upgrade_notice() {
 /**
  * Add premium upgrade metaboxes to model edit page
  */
-function expoxr_add_premium_upgrade_metaboxes() {
+function explorexr_add_premium_upgrade_metaboxes() {
     add_meta_box(
-        'expoxr-premium-addons',
+        'explorexr-premium-addons',
         '🚀 Premium Addons',
-        'expoxr_premium_addons_metabox',
-        'expoxr_model',
+        'explorexr_premium_addons_metabox',
+        'explorexr_model',
         'side',
         'high'
     );
@@ -120,9 +120,9 @@ function expoxr_add_premium_upgrade_metaboxes() {
 /**
  * Premium addons metabox content
  */
-function expoxr_premium_addons_metabox($post) {
+function explorexr_premium_addons_metabox($post) {
         ?>
-        <div class="expoxr-premium-metabox">
+        <div class="explorexr-premium-metabox">
             <div class="premium-addon-list">
                 <div class="premium-addon-item">
                     <span class="addon-icon">📱</span>
@@ -143,7 +143,7 @@ function expoxr_premium_addons_metabox($post) {
                     <li>✅ Advanced camera controls</li>
                 </ul>
                 
-                <a href="<?php echo esc_url(admin_url('admin.php?page=expoxr-premium')); ?>" class="button button-primary button-large" style="width: 100%; text-align: center; margin-top: 15px;">
+                <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-premium')); ?>" class="button button-primary button-large" style="width: 100%; text-align: center; margin-top: 15px;">
                     🚀 Upgrade to Premium
                 </a>
                 
@@ -158,7 +158,7 @@ function expoxr_premium_addons_metabox($post) {
 /**
  * Filter shortcode attributes to remove premium features
  */
-function expoxr_filter_premium_shortcode_attributes($atts, $model_id) {
+function explorexr_filter_premium_shortcode_attributes($atts, $model_id) {
         // Remove premium attributes
         $premium_attributes = array('ar', 'camera-controls');
         
@@ -174,16 +174,16 @@ function expoxr_filter_premium_shortcode_attributes($atts, $model_id) {
 /**
  * Add frontend upgrade prompts
  */
-function expoxr_add_frontend_upgrade_prompts() {
+function explorexr_add_frontend_upgrade_prompts() {
         // Only add on pages with ExploreXR models
-        if (!expoxr_has_expoxr_content()) {
+        if (!explorexr_has_explorexr_content()) {
             return;
         }
         
         ?>
-        <div id="expoxr-premium-prompt" style="display: none;">
-            <div class="expoxr-premium-overlay">
-                <div class="expoxr-premium-popup">
+        <div id="explorexr-premium-prompt" style="display: none;">
+            <div class="explorexr-premium-overlay">
+                <div class="explorexr-premium-popup">
                     <div class="premium-popup-header">
                         <h3>🚀 Premium Feature</h3>
                         <button class="close-popup" onclick="this.parentElement.parentElement.parentElement.style.display='none'">&times;</button>
@@ -196,7 +196,7 @@ function expoxr_add_frontend_upgrade_prompts() {
                             <li>✅ Advanced controls</li>
                             <li>✅ And much more!</li>
                         </ul>
-                        <a href="<?php echo esc_url(expoxr_get_premium_upgrade_url()); ?>" class="premium-upgrade-btn" target="_blank">
+                        <a href="<?php echo esc_url(explorexr_get_premium_upgrade_url()); ?>" class="premium-upgrade-btn" target="_blank">
                             Upgrade to Premium
                         </a>
                     </div>
@@ -209,7 +209,7 @@ function expoxr_add_frontend_upgrade_prompts() {
 /**
  * Check if current page has ExploreXR content
  */
-function expoxr_has_expoxr_content() {
+function explorexr_has_explorexr_content() {
         global $post;
         
         if (!$post) {
@@ -222,7 +222,7 @@ function expoxr_has_expoxr_content() {
         }
         
         // Check for ExploreXR blocks (if using Gutenberg)
-        if (has_block('expoxr/model-viewer', $post)) {
+        if (has_block('explorexr/model-viewer', $post)) {
             return true;
         }
         
@@ -232,7 +232,7 @@ function expoxr_has_expoxr_content() {
 /**
  * Get list of premium features
  */
-function expoxr_get_premium_features() {
+function explorexr_get_premium_features() {
         return array(
             'ar' => array(
                 'name' => 'AR Support',
@@ -248,50 +248,50 @@ function expoxr_get_premium_features() {
     }
 
 // Initialize the premium upgrade system hooks
-add_action('admin_notices', 'expoxr_show_premium_upgrade_notice');
-add_action('add_meta_boxes', 'expoxr_add_premium_upgrade_metaboxes');
+add_action('admin_notices', 'explorexr_show_premium_upgrade_notice');
+add_action('add_meta_boxes', 'explorexr_add_premium_upgrade_metaboxes');
 
 // AJAX handler for dismissing premium notice
-add_action('wp_ajax_expoxr_dismiss_premium_notice', function() {
-    check_ajax_referer('expoxr_dismiss_notice', 'nonce');
-    update_user_meta(get_current_user_id(), 'expoxr_premium_notice_dismissed', true);
+add_action('wp_ajax_explorexr_dismiss_premium_notice', function() {
+    check_ajax_referer('explorexr_dismiss_notice', 'nonce');
+    update_user_meta(get_current_user_id(), 'explorexr_premium_notice_dismissed', true);
     wp_die();
 });
 
 /**
  * Helper function to check if a feature is premium
  */
-function expoxr_is_premium_feature($feature) {
-    $premium_features = expoxr_get_premium_features();
+function explorexr_is_premium_feature($feature) {
+    $premium_features = explorexr_get_premium_features();
     return array_key_exists($feature, $premium_features);
 }
 
 /**
  * Helper function to show premium upgrade message
  */
-function expoxr_premium_upgrade_message($feature = '') {
-    $features = expoxr_get_premium_features();
+function explorexr_premium_upgrade_message($feature = '') {
+    $features = explorexr_get_premium_features();
     $feature_name = isset($features[$feature]) ? $features[$feature]['name'] : 'This feature';
     
     return sprintf(
         '%s is available in <a href="%s" target="_blank"><strong>ExploreXR Premium</strong></a>. <a href="%s" target="_blank">Upgrade now</a> to unlock advanced 3D features.',
         $feature_name,
-        admin_url('admin.php?page=expoxr-premium'),
-        expoxr_get_premium_upgrade_url()
+        admin_url('admin.php?page=explorexr-premium'),
+        explorexr_get_premium_upgrade_url()
     );
 }
 
 /**
  * Reset premium notice dismissal for current user (for testing purposes)
  */
-function expoxr_reset_premium_notice_dismissal() {
-    delete_user_meta(get_current_user_id(), 'expoxr_premium_notice_dismissed');
+function explorexr_reset_premium_notice_dismissal() {
+    delete_user_meta(get_current_user_id(), 'explorexr_premium_notice_dismissed');
 }
 
 /**
  * Stub class for license handler (premium-only feature)
  */
-class ExpoXR_Free_License_Stub {
+class explorexr_free_License_Stub {
     public function is_pro_licensed() {
         return false;
     }
@@ -308,7 +308,7 @@ class ExpoXR_Free_License_Stub {
 /**
  * Stub class for addon manager (premium-only feature)
  */
-class ExpoXR_Free_Addon_Stub {
+class explorexr_free_Addon_Stub {
     public function get_registered_addons() {
         return array();
     }
@@ -329,7 +329,7 @@ class ExpoXR_Free_Addon_Stub {
 function exploreXR_addon_manager() {
     static $stub = null;
     if ($stub === null) {
-        $stub = new ExpoXR_Free_Addon_Stub();
+        $stub = new explorexr_free_Addon_Stub();
     }
     return $stub;
 }
@@ -338,10 +338,10 @@ function exploreXR_addon_manager() {
  * Stub function for license handler (premium-only feature) 
  * Returns stub object in free version
  */
-function expoxr_license_handler() {
+function explorexr_license_handler() {
     static $stub = null;
     if ($stub === null) {
-        $stub = new ExpoXR_Free_License_Stub();
+        $stub = new explorexr_free_License_Stub();
     }
     return $stub;
 }

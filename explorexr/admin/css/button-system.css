@@ -1,5 +1,5 @@
 /**
- * ExpoXR Button System - Enhanced Functional Button Styling
+ * ExploreXR Button System - Enhanced Functional Button Styling
  * 
  * This file provides consistent button styling across the main plugin and all addons
  * with clear visual hierarchy based on button functions while maintaining brand colors
@@ -9,30 +9,30 @@
    Plugin Brand Colors Definition
    ======================================== */
 :root {
-    --expoxr-primary: #2AACE2;
-    --expoxr-primary-dark: #1e8bb8;
-    --expoxr-primary-darker: #156a8a;
-    --expoxr-secondary: #0D152C;
-    --expoxr-success: #28a745;
-    --expoxr-success-dark: #218838;
-    --expoxr-warning: #ffc107;
-    --expoxr-warning-dark: #e0a800;
-    --expoxr-danger: #dc3545;
-    --expoxr-danger-dark: #c82333;
-    --expoxr-light: #f8f9fa;
-    --expoxr-dark: #343a40;
+    --explorexr-primary: #2AACE2;
+    --explorexr-primary-dark: #1e8bb8;
+    --explorexr-primary-darker: #156a8a;
+    --explorexr-secondary: #0D152C;
+    --explorexr-success: #28a745;
+    --explorexr-success-dark: #218838;
+    --explorexr-warning: #ffc107;
+    --explorexr-warning-dark: #e0a800;
+    --explorexr-danger: #dc3545;
+    --explorexr-danger-dark: #c82333;
+    --explorexr-light: #f8f9fa;
+    --explorexr-dark: #343a40;
 }
 
 /* ========================================
-   Base ExpoXR Button Styles
+   Base ExploreXR Button Styles
    ======================================== */
 
-.expoxr-button {
+.explorexr-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     padding: 8px 16px;
-    background: linear-gradient(135deg, var(--expoxr-primary) 0%, var(--expoxr-primary-dark) 100%);
+    background: linear-gradient(135deg, var(--explorexr-primary) 0%, var(--explorexr-primary-dark) 100%);
     border: 1px solid transparent;
     color: white;
     text-decoration: none;
@@ -48,20 +48,20 @@
     line-height: 1;
 }
 
-.expoxr-button:hover {
-    background: linear-gradient(135deg, var(--expoxr-primary-dark) 0%, var(--expoxr-primary-darker) 100%);
+.explorexr-button:hover {
+    background: linear-gradient(135deg, var(--explorexr-primary-dark) 0%, var(--explorexr-primary-darker) 100%);
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(42, 172, 226, 0.4);
     color: white;
     text-decoration: none;
 }
 
-.expoxr-button:active {
+.explorexr-button:active {
     transform: translateY(0);
     box-shadow: 0 2px 4px rgba(42, 172, 226, 0.2);
 }
 
-.expoxr-button:focus {
+.explorexr-button:focus {
     outline: none;
     box-shadow: 0 0 0 2px rgba(42, 172, 226, 0.3);
 }
@@ -71,100 +71,100 @@
    ======================================== */
 
 /* PRIMARY ACTIONS - Main CTAs, Create, Save, Upgrade */
-.expoxr-button-primary,
-.expoxr-button.primary {
-    background: linear-gradient(135deg, var(--expoxr-primary) 0%, var(--expoxr-primary-dark) 100%);
+.explorexr-button-primary,
+.explorexr-button.primary {
+    background: linear-gradient(135deg, var(--explorexr-primary) 0%, var(--explorexr-primary-dark) 100%);
     box-shadow: 0 3px 6px rgba(42, 172, 226, 0.4);
     font-weight: 600;
 }
 
-.expoxr-button-primary:hover,
-.expoxr-button.primary:hover {
-    background: linear-gradient(135deg, var(--expoxr-primary-dark) 0%, var(--expoxr-primary-darker) 100%);
+.explorexr-button-primary:hover,
+.explorexr-button.primary:hover {
+    background: linear-gradient(135deg, var(--explorexr-primary-dark) 0%, var(--explorexr-primary-darker) 100%);
     box-shadow: 0 5px 10px rgba(42, 172, 226, 0.5);
     transform: translateY(-2px);
 }
 
 /* SECONDARY ACTIONS - Cancel, Back, View */
-.expoxr-button-secondary,
-.expoxr-button.secondary {
-    background: linear-gradient(135deg, var(--expoxr-secondary) 0%, #1a2332 100%);
+.explorexr-button-secondary,
+.explorexr-button.secondary {
+    background: linear-gradient(135deg, var(--explorexr-secondary) 0%, #1a2332 100%);
     box-shadow: 0 2px 4px rgba(13, 21, 44, 0.3);
     font-weight: 500;
 }
 
-.expoxr-button-secondary:hover,
-.expoxr-button.secondary:hover {
+.explorexr-button-secondary:hover,
+.explorexr-button.secondary:hover {
     background: linear-gradient(135deg, #1a2332 0%, #262d3d 100%);
     box-shadow: 0 4px 8px rgba(13, 21, 44, 0.4);
     color: white;
 }
 
 /* SUCCESS ACTIONS - Activate, Enable, Confirm */
-.expoxr-button-success,
-.expoxr-button.success {
-    background: linear-gradient(135deg, var(--expoxr-success) 0%, var(--expoxr-success-dark) 100%);
+.explorexr-button-success,
+.explorexr-button.success {
+    background: linear-gradient(135deg, var(--explorexr-success) 0%, var(--explorexr-success-dark) 100%);
     box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
     font-weight: 500;
 }
 
-.expoxr-button-success:hover,
-.expoxr-button.success:hover {
-    background: linear-gradient(135deg, var(--expoxr-success-dark) 0%, #1e7e34 100%);
+.explorexr-button-success:hover,
+.explorexr-button.success:hover {
+    background: linear-gradient(135deg, var(--explorexr-success-dark) 0%, #1e7e34 100%);
     box-shadow: 0 4px 8px rgba(40, 167, 69, 0.4);
     color: white;
 }
 
 /* WARNING ACTIONS - Settings, Manage, Configure */
-.expoxr-button-warning,
-.expoxr-button.warning {
-    background: linear-gradient(135deg, var(--expoxr-warning) 0%, var(--expoxr-warning-dark) 100%);
-    color: var(--expoxr-secondary);
+.explorexr-button-warning,
+.explorexr-button.warning {
+    background: linear-gradient(135deg, var(--explorexr-warning) 0%, var(--explorexr-warning-dark) 100%);
+    color: var(--explorexr-secondary);
     box-shadow: 0 2px 4px rgba(255, 193, 7, 0.3);
     font-weight: 500;
 }
 
-.expoxr-button-warning:hover,
-.expoxr-button.warning:hover {
-    background: linear-gradient(135deg, var(--expoxr-warning-dark) 0%, #d39e00 100%);
-    color: var(--expoxr-secondary);
+.explorexr-button-warning:hover,
+.explorexr-button.warning:hover {
+    background: linear-gradient(135deg, var(--explorexr-warning-dark) 0%, #d39e00 100%);
+    color: var(--explorexr-secondary);
     box-shadow: 0 4px 8px rgba(255, 193, 7, 0.4);
 }
 
 /* DANGER ACTIONS - Delete, Remove, Deactivate */
-.expoxr-button-danger,
-.expoxr-button.danger,
-.expoxr-button-link {
+.explorexr-button-danger,
+.explorexr-button.danger,
+.explorexr-button-link {
     background: transparent;
-    color: var(--expoxr-danger);
-    border: 1px solid var(--expoxr-danger);
+    color: var(--explorexr-danger);
+    border: 1px solid var(--explorexr-danger);
     box-shadow: none;
     font-weight: 500;
 }
 
-.expoxr-button-danger:hover,
-.expoxr-button.danger:hover,
-.expoxr-button-link:hover {
-    background: var(--expoxr-danger);
+.explorexr-button-danger:hover,
+.explorexr-button.danger:hover,
+.explorexr-button-link:hover {
+    background: var(--explorexr-danger);
     color: white;
     transform: none;
     box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
 }
 
 /* UTILITY ACTIONS - Copy, Download, Info */
-.expoxr-button-utility,
-.expoxr-button.utility {
-    background: var(--expoxr-light);
-    color: var(--expoxr-dark);
+.explorexr-button-utility,
+.explorexr-button.utility {
+    background: var(--explorexr-light);
+    color: var(--explorexr-dark);
     border: 1px solid #dee2e6;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     font-weight: 500;
 }
 
-.expoxr-button-utility:hover,
-.expoxr-button.utility:hover {
+.explorexr-button-utility:hover,
+.explorexr-button.utility:hover {
     background: #e9ecef;
-    color: var(--expoxr-dark);
+    color: var(--explorexr-dark);
     border-color: #adb5bd;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
     transform: translateY(-1px);
@@ -174,27 +174,27 @@
    Button Sizes
    ======================================== */
 
-.expoxr-button-small {
+.explorexr-button-small {
     padding: 6px 12px;
     font-size: 12px;
 }
 
-.expoxr-button-large {
+.explorexr-button-large {
     padding: 12px 24px;
     font-size: 16px;
 }
 
 /* ========================================
-   WordPress Button Override for ExpoXR Context
+   WordPress Button Override for ExploreXR Context
    ======================================== */
 
-/* Apply ExpoXR styling to WordPress buttons within ExpoXR contexts */
-.expoxr-admin-container .button:not(.expoxr-button):not(.copy-shortcode):not(.expoxr-dismiss-fix-notice),
-.expoxr-card .button:not(.expoxr-button),
-.expoxr-form-group .button:not(.expoxr-button),
-.expoxr-media-field .button:not(.expoxr-button),
-.wrap[class*="expoxr-"] .button:not(.expoxr-button):not(.copy-shortcode):not(.expoxr-dismiss-fix-notice) {
-    background: linear-gradient(135deg, var(--expoxr-secondary) 0%, #1a2332 100%) !important;
+/* Apply ExploreXR styling to WordPress buttons within ExploreXR contexts */
+.explorexr-admin-container .button:not(.explorexr-button):not(.copy-shortcode):not(.explorexr-dismiss-fix-notice),
+.explorexr-card .button:not(.explorexr-button),
+.explorexr-form-group .button:not(.explorexr-button),
+.explorexr-media-field .button:not(.explorexr-button),
+.wrap[class*="explorexr-"] .button:not(.explorexr-button):not(.copy-shortcode):not(.explorexr-dismiss-fix-notice) {
+    background: linear-gradient(135deg, var(--explorexr-secondary) 0%, #1a2332 100%) !important;
     border: 1px solid transparent !important;
     color: white !important;
     border-radius: 4px !important;
@@ -205,11 +205,11 @@
     text-shadow: none !important; 
 }
 
-.expoxr-admin-container .button:not(.expoxr-button):hover,
-.expoxr-card .button:not(.expoxr-button):hover,
-.expoxr-form-group .button:not(.expoxr-button):hover,
-.expoxr-media-field .button:not(.expoxr-button):hover,
-.wrap[class*="expoxr-"] .button:not(.expoxr-button):hover {
+.explorexr-admin-container .button:not(.explorexr-button):hover,
+.explorexr-card .button:not(.explorexr-button):hover,
+.explorexr-form-group .button:not(.explorexr-button):hover,
+.explorexr-media-field .button:not(.explorexr-button):hover,
+.wrap[class*="explorexr-"] .button:not(.explorexr-button):hover {
     background: linear-gradient(135deg, #1a2332 0%, #262d3d 100%) !important;
     color: white !important;
     transform: translateY(-1px) !important;
@@ -217,42 +217,42 @@
 }
 
 /* Button Primary Override for WordPress buttons */
-.expoxr-admin-container .button-primary:not(.expoxr-button),
-.expoxr-card .button-primary:not(.expoxr-button),
-.expoxr-form-group .button-primary:not(.expoxr-button),
-.wrap[class*="expoxr-"] .button-primary:not(.expoxr-button) {
-    background: linear-gradient(135deg, var(--expoxr-primary) 0%, var(--expoxr-primary-dark) 100%) !important;
+.explorexr-admin-container .button-primary:not(.explorexr-button),
+.explorexr-card .button-primary:not(.explorexr-button),
+.explorexr-form-group .button-primary:not(.explorexr-button),
+.wrap[class*="explorexr-"] .button-primary:not(.explorexr-button) {
+    background: linear-gradient(135deg, var(--explorexr-primary) 0%, var(--explorexr-primary-dark) 100%) !important;
     box-shadow: 0 3px 6px rgba(42, 172, 226, 0.4) !important;
     font-weight: 600 !important;
 }
 
-.expoxr-admin-container .button-primary:not(.expoxr-button):hover,
-.expoxr-card .button-primary:not(.expoxr-button):hover,
-.expoxr-form-group .button-primary:not(.expoxr-button):hover,
-.wrap[class*="expoxr-"] .button-primary:not(.expoxr-button):hover {
-    background: linear-gradient(135deg, var(--expoxr-primary-dark) 0%, var(--expoxr-primary-darker) 100%) !important;
+.explorexr-admin-container .button-primary:not(.explorexr-button):hover,
+.explorexr-card .button-primary:not(.explorexr-button):hover,
+.explorexr-form-group .button-primary:not(.explorexr-button):hover,
+.wrap[class*="explorexr-"] .button-primary:not(.explorexr-button):hover {
+    background: linear-gradient(135deg, var(--explorexr-primary-dark) 0%, var(--explorexr-primary-darker) 100%) !important;
     box-shadow: 0 5px 10px rgba(42, 172, 226, 0.5) !important;
     transform: translateY(-2px) !important;
 }
 
 /* Button Secondary Override for WordPress buttons */
-.expoxr-admin-container .button-secondary:not(.expoxr-button),
-.expoxr-card .button-secondary:not(.expoxr-button),
-.expoxr-form-group .button-secondary:not(.expoxr-button),
-.wrap[class*="expoxr-"] .button-secondary:not(.expoxr-button) {
-    background: var(--expoxr-light) !important;
-    color: var(--expoxr-dark) !important;
+.explorexr-admin-container .button-secondary:not(.explorexr-button),
+.explorexr-card .button-secondary:not(.explorexr-button),
+.explorexr-form-group .button-secondary:not(.explorexr-button),
+.wrap[class*="explorexr-"] .button-secondary:not(.explorexr-button) {
+    background: var(--explorexr-light) !important;
+    color: var(--explorexr-dark) !important;
     border: 1px solid #dee2e6 !important;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
     font-weight: 500 !important;
 }
 
-.expoxr-admin-container .button-secondary:not(.expoxr-button):hover,
-.expoxr-card .button-secondary:not(.expoxr-button):hover,
-.expoxr-form-group .button-secondary:not(.expoxr-button):hover,
-.wrap[class*="expoxr-"] .button-secondary:not(.expoxr-button):hover {
+.explorexr-admin-container .button-secondary:not(.explorexr-button):hover,
+.explorexr-card .button-secondary:not(.explorexr-button):hover,
+.explorexr-form-group .button-secondary:not(.explorexr-button):hover,
+.wrap[class*="explorexr-"] .button-secondary:not(.explorexr-button):hover {
     background: #e9ecef !important;
-    color: var(--expoxr-dark) !important;
+    color: var(--explorexr-dark) !important;
     border-color: #adb5bd !important;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15) !important;
 }
@@ -263,91 +263,91 @@
 
 /* Copy Shortcode Button */
 .copy-shortcode {
-    background: var(--expoxr-light) !important;
-    color: var(--expoxr-primary) !important;
-    border: 1px solid var(--expoxr-primary) !important;
+    background: var(--explorexr-light) !important;
+    color: var(--explorexr-primary) !important;
+    border: 1px solid var(--explorexr-primary) !important;
     box-shadow: 0 1px 3px rgba(42, 172, 226, 0.2) !important;
     font-weight: 500 !important;
 }
 
 .copy-shortcode:hover {
-    background: var(--expoxr-primary) !important;
+    background: var(--explorexr-primary) !important;
     color: white !important;
     box-shadow: 0 2px 4px rgba(42, 172, 226, 0.3) !important;
 }
 
 /* Model Action Buttons */
-.expoxr-action-buttons .button {
+.explorexr-action-buttons .button {
     margin-right: 5px;
 }
 
-.expoxr-action-buttons .button[href*="edit"] {
-    background: linear-gradient(135deg, var(--expoxr-warning) 0%, var(--expoxr-warning-dark) 100%) !important;
-    color: var(--expoxr-secondary) !important;
+.explorexr-action-buttons .button[href*="edit"] {
+    background: linear-gradient(135deg, var(--explorexr-warning) 0%, var(--explorexr-warning-dark) 100%) !important;
+    color: var(--explorexr-secondary) !important;
     box-shadow: 0 2px 4px rgba(255, 193, 7, 0.3) !important;
 }
 
-.expoxr-action-buttons .button.view-3d-model {
-    background: linear-gradient(135deg, var(--expoxr-primary) 0%, var(--expoxr-primary-dark) 100%) !important;
+.explorexr-action-buttons .button.view-3d-model {
+    background: linear-gradient(135deg, var(--explorexr-primary) 0%, var(--explorexr-primary-dark) 100%) !important;
     color: white !important;
     box-shadow: 0 2px 4px rgba(42, 172, 226, 0.3) !important;
 }
 
-.expoxr-action-buttons .button[target="_blank"] {
-    background: var(--expoxr-light) !important;
-    color: var(--expoxr-dark) !important;
+.explorexr-action-buttons .button[target="_blank"] {
+    background: var(--explorexr-light) !important;
+    color: var(--explorexr-dark) !important;
     border: 1px solid #dee2e6 !important;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
 }
 
 /* Delete button styling */
-.expoxr-action-buttons .button.button-link-delete,
-.expoxr-action-buttons .button.delete-model {
+.explorexr-action-buttons .button.button-link-delete,
+.explorexr-action-buttons .button.delete-model {
     background: transparent !important;
-    color: var(--expoxr-danger) !important;
-    border: 1px solid var(--expoxr-danger) !important;
+    color: var(--explorexr-danger) !important;
+    border: 1px solid var(--explorexr-danger) !important;
     box-shadow: none !important;
 }
 
-.expoxr-action-buttons .button.button-link-delete:hover,
-.expoxr-action-buttons .button.delete-model:hover {
-    background: var(--expoxr-danger) !important;
+.explorexr-action-buttons .button.button-link-delete:hover,
+.explorexr-action-buttons .button.delete-model:hover {
+    background: var(--explorexr-danger) !important;
     color: white !important;
     box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3) !important;
 }
 
 /* Premium Banner Button */
-.expoxr-pro-banner .button {
-    background: linear-gradient(135deg, var(--expoxr-primary) 0%, var(--expoxr-primary-dark) 100%) !important;
+.explorexr-pro-banner .button {
+    background: linear-gradient(135deg, var(--explorexr-primary) 0%, var(--explorexr-primary-dark) 100%) !important;
     color: white !important;
     font-weight: 600 !important;
     box-shadow: 0 3px 6px rgba(42, 172, 226, 0.4) !important;
     padding: 10px 20px !important;
 }
 
-.expoxr-pro-banner .button:hover {
-    background: linear-gradient(135deg, var(--expoxr-primary-dark) 0%, var(--expoxr-primary-darker) 100%) !important;
+.explorexr-pro-banner .button:hover {
+    background: linear-gradient(135deg, var(--explorexr-primary-dark) 0%, var(--explorexr-primary-darker) 100%) !important;
     transform: translateY(-2px) !important;
     box-shadow: 0 5px 10px rgba(42, 172, 226, 0.5) !important;
 }
 
 /* Header Action Buttons */
-.expoxr-header-actions .button-primary {
-    background: linear-gradient(135deg, var(--expoxr-primary) 0%, var(--expoxr-primary-dark) 100%) !important;
+.explorexr-header-actions .button-primary {
+    background: linear-gradient(135deg, var(--explorexr-primary) 0%, var(--explorexr-primary-dark) 100%) !important;
     color: white !important;
     font-weight: 600 !important;
     box-shadow: 0 3px 6px rgba(42, 172, 226, 0.4) !important;
 }
 
-.expoxr-header-actions .button:not(.button-primary) {
-    background: var(--expoxr-light) !important;
-    color: var(--expoxr-dark) !important;
+.explorexr-header-actions .button:not(.button-primary) {
+    background: var(--explorexr-light) !important;
+    color: var(--explorexr-dark) !important;
     border: 1px solid #dee2e6 !important;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
 }
 
 /* Banner Dismiss Button */
-.expoxr-banner-dismiss {
+.explorexr-banner-dismiss {
     background: rgba(255, 255, 255, 0.2) !important;
     color: white !important;
     border: 1px solid rgba(255, 255, 255, 0.3) !important;
@@ -362,16 +362,16 @@
     justify-content: center !important;
 }
 
-.expoxr-banner-dismiss:hover {
+.explorexr-banner-dismiss:hover {
     background: rgba(255, 255, 255, 0.3) !important;
     color: white !important;
     transform: scale(1.1) !important;
 }
 
 /* Form Submit Buttons */
-.expoxr-form-group input[type="submit"],
-.expoxr-form-group button[type="submit"] {
-    background: linear-gradient(135deg, var(--expoxr-primary) 0%, var(--expoxr-primary-dark) 100%) !important;
+.explorexr-form-group input[type="submit"],
+.explorexr-form-group button[type="submit"] {
+    background: linear-gradient(135deg, var(--explorexr-primary) 0%, var(--explorexr-primary-dark) 100%) !important;
     color: white !important;
     font-weight: 600 !important;
     box-shadow: 0 3px 6px rgba(42, 172, 226, 0.4) !important;
@@ -382,7 +382,7 @@
    Icon Support
    ======================================== */
 
-.expoxr-button .dashicons {
+.explorexr-button .dashicons {
     margin-right: 6px;
     font-size: 16px;
     width: 16px;
@@ -390,14 +390,14 @@
     vertical-align: middle;
 }
 
-.expoxr-button-small .dashicons {
+.explorexr-button-small .dashicons {
     margin-right: 4px;
     font-size: 14px;
     width: 14px;
     height: 14px;
 }
 
-.expoxr-button-large .dashicons {
+.explorexr-button-large .dashicons {
     margin-right: 8px;
     font-size: 18px;
     width: 18px;
@@ -408,8 +408,8 @@
    Disabled State
    ======================================== */
 
-.expoxr-button:disabled,
-.expoxr-button.disabled {
+.explorexr-button:disabled,
+.explorexr-button.disabled {
     background: #e9ecef !important;
     color: #6c757d !important;
     cursor: not-allowed !important;
@@ -417,8 +417,8 @@
     box-shadow: none !important;
 }
 
-.expoxr-button:disabled:hover,
-.expoxr-button.disabled:hover {
+.explorexr-button:disabled:hover,
+.explorexr-button.disabled:hover {
     background: #e9ecef !important;
     color: #6c757d !important;
     transform: none !important;
@@ -430,44 +430,44 @@
    ======================================== */
 
 /* Activate/Confirm actions */
-.expoxr-admin-container .button.expoxr-function-activate,
-.expoxr-admin-container .button.expoxr-function-confirm {
-    background: linear-gradient(135deg, var(--expoxr-success) 0%, var(--expoxr-success-dark) 100%) !important;
+.explorexr-admin-container .button.explorexr-function-activate,
+.explorexr-admin-container .button.explorexr-function-confirm {
+    background: linear-gradient(135deg, var(--explorexr-success) 0%, var(--explorexr-success-dark) 100%) !important;
     color: white !important;
     box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3) !important;
 }
 
 /* Settings/Manage/Configure actions */
-.expoxr-admin-container .button.expoxr-function-settings,
-.expoxr-admin-container .button.expoxr-function-manage,
-.expoxr-admin-container .button.expoxr-function-configure {
-    background: linear-gradient(135deg, var(--expoxr-warning) 0%, var(--expoxr-warning-dark) 100%) !important;
-    color: var(--expoxr-secondary) !important;
+.explorexr-admin-container .button.explorexr-function-settings,
+.explorexr-admin-container .button.explorexr-function-manage,
+.explorexr-admin-container .button.explorexr-function-configure {
+    background: linear-gradient(135deg, var(--explorexr-warning) 0%, var(--explorexr-warning-dark) 100%) !important;
+    color: var(--explorexr-secondary) !important;
     box-shadow: 0 2px 4px rgba(255, 193, 7, 0.3) !important;
 }
 
 /* Delete/Remove/Deactivate actions */
-.expoxr-admin-container .button.expoxr-function-delete,
-.expoxr-admin-container .button.expoxr-function-remove,
-.expoxr-admin-container .button.expoxr-function-deactivate {
+.explorexr-admin-container .button.explorexr-function-delete,
+.explorexr-admin-container .button.explorexr-function-remove,
+.explorexr-admin-container .button.explorexr-function-deactivate {
     background: transparent !important;
-    color: var(--expoxr-danger) !important;
-    border: 1px solid var(--expoxr-danger) !important;
+    color: var(--explorexr-danger) !important;
+    border: 1px solid var(--explorexr-danger) !important;
     box-shadow: none !important;
 }
 
 /* Copy/Download/Info actions */
-.expoxr-admin-container .button.expoxr-function-copy,
-.expoxr-admin-container .button.expoxr-function-download,
-.expoxr-admin-container .button.expoxr-function-info {
-    background: var(--expoxr-light) !important;
-    color: var(--expoxr-dark) !important;
+.explorexr-admin-container .button.explorexr-function-copy,
+.explorexr-admin-container .button.explorexr-function-download,
+.explorexr-admin-container .button.explorexr-function-info {
+    background: var(--explorexr-light) !important;
+    color: var(--explorexr-dark) !important;
     border: 1px solid #dee2e6 !important;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
 }
 
 /* Special License Deactivation Button */
-.expoxr-deactivate-license {
+.explorexr-deactivate-license {
     background: linear-gradient(135deg, #F36E24 0%, #EF4681 100%) !important;
     color: white !important;
     font-weight: 600 !important;
@@ -479,17 +479,17 @@
    ======================================== */
 
 @media (max-width: 768px) {
-    .expoxr-button {
+    .explorexr-button {
         padding: 10px 16px;
         font-size: 14px;
     }
     
-    .expoxr-button-small {
+    .explorexr-button-small {
         padding: 8px 12px;
         font-size: 12px;
     }
     
-    .expoxr-button-large {
+    .explorexr-button-large {
         padding: 14px 20px;
         font-size: 16px;
     }
@@ -499,8 +499,8 @@
    Fallback Styles (in case main CSS fails to load)
    ======================================== */
 
-/* Fallback for expoxr-button classes */
-.expoxr-button:not([style*="background"]) {
+/* Fallback for explorexr-button classes */
+.explorexr-button:not([style*="background"]) {
     background: #2AACE2 !important;
     color: white !important;
     border: 1px solid #2AACE2 !important;
@@ -510,39 +510,39 @@
     border-radius: 4px !important;
 }
 
-.expoxr-button-secondary:not([style*="background"]) {
+.explorexr-button-secondary:not([style*="background"]) {
     background: #0D152C !important;
     border-color: #0D152C !important;
     color: white !important;
 }
 
-.expoxr-button-success:not([style*="background"]) {
+.explorexr-button-success:not([style*="background"]) {
     background: #28a745 !important;
     border-color: #28a745 !important;
     color: white !important;
 }
 
-.expoxr-button-warning:not([style*="background"]) {
+.explorexr-button-warning:not([style*="background"]) {
     background: #ffc107 !important;
     border-color: #ffc107 !important;
     color: #0D152C !important;
 }
 
-.expoxr-button-danger:not([style*="background"]),
-.expoxr-button-link:not([style*="background"]) {
+.explorexr-button-danger:not([style*="background"]),
+.explorexr-button-link:not([style*="background"]) {
     background: transparent !important;
     color: #dc3545 !important;
     border: 1px solid #dc3545 !important;
 }
 
-.expoxr-button-utility:not([style*="background"]) {
+.explorexr-button-utility:not([style*="background"]) {
     background: #f8f9fa !important;
     color: #343a40 !important;
     border: 1px solid #dee2e6 !important;
 }
 
-/* Fallback for WordPress buttons in ExpoXR context */
-[class*="expoxr-"] .button:not(.expoxr-button):not([style*="background"]) {
+/* Fallback for WordPress buttons in ExploreXR context */
+[class*="explorexr-"] .button:not(.explorexr-button):not([style*="background"]) {
     background: #0D152C !important;
     color: white !important;
     border: 1px solid #0D152C !important;
@@ -551,13 +551,13 @@
     border-radius: 4px !important;
 }
 
-[class*="expoxr-"] .button-primary:not(.expoxr-button):not([style*="background"]) {
+[class*="explorexr-"] .button-primary:not(.explorexr-button):not([style*="background"]) {
     background: #2AACE2 !important;
     border-color: #2AACE2 !important;
     color: white !important;
 }
 
-[class*="expoxr-"] .button-secondary:not(.expoxr-button):not([style*="background"]) {
+[class*="explorexr-"] .button-secondary:not(.explorexr-button):not([style*="background"]) {
     background: #f8f9fa !important;
     color: #343a40 !important;
     border: 1px solid #dee2e6 !important;
@@ -568,14 +568,14 @@
    ======================================== */
 
 /* Universal fallback for all addon contexts - ensures consistent styling even if main button styles fail to load */
-.expoxr-ar-addon .expoxr-button:not([style*="background"]),
-.expoxr-camera-addon .expoxr-button:not([style*="background"]),
-.expoxr-annotations-addon .expoxr-button:not([style*="background"]),
-.expoxr-materials-addon .expoxr-button:not([style*="background"]),
-.expoxr-loading-addon .expoxr-button:not([style*="background"]),
-.expoxr-animation-addon .expoxr-button:not([style*="background"]),
-.expoxr-woocommerce-addon .expoxr-button:not([style*="background"]),
-.wrap[class*="expoxr-"] .expoxr-button:not([style*="background"]) {
+.explorexr-ar-addon .explorexr-button:not([style*="background"]),
+.explorexr-camera-addon .explorexr-button:not([style*="background"]),
+.explorexr-annotations-addon .explorexr-button:not([style*="background"]),
+.explorexr-materials-addon .explorexr-button:not([style*="background"]),
+.explorexr-loading-addon .explorexr-button:not([style*="background"]),
+.explorexr-animation-addon .explorexr-button:not([style*="background"]),
+.explorexr-woocommerce-addon .explorexr-button:not([style*="background"]),
+.wrap[class*="explorexr-"] .explorexr-button:not([style*="background"]) {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -592,14 +592,14 @@
 }
 
 /* Fallback for WordPress native buttons in addon contexts */
-.expoxr-ar-addon .button:not(.expoxr-button):not([style*="background"]),
-.expoxr-camera-addon .button:not(.expoxr-button):not([style*="background"]),
-.expoxr-annotations-addon .button:not(.expoxr-button):not([style*="background"]),
-.expoxr-materials-addon .button:not(.expoxr-button):not([style*="background"]),
-.expoxr-loading-addon .button:not(.expoxr-button):not([style*="background"]),
-.expoxr-animation-addon .button:not(.expoxr-button):not([style*="background"]),
-.expoxr-woocommerce-addon .button:not(.expoxr-button):not([style*="background"]),
-.wrap[class*="expoxr-"] .button:not(.expoxr-button):not([style*="background"]) {
+.explorexr-ar-addon .button:not(.explorexr-button):not([style*="background"]),
+.explorexr-camera-addon .button:not(.explorexr-button):not([style*="background"]),
+.explorexr-annotations-addon .button:not(.explorexr-button):not([style*="background"]),
+.explorexr-materials-addon .button:not(.explorexr-button):not([style*="background"]),
+.explorexr-loading-addon .button:not(.explorexr-button):not([style*="background"]),
+.explorexr-animation-addon .button:not(.explorexr-button):not([style*="background"]),
+.explorexr-woocommerce-addon .button:not(.explorexr-button):not([style*="background"]),
+.wrap[class*="explorexr-"] .button:not(.explorexr-button):not([style*="background"]) {
     background: linear-gradient(135deg, #2AACE2 0%, #1e8bb8 100%) !important;
     border: none !important;
     color: white !important;
@@ -609,26 +609,26 @@
 }
 
 /* Fallback for button variants */
-.expoxr-ar-addon .expoxr-button-small:not([style*="background"]),
-.expoxr-camera-addon .expoxr-button-small:not([style*="background"]),
-.expoxr-annotations-addon .expoxr-button-small:not([style*="background"]),
-.expoxr-materials-addon .expoxr-button-small:not([style*="background"]),
-.expoxr-loading-addon .expoxr-button-small:not([style*="background"]),
-.expoxr-animation-addon .expoxr-button-small:not([style*="background"]),
-.expoxr-woocommerce-addon .expoxr-button-small:not([style*="background"]),
-.wrap[class*="expoxr-"] .expoxr-button-small:not([style*="background"]) {
+.explorexr-ar-addon .explorexr-button-small:not([style*="background"]),
+.explorexr-camera-addon .explorexr-button-small:not([style*="background"]),
+.explorexr-annotations-addon .explorexr-button-small:not([style*="background"]),
+.explorexr-materials-addon .explorexr-button-small:not([style*="background"]),
+.explorexr-loading-addon .explorexr-button-small:not([style*="background"]),
+.explorexr-animation-addon .explorexr-button-small:not([style*="background"]),
+.explorexr-woocommerce-addon .explorexr-button-small:not([style*="background"]),
+.wrap[class*="explorexr-"] .explorexr-button-small:not([style*="background"]) {
     padding: 6px 12px !important;
     font-size: 12px !important;
 }
 
-.expoxr-ar-addon .expoxr-button-link:not([style*="background"]),
-.expoxr-camera-addon .expoxr-button-link:not([style*="background"]),
-.expoxr-annotations-addon .expoxr-button-link:not([style*="background"]),
-.expoxr-materials-addon .expoxr-button-link:not([style*="background"]),
-.expoxr-loading-addon .expoxr-button-link:not([style*="background"]),
-.expoxr-animation-addon .expoxr-button-link:not([style*="background"]),
-.expoxr-woocommerce-addon .expoxr-button-link:not([style*="background"]),
-.wrap[class*="expoxr-"] .expoxr-button-link:not([style*="background"]) {
+.explorexr-ar-addon .explorexr-button-link:not([style*="background"]),
+.explorexr-camera-addon .explorexr-button-link:not([style*="background"]),
+.explorexr-annotations-addon .explorexr-button-link:not([style*="background"]),
+.explorexr-materials-addon .explorexr-button-link:not([style*="background"]),
+.explorexr-loading-addon .explorexr-button-link:not([style*="background"]),
+.explorexr-animation-addon .explorexr-button-link:not([style*="background"]),
+.explorexr-woocommerce-addon .explorexr-button-link:not([style*="background"]),
+.wrap[class*="explorexr-"] .explorexr-button-link:not([style*="background"]) {
     background: transparent !important;
     color: #dc3545 !important;
     border: 1px solid #dc3545 !important;

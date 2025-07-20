@@ -4,7 +4,7 @@
  *
  * Handles the registration of custom post types and loads related metaboxes
  *
- * @package ExpoXR
+  * @package ExploreXR
  */
 
 // Exit if accessed directly
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class ExpoXR_Post_Types {
+class ExploreXR_Post_Types {
 
     /**
      * Constructor
@@ -41,7 +41,7 @@ class ExpoXR_Post_Types {
      * Register custom post types
      */
     public function register_post_types() {
-        register_post_type('expoxr_model', [
+        register_post_type('explorexr_model', [
             'labels' => [
                 'name' => '3D Models',
                 'singular_name' => '3D Model',
@@ -78,20 +78,20 @@ class ExpoXR_Post_Types {
         
         // Model file upload metabox
         add_meta_box(
-            'expoxr_model_file',
+            'explorexr_model_file',
             '3D Model File',
-            'expoxr_model_file_meta_box',
-            'expoxr_model',
+            'explorexr_model_file_meta_box',
+            'explorexr_model',
             'normal',
             'high'
         );
         
         // Model viewer size settings metabox
         add_meta_box(
-            'expoxr_model_size',
+            'explorexr_model_size',
             'Model Viewer Size',
-            'expoxr_edit_model_size_box',
-            'expoxr_model',
+            'explorexr_edit_model_size_box',
+            'explorexr_model',
             'normal',
             'default'
         );
@@ -134,8 +134,8 @@ class ExpoXR_Post_Types {
         }
         
         // Check post type
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in expoxr_save_all_post_meta()
-        if (!isset($_POST['post_type']) || 'expoxr_model' != sanitize_text_field(wp_unslash($_POST['post_type']))) {
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in explorexr_save_all_post_meta()
+        if (!isset($_POST['post_type']) || 'explorexr_model' != sanitize_text_field(wp_unslash($_POST['post_type']))) {
             return;
         }
         
@@ -146,16 +146,16 @@ class ExpoXR_Post_Types {
         
         // The main save_post_meta function is in meta-handlers.php
         // and will be called from there after these basic checks
-        if (function_exists('expoxr_save_all_post_meta')) {
-            $result = expoxr_save_all_post_meta($post_id);
+        if (function_exists('explorexr_save_all_post_meta')) {
+            $result = explorexr_save_all_post_meta($post_id);
             
             // Log the result for debugging
-            if (get_option('expoxr_debug_mode', false)) {
-                expoxr_log('ExpoXR: Meta save result for post ' . $post_id . ': ' . ($result ? 'Success' : 'Failed'));
+            if (get_option('explorexr_debug_mode', false)) {
+                explorexr_log('ExploreXR: Meta save result for post ' . $post_id . ': ' . ($result ? 'Success' : 'Failed'));
             }
         } else {
-            if (get_option('expoxr_debug_mode', false)) {
-                expoxr_log('ExpoXR: expoxr_save_all_post_meta function not found', 'error');
+            if (get_option('explorexr_debug_mode', false)) {
+                explorexr_log('ExploreXR: explorexr_save_all_post_meta function not found', 'error');
             }
         }
     }
@@ -168,7 +168,7 @@ class ExpoXR_Post_Types {
         
         // Only apply to our custom post type edit screens
         if (($pagenow == 'post.php' || $pagenow == 'post-new.php') && 
-            isset($post) && $post->post_type == 'expoxr_model') {
+            isset($post) && $post->post_type == 'explorexr_model') {
             
             // Add any custom inline styles if needed
             echo '<style>
@@ -180,7 +180,7 @@ class ExpoXR_Post_Types {
                     margin-bottom: 20px;
                 }
                 /* Custom styling for our metaboxes */
-                .post-type-expoxr_model .postbox {
+                .post-type-explorexr_model .postbox {
                     margin-bottom: 20px;
                 }
             </style>';
@@ -204,48 +204,48 @@ class ExpoXR_Post_Types {
         
         // Only load on post edit screens for our custom post type
         if (($hook == 'post.php' || $hook == 'post-new.php') && 
-            isset($post) && $post->post_type == 'expoxr_model') {
+            isset($post) && $post->post_type == 'explorexr_model') {
               // First load the guard script
-            wp_enqueue_script('expoxr-model-viewer-guard');
+            wp_enqueue_script('explorexr-model-viewer-guard');
             
             // Use the centralized model-viewer script with guard as dependency
-            wp_enqueue_script('expoxr-model-viewer');
+            wp_enqueue_script('explorexr-model-viewer');
             
             // Enqueue custom styles and scripts
-            wp_enqueue_style('expoxr-model-viewer', EXPOXR_PLUGIN_URL . 'assets/css/model-viewer.css', array(), EXPOXR_VERSION);
-            wp_enqueue_script('expoxr-model-viewer-wrapper', EXPOXR_PLUGIN_URL . 'assets/js/model-viewer-wrapper.js', array('jquery', 'expoxr-model-viewer'), EXPOXR_VERSION, true);
+            wp_enqueue_style('explorexr-model-viewer', EXPLOREXR_PLUGIN_URL . 'assets/css/model-viewer.css', array(), EXPLOREXR_VERSION);
+            wp_enqueue_script('explorexr-model-viewer-wrapper', EXPLOREXR_PLUGIN_URL . 'assets/js/model-viewer-wrapper.js', array('jquery', 'explorexr-model-viewer'), EXPLOREXR_VERSION, true);
               // IMPORTANT: Enqueue edit mode fix script FIRST to establish field tracking framework
-            wp_enqueue_script('expoxr-edit-mode-fix', EXPOXR_PLUGIN_URL . 'includes/post-types/assets/js/edit-mode-fix.js', array('jquery'), '1.0.2', true);
+            wp_enqueue_script('explorexr-edit-mode-fix', EXPLOREXR_PLUGIN_URL . 'includes/post-types/assets/js/edit-mode-fix.js', array('jquery'), '1.0.2', true);
               // Pass debug settings to edit mode fix script
-            $debug_mode = get_option('expoxr_debug_mode', false);
-            wp_localize_script('expoxr-edit-mode-fix', 'expoXRDebugMode', array(
+            $debug_mode = get_option('explorexr_debug_mode', false);
+            wp_localize_script('explorexr-edit-mode-fix', 'exploreXRDebugMode', array(
                 'debug' => $debug_mode,
                 'enabled' => (bool) $debug_mode
             ));
             
-            // Now enqueue model uploader script (after the fix script)            wp_enqueue_script('expoxr-model-uploader', EXPOXR_PLUGIN_URL . 'includes/post-types/assets/js/model-uploader.js', array('jquery', 'expoxr-edit-mode-fix'), '1.0.2', true);
+            // Now enqueue model uploader script (after the fix script)            wp_enqueue_script('explorexr-model-uploader', EXPLOREXR_PLUGIN_URL . 'includes/post-types/assets/js/model-uploader.js', array('jquery', 'explorexr-edit-mode-fix'), '1.0.2', true);
             
             // Enqueue admin notifications script for save confirmations
-            wp_enqueue_script('expoxr-admin-notifications', EXPOXR_PLUGIN_URL . 'includes/post-types/assets/js/admin-notifications.js', array('jquery'), '1.0.0', true);
+            wp_enqueue_script('explorexr-admin-notifications', EXPLOREXR_PLUGIN_URL . 'includes/post-types/assets/js/admin-notifications.js', array('jquery'), '1.0.0', true);
             
             // Enqueue save notification styles
-            wp_enqueue_style('expoxr-save-notification', EXPOXR_PLUGIN_URL . 'includes/post-types/assets/css/save-notification.css', array(), '1.0.0');
+            wp_enqueue_style('explorexr-save-notification', EXPLOREXR_PLUGIN_URL . 'includes/post-types/assets/css/save-notification.css', array(), '1.0.0');
               // Enqueue custom metabox styles
-            wp_enqueue_style('expoxr-metabox-styles', EXPOXR_PLUGIN_URL . 'includes/post-types/assets/css/metabox-styles.css', array(), EXPOXR_VERSION);
+            wp_enqueue_style('explorexr-metabox-styles', EXPLOREXR_PLUGIN_URL . 'includes/post-types/assets/css/metabox-styles.css', array(), EXPLOREXR_VERSION);
             
             // Enqueue core metabox scripts AFTER the model uploader and fix script
-            wp_enqueue_script('expoxr-model-file-handler', EXPOXR_PLUGIN_URL . 'includes/post-types/assets/js/model-file-handler.js', array('jquery', 'expoxr-model-uploader', 'expoxr-edit-mode-fix'), '1.0.1', true);
+            wp_enqueue_script('explorexr-model-file-handler', EXPLOREXR_PLUGIN_URL . 'includes/post-types/assets/js/model-file-handler.js', array('jquery', 'explorexr-model-uploader', 'explorexr-edit-mode-fix'), '1.0.1', true);
             
             // Add debug output when in SCRIPT_DEBUG mode
             if (defined('SCRIPT_DEBUG') && SCRIPT_DEBUG) {
-                wp_add_inline_script('expoxr-model-uploader', 'console.log("ExpoXR Model Uploader v1.0.1 loaded");');
+                wp_add_inline_script('explorexr-model-uploader', 'console.log("ExploreXR Model Uploader v1.0.1 loaded");');
             }
         }
     }
 }
 
 // Initialize the post types class
-new ExpoXR_Post_Types();
+new ExploreXR_Post_Types();
 
 
 

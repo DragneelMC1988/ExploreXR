@@ -1,11 +1,11 @@
 <?php
 /**
- * ExpoXR Security Handler
+ * ExploreXR Security Handler
  *
- * Centralized security functions for the ExpoXR plugin to ensure proper
+ * Centralized security functions for the ExploreXR plugin to ensure proper
  * authentication, authorization, and input validation across all components.
  *
- * @package ExpoXR
+ * @package ExploreXR
  * @since 0.2.4.0
  */
 
@@ -22,7 +22,7 @@ if (!defined('ABSPATH')) {
  * @param bool $require_nonce Whether nonce is required (default: true)
  * @return bool|WP_Error True on success, WP_Error on failure
  */
-function expoxr_validate_ajax_security($nonce_action, $capability = 'edit_posts', $require_nonce = true) {
+function ExploreXR_validate_ajax_security($nonce_action, $capability = 'edit_posts', $require_nonce = true) {
     // Check if user is logged in for AJAX requests that require authentication
     if (!is_user_logged_in() && $capability !== 'public') {
         return new WP_Error(
@@ -77,7 +77,7 @@ function expoxr_validate_ajax_security($nonce_action, $capability = 'edit_posts'
  * @param array $allowed_fields Optional array of allowed field names
  * @return array Sanitized data
  */
-function expoxr_validate_model_input($data, $allowed_fields = array()) {
+function ExploreXR_validate_model_input($data, $allowed_fields = array()) {
     $sanitized = array();
     
     // Define comprehensive sanitization rules
@@ -155,7 +155,7 @@ function expoxr_validate_model_input($data, $allowed_fields = array()) {
             $sanitized[$key] = ($value === 'on' || $value === '1' || $value === 'true') ? 'on' : 'off';
             
         } elseif (in_array($key, $sanitization_rules['color_fields'])) {
-            $sanitized[$key] = expoxr_sanitize_hex_color($value) ?: '#000000';
+            $sanitized[$key] = ExploreXR_sanitize_hex_color($value) ?: '#000000';
             
         } elseif (isset($sanitization_rules['select_fields'][$key])) {
             $allowed_values = $sanitization_rules['select_fields'][$key];
@@ -195,7 +195,7 @@ function expoxr_validate_model_input($data, $allowed_fields = array()) {
  * @param int $max_size Maximum file size in bytes
  * @return bool|WP_Error True on success, WP_Error on failure
  */
-function expoxr_validate_file_upload($file, $allowed_types = array(), $max_size = 52428800) { // 50MB default
+function ExploreXR_validate_file_upload($file, $allowed_types = array(), $max_size = 52428800) { // 50MB default
     if (!isset($file['tmp_name']) || !is_uploaded_file($file['tmp_name'])) {
         return new WP_Error(
             'invalid_upload',
@@ -249,14 +249,14 @@ function expoxr_validate_file_upload($file, $allowed_types = array(), $max_size 
  * @param int $time_window Time window in seconds (default: 60)
  * @return bool Whether the request is allowed
  */
-function expoxr_check_rate_limit($action, $max_requests = 10, $time_window = 60) {
+function ExploreXR_check_rate_limit($action, $max_requests = 10, $time_window = 60) {
     $user_id = get_current_user_id();
-    $ip_address = expoxr_get_client_ip();
+    $ip_address = ExploreXR_get_client_ip();
     
     // Use user ID if logged in, otherwise use IP address
     $identifier = $user_id ? 'user_' . $user_id : 'ip_' . md5($ip_address);
     
-    $transient_key = 'expoxr_rate_limit_' . $action . '_' . $identifier;
+    $transient_key = 'ExploreXR_rate_limit_' . $action . '_' . $identifier;
     $current_count = get_transient($transient_key);
     
     if ($current_count === false) {
@@ -278,7 +278,7 @@ function expoxr_check_rate_limit($action, $max_requests = 10, $time_window = 60)
  * 
  * @return string Client IP address
  */
-function expoxr_get_client_ip() {
+function ExploreXR_get_client_ip() {
     $ip_keys = array(
         'HTTP_CF_CONNECTING_IP',     // Cloudflare
         'HTTP_CLIENT_IP',
@@ -313,8 +313,8 @@ function expoxr_get_client_ip() {
  * @param string|array $message Event message or data
  * @param array $context Additional context data
  */
-function expoxr_log_security_event($event_type, $message, $context = array()) {
-    if (!get_option('expoxr_debug_mode', false)) {
+function ExploreXR_log_security_event($event_type, $message, $context = array()) {
+    if (!get_option('ExploreXR_debug_mode', false)) {
         return; // Only log when debug mode is enabled
     }
     
@@ -332,42 +332,42 @@ function expoxr_log_security_event($event_type, $message, $context = array()) {
         'event_type' => $event_type,
         'message' => $message,
         'user_id' => get_current_user_id(),
-        'ip_address' => expoxr_get_client_ip(),
+        'ip_address' => ExploreXR_get_client_ip(),
         'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'])) : '',
         'context' => $context
     );
     
-    if (get_option('expoxr_debug_mode', false)) {
-        expoxr_log('ExpoXR Security Event: ' . $log_entry, 'warning');
+    if (get_option('ExploreXR_debug_mode', false)) {
+        ExploreXR_log('ExploreXR Security Event: ' . $log_entry, 'warning');
     }
 }
 
 /**
  * Initialize security features
  */
-function expoxr_init_security() {
+function ExploreXR_init_security() {
     // Add security headers for admin pages
     if (is_admin()) {
-        add_action('send_headers', 'expoxr_add_security_headers');
+        add_action('send_headers', 'ExploreXR_add_security_headers');
     }
     
     // Initialize security logging
-    if (get_option('expoxr_debug_mode', false)) {
-        add_action('wp_login_failed', 'expoxr_log_failed_login');
-        add_action('wp_login', 'expoxr_log_successful_login');
+    if (get_option('ExploreXR_debug_mode', false)) {
+        add_action('wp_login_failed', 'ExploreXR_log_failed_login');
+        add_action('wp_login', 'ExploreXR_log_successful_login');
     }
 }
 
 /**
  * Add security headers to admin pages
  */
-function expoxr_add_security_headers() {
+function ExploreXR_add_security_headers() {
     // Only proceed if headers haven't been sent yet
     if (headers_sent()) {
         return;
     }
     
-    // Only add headers on ExpoXR admin pages
+    // Only add headers on ExploreXR admin pages
     // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only check for admin page identification
     if (is_admin() && isset($_GET['page']) && 
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only check for admin page identification
@@ -381,8 +381,8 @@ function expoxr_add_security_headers() {
 /**
  * Log failed login attempts
  */
-function expoxr_log_failed_login($username) {
-    expoxr_log_security_event(
+function ExploreXR_log_failed_login($username) {
+    ExploreXR_log_security_event(
         'login_failed',
         'Failed login attempt for username: ' . $username,
         array('username' => $username)
@@ -392,9 +392,9 @@ function expoxr_log_failed_login($username) {
 /**
  * Log successful logins
  */
-function expoxr_log_successful_login($user_login, $user = null) {
+function ExploreXR_log_successful_login($user_login, $user = null) {
     if ($user) {
-        expoxr_log_security_event(
+        ExploreXR_log_security_event(
             'login_success',
             'Successful login for user: ' . $user_login,
             array('user_id' => $user->ID, 'username' => $user_login)
@@ -403,7 +403,7 @@ function expoxr_log_successful_login($user_login, $user = null) {
 }
 
 // Initialize security features
-add_action('init', 'expoxr_init_security');
+add_action('init', 'ExploreXR_init_security');
 
 
 

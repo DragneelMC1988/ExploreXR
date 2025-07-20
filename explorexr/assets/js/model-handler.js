@@ -122,9 +122,9 @@
                 console.error(`ExploreXR Error: ${friendlyMessage}`);
                 
                 // Show error message to user (if not in a container that handles it already)
-                if (!modelViewer.closest('.expoxr-model-viewer-container')) {
+                if (!modelViewer.closest('.explorexr-model-viewer-container')) {
                     const errorElement = document.createElement('div');
-                    errorElement.className = 'expoxr-model-error';
+                    errorElement.className = 'explorexr-model-error';
                     errorElement.innerHTML = `<p>${friendlyMessage}</p>`;
                     errorElement.style.cssText = 'color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 12px; margin-top: 10px; border-radius: 4px;';
                     modelViewer.parentNode.insertBefore(errorElement, modelViewer.nextSibling);

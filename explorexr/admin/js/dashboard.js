@@ -1,13 +1,13 @@
 /**
- * ExpoXR Admin Dashboard JavaScript
- * Handles functionality for the ExpoXR dashboard
+ * ExploreXR Admin Dashboard JavaScript
+ * Handles functionality for the ExploreXR dashboard
  */
 jQuery(document).ready(function($) {
     
     // Premium banner dismiss functionality
-    $('.expoxr-pro-banner .expoxr-banner-dismiss').on('click', function(e) {
+    $('.explorexr-pro-banner .explorexr-banner-dismiss').on('click', function(e) {
         e.preventDefault();
-        const banner = $(this).closest('.expoxr-pro-banner');
+        const banner = $(this).closest('.explorexr-pro-banner');
         
         // Animate banner dismissal
         banner.addClass('banner-dismissing');
@@ -17,13 +17,13 @@ jQuery(document).ready(function($) {
         }, 300);
         
         // Send AJAX request to hide banner for this session
-        if (expoxr_dashboard && expoxr_dashboard.ajax_url && expoxr_dashboard.nonce) {
+        if (explorexr_dashboard && explorexr_dashboard.ajax_url && explorexr_dashboard.nonce) {
             $.ajax({
-                url: expoxr_dashboard.ajax_url,
+                url: explorexr_dashboard.ajax_url,
                 type: 'POST',
                 data: {
-                    action: 'expoxr_dismiss_premium_banner',
-                    nonce: expoxr_dashboard.nonce
+                    action: 'explorexr_dismiss_premium_banner',
+                    nonce: explorexr_dashboard.nonce
                 },
                 success: function(response) {
                     console.log('Premium banner dismissed for this session');
@@ -42,7 +42,7 @@ jQuery(document).ready(function($) {
         // Use Clipboard API to copy text
         navigator.clipboard.writeText(shortcode).then(function() {
             // Show success notification
-            const notification = $('#expoxr-copied-notification');
+            const notification = $('#explorexr-copied-notification');
             notification.fadeIn(300);
             
             // Hide notification after 2 seconds
@@ -60,7 +60,7 @@ jQuery(document).ready(function($) {
             document.body.removeChild(textArea);
             
             // Show success notification
-            const notification = $('#expoxr-copied-notification');
+            const notification = $('#explorexr-copied-notification');
             notification.fadeIn(300);
             setTimeout(function() {
                 notification.fadeOut(300);
@@ -69,9 +69,9 @@ jQuery(document).ready(function($) {
     });
     
     // Model viewer modal functionality
-    const modal = $('#expoxr-model-modal');
-    const modelViewer = $('#expoxr-model-viewer');
-    const modelTitle = $('#expoxr-model-title');
+    const modal = $('#explorexr-model-modal');
+    const modelViewer = $('#explorexr-model-viewer');
+    const modelTitle = $('#explorexr-model-title');
     
     // Open modal when clicking View Model
     $('.view-3d-model').on('click', function(e) {
@@ -140,7 +140,7 @@ jQuery(document).ready(function($) {
     });
     
     // Close modal
-    $('.expoxr-model-close').on('click', function() {
+    $('.explorexr-model-close').on('click', function() {
         modal.css('display', 'none');
         modelViewer.attr('src', '');
         modelViewer.removeAttr('poster');
@@ -156,22 +156,22 @@ jQuery(document).ready(function($) {
     });
     
     // System status card interaction
-    $('.expoxr-status-card').hover(
+    $('.explorexr-status-card').hover(
         function() {
-            $(this).find('.expoxr-status-action').css('opacity', 1);
+            $(this).find('.explorexr-status-action').css('opacity', 1);
         },
         function() {
-            $(this).find('.expoxr-status-action').css('opacity', 0.7);
+            $(this).find('.explorexr-status-action').css('opacity', 0.7);
         }
     );
     
     // Premium features interaction
-    $('.expoxr-premium-card').hover(
+    $('.explorexr-premium-card').hover(
         function() {
-            $(this).find('.expoxr-premium-action').css('opacity', 1);
+            $(this).find('.explorexr-premium-action').css('opacity', 1);
         },
         function() {
-            $(this).find('.expoxr-premium-action').css('opacity', 0.7);
+            $(this).find('.explorexr-premium-action').css('opacity', 0.7);
         }
     );
 });

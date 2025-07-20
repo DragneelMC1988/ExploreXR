@@ -12,12 +12,12 @@ if (!defined('ABSPATH')) {
 /**
  * Render the modern dashboard UI
  */
-function expoxr_custom_ui_page() {
+function EXPLOREXR_custom_ui_page() {
     // Get model stats
-    $total_models = wp_count_posts('expoxr_model')->publish;
+    $total_models = wp_count_posts('EXPLOREXR_model')->publish;
     
     // Count model files
-    $models_dir = EXPOXR_MODELS_DIR;
+    $models_dir = EXPLOREXR_MODELS_DIR;
     $model_files = 0;
     if (file_exists($models_dir)) {
         // Use GLOB_BRACE if available, otherwise fallback to multiple glob calls
@@ -34,57 +34,57 @@ function expoxr_custom_ui_page() {
     }
     
     // Get latest version
-    $current_version = EXPOXR_VERSION;
+    $current_version = EXPLOREXR_VERSION;
     
     // Basic functionality check
     
     // Check if Elementor is active
     $elementor_active = is_plugin_active('elementor/elementor.php');
     ?>
-    <div class="wrap expoxr-admin-container">
+    <div class="wrap explorexr-admin-container">
         <!-- Header -->
-        <div class="expoxr-admin-header">
-            <div class="expoxr-logo">
-                <h1>ExploreXR <span class="expoxr-version"><?php echo esc_html($current_version); ?></span></h1>
+        <div class="explorexr-admin-header">
+            <div class="explorexr-logo">
+                <h1>ExploreXR <span class="explorexr-version"><?php echo esc_html($current_version); ?></span></h1>
             </div>
-            <div class="expoxr-header-actions">
+            <div class="explorexr-header-actions">
                 <a href="https://expoxr.com/explorexr/documentation" target="_blank" class="button">Documentation</a>
             </div>
         </div>
           <!-- Quick Actions -->
-        <div class="expoxr-quick-actions">
-            <a href="<?php echo esc_url(admin_url('admin.php?page=expoxr')); ?>">
+        <div class="explorexr-quick-actions">
+            <a href="<?php echo esc_url(admin_url('admin.php?page=ExploreXR')); ?>">
                 <span class="dashicons dashicons-dashboard"></span> Dashboard
             </a>
-            <a href="<?php echo esc_url(admin_url('admin.php?page=expoxr-create-model')); ?>">
+            <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-create-model')); ?>">
                 <span class="dashicons dashicons-plus-alt"></span> Create New Model
             </a>
-            <a href="<?php echo esc_url(admin_url('admin.php?page=expoxr-browse-models')); ?>">
+            <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-browse-models')); ?>">
                 <span class="dashicons dashicons-format-gallery"></span> Browse Models
             </a>
-            <a href="<?php echo esc_url(admin_url('admin.php?page=expoxr-files')); ?>">
+            <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-files')); ?>">
                 <span class="dashicons dashicons-media-default"></span> Manage Files
             </a>            
-            <a href="<?php echo esc_url(admin_url('admin.php?page=expoxr-loading-options')); ?>">
+            <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-loading-options')); ?>">
                 <span class="dashicons dashicons-performance"></span> Loading Options
             </a>
-            <a href="<?php echo esc_url(admin_url('admin.php?page=expoxr-settings')); ?>">
+            <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-settings')); ?>">
                 <span class="dashicons dashicons-admin-settings"></span> Settings
             </a>
-            <a href="<?php echo esc_url(admin_url('admin.php?page=expoxr-premium')); ?>" class="expoxr-premium-action">
+            <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-premium')); ?>" class="explorexr-premium-action">
                 <span class="dashicons dashicons-star-filled"></span> Go Premium
             </a>
         </div>
         
         <!-- Dashboard Grid - Reordered Getting Started to first position -->
-        <div class="expoxr-dashboard-grid">
+        <div class="explorexr-dashboard-grid">
             <!-- Getting Started - Moved to first position -->
-            <div class="expoxr-card">
-                <div class="expoxr-card-header">
+            <div class="explorexr-card">
+                <div class="explorexr-card-header">
                     <h2>Getting Started</h2>
                     <span class="dashicons dashicons-welcome-learn-more"></span>
                 </div>
-                <div class="expoxr-card-content">
+                <div class="explorexr-card-content">
                     <ol style="margin: 0; padding-left: 20px;">
                         <li style="margin-bottom: 8px;">Upload 3D model files (GLB, GLTF, USDZ)</li>
                         <li style="margin-bottom: 8px;">Create a new 3D model and configure display options</li>
@@ -92,47 +92,47 @@ function expoxr_custom_ui_page() {
                         <li>Customize loading options for better user experience</li>
                     </ol>
                 </div>
-                <div class="expoxr-card-footer">
+                <div class="explorexr-card-footer">
                     <a href="https://expoxr.com/explorexr/documentation" target="_blank" class="button button-small">Read Documentation</a>
                 </div>
             </div>
             
             <!-- Stats Overview - Modified to vertical layout -->
-            <div class="expoxr-card">
-                <div class="expoxr-card-header">
+            <div class="explorexr-card">
+                <div class="explorexr-card-header">
                     <h2>Stats Overview</h2>
                     <span class="dashicons dashicons-chart-bar"></span>
                 </div>
-                <div class="expoxr-card-content">
+                <div class="explorexr-card-content">
                     <!-- Changed from horizontal to vertical layout -->
-                    <div class="expoxr-stats-vertical">
-                        <div class="expoxr-stat-item-vertical">
-                            <div class="expoxr-stat-label">3D Models</div>
-                            <div class="expoxr-stat-number"><?php echo esc_html($total_models); ?></div>
+                    <div class="explorexr-stats-vertical">
+                        <div class="explorexr-stat-item-vertical">
+                            <div class="explorexr-stat-label">3D Models</div>
+                            <div class="explorexr-stat-number"><?php echo esc_html($total_models); ?></div>
                         </div>
-                        <div class="expoxr-stat-item-vertical">
-                            <div class="expoxr-stat-label">Model Files</div>
-                            <div class="expoxr-stat-number"><?php echo esc_html($model_files); ?></div>
+                        <div class="explorexr-stat-item-vertical">
+                            <div class="explorexr-stat-label">Model Files</div>
+                            <div class="explorexr-stat-number"><?php echo esc_html($model_files); ?></div>
                         </div>
-                        <div class="expoxr-stat-item-vertical">
-                            <div class="expoxr-stat-label">Free Version</div>
-                            <div class="expoxr-stat-number"><span class="dashicons dashicons-star-filled" style="color:#ffb900;"></span></div>
+                        <div class="explorexr-stat-item-vertical">
+                            <div class="explorexr-stat-label">Free Version</div>
+                            <div class="explorexr-stat-number"><span class="dashicons dashicons-star-filled" style="color:#ffb900;"></span></div>
                         </div>
-                        <div class="expoxr-stat-item-vertical">
-                            <div class="expoxr-stat-label">Shortcode Ready</div>
-                            <div class="expoxr-stat-number"><span class="dashicons dashicons-yes" style="color:#46b450;"></span></div>
+                        <div class="explorexr-stat-item-vertical">
+                            <div class="explorexr-stat-label">Shortcode Ready</div>
+                            <div class="explorexr-stat-number"><span class="dashicons dashicons-yes" style="color:#46b450;"></span></div>
                         </div>
                     </div>
                 </div>
             </div>
             
             <!-- System Status -->
-            <div class="expoxr-card">
-                <div class="expoxr-card-header">
+            <div class="explorexr-card">
+                <div class="explorexr-card-header">
                     <h2>System Status</h2>
                     <span class="dashicons dashicons-performance"></span>
                 </div>
-                <div class="expoxr-card-content">
+                <div class="explorexr-card-content">
                     <?php
                     // Check PHP version
                     $php_version = phpversion();
@@ -144,7 +144,7 @@ function expoxr_custom_ui_page() {
                     $max_upload_status = $max_upload >= 20;
                     
                     // Check model viewer version
-                    $model_viewer_version = get_option('expoxr_model_viewer_version', '3.3.0');
+                    $model_viewer_version = get_option('EXPLOREXR_model_viewer_version', '3.3.0');
                     ?>
                     <div>
                         <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
@@ -173,21 +173,21 @@ function expoxr_custom_ui_page() {
                         </div>
                     </div>
                 </div>
-                <div class="expoxr-card-footer">
-                    <a href="<?php echo esc_url(admin_url('admin.php?page=expoxr-settings')); ?>" class="button button-small">View Settings</a>
+                <div class="explorexr-card-footer">
+                    <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-settings')); ?>" class="button button-small">View Settings</a>
                 </div>
             </div>
             
             <!-- Recent Models -->
-            <div class="expoxr-card">
-                <div class="expoxr-card-header">
+            <div class="explorexr-card">
+                <div class="explorexr-card-header">
                     <h2>Recent Models</h2>
                     <span class="dashicons dashicons-archive"></span>
                 </div>
-                <div class="expoxr-card-content">
+                <div class="explorexr-card-content">
                     <?php
                     $recent_models = new WP_Query([
-                        'post_type' => 'expoxr_model',
+                        'post_type' => 'EXPLOREXR_model',
                         'posts_per_page' => 5,
                         'order' => 'DESC',
                         'orderby' => 'date'
@@ -209,41 +209,41 @@ function expoxr_custom_ui_page() {
                     }
                     ?>
                 </div>
-                <div class="expoxr-card-footer">
-                    <a href="<?php echo esc_url(admin_url('admin.php?page=expoxr-browse-models')); ?>" class="button button-small">View All</a>
+                <div class="explorexr-card-footer">
+                    <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-browse-models')); ?>" class="button button-small">View All</a>
                 </div>
             </div>
             
             <!-- Shortcode Usage -->
-            <div class="expoxr-card">
-                <div class="expoxr-card-header">
+            <div class="explorexr-card">
+                <div class="explorexr-card-header">
                     <h2>How to Use</h2>
                     <span class="dashicons dashicons-editor-code"></span>
                 </div>
-                <div class="expoxr-card-content">
+                <div class="explorexr-card-content">
                     <p style="margin-bottom: 15px;">
                         <strong>ExploreXR Free Version uses shortcodes to display 3D models.</strong> 
                         Simply copy the shortcode from your model's edit page and paste it into any post, page, or widget.
                     </p>
                     <div style="background: #f8f9fa; padding: 15px; border-radius: 4px; margin-bottom: 15px;">
                         <strong>Example shortcode:</strong><br>
-                        <code style="background: #ffffff; padding: 5px; border-radius: 3px; font-size: 14px;">[expoxr_model id="123"]</code>
+                        <code style="background: #ffffff; padding: 5px; border-radius: 3px; font-size: 14px;">[EXPLOREXR_model id="123"]</code>
                     </div>
                     <p style="margin: 0; color: #646970; font-size: 13px;">
                         <strong>Want more features?</strong> 
-                        <a href="<?php echo esc_url(admin_url('admin.php?page=expoxr-premium')); ?>">Upgrade to Premium</a> 
+                        <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-premium')); ?>">Upgrade to Premium</a> 
                         to unlock additional features.
                     </p>
                 </div>
             </div>
             
             <!-- Resources -->
-            <div class="expoxr-card">
-                <div class="expoxr-card-header">
+            <div class="explorexr-card">
+                <div class="explorexr-card-header">
                     <h2>Resources</h2>
                     <span class="dashicons dashicons-admin-links"></span>
                 </div>
-                <div class="expoxr-card-content">
+                <div class="explorexr-card-content">
                     <ul style="margin: 0; padding-left: 20px;">
                         <li style="margin-bottom: 8px;"><a href="https://modelviewer.dev/" target="_blank">Model Viewer Documentation</a></li>
                         <li style="margin-bottom: 8px;"><a href="https://sketchfab.com/features/free-3d-models" target="_blank">Free 3D Models (Sketchfab)</a></li>
@@ -259,13 +259,13 @@ function expoxr_custom_ui_page() {
         <?php
         // Optimized query for featured models dashboard widget
         // Cache the featured models query for 5 minutes to improve performance
-        $cache_key = 'expoxr_featured_models_dashboard';
+        $cache_key = 'EXPLOREXR_featured_models_dashboard';
         $featured_models_ids = wp_cache_get($cache_key, 'explorexr');
         
         if (false === $featured_models_ids) {
             // Use WP_Query with meta_query for WordPress standards compliance
             $featured_query = new WP_Query([
-                'post_type' => 'expoxr_model',
+                'post_type' => 'EXPLOREXR_model',
                 'post_status' => 'publish',
                 'posts_per_page' => 3,
                 'orderby' => 'date',
@@ -273,7 +273,7 @@ function expoxr_custom_ui_page() {
                 // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Required for filtering 3D models with files
                 'meta_query' => [
                     [
-                        'key' => '_expoxr_model_file',
+                        'key' => '_EXPLOREXR_model_file',
                         'compare' => 'EXISTS'
                     ]
                 ],
@@ -285,7 +285,7 @@ function expoxr_custom_ui_page() {
         }
         
         $featured_models = new WP_Query([
-            'post_type' => 'expoxr_model',
+            'post_type' => 'EXPLOREXR_model',
             'post__in' => $featured_models_ids ? $featured_models_ids : [0], // Use 0 if empty to avoid issues
             'orderby' => 'post__in',
             'posts_per_page' => 3,
@@ -295,18 +295,18 @@ function expoxr_custom_ui_page() {
         
         if ($featured_models->have_posts()) {
             ?>
-            <div class="expoxr-section-header" style="margin-top: 40px; margin-bottom: 20px;">
+            <div class="explorexr-section-header" style="margin-top: 40px; margin-bottom: 20px;">
                 <h2>Featured Models</h2>
             </div>
             
-            <div class="expoxr-dashboard-grid">
+            <div class="explorexr-dashboard-grid">
                 <?php while ($featured_models->have_posts()) : $featured_models->the_post(); 
-                      $model_file = get_post_meta(get_the_ID(), '_expoxr_model_file', true);
-                      $poster_url = get_post_meta(get_the_ID(), '_expoxr_model_poster', true);
-                      $shortcode = '[expoxr_model id="' . get_the_ID() . '"]';
+                      $model_file = get_post_meta(get_the_ID(), '_EXPLOREXR_model_file', true);
+                      $poster_url = get_post_meta(get_the_ID(), '_EXPLOREXR_model_poster', true);
+                      $shortcode = '[EXPLOREXR_model id="' . get_the_ID() . '"]';
                 ?>
-                    <div class="expoxr-card expoxr-model-card">
-                        <div class="expoxr-model-thumb">
+                    <div class="explorexr-card explorexr-model-card">
+                        <div class="explorexr-model-thumb">
                             <?php if ($poster_url) : ?>
                                 <?php
                                 // Try to get attachment ID if it's a WordPress attachment
@@ -326,7 +326,7 @@ function expoxr_custom_ui_page() {
                                 <span class="dashicons dashicons-format-image" style="font-size: 48px; opacity: 0.3;"></span>
                             <?php endif; ?>
                             
-                            <div class="expoxr-model-actions">
+                            <div class="explorexr-model-actions">
                                 <a href="<?php echo esc_url(get_edit_post_link()); ?>" class="button" title="Edit Model">
                                     <span class="dashicons dashicons-edit"></span>
                                 </a>
@@ -344,11 +344,11 @@ function expoxr_custom_ui_page() {
                                 <?php endif; ?>
                             </div>
                         </div>
-                        <div class="expoxr-model-details">
-                            <h3 class="expoxr-model-title"><?php the_title(); ?></h3>
-                            <div class="expoxr-model-meta">
+                        <div class="explorexr-model-details">
+                            <h3 class="explorexr-model-title"><?php the_title(); ?></h3>
+                            <div class="explorexr-model-meta">
                                 <span><?php echo esc_html(get_the_date('M j, Y')); ?></span>
-                                <span class="expoxr-badge ar">AR Ready</span>
+                                <span class="explorexr-badge ar">AR Ready</span>
                             </div>
                         </div>
                     </div>
@@ -359,11 +359,11 @@ function expoxr_custom_ui_page() {
         ?>
     </div>
       <!-- Model viewer modal for preview -->
-    <div id="expoxr-model-modal" class="expoxr-model-modal">
-        <div class="expoxr-model-modal-content">
-            <span class="expoxr-model-close">&times;</span>
-            <h3 id="expoxr-model-title" class="expoxr-model-title">3D Model Preview</h3>
-            <model-viewer id="expoxr-model-viewer" camera-controls auto-rotate></model-viewer>
+    <div id="explorexr-model-modal" class="explorexr-model-modal">
+        <div class="explorexr-model-modal-content">
+            <span class="explorexr-model-close">&times;</span>
+            <h3 id="explorexr-model-title" class="explorexr-model-title">3D Model Preview</h3>
+            <model-viewer id="explorexr-model-viewer" camera-controls auto-rotate></model-viewer>
         </div>
     </div>
     <?php
@@ -372,35 +372,35 @@ function expoxr_custom_ui_page() {
 /**
  * Enqueue admin UI styles and scripts
  */
-function expoxr_admin_ui_enqueue_scripts($hook) {
-    // Only load on ExpoXR dashboard page
-    if ('toplevel_page_expoxr' !== $hook) {
+function EXPLOREXR_admin_ui_enqueue_scripts($hook) {
+    // Only load on ExploreXR dashboard page
+    if ('toplevel_page_ExploreXR' !== $hook) {
         return;
     }
     
     // Enqueue CSS
     wp_enqueue_style(
-        'expoxr-admin-ui',
-        EXPOXR_PLUGIN_URL . 'admin/css/admin-ui.css',
+        'explorexr-admin-ui',
+        EXPLOREXR_PLUGIN_URL . 'admin/css/admin-ui.css',
         array(),
-        EXPOXR_VERSION
+        EXPLOREXR_VERSION
     );
     
     // Enqueue JavaScript
     wp_enqueue_script(
-        'expoxr-admin-ui',
-        EXPOXR_PLUGIN_URL . 'admin/js/admin-ui.js',
+        'explorexr-admin-ui',
+        EXPLOREXR_PLUGIN_URL . 'admin/js/admin-ui.js',
         array('jquery'),
-        EXPOXR_VERSION,
+        EXPLOREXR_VERSION,
         true
     );
     
     // Localize script for translations
     wp_localize_script(
-        'expoxr-admin-ui',
-        'expoxrAdminUI',
+        'explorexr-admin-ui',
+        'ExploreXRAdminUI',
         array(
-            'nonce' => wp_create_nonce('expoxr_admin_ui_nonce'),
+            'nonce' => wp_create_nonce('EXPLOREXR_admin_ui_nonce'),
             'strings' => array(
                 'modelPreviewTitle' => esc_html__('3D Model Preview', 'explorexr'),
                 'copySuccess' => esc_html__('Shortcode copied to clipboard!', 'explorexr'),
@@ -411,14 +411,14 @@ function expoxr_admin_ui_enqueue_scripts($hook) {
     
     // Localize script for admin vars (required by admin-ui.js)
     wp_localize_script(
-        'expoxr-admin-ui',
-        'expoxrAdminVars',
+        'explorexr-admin-ui',
+        'ExploreXRAdminVars',
         array(
-            'pluginUrl' => EXPOXR_PLUGIN_URL
+            'pluginUrl' => EXPLOREXR_PLUGIN_URL
         )
     );
 }
-add_action('admin_enqueue_scripts', 'expoxr_admin_ui_enqueue_scripts');
+add_action('admin_enqueue_scripts', 'EXPLOREXR_admin_ui_enqueue_scripts');
 
 
 

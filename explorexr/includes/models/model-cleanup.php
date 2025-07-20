@@ -1,9 +1,9 @@
 <?php
 /**
- * ExpoXR Model Cleanup Functions
+ * ExploreXR Model Cleanup Functions
  * Handles cleanup of deleted or missing model files
  *
- * @package ExpoXR
+  * @package ExploreXR
  */
 
 // Exit if accessed directly
@@ -17,14 +17,14 @@ if (!defined('ABSPATH')) {
  * @param string $model_file_url The URL of the model file
  * @return bool True if the file exists, false otherwise
  */
-function expoxr_model_file_exists($model_file_url) {
+function explorexr_model_file_exists($model_file_url) {
     if (empty($model_file_url)) {
         return false;
     }
     
     // Check if it's a local file in our models directory
-    if (strpos($model_file_url, EXPOXR_MODELS_URL) === 0) {
-        $file_path = str_replace(EXPOXR_MODELS_URL, EXPOXR_MODELS_DIR, $model_file_url);
+    if (strpos($model_file_url, EXPLOREXR_MODELS_URL) === 0) {
+        $file_path = str_replace(EXPLOREXR_MODELS_URL, EXPLOREXR_MODELS_DIR, $model_file_url);
         return file_exists($file_path);
     }
     
@@ -35,13 +35,13 @@ function expoxr_model_file_exists($model_file_url) {
 
 /**
  * Clean up orphaned model entries
- * Checks all ExpoXR models and marks those with missing files
+ * Checks all ExploreXR models and marks those with missing files
  * 
  * @return array Results of the cleanup operation
  */
-function expoxr_cleanup_orphaned_models() {
+function explorexr_cleanup_orphaned_models() {
     $models_query = new WP_Query([
-        'post_type' => 'expoxr_model',
+        'post_type' => 'explorexr_model',
         'posts_per_page' => -1,
         'post_status' => 'publish'
     ]);
@@ -62,7 +62,7 @@ function expoxr_cleanup_orphaned_models() {
         $results['checked']++;
         
         // Get the model file URL
-        $model_file = get_post_meta($model_id, '_expoxr_model_file', true);
+        $model_file = get_post_meta($model_id, '_explorexr_model_file', true);
         
         // Skip if no file is set
         if (empty($model_file)) {
@@ -70,22 +70,22 @@ function expoxr_cleanup_orphaned_models() {
         }
         
         // Check if the file exists
-        if (!expoxr_model_file_exists($model_file)) {
+        if (!explorexr_model_file_exists($model_file)) {
             // File doesn't exist, mark as orphaned
-            update_post_meta($model_id, '_expoxr_file_missing', '1');
+            update_post_meta($model_id, '_explorexr_file_missing', '1');
             $results['orphaned']++;
             
             // Log for debugging
-            if (get_option('expoxr_debug_mode', false)) {
-                expoxr_log(sprintf(
-                    'ExpoXR: Model #%d has a missing file: %s',
+            if (get_option('explorexr_debug_mode', false)) {
+                explorexr_log(sprintf(
+                    'ExploreXR: Model #%d has a missing file: %s',
                     $model_id,
                     $model_file
                 ), 'warning');
             }
         } else {
             // File exists, clear any previous missing flag
-            delete_post_meta($model_id, '_expoxr_file_missing');
+            delete_post_meta($model_id, '_explorexr_file_missing');
         }
     }
     
@@ -96,9 +96,9 @@ function expoxr_cleanup_orphaned_models() {
 /**
  * AJAX handler for cleaning up orphaned models
  */
-function expoxr_ajax_cleanup_models() {
+function explorexr_ajax_cleanup_models() {
     // Check nonce
-    if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'expoxr_admin_nonce')) {
+    if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'explorexr_admin_nonce')) {
         wp_send_json_error(['message' => 'Security check failed']);
         return;
     }
@@ -110,7 +110,7 @@ function expoxr_ajax_cleanup_models() {
     }
     
     // Run the cleanup
-    $results = expoxr_cleanup_orphaned_models();
+    $results = explorexr_cleanup_orphaned_models();
     
     // Format a nice response message
     $message = sprintf(
@@ -126,13 +126,13 @@ function expoxr_ajax_cleanup_models() {
 }
 
 // Register the AJAX handler
-add_action('wp_ajax_expoxr_cleanup_models', 'expoxr_ajax_cleanup_models');
+add_action('wp_ajax_explorexr_cleanup_models', 'explorexr_ajax_cleanup_models');
 
 /**
  * Display admin notice for orphaned models
  */
-function expoxr_orphaned_models_notice() {
-    // Only show on ExpoXR admin pages
+function explorexr_orphaned_models_notice() {
+    // Only show on ExploreXR admin pages
     $screen = get_current_screen();
     if (!$screen || strpos($screen->id, 'explorexr') === false) {
         return;
@@ -140,13 +140,13 @@ function expoxr_orphaned_models_notice() {
     
     // Check if we have orphaned models using WP_Query for WordPress standards compliance
     $orphaned_query = new WP_Query([
-        'post_type' => 'expoxr_model',
+        'post_type' => 'explorexr_model',
         'post_status' => 'publish',
         'posts_per_page' => 50,
         // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Required for cleanup functionality to find orphaned models
         'meta_query' => [
             [
-                'key' => '_expoxr_file_missing',
+                'key' => '_explorexr_file_missing',
                 'value' => '1'
             ]
         ],
@@ -160,7 +160,7 @@ function expoxr_orphaned_models_notice() {
         ?>
         <div class="notice notice-warning is-dismissible">
             <p>
-                <strong>ExpoXR:</strong> 
+                <strong>ExploreXR:</strong> 
                 <?php 
                 printf(
                     // translators: %d: Number of 3D models with missing files
@@ -173,7 +173,7 @@ function expoxr_orphaned_models_notice() {
                     esc_html($orphaned_count)
                 ); 
                 ?>
-                <a href="<?php echo esc_url(admin_url('admin.php?page=expoxr-models')); ?>"><?php esc_html_e('View models', 'explorexr'); ?></a>
+                <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-models')); ?>"><?php esc_html_e('View models', 'explorexr'); ?></a>
             </p>
         </div>
         <?php
@@ -181,37 +181,37 @@ function expoxr_orphaned_models_notice() {
 }
 
 // Add the notice hook
-add_action('admin_notices', 'expoxr_orphaned_models_notice');
+add_action('admin_notices', 'explorexr_orphaned_models_notice');
 
 /**
  * Add a dashboard widget to show orphaned models
  */
-function expoxr_register_orphaned_models_widget() {
+function explorexr_register_orphaned_models_widget() {
     wp_add_dashboard_widget(
-        'expoxr_orphaned_models_widget',
-        'ExpoXR 3D Models Status',
-        'expoxr_orphaned_models_widget_callback'
+        'explorexr_orphaned_models_widget',
+        'ExploreXR 3D Models Status',
+        'explorexr_orphaned_models_widget_callback'
     );
 }
 
 /**
  * Dashboard widget callback
  */
-function expoxr_orphaned_models_widget_callback() {
+function explorexr_orphaned_models_widget_callback() {
     // Use WP_Query for WordPress standards compliance
     // Cache the results for 5 minutes to improve dashboard performance
-    $cache_key = 'expoxr_orphaned_models_widget';
+    $cache_key = 'explorexr_orphaned_models_widget';
     $cached_data = wp_cache_get($cache_key, 'explorexr');
     
     if (false === $cached_data) {
         $orphaned_query = new WP_Query([
-            'post_type' => 'expoxr_model',
+            'post_type' => 'explorexr_model',
             'post_status' => 'publish',
             'posts_per_page' => 10,
             // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Required for cleanup functionality to find orphaned models
             'meta_query' => [
                 [
-                    'key' => '_expoxr_file_missing',
+                    'key' => '_explorexr_file_missing',
                     'value' => '1'
                 ]
             ],
@@ -226,43 +226,43 @@ function expoxr_orphaned_models_widget_callback() {
     }
     
     // Get total models count
-    $total_models = wp_count_posts('expoxr_model')->publish;
+    $total_models = wp_count_posts('explorexr_model')->publish;
     
     ?>
-    <div class="expoxr-dashboard-widget">
+    <div class="explorexr-dashboard-widget">
         <p>
             <strong>Total 3D Models:</strong> <?php echo esc_html($total_models); ?>
         </p>
         
         <?php if ($orphaned_count > 0) : ?>
-            <p class="expoxr-warning">
+            <p class="explorexr-warning">
                 <strong>Models with missing files:</strong> <?php echo esc_html($orphaned_count); ?>
-                <a href="<?php echo esc_url(admin_url('admin.php?page=expoxr-models')); ?>" class="button button-small">View</a>
+                <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-models')); ?>" class="button button-small">View</a>
             </p>
             <p class="description">
                 These models will show an error in the frontend. Update them with new model files.
             </p>
         <?php else : ?>
-            <p class="expoxr-success">
+            <p class="explorexr-success">
                 <strong>All model files are valid ✓</strong>
             </p>
         <?php endif; ?>
         
         <p>
-            <a href="#" class="button" id="expoxr-check-orphaned-models">Check for Missing Files</a>
+            <a href="#" class="button" id="explorexr-check-orphaned-models">Check for Missing Files</a>
             <span class="spinner" style="float: none; margin-top: 0;"></span>
         </p>
-        <div id="expoxr-check-result"></div>
+        <div id="explorexr-check-result"></div>
     </div>
     
     <script>
     jQuery(document).ready(function($) {
-        $('#expoxr-check-orphaned-models').on('click', function(e) {
+        $('#explorexr-check-orphaned-models').on('click', function(e) {
             e.preventDefault();
             
             const $button = $(this);
             const $spinner = $button.next('.spinner');
-            const $result = $('#expoxr-check-result');
+            const $result = $('#explorexr-check-result');
             
             $button.prop('disabled', true);
             $spinner.addClass('is-active');
@@ -272,12 +272,12 @@ function expoxr_orphaned_models_widget_callback() {
                 url: ajaxurl,
                 type: 'POST',
                 data: {
-                    action: 'expoxr_cleanup_models',
-                    _wpnonce: '<?php echo esc_js(wp_create_nonce('expoxr_cleanup_models')); ?>'
+                    action: 'explorexr_cleanup_models',
+                    _wpnonce: '<?php echo esc_js(wp_create_nonce('explorexr_cleanup_models')); ?>'
                 },
                 success: function(response) {
                     if (response.success) {
-                        $result.html('<p class="expoxr-success">' + response.data.message + '</p>');
+                        $result.html('<p class="explorexr-success">' + response.data.message + '</p>');
                         
                         // Refresh the page if orphaned models were found
                         if (response.data.results.orphaned > 0) {
@@ -286,11 +286,11 @@ function expoxr_orphaned_models_widget_callback() {
                             }, 2000);
                         }
                     } else {
-                        $result.html('<p class="expoxr-error">Error: ' + response.data.message + '</p>');
+                        $result.html('<p class="explorexr-error">Error: ' + response.data.message + '</p>');
                     }
                 },
                 error: function() {
-                    $result.html('<p class="expoxr-error">Error checking models. Please try again.</p>');
+                    $result.html('<p class="explorexr-error">Error checking models. Please try again.</p>');
                 },
                 complete: function() {
                     $button.prop('disabled', false);
@@ -301,16 +301,16 @@ function expoxr_orphaned_models_widget_callback() {
     });
     </script>
     <style>
-    .expoxr-dashboard-widget .expoxr-success {
+    .explorexr-dashboard-widget .explorexr-success {
         color: #46b450;
     }
-    .expoxr-dashboard-widget .expoxr-warning {
+    .explorexr-dashboard-widget .explorexr-warning {
         color: #ffb900;
     }
-    .expoxr-dashboard-widget .expoxr-error {
+    .explorexr-dashboard-widget .explorexr-error {
         color: #dc3232;
     }
-    .expoxr-dashboard-widget #expoxr-check-result {
+    .explorexr-dashboard-widget #explorexr-check-result {
         margin-top: 10px;
     }
     </style>
@@ -318,7 +318,7 @@ function expoxr_orphaned_models_widget_callback() {
 }
 
 // Register the dashboard widget
-add_action('wp_dashboard_setup', 'expoxr_register_orphaned_models_widget');
+add_action('wp_dashboard_setup', 'explorexr_register_orphaned_models_widget');
 
 
 

@@ -1,5 +1,5 @@
 /**
- * ExpoXR Model Viewer Wrapper
+ * ExploreXR Model Viewer Wrapper
  * Handles the loading UI and initialization of 3D model viewers
  * 
  * Free Version Features:
@@ -11,44 +11,38 @@
  */
 
 // Helper function to check if debug logging is enabled
-function expoxrDebugLog(message, ...args) {
-    if (typeof expoxrLoadingOptions !== 'undefined' && expoxrLoadingOptions.debug_mode) {
+function ExploreXRDebugLog(message, ...args) {
+    if (typeof ExploreXRLoadingOptions !== 'undefined' && ExploreXRLoadingOptions.debug_mode) {
         console.log(message, ...args);
     }
 }
 
-function expoxrDebugWarn(message, ...args) {
-    if (typeof expoxrLoadingOptions !== 'undefined' && expoxrLoadingOptions.debug_mode) {
+function ExploreXRDebugWarn(message, ...args) {
+    if (typeof ExploreXRLoadingOptions !== 'undefined' && ExploreXRLoadingOptions.debug_mode) {
         console.warn(message, ...args);
     }
 }
 
 // Function to initialize all model viewers
-function initExpoXRModelViewers() {
+function initExploreXRModelViewers() {
     // Log loaded configuration (only if debug mode is enabled)
-    if (typeof expoxrLoadingOptions !== 'undefined') {
-        expoxrDebugLog('[ExpoXR] Loading with options:', expoxrLoadingOptions);
+    if (typeof ExploreXRLoadingOptions !== 'undefined') {
+        ExploreXRDebugLog('[ExploreXR] Loading with options:', ExploreXRLoadingOptions);
     } else {
-        expoxrDebugLog('[ExpoXR] No global loading options found, using defaults');
+        ExploreXRDebugLog('[ExploreXR] No global loading options found, using defaults');
     }
 
-    // Target all model-viewer elements, not just ones with the expoxr-model class
+    // Target all model-viewer elements, not just ones with the ExploreXR-model class
     // This ensures all existing models get the new loading UI
     const modelViewers = document.querySelectorAll('model-viewer');
-      // AR feature detection - simplified for free version, full support in AR add-on
+      // AR feature detection - not available in free version
     const isARSupported = () => {
-        // Check if AR add-on's feature detection is available
-        if (window.expoxrARFeatures && typeof window.expoxrARFeatures.isARSupported === 'function') {
-            // Use AR add-on's feature detection
-            return window.expoxrARFeatures.isARSupported();
-        }
-        
-        // Fallback basic detection if AR add-on is not present
+        // AR functionality removed from free version
         return {
-            webXR: false,      // AR support - requires AR add-on
-            sceneViewer: false, // AR support - requires AR add-on
-            quickLook: false,   // AR support - requires AR add-on
-            anySupported: false, // AR support - requires AR add-on
+            webXR: false,      // AR support not available in free version
+            sceneViewer: false, // AR support not available in free version
+            quickLook: false,   // AR support not available in free version
+            anySupported: false, // AR support not available in free version
             isAndroid: /android/i.test(navigator.userAgent),
             isiOS: /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
         };
@@ -60,19 +54,19 @@ function initExpoXRModelViewers() {
         let container = modelViewer.parentElement;
         
         // If the parent isn't a proper container, wrap the model-viewer in one
-        if (!container.classList.contains('expoxr-model-viewer-container')) {
+        if (!container.classList.contains('ExploreXR-model-viewer-container')) {
             // Check if model viewer is already in our container structure
-                if (!modelViewer.closest('.expoxr-model-viewer-container')) {
+                if (!modelViewer.closest('.ExploreXR-model-viewer-container')) {
                     const wrapper = document.createElement('div');
-                    wrapper.className = 'expoxr-model-viewer-container';
+                    wrapper.className = 'ExploreXR-model-viewer-container';
                     
                     // Preserve any inline styles and classes from the model-viewer
                     const modelViewerStyle = modelViewer.getAttribute('style');
                     const modelViewerClasses = modelViewer.getAttribute('class') || '';
                     
-                    // Ensure the model-viewer has the expoxr-model class for future reference
-                    if (!modelViewerClasses.includes('expoxr-model')) {
-                        modelViewer.classList.add('expoxr-model');
+                    // Ensure the model-viewer has the ExploreXR-model class for future reference
+                    if (!modelViewerClasses.includes('ExploreXR-model')) {
+                        modelViewer.classList.add('ExploreXR-model');
                     }
                     
                     // Add error event listener
@@ -82,11 +76,11 @@ function initExpoXRModelViewers() {
                         const friendlyMessage = typeof getUserFriendlyModelError === 'function' ? 
                             getUserFriendlyModelError(errorType, errorDetails) :                        'Error loading 3D model: ' + errorType;
                     
-                    expoxrDebugWarn('ExpoXR Model Issue:', errorType, errorDetails);
+                    ExploreXRDebugWarn('ExploreXR Model Issue:', errorType, errorDetails);
                         
                         // Display user-friendly error message
                         const errorContainer = document.createElement('div');
-                        errorContainer.className = 'expoxr-model-error';
+                        errorContainer.className = 'ExploreXR-model-error';
                         errorContainer.innerHTML = '<p>' + friendlyMessage + '</p>';
                         wrapper.appendChild(errorContainer);
                     });
@@ -129,7 +123,7 @@ function initExpoXRModelViewers() {
      * @param {number} index - Index for debugging purposes
      */
     function setupLoadingUI(modelViewer, container, index) {
-        expoxrDebugLog('[ExpoXR] Setting up loading UI for model #' + (index + 1));
+        ExploreXRDebugLog('[ExploreXR] Setting up loading UI for model #' + (index + 1));
         
         // 1. Ensure the model-viewer element has the proper loading attributes
         if (!modelViewer.hasAttribute('loading')) {
@@ -144,9 +138,9 @@ function initExpoXRModelViewers() {
         let loadingDisplay = 'bar';
         
         // Check if global options are available (from WordPress)
-        if (typeof expoxrLoadingOptions !== 'undefined') {
-            expoxrDebugLog('[ExpoXR] Loading options found:', expoxrLoadingOptions);
-            loadingDisplay = expoxrLoadingOptions.loading_type || 'both';
+        if (typeof ExploreXRLoadingOptions !== 'undefined') {
+            ExploreXRDebugLog('[ExploreXR] Loading options found:', ExploreXRLoadingOptions);
+            loadingDisplay = ExploreXRLoadingOptions.loading_type || 'both';
         }
         
         // Data attributes can override global settings
@@ -155,7 +149,7 @@ function initExpoXRModelViewers() {
         }
         
         const loadingBarColor = modelViewer.dataset.loadingBarColor || 
-                               (typeof expoxrLoadingOptions !== 'undefined' ? expoxrLoadingOptions.loading_color : '#1e88e5');
+                               (typeof ExploreXRLoadingOptions !== 'undefined' ? ExploreXRLoadingOptions.loading_color : '#1e88e5');
         const loadingBarSize = modelViewer.dataset.loadingBarSize || 'medium';
         const loadingBarPosition = modelViewer.dataset.loadingBarPosition || 'middle';
         const percentageFontSize = modelViewer.dataset.percentageFontSize || 24;
@@ -171,7 +165,7 @@ function initExpoXRModelViewers() {
         if (!posterElement) {
             posterElement = document.createElement('div');
             posterElement.setAttribute('slot', 'poster');
-            posterElement.className = 'expoxr-model-poster';
+            posterElement.className = 'ExploreXR-model-poster';
             posterElement.style.width = '100%';
             posterElement.style.height = '100%';
             
@@ -192,7 +186,7 @@ function initExpoXRModelViewers() {
             }
                   // Create poster content - this will show the loading UI
         const posterContent = document.createElement('div');
-        posterContent.className = 'expoxr-loading-container';
+        posterContent.className = 'ExploreXR-loading-container';
         posterContent.style.backgroundColor = hexToRgba(overlayColor, overlayOpacity);
         posterContent.style.position = 'absolute';
         posterContent.style.top = '0';
@@ -258,11 +252,11 @@ function initExpoXRModelViewers() {
             posterContent.appendChild(loadingStatusText);
                   // Create the loading elements based on preference
         if (loadingDisplay === 'bar' || loadingDisplay === 'both') {
-            expoxrDebugLog('[ExpoXR] Adding loading bar with color:', loadingBarColor);
+            ExploreXRDebugLog('[ExploreXR] Adding loading bar with color:', loadingBarColor);
             
             // Add loading bar
             const barContainer = document.createElement('div');
-            barContainer.className = 'expoxr-loading-bar-container';
+            barContainer.className = 'ExploreXR-loading-bar-container';
                 
                 // Apply position based on settings
                 barContainer.style.position = 'absolute';
@@ -292,7 +286,7 @@ function initExpoXRModelViewers() {
                 }
                 
                 const bar = document.createElement('div');
-                bar.className = 'expoxr-loading-bar';
+                bar.className = 'ExploreXR-loading-bar';
                 bar.style.backgroundColor = loadingBarColor;
                 bar.style.height = barHeight;
                 bar.style.width = '0%';
@@ -306,11 +300,11 @@ function initExpoXRModelViewers() {
                 posterContent.loadingBar = bar;
             }
                   if (loadingDisplay === 'percentage' || loadingDisplay === 'both') {
-            expoxrDebugLog('[ExpoXR] Adding percentage counter');
+            ExploreXRDebugLog('[ExploreXR] Adding percentage counter');
             
             // Add percentage counter
             const percentageCounter = document.createElement('div');
-            percentageCounter.className = 'expoxr-percentage-counter';
+            percentageCounter.className = 'ExploreXR-percentage-counter';
             percentageCounter.textContent = '0%';percentageCounter.style.fontSize = `${percentageFontSize}px`;
                 percentageCounter.style.fontFamily = percentageFontFamily;
                 percentageCounter.style.color = percentageFontColor;
@@ -375,7 +369,7 @@ function initExpoXRModelViewers() {
             // Round to the nearest 25% increment (0%, 25%, 50%, 75%, 100%)
             const roundedProgress = Math.round(event.detail.totalProgress * 4) * 25;
             
-            expoxrDebugLog('[ExpoXR] Model #' + (index + 1) + ' loading progress: ' + roundedProgress + '%');
+            ExploreXRDebugLog('[ExploreXR] Model #' + (index + 1) + ' loading progress: ' + roundedProgress + '%');
             
             const loadingContainer = modelViewer.loadingContainer;
             if (!loadingContainer) return;
@@ -392,11 +386,11 @@ function initExpoXRModelViewers() {
             
             // When progress is complete, the model-viewer will handle hiding the poster
             if (progress >= 100) {
-                expoxrDebugLog('[ExpoXR] Model #' + (index + 1) + ' loading complete');
+                ExploreXRDebugLog('[ExploreXR] Model #' + (index + 1) + ' loading complete');
             }
         });        // 4. Add load event listener for seamless transition
         modelViewer.addEventListener('load', function() {
-            expoxrDebugLog('[ExpoXR] Model #' + (index + 1) + ' loaded successfully');
+            ExploreXRDebugLog('[ExploreXR] Model #' + (index + 1) + ' loaded successfully');
             
             // Mark model as loaded
             modelViewer.setAttribute('data-loaded', 'true');
@@ -433,7 +427,7 @@ function initExpoXRModelViewers() {
         
         // 5. Add error event listener
         modelViewer.addEventListener('error', function(event) {
-            expoxrDebugWarn('[ExpoXR] Model #' + (index + 1) + ' encountered an issue:', event.detail.type);
+            ExploreXRDebugWarn('[ExploreXR] Model #' + (index + 1) + ' encountered an issue:', event.detail.type);
             
             // Update loading UI to show error
             const loadingContainer = modelViewer.loadingContainer;
@@ -446,7 +440,7 @@ function initExpoXRModelViewers() {
             }
         });        // Add click event to poster to properly dismiss it
         posterElement.addEventListener('click', function() {
-            expoxrDebugLog('[ExpoXR] Poster clicked for model #' + (index + 1));
+            ExploreXRDebugLog('[ExploreXR] Poster clicked for model #' + (index + 1));
             
             // Use the official dismissPoster method if available
             if (typeof modelViewer.dismissPoster === 'function') {
@@ -480,7 +474,7 @@ function initExpoXRModelViewers() {
             
             // Create a load button
             const loadButton = document.createElement('button');
-            loadButton.className = 'expoxr-load-model-btn';
+            loadButton.className = 'ExploreXR-load-model-btn';
             loadButton.textContent = modelViewer.getAttribute('load-button-text') || 'Load 3D Model';
             posterElement.appendChild(loadButton);
             
@@ -532,8 +526,9 @@ function hexToRgba(hex, opacity) {
  * @param {string} modelFileUrl - URL to the 3D model file
  * @param {Object} modelAttributes - JSON object containing model attributes
  */
-function loadExpoXRModel(modelInstanceId, modelFileUrl, modelAttributes) {
-        expoxrDebugLog(`[ExpoXR] Loading model dynamically: ${modelInstanceId}`);
+function loadExploreXRModel(modelInstanceId, modelFileUrl, modelAttributes) {
+        ExploreXRDebugLog(`[ExploreXR] Loading model dynamically: ${modelInstanceId}`);
+        console.log('ExploreXR: Model attributes received:', modelAttributes);
         
         // Hide poster container and show viewer container
         const posterContainer = document.getElementById(`${modelInstanceId}-poster`);
@@ -552,7 +547,7 @@ function loadExpoXRModel(modelInstanceId, modelFileUrl, modelAttributes) {
                 // Set required attributes
                 modelViewer.setAttribute('src', modelFileUrl);
                 modelViewer.setAttribute('id', `${modelInstanceId}-model`);
-                modelViewer.classList.add('expoxr-model');
+                modelViewer.classList.add('ExploreXR-model');
                 
                 // Set default attributes if not provided
                 if (!modelAttributes.hasOwnProperty('camera-controls')) {
@@ -577,14 +572,17 @@ function loadExpoXRModel(modelInstanceId, modelFileUrl, modelAttributes) {
                 
                 // Apply all provided model attributes
                 for (const [key, value] of Object.entries(modelAttributes)) {
-                    if (value !== null && value !== undefined) {
+                    // Validate attribute name: must be a string and start with a letter
+                    if (typeof key === 'string' && /^[a-zA-Z]/.test(key) && value !== null && value !== undefined) {
                         modelViewer.setAttribute(key, value);
+                    } else if (typeof key !== 'string' || !/^[a-zA-Z]/.test(key)) {
+                        console.warn('ExploreXR: Invalid attribute name skipped:', key);
                     }
                 }
                 
                 // Create wrapper container if needed
                 const wrapper = document.createElement('div');
-                wrapper.className = 'expoxr-model-viewer-container';
+                wrapper.className = 'ExploreXR-model-viewer-container';
                 wrapper.style.width = '100%';
                 wrapper.style.height = '100%';
                 
@@ -595,11 +593,11 @@ function loadExpoXRModel(modelInstanceId, modelFileUrl, modelAttributes) {
                     const friendlyMessage = typeof getUserFriendlyModelError === 'function' ? 
                         getUserFriendlyModelError(errorType, errorDetails) :                        'Error loading 3D model: ' + errorType;
                     
-                    expoxrDebugWarn('[ExpoXR] Model Issue:', errorType, errorDetails);
+                    ExploreXRDebugWarn('[ExploreXR] Model Issue:', errorType, errorDetails);
                     
                     // Display user-friendly error message
                     const errorContainer = document.createElement('div');
-                    errorContainer.className = 'expoxr-model-error';
+                    errorContainer.className = 'ExploreXR-model-error';
                     errorContainer.innerHTML = '<p>' + friendlyMessage + '</p>';
                     wrapper.appendChild(errorContainer);
                 });
@@ -617,59 +615,69 @@ function loadExpoXRModel(modelInstanceId, modelFileUrl, modelAttributes) {
                 setTimeout(() => {
                     viewerContainer.style.opacity = '1';
                     
-                    // Dispatch event to notify that model has been added
-                    document.dispatchEvent(new CustomEvent('expoxr-model-added', {
+                    // Dispatch events to notify that model has been added
+                    document.dispatchEvent(new CustomEvent('ExploreXRModelLoaded', {
                         detail: {
                             modelId: modelInstanceId,
                             modelElement: modelViewer,
                             timestamp: Date.now()
                         }
-                    }));                    // Log for debugging
-                    if (window.expoxrDebug) {
-                        console.log(`[ExpoXR Debug] Model ${modelInstanceId} dynamically loaded:`, modelViewer);
+                    }));
+                    
+                    document.dispatchEvent(new CustomEvent('explorexr-model-added', {
+                        detail: {
+                            modelId: modelInstanceId,
+                            modelElement: modelViewer,
+                            timestamp: Date.now()
+                        }
+                    }));
+                    
+                    // Log for debugging
+                    if (window.explorexrDebug) {
+                        console.log(`[ExploreXR Debug] Model ${modelInstanceId} dynamically loaded:`, modelViewer);
                     }
                 }, 100);
             }, 300);        } else {
-            expoxrDebugWarn(`[ExpoXR] Warning: Could not find containers for model ${modelInstanceId}`);
+            ExploreXRDebugWarn(`[ExploreXR] Warning: Could not find containers for model ${modelInstanceId}`);
         }    }
 
-// Make loadExpoXRModel available globally for large model template
-window.loadModelContent = loadExpoXRModel;
+// Make loadExploreXRModel available globally for large model template
+window.loadExploreXRModel = loadExploreXRModel;
 
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
     // Use centralized loader to ensure model-viewer is available
     if (window.loadModelViewer && !window.isModelViewerLoaded()) {
-        const scriptConfig = window.expoxrScriptConfig || {};
+        const scriptConfig = window.ExploreXRScriptConfig || {};
         window.loadModelViewer(scriptConfig)
             .then(function() {
-                console.log('ExpoXR: Model viewer loaded via centralized manager');
-                initExpoXRModelViewers();
+                console.log('ExploreXR: Model viewer loaded via centralized manager');
+                initExploreXRModelViewers();
             })
             .catch(function(error) {
-                console.warn('ExpoXR: Model viewer could not be loaded, models will show in fallback mode.');
+                console.warn('ExploreXR: Model viewer could not be loaded, models will show in fallback mode.');
                 // Initialize anyway to show error state
-                initExpoXRModelViewers();
+                initExploreXRModelViewers();
             });
     } else {
         // Initialize all model viewers with our custom loading UI
-        initExpoXRModelViewers();
+        initExploreXRModelViewers();
     }
 });
 
 // Also listen for the model-viewer script loaded event from preloader
-document.addEventListener('expoxr-model-viewer-ready', function(event) {
-    console.log('ExpoXR: Model viewer ready event received at ' + new Date(event.detail.timestamp).toISOString());
+document.addEventListener('ExploreXR-model-viewer-ready', function(event) {
+    console.log('ExploreXR: Model viewer ready event received at ' + new Date(event.detail.timestamp).toISOString());
     
     // Re-initialize to ensure any delayed content is processed
     setTimeout(function() {
-        initExpoXRModelViewers();
+        initExploreXRModelViewers();
     }, 300);
 });
 
 // Also initialize when new content might be loaded via AJAX
-document.addEventListener('expoxr-model-added', function() {
-    initExpoXRModelViewers();
+document.addEventListener('ExploreXR-model-added', function() {
+    initExploreXRModelViewers();
 });
 
 // Set up a mutation observer to detect newly added model viewers
@@ -692,7 +700,7 @@ const observer = new MutationObserver(function(mutations) {
     });
     
     if (shouldInit) {
-        initExpoXRModelViewers();
+        initExploreXRModelViewers();
     }
 });
 

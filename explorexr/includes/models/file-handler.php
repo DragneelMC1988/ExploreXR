@@ -19,7 +19,7 @@ add_action('add_attachment', function ($post_id) {
 
     // Check if the uploaded file is a 3D model
     if (in_array($filetype['ext'], ['glb', 'gltf', 'usdz'])) {
-        $upload_dir = EXPOXR_MODELS_DIR;
+        $upload_dir = EXPLOREXR_MODELS_DIR;
         
         // Create the models folder if it doesn't exist
         if (!file_exists($upload_dir)) {
@@ -41,14 +41,14 @@ add_action('add_attachment', function ($post_id) {
             update_attached_file($post_id, $new_file);
         } elseif (!$wp_filesystem) {
             // Log error if WP_Filesystem is not available
-            if (function_exists('error_log') && get_option('expoxr_debug_mode', false)) {
-                expoxr_log('ExploreXR: WP_Filesystem not available for file move operation', 'error');
+            if (function_exists('error_log') && get_option('EXPLOREXR_debug_mode', false)) {
+                EXPLOREXR_log('ExploreXR: WP_Filesystem not available for file move operation', 'error');
             }
         }
     }
 });
 
-// Note: The expoxr_handle_model_upload function has been moved to model-helper.php
+// Note: The EXPLOREXR_handle_model_upload function has been moved to model-helper.php
 // to avoid duplicate function declarations.
 
 

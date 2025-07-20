@@ -1,6 +1,6 @@
 <?php
 /**
- * ExpoXR Core Model Validator
+ * ExploreXR Core Model Validator
  * 
  * Validates model loading requirements and provides fallbacks
  * when addons            retu            return array(
@@ -13,7 +13,7 @@
                 'response_code' => $response_code
             );not available
  * 
- * @package ExpoXR
+  * @package ExploreXR
  * @since 0.2.7.1
  */
 
@@ -25,7 +25,7 @@ if (!defined('ABSPATH')) {
 /**
  * Validate model loading environment
  */
-function expoxr_validate_model_environment($model_id) {
+function explorexr_validate_model_environment($model_id) {
     $validation_result = array(
         'valid' => true,
         'errors' => array(),
@@ -41,7 +41,7 @@ function expoxr_validate_model_environment($model_id) {
     }
     
     // Check model file
-    $model_file = get_post_meta($model_id, '_expoxr_model_file', true);
+    $model_file = get_post_meta($model_id, '_explorexr_model_file', true);
     if (empty($model_file)) {
         $validation_result['valid'] = false;
         $validation_result['errors'][] = 'No 3D model file has been uploaded for this model. Please add a model file.';
@@ -49,14 +49,14 @@ function expoxr_validate_model_environment($model_id) {
     }
     
     // Check if model file is accessible
-    $file_check = expoxr_check_model_file_access($model_file);
+    $file_check = explorexr_check_model_file_access($model_file);
     if (!$file_check['accessible']) {
         $validation_result['valid'] = false;
         $validation_result['errors'][] = 'The 3D model file is currently unavailable. Please try refreshing the page or contact support if this continues.';
         
         // Add debugging information if available
-        if (function_exists('expoxr_debug_add')) {
-            expoxr_debug_add('model_validation', 'File Access Error', array(
+        if (function_exists('explorexr_debug_add')) {
+            explorexr_debug_add('model_validation', 'File Access Error', array(
                 'model_id' => $model_id,
                 'model_file' => $model_file,
                 'error' => $file_check['error'],
@@ -68,7 +68,7 @@ function expoxr_validate_model_environment($model_id) {
     }
     
     // Check required scripts and styles
-    $script_checks = expoxr_check_required_assets();
+    $script_checks = explorexr_check_required_assets();
     if (!$script_checks['valid']) {
         $validation_result['warnings'] = array_merge($validation_result['warnings'], $script_checks['warnings']);
     }
@@ -79,15 +79,15 @@ function expoxr_validate_model_environment($model_id) {
 /**
  * Check model file accessibility
  */
-function expoxr_check_model_file_access($model_file) {
+function explorexr_check_model_file_access($model_file) {
     if (empty($model_file) || !is_string($model_file)) {
         return array('accessible' => false, 'error' => 'No model file path provided');
     }
     
     // Check if it's a plugin file first (most specific)
-    if (strpos($model_file, EXPOXR_PLUGIN_URL) === 0) {
+    if (strpos($model_file, EXPLOREXR_PLUGIN_URL) === 0) {
         // Convert plugin URL to file path
-        $file_path = str_replace(EXPOXR_PLUGIN_URL, EXPOXR_PLUGIN_DIR, $model_file);
+        $file_path = str_replace(EXPLOREXR_PLUGIN_URL, EXPLOREXR_PLUGIN_DIR, $model_file);
         
         if (file_exists($file_path)) {
             return array('accessible' => true, 'file_path' => $file_path);
@@ -152,26 +152,26 @@ function expoxr_check_model_file_access($model_file) {
 /**
  * Check required assets (scripts and styles)
  */
-function expoxr_check_required_assets() {
+function explorexr_check_required_assets() {
     $result = array(
         'valid' => true,
         'warnings' => array()
     );
     
     // Check if model-viewer script is available
-    $model_viewer_script = EXPOXR_PLUGIN_DIR . 'assets/js/model-loader.js';
+    $model_viewer_script = EXPLOREXR_PLUGIN_DIR . 'assets/js/model-loader.js';
     if (!file_exists($model_viewer_script)) {
         $result['warnings'][] = 'Model loader script not found';
     }
     
     // Check if CSS is available
-    $model_viewer_css = EXPOXR_PLUGIN_DIR . 'assets/css/model-viewer.css';
+    $model_viewer_css = EXPLOREXR_PLUGIN_DIR . 'assets/css/model-viewer.css';
     if (!file_exists($model_viewer_css)) {
         $result['warnings'][] = 'Model viewer CSS not found';
     }
     
     // Check if template parts exist
-    $script_template = EXPOXR_PLUGIN_DIR . 'template-parts/model-viewer-script.php';
+    $script_template = EXPLOREXR_PLUGIN_DIR . 'template-parts/model-viewer-script.php';
     if (!file_exists($script_template)) {
         $result['warnings'][] = 'Model viewer script template not found';
     }
@@ -182,12 +182,12 @@ function expoxr_check_required_assets() {
 /**
  * Generate error message for model loading failures
  */
-function expoxr_generate_model_error_message($validation_result) {
+function explorexr_generate_model_error_message($validation_result) {
     if ($validation_result['valid']) {
         return null; // No error
     }
     
-    $error_html = '<div class="expoxr-model-error" style="padding: 20px; border: 2px solid #dc3232; background: #fff; text-align: center; font-family: Arial, sans-serif;">';
+    $error_html = '<div class="explorexr-model-error" style="padding: 20px; border: 2px solid #dc3232; background: #fff; text-align: center; font-family: Arial, sans-serif;">';
     $error_html .= '<div class="error-icon" style="font-size: 48px; color: #dc3232; margin-bottom: 10px;">⚠️</div>';
     $error_html .= '<h4 style="color: #dc3232; margin: 10px 0;">3D Model Unavailable</h4>';
     
@@ -233,21 +233,21 @@ function expoxr_generate_model_error_message($validation_result) {
 /**
  * Enhanced model shortcode with validation
  */
-function expoxr_safe_model_shortcode($atts) {
-    $atts = shortcode_atts(['id' => ''], $atts, 'expoxr_model');
+function explorexr_safe_model_shortcode($atts) {
+    $atts = shortcode_atts(['id' => ''], $atts, 'explorexr_model');
     $model_id = intval($atts['id']);
     
     // Validate the model environment
-    $validation = expoxr_validate_model_environment($model_id);
+    $validation = explorexr_validate_model_environment($model_id);
     
     // If validation fails, return error message
     if (!$validation['valid']) {
-        return expoxr_generate_model_error_message($validation);
+        return explorexr_generate_model_error_message($validation);
     }
     
     // Log warnings if debugging is enabled
-    if (!empty($validation['warnings']) && function_exists('expoxr_debug_add')) {
-        expoxr_debug_add('model_loading', 'Model Validation Warnings', array(
+    if (!empty($validation['warnings']) && function_exists('explorexr_debug_add')) {
+        explorexr_debug_add('model_loading', 'Model Validation Warnings', array(
             'model_id' => $model_id,
             'warnings' => $validation['warnings'],
             'fallbacks_applied' => $validation['fallbacks_applied']
@@ -256,55 +256,55 @@ function expoxr_safe_model_shortcode($atts) {
     
     // If we get here, the model should load safely
     // Return to the normal shortcode processing
-    return expoxr_process_validated_model($model_id, $validation);
+    return explorexr_process_validated_model($model_id, $validation);
 }
 
 /**
  * Process model after validation passes
  */
-function expoxr_process_validated_model($model_id, $validation) {
+function explorexr_process_validated_model($model_id, $validation) {
     // Get the original shortcode function and call it
     // This is a safe fallback to the existing shortcode implementation
     
     // Include helper functions if not already loaded
-    if (!function_exists('expoxr_process_annotations')) {
-        if (file_exists(EXPOXR_PLUGIN_DIR . 'includes/models/model-helper.php')) {
-            require_once EXPOXR_PLUGIN_DIR . 'includes/models/model-helper.php';
+    if (!function_exists('explorexr_process_annotations')) {
+        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/models/model-helper.php')) {
+            require_once EXPLOREXR_PLUGIN_DIR . 'includes/models/model-helper.php';
         }
     }
     
     // Call the original shortcode logic from shortcodes.php
     // We'll create a wrapper that handles the validation results
-    $model_file = get_post_meta($model_id, '_expoxr_model_file', true);
+    $model_file = get_post_meta($model_id, '_explorexr_model_file', true);
     
     // Get alt text for accessibility
-    $alt_text = get_post_meta($model_id, '_expoxr_model_alt_text', true);
+    $alt_text = get_post_meta($model_id, '_explorexr_model_alt_text', true);
     if (empty($alt_text)) {
         $alt_text = get_the_title($model_id) . ' 3D Model';
     }
     
     // Basic model viewer with minimal dependencies
-    $width = get_post_meta($model_id, '_expoxr_viewer_width', true) ?: '100%';
-    $height = get_post_meta($model_id, '_expoxr_viewer_height', true) ?: '500px';
+    $width = get_post_meta($model_id, '_explorexr_viewer_width', true) ?: '100%';
+    $height = get_post_meta($model_id, '_explorexr_viewer_height', true) ?: '500px';
     
     // Enqueue core styles
-    wp_enqueue_style('expoxr-model-viewer', EXPOXR_PLUGIN_URL . 'assets/css/model-viewer.css', array(), EXPOXR_VERSION);
+    wp_enqueue_style('explorexr-model-viewer', EXPLOREXR_PLUGIN_URL . 'assets/css/model-viewer.css', array(), EXPLOREXR_VERSION);
     
     // Build basic attributes
     $attributes = array(
         'src' => $model_file,
         'alt' => $alt_text,
         'style' => "width: {$width}; height: {$height};",
-        'class' => 'expoxr-model-core'
+        'class' => 'explorexr-model-core'
     );
     
     // Only add features that don't require addons or are safely fallback
-    $camera_controls = get_post_meta($model_id, '_expoxr_camera_controls', true);
+    $camera_controls = get_post_meta($model_id, '_explorexr_camera_controls', true);
     if ($camera_controls === 'on') {
         $attributes['camera-controls'] = '';
     }
     
-    $auto_rotate = get_post_meta($model_id, '_expoxr_auto_rotate', true);
+    $auto_rotate = get_post_meta($model_id, '_explorexr_auto_rotate', true);
     if ($auto_rotate === 'on') {
         $attributes['auto-rotate'] = '';
     }
@@ -321,13 +321,13 @@ function expoxr_process_validated_model($model_id, $validation) {
     
     // Include the script template
     ob_start();
-    include EXPOXR_PLUGIN_DIR . 'template-parts/model-viewer-script.php';
+    include EXPLOREXR_PLUGIN_DIR . 'template-parts/model-viewer-script.php';
     $script = ob_get_clean();
     
     // Return the model HTML
     $html = $script;
     $html .= '<model-viewer' . $attributes_html . '>';
-    $html .= '<div slot="error" class="expoxr-model-error">';
+    $html .= '<div slot="error" class="explorexr-model-error">';
     $html .= '<div>The 3D model is currently unavailable. Please try refreshing the page.</div>';
     $html .= '</div>';
     $html .= '</model-viewer>';

@@ -4,42 +4,42 @@
  */
 jQuery(document).ready(function($) {
     // Debug log viewer functionality
-    $('#expoxr-view-log').on('click', function() {
-        if ($('#expoxr-debug-log-viewer').is(':visible')) {
-            $('#expoxr-debug-log-viewer').slideUp();
+    $('#explorexr-view-log').on('click', function() {
+        if ($('#explorexr-debug-log-viewer').is(':visible')) {
+            $('#explorexr-debug-log-viewer').slideUp();
             return;
         }
         
-        $('#expoxr-debug-log-viewer').slideDown();
-        $('#expoxr-log-content').text('Loading debug log contents...');
+        $('#explorexr-debug-log-viewer').slideDown();
+        $('#explorexr-log-content').text('Loading debug log contents...');
         
         // Ajax request to get log contents
         $.ajax({
             url: ajaxurl,
             type: 'POST',
             data: {
-                action: 'expoxr_get_debug_log',
-                nonce: expoxr_settings.nonce
+                action: 'explorexr_get_debug_log',
+                nonce: explorexr_settings.nonce
             },
             success: function(response) {
                 if (response.success) {
                     if (response.data.content) {
-                        $('#expoxr-log-content').text(response.data.content);
+                        $('#explorexr-log-content').text(response.data.content);
                     } else {
-                        $('#expoxr-log-content').text('The debug log is empty.');
+                        $('#explorexr-log-content').text('The debug log is empty.');
                     }
                 } else {
-                    $('#expoxr-log-content').text('Error loading debug log: ' + response.data.message);
+                    $('#explorexr-log-content').text('Error loading debug log: ' + response.data.message);
                 }
             },
             error: function() {
-                $('#expoxr-log-content').text('Error loading debug log. Please try again.');
+                $('#explorexr-log-content').text('Error loading debug log. Please try again.');
             }
         });
     });
     
     // Clear debug log functionality
-    $('#expoxr-clear-log').on('click', function() {
+    $('#explorexr-clear-log').on('click', function() {
         if (!confirm('Are you sure you want to clear the debug log? This action cannot be undone.')) {
             return;
         }
@@ -49,12 +49,12 @@ jQuery(document).ready(function($) {
             url: ajaxurl,
             type: 'POST',
             data: {
-                action: 'expoxr_clear_debug_log',
-                nonce: expoxr_settings.nonce
+                action: 'explorexr_clear_debug_log',
+                nonce: explorexr_settings.nonce
             },
             success: function(response) {
                 if (response.success) {
-                    $('#expoxr-log-content').text('The debug log has been cleared.');
+                    $('#explorexr-log-content').text('The debug log has been cleared.');
                 } else {
                     alert('Error clearing debug log: ' + response.data.message);
                 }
@@ -66,14 +66,14 @@ jQuery(document).ready(function($) {
     });
     
     // Download debug log functionality
-    $('#expoxr-download-log').on('click', function() {
+    $('#explorexr-download-log').on('click', function() {
         // Ajax request to get log contents for download
         $.ajax({
             url: ajaxurl,
             type: 'POST',
             data: {
-                action: 'expoxr_get_debug_log',
-                nonce: expoxr_settings.nonce
+                action: 'explorexr_get_debug_log',
+                nonce: explorexr_settings.nonce
             },
             success: function(response) {
                 if (response.success) {
@@ -109,14 +109,14 @@ jQuery(document).ready(function($) {
     // Fix for debugging options: Ensure debug mode is enabled when any debugging option is checked
     // Get all debugging section checkboxes
     const debuggingCheckboxes = [
-        'expoxr_debug_log',
-        'expoxr_view_php_errors',
-        'expoxr_console_logging',
-        'expoxr_debug_ar_features',
-        'expoxr_debug_camera_controls',
-        'expoxr_debug_animations',
-        'expoxr_debug_annotations',
-        'expoxr_debug_loading_info'
+        'explorexr_debug_log',
+        'explorexr_view_php_errors',
+        'explorexr_console_logging',
+        'explorexr_debug_ar_features',
+        'explorexr_debug_camera_controls',
+        'explorexr_debug_animations',
+        'explorexr_debug_annotations',
+        'explorexr_debug_loading_info'
     ];
     
     // Add event listeners to all debugging checkboxes
@@ -124,7 +124,7 @@ jQuery(document).ready(function($) {
         $(`#${checkboxId}`).on('change', function() {
             if ($(this).is(':checked')) {
                 // If any debugging option is checked, make sure debug mode is enabled
-                $('#expoxr_debug_mode').prop('checked', true);
+                $('#explorexr_debug_mode').prop('checked', true);
                 
                 // Also update the hidden field in the general settings form
                 $(`#${checkboxId}_hidden`).val('1');
@@ -135,23 +135,23 @@ jQuery(document).ready(function($) {
     });
     
     // Sync general settings with hidden fields in debug form
-    $('#expoxr_cdn_source_cdn, #expoxr_cdn_source_local').on('change', function() {
-        const selectedValue = $('input[name="expoxr_cdn_source"]:checked').val();
-        $('#expoxr_cdn_source_hidden').val(selectedValue);
+    $('#explorexr_cdn_source_cdn, #explorexr_cdn_source_local').on('change', function() {
+        const selectedValue = $('input[name="explorexr_cdn_source"]:checked').val();
+        $('#explorexr_cdn_source_hidden').val(selectedValue);
     });
     
-    $('#expoxr_model_viewer_version').on('change', function() {
-        $('#expoxr_model_viewer_version_hidden').val($(this).val());
+    $('#explorexr_model_viewer_version').on('change', function() {
+        $('#explorexr_model_viewer_version_hidden').val($(this).val());
     });
     
-    $('#expoxr_max_upload_size').on('change', function() {
-        $('#expoxr_max_upload_size_hidden').val($(this).val());
+    $('#explorexr_max_upload_size').on('change', function() {
+        $('#explorexr_max_upload_size_hidden').val($(this).val());
     });
     
     // Sync debug mode checkbox changes with hidden field
-    $('#expoxr_debug_mode').on('change', function() {
+    $('#explorexr_debug_mode').on('change', function() {
         if ($(this).is(':checked')) {
-            $('#expoxr_debug_mode_hidden').val('1');
+            $('#explorexr_debug_mode_hidden').val('1');
         } else {
             let anyDebugOptionChecked = false;
             debuggingCheckboxes.forEach(function(checkboxId) {
@@ -162,10 +162,10 @@ jQuery(document).ready(function($) {
             
             // If any debug option is checked, don't allow debug mode to be disabled
             if (anyDebugOptionChecked) {
-                $('#expoxr_debug_mode').prop('checked', true);
-                $('#expoxr_debug_mode_hidden').val('1');
+                $('#explorexr_debug_mode').prop('checked', true);
+                $('#explorexr_debug_mode_hidden').val('1');
             } else {
-                $('#expoxr_debug_mode_hidden').val('');
+                $('#explorexr_debug_mode_hidden').val('');
             }
         }
     });
@@ -186,13 +186,13 @@ jQuery(document).ready(function($) {
         
         // If any debug option is checked, ensure debug mode is enabled
         if (anyDebugOptionChecked) {
-            $('#expoxr_debug_mode').prop('checked', true);
-            $('#expoxr_debug_mode_hidden').val('1');
+            $('#explorexr_debug_mode').prop('checked', true);
+            $('#explorexr_debug_mode_hidden').val('1');
         }
     });
     
     // System information copy functionality
-    $('#expoxr-copy-system-info').on('click', function() {
+    $('#explorexr-copy-system-info').on('click', function() {
         // Build the text to copy
         let systemInfo = "=== EXPLOREXR SYSTEM INFORMATION ===\n\n";
         
@@ -204,7 +204,7 @@ jQuery(document).ready(function($) {
         
         // Copy to clipboard
         navigator.clipboard.writeText(systemInfo).then(function() {
-            const $button = $('#expoxr-copy-system-info');
+            const $button = $('#explorexr-copy-system-info');
             $button.text('System Information Copied!');
             setTimeout(function() {
                 $button.html('<span class="dashicons dashicons-clipboard settings-icon"></span> Copy System Information');

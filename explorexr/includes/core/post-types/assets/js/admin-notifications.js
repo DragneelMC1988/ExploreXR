@@ -1,25 +1,25 @@
 /**
- * ExpoXR Admin Notifications
+ * ExploreXR Admin Notifications
  * Adds save confirmation messages for 3D model updates
  */
 jQuery(document).ready(function($) {
     // Check if we're on the model edit page
-    if ($('body').hasClass('post-type-expoxr_model') && 
+    if ($('body').hasClass('post-type-explorexr_model') && 
         ($('body').hasClass('post-php') || $('body').hasClass('post-new-php'))) {
         
         // Look for WordPress update message
         const $message = $('#message');
         if ($message.length && $message.hasClass('updated')) {
             // Use the global notification system if available
-            if (typeof window.expoXRCreateNotification === 'function') {
-                window.expoXRCreateNotification(
+            if (typeof window.explorexrCreateNotification === 'function') {
+                window.explorexrCreateNotification(
                     '<strong>3D Model updated successfully!</strong> All changes have been saved.',
                     'save',
                     true
                 );
             } else {
                 // Fallback to original method
-                const $customMessage = $('<div class="notice notice-success expoxr-save-notice is-dismissible">' +
+                const $customMessage = $('<div class="notice notice-success explorexr-save-notice is-dismissible">' +
                     '<p><strong>3D Model updated successfully!</strong> All changes have been saved.</p>' +
                     '<button type="button" class="notice-dismiss"><span class="screen-reader-text">Dismiss this notice.</span></button>' +
                     '</div>');

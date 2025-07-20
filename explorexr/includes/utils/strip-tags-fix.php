@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 /**
  * Filter admin title to ensure it's never null
  */
-function expoxr_filter_admin_title($admin_title, $title) {
+function explorexr_filter_admin_title($admin_title, $title) {
     // Make sure neither value is null
     if ($admin_title === null) {
         $admin_title = '';
@@ -25,18 +25,18 @@ function expoxr_filter_admin_title($admin_title, $title) {
     
     return $admin_title;
 }
-add_filter('admin_title', 'expoxr_filter_admin_title', 5, 2);
+add_filter('admin_title', 'explorexr_filter_admin_title', 5, 2);
 
 /**
  * Filter page title in admin to ensure it's never null
  */
-function expoxr_ensure_page_title($title) {
+function explorexr_ensure_page_title($title) {
     if ($title === null) {
         return '';
     }
     return $title;
 }
-add_filter('the_title', 'expoxr_ensure_page_title', 5);
+add_filter('the_title', 'explorexr_ensure_page_title', 5);
 add_filter('document_title_parts', function($title_parts) {
     foreach ($title_parts as $key => $part) {
         if ($part === null) {
@@ -49,13 +49,13 @@ add_filter('document_title_parts', function($title_parts) {
 /**
  * Alternative fix for PHP 8.1+ deprecation warning by filtering pre_strip_tags
  */
-function expoxr_pre_strip_tags($string) {
+function explorexr_pre_strip_tags($string) {
     if ($string === null) {
         return '';
     }
     return $string;
 }
-add_filter('pre_strip_tags', 'expoxr_pre_strip_tags', 5);
+add_filter('pre_strip_tags', 'explorexr_pre_strip_tags', 5);
 
 
 

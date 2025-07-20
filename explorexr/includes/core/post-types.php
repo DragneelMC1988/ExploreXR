@@ -10,10 +10,10 @@ if (!defined('ABSPATH')) {
  */
 
 // Only register these functions if the class implementation is not present
-if (!class_exists('ExpoXR_Post_Types')) {
+if (!class_exists('ExploreXR_Post_Types')) {
     // Register a custom post type for 3D models
     add_action('init', function () {
-        register_post_type('expoxr_model', [
+        register_post_type('explorexr_model', [
             'labels' => [
                 'name' => '3D Models',
                 'singular_name' => '3D Model',
@@ -42,12 +42,12 @@ if (!class_exists('ExpoXR_Post_Types')) {
     // Add meta boxes for the post type
     add_action('add_meta_boxes', function () {
         // Add meta boxes only if the class-based implementation isn't active
-        if (!has_action('add_meta_boxes', array('ExpoXR_Post_Types', 'add_meta_boxes'))) {
+        if (!has_action('add_meta_boxes', array('ExploreXR_Post_Types', 'add_meta_boxes'))) {
             add_meta_box(
-                'expoxr_model_file',
+                'explorexr_model_file',
                 '3D Model File',
-                'expoxr_model_file_meta_box',
-                'expoxr_model',
+                'explorexr_model_file_meta_box',
+                'explorexr_model',
                 'normal',
                 'high'
             );

@@ -1,11 +1,11 @@
 /**
- * ExpoXR Model Viewer Preloading Styles
+ * ExploreXR Model Viewer Preloading Styles
  * This file contains only essential styles for displaying posters and loading indicators
  * before the main model-viewer script loads
  */
 
 /* Essential poster image styling */
-.expoxr-model-poster {
+.explorexr-model-poster {
     width: 100%;
     height: 100%;
     background-size: contain;
@@ -16,7 +16,7 @@
 }
 
 /* Essential preloading styling */
-.expoxr-preloading {
+.explorexr-preloading {
     position: absolute;
     top: 0;
     left: 0;
@@ -31,21 +31,21 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-.expoxr-preloading-spinner {
+.explorexr-preloading-spinner {
     width: 40px;
     height: 40px;
     border: 4px solid rgba(0, 115, 170, 0.3);
     border-radius: 50%;
     border-top-color: #0073aa;
-    animation: expoxr-spin 1s ease-in-out infinite;
+    animation: explorexr-spin 1s ease-in-out infinite;
     margin-bottom: 15px;
 }
 
-@keyframes expoxr-spin {
+@keyframes explorexr-spin {
     to { transform: rotate(360deg); }
 }
 
-.expoxr-preloading-text {
+.explorexr-preloading-text {
     font-size: 16px;
     color: #333;
     margin-top: 10px;
@@ -53,7 +53,7 @@
 }
 
 /* Minimal loading bar styles */
-.expoxr-loading-bar-container {
+.explorexr-loading-bar-container {
     position: relative;
     width: 80%;
     height: 8px;
@@ -63,7 +63,7 @@
     margin: 10px 0;
 }
 
-.expoxr-loading-bar {
+.explorexr-loading-bar {
     height: 100%;
     width: 0%;
     background-color: #0073aa;
@@ -72,7 +72,7 @@
 }
 
 /* Load model button styling */
-.expoxr-load-model-btn {
+.explorexr-load-model-btn {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -87,12 +87,12 @@
     transition: background-color 0.3s ease;
 }
 
-.expoxr-load-model-btn:hover {
+.explorexr-load-model-btn:hover {
     background-color: #005177;
 }
 
 /* Container styling */
-.expoxr-model-container {
+.explorexr-model-container {
     position: relative;
     width: 100%;
     height: auto;

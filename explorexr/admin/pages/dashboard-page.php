@@ -7,16 +7,16 @@ if (!defined('ABSPATH')) {
 /**
  * Dashboard page callback
  */
-function expoxr_dashboard_page() {
+function explorexr_dashboard_page() {
     // Include the model-viewer script for the popup
-    include EXPOXR_PLUGIN_DIR . 'template-parts/model-viewer-script.php';
+    include EXPLOREXR_PLUGIN_DIR . 'template-parts/model-viewer-script.php';
     
     // Get statistics
-    $total_models = wp_count_posts('expoxr_model')->publish;
+    $total_models = wp_count_posts('explorexr_model')->publish;
     
     // Get most recent models
     $recent_models = get_posts([
-        'post_type' => 'expoxr_model',
+        'post_type' => 'explorexr_model',
         'post_status' => 'publish',
         'posts_per_page' => 5,
         'orderby' => 'date',
@@ -24,7 +24,7 @@ function expoxr_dashboard_page() {
     ]);
     
     // Get model files info
-    $models_dir = EXPOXR_MODELS_DIR;
+    $models_dir = EXPLOREXR_MODELS_DIR;
     
     // Use GLOB_BRACE if available, otherwise fallback to multiple glob calls
     if (defined('GLOB_BRACE')) {
@@ -57,11 +57,11 @@ function expoxr_dashboard_page() {
     
     $formatted_size = $size_format($total_size);
       // Check if Model Viewer is fully operational
-    $cdn_source = get_option('expoxr_cdn_source', 'local');
-    $model_viewer_version = get_option('expoxr_model_viewer_version', '3.3.0');
+    $cdn_source = get_option('explorexr_cdn_source', 'local');
+    $model_viewer_version = get_option('explorexr_model_viewer_version', '3.3.0');
     $model_viewer_url = ($cdn_source === 'cdn') 
         ? "https://unpkg.com/@google/model-viewer@{$model_viewer_version}/dist/model-viewer.min.js"
-        : EXPOXR_PLUGIN_URL . 'assets/js/model-viewer.min.js';
+        : EXPLOREXR_PLUGIN_URL . 'assets/js/model-viewer.min.js';
     
     $model_viewer_status = 'operational';
     if ($cdn_source === 'cdn') {
@@ -71,8 +71,8 @@ function expoxr_dashboard_page() {
         }
     } else {
         // Check for UMD version first, then minified version
-        $umd_path = EXPOXR_PLUGIN_DIR . 'assets/js/model-viewer-umd.js';
-        $min_path = EXPOXR_PLUGIN_DIR . 'assets/js/model-viewer.min.js';
+        $umd_path = EXPLOREXR_PLUGIN_DIR . 'assets/js/model-viewer-umd.js';
+        $min_path = EXPLOREXR_PLUGIN_DIR . 'assets/js/model-viewer.min.js';
         
         if (!file_exists($umd_path) && !file_exists($min_path)) {
             $model_viewer_status = 'missing';
@@ -80,22 +80,22 @@ function expoxr_dashboard_page() {
     }
       // Set up header variables
     $page_title = 'ExploreXR Dashboard';
-    $header_actions = '<a href="' . esc_url(admin_url('admin.php?page=expoxr-create-model')) . '" class="button button-primary">
+    $header_actions = '<a href="' . esc_url(admin_url('admin.php?page=explorexr-create-model')) . '" class="button button-primary">
                         <span class="dashicons dashicons-plus" style="margin-right: 5px;"></span> Create New Model
                        </a>';
     ?>
-    <div class="wrap expoxr-admin-container">
+    <div class="wrap explorexr-admin-container">
         <!-- WordPress admin notices appear here automatically before our custom content -->
         
-        <?php include EXPOXR_PLUGIN_DIR . 'admin/templates/notifications-area.php'; ?>
+        <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/notifications-area.php'; ?>
         
         <!-- Moving Gradient Banner -->
-        <div class="expoxr-gradient-banner">
-            <div class="expoxr-gradient-banner-content">
+        <div class="explorexr-gradient-banner">
+            <div class="explorexr-gradient-banner-content">
                 <?php 
                 // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage -- Plugin logo for admin interface
-                printf('<img src="%s" alt="%s" class="expoxr-banner-logo" loading="lazy">', 
-                    esc_url(EXPOXR_PLUGIN_URL . 'assets/img/logos/exploreXR-Logo.png'), 
+                printf('<img src="%s" alt="%s" class="explorexr-banner-logo" loading="lazy">', 
+                    esc_url(EXPLOREXR_PLUGIN_URL . 'assets/img/logos/exploreXR-Logo.png'), 
                     esc_attr__('ExploreXR Logo', 'explorexr')
                 );
                 ?>
@@ -103,26 +103,26 @@ function expoxr_dashboard_page() {
             </div>
         </div>
         
-        <?php include EXPOXR_PLUGIN_DIR . 'admin/templates/admin-header.php'; ?>
+        <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/admin-header.php'; ?>
         
         <?php 
         // Free version always shows upgrade banner unless dismissed
-        if (defined('EXPOXR_IS_FREE') && EXPOXR_IS_FREE) : 
+        if (defined('EXPLOREXR_IS_FREE') && EXPLOREXR_IS_FREE) : 
             // Check if banner has been dismissed for this session
-            $banner_dismissed = get_transient('expoxr_pro_banner_dismissed_' . get_current_user_id());
+            $banner_dismissed = get_transient('explorexr_pro_banner_dismissed_' . get_current_user_id());
             if (!$banner_dismissed) :
         ?>
-        <div class="expoxr-pro-banner" id="expoxr-pro-banner">
-            <div class="expoxr-pro-banner-content">
-                <button type="button" class="expoxr-banner-dismiss" aria-label="Dismiss banner">&times;</button>
+        <div class="explorexr-pro-banner" id="explorexr-pro-banner">
+            <div class="explorexr-pro-banner-content">
+                <button type="button" class="explorexr-banner-dismiss" aria-label="Dismiss banner">&times;</button>
                 <h3>Upgrade to ExploreXR Pro!</h3>
                 <p>Enhance your 3D model experience with premium features.</p>
-                <ul class="expoxr-pro-features">
+                <ul class="explorexr-pro-features">
                     <li><span class="dashicons dashicons-yes"></span> Advanced AR Features</li>
                     <li><span class="dashicons dashicons-yes"></span> Expert Camera Controls</li>
                     <li><span class="dashicons dashicons-yes"></span> Priority Support</li>
                 </ul>
-                <a href="<?php echo esc_url(admin_url('admin.php?page=expoxr-premium')); ?>" class="button button-primary">Learn More</a>
+                <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-premium')); ?>" class="button button-primary">Learn More</a>
             </div>           
         </div>
         <?php 
@@ -137,76 +137,76 @@ function expoxr_dashboard_page() {
             } elseif ($model_viewer_status === 'missing') {
                 $alert_message = '<p><strong>Model Viewer Local File Missing:</strong> The local Model Viewer script file is missing. Please switch to CDN mode in settings or reinstall the plugin.</p>';
             }
-            include EXPOXR_PLUGIN_DIR . 'admin/templates/info-alert.php';
+            include EXPLOREXR_PLUGIN_DIR . 'admin/templates/info-alert.php';
         endif; ?>
         
         <!-- Status Overview -->
-        <div class="expoxr-status-grid">
+        <div class="explorexr-status-grid">
             <!-- Models Card -->
-            <div class="expoxr-card expoxr-status-card">
-                <div class="expoxr-status-card-inner">
-                    <div class="expoxr-status-icon">
+            <div class="explorexr-card explorexr-status-card">
+                <div class="explorexr-status-card-inner">
+                    <div class="explorexr-status-icon">
                         <span class="dashicons dashicons-format-gallery"></span>
                     </div>
-                    <div class="expoxr-status-details">
+                    <div class="explorexr-status-details">
                         <h2><?php echo esc_html($total_models); ?></h2>
                         <p>3D Models</p>
                     </div>
                 </div>
-                <div class="expoxr-status-action">
-                    <a href="<?php echo esc_url(admin_url('admin.php?page=expoxr-browse-models')); ?>">View All</a>
+                <div class="explorexr-status-action">
+                    <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-browse-models')); ?>">View All</a>
                 </div>
             </div>
             
             <!-- Files Card -->
-            <div class="expoxr-card expoxr-status-card">
-                <div class="expoxr-status-card-inner">
-                    <div class="expoxr-status-icon">
+            <div class="explorexr-card explorexr-status-card">
+                <div class="explorexr-status-card-inner">
+                    <div class="explorexr-status-icon">
                         <span class="dashicons dashicons-media-default"></span>
                     </div>
-                    <div class="expoxr-status-details">
+                    <div class="explorexr-status-details">
                         <h2><?php echo esc_html($total_files); ?></h2>
                         <p>3D Files</p>
                     </div>
                 </div>
-                <div class="expoxr-status-action">
-                    <a href="<?php echo esc_url(admin_url('admin.php?page=expoxr-files')); ?>">Manage Files</a>
+                <div class="explorexr-status-action">
+                    <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-files')); ?>">Manage Files</a>
                 </div>
             </div>
             
             <!-- Storage Card -->
-            <div class="expoxr-card expoxr-status-card">
-                <div class="expoxr-status-card-inner">
-                    <div class="expoxr-status-icon">
+            <div class="explorexr-card explorexr-status-card">
+                <div class="explorexr-status-card-inner">
+                    <div class="explorexr-status-icon">
                         <span class="dashicons dashicons-cloud"></span>
                     </div>
-                    <div class="expoxr-status-details">
+                    <div class="explorexr-status-details">
                         <h2><?php echo esc_html($formatted_size); ?></h2>
                         <p>Storage Used</p>
                     </div>
                 </div>
-                <div class="expoxr-status-action">
-                    <a href="<?php echo esc_url(admin_url('admin.php?page=expoxr-files')); ?>">Optimize</a>
+                <div class="explorexr-status-action">
+                    <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-files')); ?>">Optimize</a>
                 </div>
             </div>
             
             <!-- System Status Card -->
-            <div class="expoxr-card expoxr-status-card">
-                <div class="expoxr-status-card-inner">
-                    <div class="expoxr-status-icon">
+            <div class="explorexr-card explorexr-status-card">
+                <div class="explorexr-status-card-inner">
+                    <div class="explorexr-status-icon">
                         <?php if ($model_viewer_status === 'operational') : ?>
                             <span class="dashicons dashicons-yes-alt" style="color: #46b450;"></span>
                         <?php else : ?>
                             <span class="dashicons dashicons-warning" style="color: #dc3232;"></span>
                         <?php endif; ?>
                     </div>
-                    <div class="expoxr-status-details">
+                    <div class="explorexr-status-details">
                         <h2>System</h2>
                         <p><?php echo esc_html($model_viewer_status === 'operational' ? 'All Systems Operational' : 'Attention Required'); ?></p>
                     </div>
                 </div>
-                <div class="expoxr-status-action">
-                    <a href="<?php echo esc_url(admin_url('admin.php?page=expoxr-settings')); ?>">Check Settings</a>
+                <div class="explorexr-status-action">
+                    <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-settings')); ?>">Check Settings</a>
                 </div>
             </div>
         </div>
@@ -219,10 +219,10 @@ function expoxr_dashboard_page() {
         ob_start();
         ?>
         <?php if (empty($recent_models)) : 
-            $alert_message = '<p>You haven\'t created any 3D models yet. <a href="' . esc_url(admin_url('admin.php?page=expoxr-create-model')) . '">Create your first 3D model</a>.</p>';
-            include EXPOXR_PLUGIN_DIR . 'admin/templates/info-alert.php';
+            $alert_message = '<p>You haven\'t created any 3D models yet. <a href="' . esc_url(admin_url('admin.php?page=explorexr-create-model')) . '">Create your first 3D model</a>.</p>';
+            include EXPLOREXR_PLUGIN_DIR . 'admin/templates/info-alert.php';
         else : ?>
-            <table class="expoxr-table">
+            <table class="explorexr-table">
                 <thead>
                     <tr>
                         <th>Title</th>
@@ -233,7 +233,7 @@ function expoxr_dashboard_page() {
                 </thead>
                 <tbody>
                     <?php foreach ($recent_models as $model) : 
-                        $shortcode = '[expoxr_model id="' . $model->ID . '"]';
+                        $shortcode = '[explorexr_model id="' . $model->ID . '"]';
                     ?>
                         <tr>
                             <td><?php echo esc_html($model->post_title); ?></td>
@@ -245,13 +245,13 @@ function expoxr_dashboard_page() {
                                 </button>
                             </td>
                             <td>
-                                <div class="expoxr-action-buttons">
+                                <div class="explorexr-action-buttons">
                                     <a href="<?php echo esc_url(get_edit_post_link($model->ID)); ?>" class="button button-small">
                                         <span class="dashicons dashicons-edit" style="font-size: 14px; width: 14px; height: 14px; margin-right: 2px;"></span> Edit
                                     </a>                                    <?php 
                                     // Get model file information
-                                    $model_file = get_post_meta($model->ID, '_expoxr_model_file', true);
-                                    $poster_url = get_post_meta($model->ID, '_expoxr_model_poster', true);
+                                    $model_file = get_post_meta($model->ID, '_explorexr_model_file', true);
+                                    $poster_url = get_post_meta($model->ID, '_explorexr_model_poster', true);
                                     
                                     // Use the model file URL directly if it's a full URL
                                     // Otherwise, use it as-is
@@ -272,8 +272,8 @@ function expoxr_dashboard_page() {
             </table>
             
             <?php if ($total_models > 5) : ?>
-                <div class="expoxr-view-all">
-                    <a href="<?php echo esc_url(admin_url('admin.php?page=expoxr-browse-models')); ?>" class="button">
+                <div class="explorexr-view-all">
+                    <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-browse-models')); ?>" class="button">
                         <span class="dashicons dashicons-format-gallery" style="margin-right: 5px;"></span> View All Models
                     </a>
                 </div>
@@ -281,7 +281,7 @@ function expoxr_dashboard_page() {
         <?php endif; ?>
         <?php
         $card_content = ob_get_clean();
-        include EXPOXR_PLUGIN_DIR . 'admin/templates/card.php';
+        include EXPLOREXR_PLUGIN_DIR . 'admin/templates/card.php';
         ?>
         
 
@@ -292,72 +292,72 @@ function expoxr_dashboard_page() {
             ob_start();
             ?>
             <p>Unlock powerful features with our 7 specialized addons. Choose the ones that fit your needs based on your subscription tier:</p>
-            <div class="expoxr-premium-features">
-                <div class="expoxr-premium-feature">
-                    <div class="expoxr-premium-icon">
+            <div class="explorexr-premium-features">
+                <div class="explorexr-premium-feature">
+                    <div class="explorexr-premium-icon">
                         <span class="dashicons dashicons-smartphone"></span>
                     </div>
-                    <div class="expoxr-premium-info">
+                    <div class="explorexr-premium-info">
                         <h4>Enhanced AR Features</h4>
                         <p>Advanced augmented reality with better tracking, lighting, and iOS Quick Look support.</p>
                     </div>
                 </div>
-                <div class="expoxr-premium-feature">
-                    <div class="expoxr-premium-icon">
+                <div class="explorexr-premium-feature">
+                    <div class="explorexr-premium-icon">
                         <span class="dashicons dashicons-camera"></span>
                     </div>
-                    <div class="expoxr-premium-info">
+                    <div class="explorexr-premium-info">
                         <h4>Professional Camera Controls</h4>
                         <p>Custom camera paths, smooth transitions, and advanced view controls for cinematic experiences.</p>
                     </div>
                 </div>
-                <div class="expoxr-premium-feature">
-                    <div class="expoxr-premium-icon">
+                <div class="explorexr-premium-feature">
+                    <div class="explorexr-premium-icon">
                         <span class="dashicons dashicons-performance"></span>
                     </div>
-                    <div class="expoxr-premium-info">
+                    <div class="explorexr-premium-info">
                         <h4>Loading Customization</h4>
                         <p>Customize loading screens, progress bars, and transitions for better user experience.</p>
                     </div>
                 </div>
-                <div class="expoxr-premium-feature">
-                    <div class="expoxr-premium-icon">
+                <div class="explorexr-premium-feature">
+                    <div class="explorexr-premium-icon">
                         <span class="dashicons dashicons-info"></span>
                     </div>
-                    <div class="expoxr-premium-info">
+                    <div class="explorexr-premium-info">
                         <h4>And Many More Addons Available Now</h4>
                         <p>We're constantly adding powerful new addons to our current library to take your 3D experience to the next level!</p>
                     </div>
                 </div>
             </div>
-            <div class="expoxr-premium-pricing">
-                <div class="expoxr-pricing-tiers">
-                    <div class="expoxr-pricing-tier">
+            <div class="explorexr-premium-pricing">
+                <div class="explorexr-pricing-tiers">
+                    <div class="explorexr-pricing-tier">
                         <h4>Pro</h4>
-                        <div class="expoxr-price">€59/year</div>
-                        <div class="expoxr-addon-count">2 Addons</div>
+                        <div class="explorexr-price">€59/year</div>
+                        <div class="explorexr-addon-count">2 Addons</div>
                         <p>Choose any 2 addons</p>
                     </div>
-                    <div class="expoxr-pricing-tier featured">
+                    <div class="explorexr-pricing-tier featured">
                         <h4>Plus</h4>
-                        <div class="expoxr-price">€99/year</div>
-                        <div class="expoxr-addon-count">4 Addons</div>
+                        <div class="explorexr-price">€99/year</div>
+                        <div class="explorexr-addon-count">4 Addons</div>
                         <p>Choose any 4 addons</p>
-                        <span class="expoxr-popular-badge">Most Popular</span>
+                        <span class="explorexr-popular-badge">Most Popular</span>
                     </div>
-                    <div class="expoxr-pricing-tier">
+                    <div class="explorexr-pricing-tier">
                         <h4>Ultra</h4>
-                        <div class="expoxr-price">€179/year</div>
-                        <div class="expoxr-addon-count">All Addons</div>
+                        <div class="explorexr-price">€179/year</div>
+                        <div class="explorexr-addon-count">All Addons</div>
                         <p>Complete collection</p>
                     </div>
                 </div>
-                <div class="expoxr-addon-note">
+                <div class="explorexr-addon-note">
                     <p><strong>All tiers include:</strong> Core 3D model viewer + your chosen addons. Addons can be activated/deactivated through your license dashboard.</p>
                 </div>
             </div>
-            <div class="expoxr-actions">
-                <a href="<?php echo esc_url(admin_url('admin.php?page=expoxr-premium')); ?>" class="button button-primary button-large">
+            <div class="explorexr-actions">
+                <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-premium')); ?>" class="button button-primary button-large">
                     <span class="dashicons dashicons-unlock" style="margin-right: 5px;"></span> Upgrade Now
                 </a>
                 <a href="https://expoxr.com/explorexr/pricing" target="_blank" class="button">
@@ -366,10 +366,10 @@ function expoxr_dashboard_page() {
             </div>
             <?php
             $card_content = ob_get_clean();
-            include EXPOXR_PLUGIN_DIR . 'admin/templates/card.php';
+            include EXPLOREXR_PLUGIN_DIR . 'admin/templates/card.php';
             ?>
         <!-- Resources and Help -->
-        <div class="expoxr-card-grid">           
+        <div class="explorexr-card-grid">           
             
             <!-- Quick Start Guide -->
             <?php
@@ -383,14 +383,14 @@ function expoxr_dashboard_page() {
                 <li><strong>Create a 3D Model</strong> - Use the Create New Model page to configure your model.</li>
                 <li><strong>Use the Shortcode</strong> - Copy the shortcode and paste it into any post or page.</li>
             </ol>
-            <div class="expoxr-actions">
+            <div class="explorexr-actions">
                 <a href="https://expoxr.com/explorexr/documentation/quick-start" target="_blank" class="button">
                     <span class="dashicons dashicons-book" style="margin-right: 5px;"></span> Full Documentation
                 </a>
             </div>
             <?php
             $card_content = ob_get_clean();
-            include EXPOXR_PLUGIN_DIR . 'admin/templates/card.php';
+            include EXPLOREXR_PLUGIN_DIR . 'admin/templates/card.php';
             ?>
             
             <!-- Support -->
@@ -405,25 +405,25 @@ function expoxr_dashboard_page() {
                 <li><strong>Support Forum:</strong> Ask questions and get help from our community.</li>
                 <li><strong>Premium Support:</strong> Direct assistance for premium users.</li>
             </ul>
-            <div class="expoxr-actions">
+            <div class="explorexr-actions">
                 <a href="https://expoxr.com/support" target="_blank" class="button">
                     <span class="dashicons dashicons-sos" style="margin-right: 5px;"></span> Get Support
                 </a>
             </div>
             <?php
             $card_content = ob_get_clean();
-            include EXPOXR_PLUGIN_DIR . 'admin/templates/card.php';
+            include EXPLOREXR_PLUGIN_DIR . 'admin/templates/card.php';
             ?>
         </div>
     </div>
     
-    <?php include EXPOXR_PLUGIN_DIR . 'admin/templates/shortcode-notification.php'; ?>
+    <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/shortcode-notification.php'; ?>
     
     <!-- Include the model viewer modal -->
-    <?php include EXPOXR_PLUGIN_DIR . 'admin/templates/model-viewer-modal.php'; ?>
+    <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/model-viewer-modal.php'; ?>
     
-    <!-- ExpoXR Footer -->
-    <?php include EXPOXR_PLUGIN_DIR . 'admin/templates/admin-footer.php'; ?>
+    <!-- ExploreXR Footer -->
+    <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/admin-footer.php'; ?>
     </div>
     <?php
 }

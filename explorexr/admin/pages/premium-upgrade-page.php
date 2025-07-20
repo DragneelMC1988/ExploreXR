@@ -9,20 +9,20 @@ if (!defined('ABSPATH')) {
  * 
  * Shows premium features and upgrade options
  */
-function expoxr_premium_upgrade_page() {
+function explorexr_premium_upgrade_page() {
     // Set up header variables
     $page_title = 'Go Premium';
-    $header_actions = '<a href="' . expoxr_get_premium_upgrade_url() . '" class="button button-primary" target="_blank">
+    $header_actions = '<a href="' . explorexr_get_premium_upgrade_url() . '" class="button button-primary" target="_blank">
                         <span class="dashicons dashicons-star-filled" style="margin-right: 5px;"></span> Upgrade Now
                        </a>';
     ?>
-    <div class="wrap expoxr-admin-container">
+    <div class="wrap explorexr-admin-container">
         <!-- WordPress admin notices appear here automatically before our custom content -->
         
-        <?php include EXPOXR_PLUGIN_DIR . 'admin/templates/notifications-area.php'; ?>
-        <?php include EXPOXR_PLUGIN_DIR . 'admin/templates/admin-header.php'; ?>
+        <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/notifications-area.php'; ?>
+        <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/admin-header.php'; ?>
         
-        <div class="expoxr-premium-content">
+        <div class="explorexr-premium-content">
             <section class="addon-summary">
                 <h2>Addon-Powered Premium Experience</h2>
                 <p class="summary-description">ExploreXR Premium offers a modular approach with 7+ specialized addons. Choose the ones that fit your needs based on your subscription tier.</p>
@@ -267,9 +267,9 @@ function expoxr_premium_upgrade_page() {
                         <ul class="addon-features">
                             <li>Advanced Analytics & Tracking</li>
                             <li>Multi-language Support</li>
-                            <li>Custom UI Themes</li>
+                            <li>Mouse Tracker</li>
                             <li>Mobile Optimization Tools</li>
-                            <li>Social Media Integration</li>
+                            <li>Post Processing</li>
                             <li>Performance Optimization</li>
                         </ul>
                         <div class="coming-soon-badge">Coming Soon</div>
@@ -292,10 +292,10 @@ function expoxr_premium_upgrade_page() {
                     <h2>Ready to Upgrade?</h2>
                     <p>Join thousands of satisfied customers using ExploreXR Premium</p>
                     <div class="cta-buttons">
-                        <a href="<?php echo esc_url(expoxr_get_premium_upgrade_url()); ?>" class="button button-primary button-hero" target="_blank">
+                        <a href="<?php echo esc_url(explorexr_get_premium_upgrade_url()); ?>" class="button button-primary button-hero" target="_blank">
                             Get Premium Now
                         </a>
-                        <a href="<?php echo esc_url(expoxr_get_premium_upgrade_url()); ?>demo" class="button button-secondary" target="_blank">
+                        <a href="<?php echo esc_url(explorexr_get_premium_upgrade_url()); ?>demo" class="button button-secondary" target="_blank">
                             View Live Demo
                         </a>
                     </div>
@@ -306,6 +306,9 @@ function expoxr_premium_upgrade_page() {
             </section>
         </div>
     </div>
+    
+    <!-- ExploreXR Footer -->
+    <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/admin-footer.php'; ?>
     <?php
 }
 

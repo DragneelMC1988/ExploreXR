@@ -1,13 +1,13 @@
 /**
- * ExpoXR Model Viewer Guard
+ * ExploreXR Model Viewer Guard
  * Prevents duplicate registration of model-viewer custom element
  */
 (function() {
     'use strict';
     
     // Set a global flag to track model-viewer registration
-    if (!window.EXPOXR_MODEL_VIEWER_LOADED) {
-        window.EXPOXR_MODEL_VIEWER_LOADED = {
+    if (!window.explorexr_mODEL_VIEWER_LOADED) {
+        window.explorexr_mODEL_VIEWER_LOADED = {
             registered: false,
             version: null,
             loadTime: null,
@@ -17,17 +17,17 @@
     
     // Check if model-viewer is already registered
     if (window.customElements && window.customElements.get('model-viewer')) {
-        console.log('[ExpoXR Guard] model-viewer already registered, preventing duplicate load');
+        console.log('[ExploreXR Guard] model-viewer already registered, preventing duplicate load');
         
         // Update our tracking object
-        window.EXPOXR_MODEL_VIEWER_LOADED.registered = true;
-        window.EXPOXR_MODEL_VIEWER_LOADED.loadTime = window.EXPOXR_MODEL_VIEWER_LOADED.loadTime || new Date().toISOString();
+        window.explorexr_mODEL_VIEWER_LOADED.registered = true;
+        window.explorexr_mODEL_VIEWER_LOADED.loadTime = window.explorexr_mODEL_VIEWER_LOADED.loadTime || new Date().toISOString();
         
         // Monkey patch any future attempts to define model-viewer
         const originalDefine = window.customElements.define;
         window.customElements.define = function(name, constructor, options) {
             if (name === 'model-viewer') {
-                console.warn('[ExpoXR Guard] Blocked attempt to redefine model-viewer custom element');
+                console.warn('[ExploreXR Guard] Blocked attempt to redefine model-viewer custom element');
                 return; // Silently block the redefinition
             }
             return originalDefine.call(this, name, constructor, options);
@@ -37,29 +37,29 @@
     }
     
     // Monkey patch customElements.define to prevent duplicate model-viewer registration
-    if (window.customElements && !window.EXPOXR_MODEL_VIEWER_PATCHED) {
+    if (window.customElements && !window.explorexr_mODEL_VIEWER_PATCHED) {
         const originalDefine = window.customElements.define;
         
         window.customElements.define = function(name, constructor, options) {
             if (name === 'model-viewer') {
-                if (window.EXPOXR_MODEL_VIEWER_LOADED.registered) {
-                    console.warn('[ExpoXR Guard] Blocked attempt to redefine model-viewer custom element');
+                if (window.explorexr_mODEL_VIEWER_LOADED.registered) {
+                    console.warn('[ExploreXR Guard] Blocked attempt to redefine model-viewer custom element');
                     return; // Silently block the redefinition
                 } else {
                     // This is the first registration
-                    window.EXPOXR_MODEL_VIEWER_LOADED.registered = true;
-                    window.EXPOXR_MODEL_VIEWER_LOADED.loadTime = new Date().toISOString();
-                    window.EXPOXR_MODEL_VIEWER_LOADED.source = document.currentScript ? document.currentScript.src : 'unknown';
+                    window.explorexr_mODEL_VIEWER_LOADED.registered = true;
+                    window.explorexr_mODEL_VIEWER_LOADED.loadTime = new Date().toISOString();
+                    window.explorexr_mODEL_VIEWER_LOADED.source = document.currentScript ? document.currentScript.src : 'unknown';
                     
                     try {
-                        console.log('[ExpoXR Guard] Registering model-viewer for the first time');
+                        console.log('[ExploreXR Guard] Registering model-viewer for the first time');
                         return originalDefine.call(this, name, constructor, options);
                     } catch (e) {
-                        console.error('[ExpoXR Guard] Error during model-viewer registration:', e);
+                        console.error('[ExploreXR Guard] Error during model-viewer registration:', e);
                         // If registration failed but we didn't detect it was already registered,
                         // it might be a different error, so set registered back to false
                         if (!e.message.includes('already been used')) {
-                            window.EXPOXR_MODEL_VIEWER_LOADED.registered = false;
+                            window.explorexr_mODEL_VIEWER_LOADED.registered = false;
                         }
                         throw e; // Re-throw the error for other handlers
                     }
@@ -70,7 +70,7 @@
             return originalDefine.call(this, name, constructor, options);
         };
         
-        window.EXPOXR_MODEL_VIEWER_PATCHED = true;
+        window.explorexr_mODEL_VIEWER_PATCHED = true;
     }
     
     // Set up error handler to catch and suppress duplicate registration errors
@@ -83,14 +83,14 @@
              (message.includes('Failed to execute \'define\' on \'CustomElementRegistry\'') && 
               message.includes('model-viewer')))) {
             
-            console.warn('[ExpoXR Guard] Suppressed model-viewer registration error:', message);
+            console.warn('[ExploreXR Guard] Suppressed model-viewer registration error:', message);
             
             // Update our tracking object
-            window.EXPOXR_MODEL_VIEWER_LOADED.registered = true;
+            window.explorexr_mODEL_VIEWER_LOADED.registered = true;
             
             // Check if model-viewer is actually available and log status
             const isAvailable = !!(window.customElements && window.customElements.get('model-viewer'));
-            console.log(`[ExpoXR Guard] model-viewer availability: ${isAvailable ? 'YES' : 'NO'}`);
+            console.log(`[ExploreXR Guard] model-viewer availability: ${isAvailable ? 'YES' : 'NO'}`);
             
             // Prevent the error from propagating
             return true;

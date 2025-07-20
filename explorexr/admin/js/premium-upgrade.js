@@ -31,7 +31,7 @@
         });
         
         // Add hover effects to premium features
-        $('.expoxr-premium-card').hover(
+        $('.explorexr-premium-card').hover(
             function() {
                 $(this).addClass('premium-highlight');
             },
@@ -55,7 +55,7 @@
         });
         
         // Handle addon card clicks in edit model page
-        $(document).on('click', '.expoxr-free-version .addon-card', function(e) {
+        $(document).on('click', '.explorexr-free-version .addon-card', function(e) {
             e.preventDefault();
             
             var addonName = $(this).find('h3').text() || 'Premium Addon';
@@ -95,10 +95,10 @@
         var modalContent = getPremiumModalContent(feature, featureName);
         
         // Remove existing modal
-        $('#expoxr-premium-modal').remove();
+        $('#explorexr-premium-modal').remove();
         
         // Create modal
-        var modal = $('<div id="expoxr-premium-modal" class="expoxr-modal-overlay">' + modalContent + '</div>');
+        var modal = $('<div id="explorexr-premium-modal" class="explorexr-modal-overlay">' + modalContent + '</div>');
         
         $('body').append(modal);
         
@@ -108,7 +108,7 @@
         }, 10);
         
         // Handle modal interactions
-        modal.on('click', '.modal-close, .expoxr-modal-overlay', function(e) {
+        modal.on('click', '.modal-close, .explorexr-modal-overlay', function(e) {
             if (e.target === this) {
                 closePremiumModal();
             }
@@ -223,7 +223,7 @@
         var currentFeature = features[feature] || features['general'];
         
         return `
-            <div class="expoxr-modal-content">
+            <div class="explorexr-modal-content">
                 <div class="modal-header">
                     <div class="feature-icon">${currentFeature.icon}</div>
                     <h2>${currentFeature.title}</h2>
@@ -246,7 +246,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="${expoxr_admin.premium_upgrade_url || '#'}" class="premium-upgrade-cta" target="_blank">
+                    <a href="${explorexr_admin.premium_upgrade_url || '#'}" class="premium-upgrade-cta" target="_blank">
                         Upgrade to Premium
                     </a>
                     <p class="guarantee">30-day money-back guarantee</p>
@@ -259,9 +259,9 @@
      * Close premium modal
      */
     function closePremiumModal() {
-        $('#expoxr-premium-modal').removeClass('show');
+        $('#explorexr-premium-modal').removeClass('show');
         setTimeout(function() {
-            $('#expoxr-premium-modal').remove();
+            $('#explorexr-premium-modal').remove();
         }, 300);
     }
     
@@ -269,10 +269,10 @@
      * Handle notice dismissal
      */
     function handleNoticeDismissal() {
-        $(document).on('click', '.expoxr-premium-notice .notice-dismiss', function() {
-            $.post(expoxr_premium.ajax_url, {
-                action: 'expoxr_dismiss_premium_notice',
-                nonce: expoxr_premium.dismiss_nonce
+        $(document).on('click', '.explorexr-premium-notice .notice-dismiss', function() {
+            $.post(explorexr_premium.ajax_url, {
+                action: 'explorexr_dismiss_premium_notice',
+                nonce: explorexr_premium.dismiss_nonce
             });
         });
     }
@@ -324,10 +324,10 @@
 
 // CSS for modal and premium features
 jQuery(document).ready(function($) {
-    if (!$('#expoxr-premium-styles').length) {
+    if (!$('#explorexr-premium-styles').length) {
         $('head').append(`
-            <style id="expoxr-premium-styles">
-                .expoxr-modal-overlay {
+            <style id="explorexr-premium-styles">
+                .explorexr-modal-overlay {
                     position: fixed;
                     top: 0;
                     left: 0;
@@ -342,11 +342,11 @@ jQuery(document).ready(function($) {
                     transition: opacity 0.3s ease;
                 }
                 
-                .expoxr-modal-overlay.show {
+                .explorexr-modal-overlay.show {
                     opacity: 1;
                 }
                 
-                .expoxr-modal-content {
+                .explorexr-modal-content {
                     background: white;
                     border-radius: 12px;
                     max-width: 500px;
@@ -358,7 +358,7 @@ jQuery(document).ready(function($) {
                     transition: transform 0.3s ease;
                 }
                 
-                .expoxr-modal-overlay.show .expoxr-modal-content {
+                .explorexr-modal-overlay.show .explorexr-modal-content {
                     transform: scale(1);
                 }
                 

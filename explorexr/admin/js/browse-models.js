@@ -1,5 +1,5 @@
 /**
- * ExpoXR Admin - Browse Models Page
+ * ExploreXR Admin - Browse Models Page
  * Handles search, sorting, and model interactions on the browse models page
  */
 jQuery(document).ready(function($) {    // Delete model functionality
@@ -13,7 +13,7 @@ jQuery(document).ready(function($) {    // Delete model functionality
             modelId = urlParams.get('model_id');
         }
         const modelName = $(this).data('model-name');
-        const $modelCard = $(this).closest('.expoxr-model-card');
+        const $modelCard = $(this).closest('.explorexr-model-card');
           // Show confirmation dialog
         if (confirm(`Are you sure you want to delete "${modelName}"? This action cannot be undone.`)) {
             // Validate model ID is available
@@ -29,23 +29,23 @@ jQuery(document).ready(function($) {    // Delete model functionality
             if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
                 console.log('Delete request:', {
                     model_id: modelId,
-                    security_present: !!expoxr_admin.nonce,
-                    ajax_url: expoxr_admin.ajax_url
+                    security_present: !!explorexr_admin.nonce,
+                    ajax_url: explorexr_admin.ajax_url
                 });
             }
             
             // Send delete request
             $.ajax({
-                url: expoxr_admin.ajax_url,
+                url: explorexr_admin.ajax_url,
                 type: 'POST',
                 data: {
-                    action: 'expoxr_delete_model',
+                    action: 'explorexr_delete_model',
                     model_id: modelId,
-                    security: expoxr_admin.nonce
+                    security: explorexr_admin.nonce
                 },                success: function(response) {
                     if (response.success) {
                         // Show success notification
-                        const notification = $('<div id="expoxr-deleted-notification" style="position: fixed; bottom: 20px; right: 20px; background-color: #2271b1; color: white; padding: 10px 20px; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 9999;">' +
+                        const notification = $('<div id="explorexr-deleted-notification" style="position: fixed; bottom: 20px; right: 20px; background-color: #2271b1; color: white; padding: 10px 20px; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 9999;">' +
                             '<p style="margin: 0;"><span class="dashicons dashicons-yes" style="margin-right: 8px;"></span> ' + response.data.message + '</p>' +
                         '</div>').appendTo('body').hide().fadeIn(300);
                         
@@ -54,13 +54,13 @@ jQuery(document).ready(function($) {    // Delete model functionality
                             $(this).remove();
                             
                             // Check if there are no more models
-                            if ($('.expoxr-model-card').length === 0) {
+                            if ($('.explorexr-model-card').length === 0) {
                                 // Replace grid with empty message
-                                $('.expoxr-models-grid').replaceWith(
-                                    '<div class="expoxr-alert info">' +
+                                $('.explorexr-models-grid').replaceWith(
+                                    '<div class="explorexr-alert info">' +
                                     '<span class="dashicons dashicons-info"></span>' +
                                     '<div>' +
-                                    '<p>You don\'t have any 3D models yet. <a href="' + expoxr_admin.create_model_url + '">Create your first 3D model</a>.</p>' +
+                                    '<p>You don\'t have any 3D models yet. <a href="' + explorexr_admin.create_model_url + '">Create your first 3D model</a>.</p>' +
                                     '</div>' +
                                     '</div>'
                                 );
@@ -111,7 +111,7 @@ jQuery(document).ready(function($) {    // Delete model functionality
         const searchTerm = $(this).val().toLowerCase();
         
         // Search through all model cards
-        $('.expoxr-model-card').each(function() {
+        $('.explorexr-model-card').each(function() {
             const modelTitle = $(this).data('title').toLowerCase();
             
             // Show/hide based on search match
@@ -126,8 +126,8 @@ jQuery(document).ready(function($) {    // Delete model functionality
     // Sorting functionality
     $('#sort-models').on('change', function() {
         const sortValue = $(this).val();
-        const $modelsGrid = $('.expoxr-models-grid');
-        const $models = $('.expoxr-model-card').toArray();
+        const $modelsGrid = $('.explorexr-models-grid');
+        const $models = $('.explorexr-model-card').toArray();
         
         // Sort the models based on the selected option
         $models.sort(function(a, b) {
@@ -159,7 +159,7 @@ jQuery(document).ready(function($) {    // Delete model functionality
         // Use Clipboard API to copy text
         navigator.clipboard.writeText(shortcode).then(function() {
             // Show success notification
-            const notification = $('#expoxr-copied-notification');
+            const notification = $('#explorexr-copied-notification');
             notification.fadeIn(300);
             
             // Hide notification after 2 seconds
@@ -176,8 +176,8 @@ jQuery(document).ready(function($) {    // Delete model functionality
         const posterUrl = $(this).data('poster-url');
         
         // Update model viewer source and title
-        const modelViewer = $('#expoxr-model-viewer');
-        const modalTitle = $('#expoxr-model-title');
+        const modelViewer = $('#explorexr-model-viewer');
+        const modalTitle = $('#explorexr-model-title');
         
         console.log('Loading 3D model from URL:', modelUrl);
         
@@ -208,22 +208,22 @@ jQuery(document).ready(function($) {    // Delete model functionality
         }
         
         // Show modal
-        $('#expoxr-model-modal').css('display', 'block');
+        $('#explorexr-model-modal').css('display', 'block');
     });
     
     // Close modal when clicking on X
-    $('.expoxr-model-close').on('click', function() {
-        $('#expoxr-model-modal').css('display', 'none');
-        $('#expoxr-model-viewer').attr('src', '');
-        $('#expoxr-model-viewer').removeAttr('poster');
+    $('.explorexr-model-close').on('click', function() {
+        $('#explorexr-model-modal').css('display', 'none');
+        $('#explorexr-model-viewer').attr('src', '');
+        $('#explorexr-model-viewer').removeAttr('poster');
     });
     
     // Close modal when clicking outside of modal content
     $(window).on('click', function(e) {
-        if ($(e.target).hasClass('expoxr-model-modal')) {
-            $('#expoxr-model-modal').css('display', 'none');
-            $('#expoxr-model-viewer').attr('src', '');
-            $('#expoxr-model-viewer').removeAttr('poster');
+        if ($(e.target).hasClass('explorexr-model-modal')) {
+            $('#explorexr-model-modal').css('display', 'none');
+            $('#explorexr-model-viewer').attr('src', '');
+            $('#explorexr-model-viewer').removeAttr('poster');
         }
     });
 });

@@ -1,5 +1,5 @@
 /**
- * ExpoXR Model Size Metabox JavaScript
+ * ExploreXR Model Size Metabox JavaScript
  *
  * Handles tab functionality and media uploader for the model size metabox
  */
@@ -8,16 +8,16 @@ jQuery(document).ready(function($) {
     'use strict';
     
     // Tab functionality
-    $('.expoxr-tab').on('click', function() {
+    $('.explorexr-tab').on('click', function() {
         const tabId = $(this).data('tab');
-        const tabGroup = $(this).closest('.expoxr-tabs').parent();
+        const tabGroup = $(this).closest('.explorexr-tabs').parent();
         
         // Update active tab
-        tabGroup.find('.expoxr-tab').removeClass('active');
+        tabGroup.find('.explorexr-tab').removeClass('active');
         $(this).addClass('active');
         
         // Show the selected tab content
-        tabGroup.find('.expoxr-tab-content').removeClass('active');
+        tabGroup.find('.explorexr-tab-content').removeClass('active');
         tabGroup.find(`#${tabId}`).addClass('active');
         
         // Update hidden input values for form submission
@@ -31,16 +31,16 @@ jQuery(document).ready(function($) {
     });
     
     // Device tab functionality
-    $('.expoxr-device-tab').on('click', function() {
+    $('.explorexr-device-tab').on('click', function() {
         const deviceId = $(this).data('device');
-        const deviceGroup = $(this).closest('.expoxr-device-tabs').parent();
+        const deviceGroup = $(this).closest('.explorexr-device-tabs').parent();
         
         // Update active device tab
-        deviceGroup.find('.expoxr-device-tab').removeClass('active');
+        deviceGroup.find('.explorexr-device-tab').removeClass('active');
         $(this).addClass('active');
         
         // Show the selected device content
-        deviceGroup.find('.expoxr-device-content').removeClass('active');
+        deviceGroup.find('.explorexr-device-content').removeClass('active');
         deviceGroup.find(`#${deviceId}-size`).addClass('active');
     });    // When a predefined size is selected, update the width/height fields and disable custom size field
     $('input[name="viewer_size"][value!="custom"]').on('change', function() {
@@ -80,12 +80,12 @@ jQuery(document).ready(function($) {
     });
     
     // When custom size tab is clicked, enable the custom size field
-    $('.expoxr-tab[data-tab="custom-sizes"]').on('click', function() {
+    $('.explorexr-tab[data-tab="custom-sizes"]').on('click', function() {
         $('#custom_size_field').prop('disabled', false);
     });
     
     // Initialize the WordPress Media Uploader for the poster image
-    $('#expoxr-select-poster').on('click', function(e) {
+    $('#explorexr-select-poster').on('click', function(e) {
         e.preventDefault();
         
         const frame = wp.media({
@@ -102,7 +102,7 @@ jQuery(document).ready(function($) {
             $('#model_poster_id').val(attachment.id);
             $('#model_poster_url').val(attachment.url);
             
-            const previewElement = $('#expoxr-poster-preview');
+            const previewElement = $('#explorexr-poster-preview');
             previewElement.show().find('img').attr('src', attachment.url);
         });
         
@@ -111,7 +111,7 @@ jQuery(document).ready(function($) {
     
     // Initialize the display size form state on page load
     function initializeDisplaySizeState() {
-        const activeTab = $('.expoxr-tab.active[data-tab]').data('tab');
+        const activeTab = $('.explorexr-tab.active[data-tab]').data('tab');
         const selectedPredefinedSize = $('input[name="viewer_size"]:checked').val();
         
         if (activeTab === 'predefined-sizes' && selectedPredefinedSize && selectedPredefinedSize !== 'custom') {

@@ -2,7 +2,7 @@
 /**
  * Template for displaying large models with a load button.
  * 
- * @package ExpoXR
+ * @package ExploreXR
  */
 
 // Exit if accessed directly
@@ -22,8 +22,8 @@ if (!defined('ABSPATH')) {
  */
 ?>
 
-<div class="expoxr-model-container" style="width: <?php echo esc_attr($width); ?>; height: <?php echo esc_attr($height); ?>; position: relative;">
-    <div class="expoxr-model-poster" id="<?php echo esc_attr($model_instance_id); ?>-poster" style="width: 100%; height: 100%; position: relative;">
+<div class="ExploreXR-model-container" style="width: <?php echo esc_attr($width); ?>; height: <?php echo esc_attr($height); ?>; position: relative;">
+    <div class="ExploreXR-model-poster" id="<?php echo esc_attr($model_instance_id); ?>-poster" style="width: 100%; height: 100%; position: relative;">
         <?php if (!empty($model_poster_id)) : ?>
             <?php 
             // Use wp_get_attachment_image for better WordPress compliance
@@ -34,7 +34,7 @@ if (!defined('ABSPATH')) {
             ?>
         <?php elseif (!empty($model_poster)) : ?>
             <!-- Fallback for direct URL when attachment ID is not available -->
-            <div class="expoxr-model-poster-wrapper">
+            <div class="ExploreXR-model-poster-wrapper">
                 <?php
                 // phpcs:disable PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage
                 printf(
@@ -47,7 +47,7 @@ if (!defined('ABSPATH')) {
                 ?>
             </div>
         <?php endif; ?>
-        <button class="expoxr-load-model-btn" id="<?php echo esc_attr($model_instance_id); ?>-btn" style="position: relative; z-index: 10;">
+        <button class="ExploreXR-load-model-btn" id="<?php echo esc_attr($model_instance_id); ?>-btn" style="position: relative; z-index: 10;">
             <?php echo esc_html__('Load 3D Model', 'explorexr'); ?>
         </button>
         
@@ -66,7 +66,7 @@ if (!defined('ABSPATH')) {
                 
                 function loadModel(e) {
                     e.stopPropagation(); // Prevent event bubbling
-                    loadExpoXRModel('<?php echo esc_js($model_instance_id); ?>', '<?php echo esc_js($model_file); ?>', <?php echo wp_json_encode($model_attributes_json); ?>);
+                    loadExploreXRModel('<?php echo esc_js($model_instance_id); ?>', '<?php echo esc_js($model_file); ?>', <?php echo wp_json_encode($model_attributes_json); ?>);
                 }
             });
         </script>
@@ -78,7 +78,7 @@ if (!defined('ABSPATH')) {
     <?php if (isset($model_attributes['ar']) && !empty($model_attributes['ar'])) : ?>
     <script>
         // Add AR button customization after model is loaded
-        document.addEventListener('ExpoXRModelLoaded', function(event) {
+        document.addEventListener('ExploreXRModelLoaded', function(event) {
             if (event.detail.instanceId === '<?php echo esc_js($model_instance_id); ?>') {
                 const modelViewer = document.querySelector('#<?php echo esc_js($model_instance_id); ?>-viewer model-viewer');
                 if (modelViewer) {
@@ -86,7 +86,7 @@ if (!defined('ABSPATH')) {
                     // Add custom AR button with image
                     const arButton = document.createElement('button');
                     arButton.setAttribute('slot', 'ar-button');
-                    arButton.className = 'expoxr-ar-button';
+                    arButton.className = 'ExploreXR-ar-button';
                     
                     const arButtonImg = document.createElement('img');
                     arButtonImg.src = '<?php echo esc_js($model_attributes['ar-button-image']); ?>';
@@ -98,7 +98,7 @@ if (!defined('ABSPATH')) {
                     // Add custom AR button with text
                     const arButton = document.createElement('button');
                     arButton.setAttribute('slot', 'ar-button');
-                    arButton.className = 'expoxr-ar-button';
+                    arButton.className = 'ExploreXR-ar-button';
                     arButton.textContent = '<?php echo esc_js($model_attributes['ar-button-text']); ?>';
                     
                     modelViewer.appendChild(arButton);

@@ -1,4 +1,4 @@
-// ExpoXR model viewer error handler
+// ExploreXR model viewer error handler
 // This file contains error handling code for the model viewer
 
 /**

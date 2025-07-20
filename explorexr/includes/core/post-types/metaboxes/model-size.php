@@ -2,7 +2,7 @@
 /**
  * Model Size Metabox
  *
- * @package ExpoXR
+  * @package ExploreXR
  */
 
 // Exit if accessed directly
@@ -18,87 +18,87 @@ require_once dirname(__FILE__) . '/model-size-enqueue.php';
  *
  * @param WP_Post $post Current post object
  */
-function expoxr_edit_model_size_box($post) {
-    $viewer_size = get_post_meta($post->ID, '_expoxr_viewer_size', true);
-    $viewer_width = get_post_meta($post->ID, '_expoxr_viewer_width', true) ?: '100%';
-    $viewer_height = get_post_meta($post->ID, '_expoxr_viewer_height', true) ?: '500px';
-    $poster_url = get_post_meta($post->ID, '_expoxr_model_poster', true);
-    $poster_id = get_post_meta($post->ID, '_expoxr_model_poster_id', true);
+function explorexr_edit_model_size_box($post) {
+    $viewer_size = get_post_meta($post->ID, '_explorexr_viewer_size', true);
+    $viewer_width = get_post_meta($post->ID, '_explorexr_viewer_width', true) ?: '100%';
+    $viewer_height = get_post_meta($post->ID, '_explorexr_viewer_height', true) ?: '500px';
+    $poster_url = get_post_meta($post->ID, '_explorexr_model_poster', true);
+    $poster_id = get_post_meta($post->ID, '_explorexr_model_poster_id', true);
     
     // Get tablet and mobile specific sizes if they exist
-    $tablet_viewer_width = get_post_meta($post->ID, '_expoxr_tablet_viewer_width', true) ?: '';
-    $tablet_viewer_height = get_post_meta($post->ID, '_expoxr_tablet_viewer_height', true) ?: '';
-    $mobile_viewer_width = get_post_meta($post->ID, '_expoxr_mobile_viewer_width', true) ?: '';
-    $mobile_viewer_height = get_post_meta($post->ID, '_expoxr_mobile_viewer_height', true) ?: '';
+    $tablet_viewer_width = get_post_meta($post->ID, '_explorexr_tablet_viewer_width', true) ?: '';
+    $tablet_viewer_height = get_post_meta($post->ID, '_explorexr_tablet_viewer_height', true) ?: '';
+    $mobile_viewer_width = get_post_meta($post->ID, '_explorexr_mobile_viewer_width', true) ?: '';
+    $mobile_viewer_height = get_post_meta($post->ID, '_explorexr_mobile_viewer_height', true) ?: '';
     
     $size_is_custom = empty($viewer_size) || $viewer_size === 'custom';
     ?>
     <div>
-        <div class="expoxr-card">
-            <div class="expoxr-tabs">
-                <button type="button" class="expoxr-tab <?php echo !$size_is_custom ? 'active' : ''; ?>" data-tab="predefined-sizes">Predefined Sizes</button>
-                <button type="button" class="expoxr-tab <?php echo esc_attr($size_is_custom ? 'active' : ''); ?>" data-tab="custom-sizes">Custom Sizes</button>
+        <div class="explorexr-card">
+            <div class="explorexr-tabs">
+                <button type="button" class="explorexr-tab <?php echo !$size_is_custom ? 'active' : ''; ?>" data-tab="predefined-sizes">Predefined Sizes</button>
+                <button type="button" class="explorexr-tab <?php echo esc_attr($size_is_custom ? 'active' : ''); ?>" data-tab="custom-sizes">Custom Sizes</button>
             </div>
             
-            <div class="expoxr-tab-content <?php echo !$size_is_custom ? 'active' : ''; ?>" id="predefined-sizes">
-                <div class="expoxr-size-options">
-                    <label class="expoxr-size-option">
+            <div class="explorexr-tab-content <?php echo !$size_is_custom ? 'active' : ''; ?>" id="predefined-sizes">
+                <div class="explorexr-size-options">
+                    <label class="explorexr-size-option">
                         <input type="radio" name="viewer_size" value="small" <?php checked($viewer_size, 'small'); ?>>
-                        <div class="expoxr-size-preview">
-                            <div class="expoxr-size-box" style="width: 60px; height: 60px;"></div>
+                        <div class="explorexr-size-preview">
+                            <div class="explorexr-size-box" style="width: 60px; height: 60px;"></div>
                             <span>Small (300x300px)</span>
                         </div>
                     </label>
                     
-                    <label class="expoxr-size-option">
+                    <label class="explorexr-size-option">
                         <input type="radio" name="viewer_size" value="medium" <?php checked($viewer_size, 'medium'); ?>>
-                        <div class="expoxr-size-preview">
-                            <div class="expoxr-size-box" style="width: 80px; height: 80px;"></div>
+                        <div class="explorexr-size-preview">
+                            <div class="explorexr-size-box" style="width: 80px; height: 80px;"></div>
                             <span>Medium (500x500px)</span>
                         </div>
                     </label>
                     
-                    <label class="expoxr-size-option">
+                    <label class="explorexr-size-option">
                         <input type="radio" name="viewer_size" value="large" <?php checked($viewer_size, 'large'); ?>>
-                        <div class="expoxr-size-preview">
-                            <div class="expoxr-size-box" style="width: 100px; height: 80px;"></div>
+                        <div class="explorexr-size-preview">
+                            <div class="explorexr-size-box" style="width: 100px; height: 80px;"></div>
                             <span>Large (800x600px)</span>
                         </div>
                     </label>
                     
-                    <label class="expoxr-size-option">
+                    <label class="explorexr-size-option">
                         <input type="radio" name="viewer_size" value="full" <?php checked($viewer_size, 'full'); ?>>
-                        <div class="expoxr-size-preview">
-                            <div class="expoxr-size-box" style="width: 120px; height: 90px;"></div>
+                        <div class="explorexr-size-preview">
+                            <div class="explorexr-size-box" style="width: 120px; height: 90px;"></div>
                             <span>Full Screen (100vw × 100vh)</span>
                         </div>
                     </label>
                 </div>
             </div>
             
-            <div class="expoxr-tab-content <?php echo esc_attr($size_is_custom ? 'active' : ''); ?>" id="custom-sizes">
-                <div class="expoxr-device-tabs">
-                    <button type="button" class="expoxr-device-tab active" data-device="desktop">
+            <div class="explorexr-tab-content <?php echo esc_attr($size_is_custom ? 'active' : ''); ?>" id="custom-sizes">
+                <div class="explorexr-device-tabs">
+                    <button type="button" class="explorexr-device-tab active" data-device="desktop">
                         <span class="dashicons dashicons-desktop"></span> Desktop
                     </button>
-                    <button type="button" class="expoxr-device-tab" data-device="tablet">
+                    <button type="button" class="explorexr-device-tab" data-device="tablet">
                         <span class="dashicons dashicons-tablet"></span> Tablet
                     </button>
-                    <button type="button" class="expoxr-device-tab" data-device="mobile">
+                    <button type="button" class="explorexr-device-tab" data-device="mobile">
                         <span class="dashicons dashicons-smartphone"></span> Mobile
                     </button>
                 </div>
                 
-                <div class="expoxr-device-content active" id="desktop-size">
-                    <div class="expoxr-form-group">
+                <div class="explorexr-device-content active" id="desktop-size">
+                    <div class="explorexr-form-group">
                         <h3>Desktop Size</h3>
-                        <div class="expoxr-form-row">
+                        <div class="explorexr-form-row">
                             <label for="viewer_width">Width:</label>
                             <input type="text" name="viewer_width" id="viewer_width" value="<?php echo esc_attr($viewer_width); ?>" class="small-text">
                             <span class="description">(e.g., 500px, 100%, etc.)</span>
                         </div>
                         
-                        <div class="expoxr-form-row">
+                        <div class="explorexr-form-row">
                             <label for="viewer_height">Height:</label>
                             <input type="text" name="viewer_height" id="viewer_height" value="<?php echo esc_attr($viewer_height); ?>" class="small-text">
                             <span class="description">(e.g., 400px, 600px, etc.)</span>
@@ -106,17 +106,17 @@ function expoxr_edit_model_size_box($post) {
                     </div>
                 </div>
                 
-                <div class="expoxr-device-content" id="tablet-size">
-                    <div class="expoxr-form-group">
+                <div class="explorexr-device-content" id="tablet-size">
+                    <div class="explorexr-form-group">
                         <h3>Tablet Size <span class="optional">(optional)</span></h3>
                         <p class="description">If left empty, desktop size will be used for tablet devices.</p>
-                        <div class="expoxr-form-row">
+                        <div class="explorexr-form-row">
                             <label for="tablet_viewer_width">Width:</label>
                             <input type="text" name="tablet_viewer_width" id="tablet_viewer_width" value="<?php echo esc_attr($tablet_viewer_width); ?>" class="small-text">
                             <span class="description">(e.g., 500px, 100%, etc.)</span>
                         </div>
                         
-                        <div class="expoxr-form-row">
+                        <div class="explorexr-form-row">
                             <label for="tablet_viewer_height">Height:</label>
                             <input type="text" name="tablet_viewer_height" id="tablet_viewer_height" value="<?php echo esc_attr($tablet_viewer_height); ?>" class="small-text">
                             <span class="description">(e.g., 400px, 500px, etc.)</span>
@@ -124,17 +124,17 @@ function expoxr_edit_model_size_box($post) {
                     </div>
                 </div>
                 
-                <div class="expoxr-device-content" id="mobile-size">
-                    <div class="expoxr-form-group">
+                <div class="explorexr-device-content" id="mobile-size">
+                    <div class="explorexr-form-group">
                         <h3>Mobile Size <span class="optional">(optional)</span></h3>
                         <p class="description">If left empty, desktop size will be used for mobile devices.</p>
-                        <div class="expoxr-form-row">
+                        <div class="explorexr-form-row">
                             <label for="mobile_viewer_width">Width:</label>
                             <input type="text" name="mobile_viewer_width" id="mobile_viewer_width" value="<?php echo esc_attr($mobile_viewer_width); ?>" class="small-text">
                             <span class="description">(e.g., 100%, 300px, etc.)</span>
                         </div>
                         
-                        <div class="expoxr-form-row">
+                        <div class="explorexr-form-row">
                             <label for="mobile_viewer_height">Height:</label>
                             <input type="text" name="mobile_viewer_height" id="mobile_viewer_height" value="<?php echo esc_attr($mobile_viewer_height); ?>" class="small-text">
                             <span class="description">(e.g., 300px, 400px, etc.)</span>
@@ -146,15 +146,15 @@ function expoxr_edit_model_size_box($post) {
             </div>
         </div>
 
-        <div class="expoxr-poster-section">
+        <div class="explorexr-poster-section">
             <h4>Model Loading Poster</h4>
             <p class="description">This image will be shown while the 3D model is loading. A poster image is especially important for large models when using the "Show Poster with Load Button" option.</p>
             
-            <div class="expoxr-poster-options">
+            <div class="explorexr-poster-options">
                 <?php if ($poster_url) : ?>
-                    <div class="expoxr-current-poster">
+                    <div class="explorexr-current-poster">
                         <h5>Current Poster:</h5>
-                        <div class="expoxr-current-poster-container">
+                        <div class="explorexr-current-poster-container">
                             <?php
                             if (!empty($poster_id)) {
                                 echo wp_get_attachment_image($poster_id, 'medium', false, array('alt' => esc_attr__('Model poster', 'explorexr')));
@@ -177,13 +177,13 @@ function expoxr_edit_model_size_box($post) {
                     </div>
                 <?php endif; ?>
                 
-                <div class="expoxr-tabs">
-                    <button type="button" class="expoxr-tab active" data-tab="upload-poster">Upload New Image</button>
-                    <button type="button" class="expoxr-tab" data-tab="library-poster">Media Library</button>
+                <div class="explorexr-tabs">
+                    <button type="button" class="explorexr-tab active" data-tab="upload-poster">Upload New Image</button>
+                    <button type="button" class="explorexr-tab" data-tab="library-poster">Media Library</button>
                 </div>
                 
-                <div class="expoxr-tab-content active" id="upload-poster">
-                    <div class="expoxr-form-group">
+                <div class="explorexr-tab-content active" id="upload-poster">
+                    <div class="explorexr-form-group">
                         <input type="hidden" name="poster_method" value="upload" id="poster_method_input">
                         <label for="model_poster">Select Image File</label>
                         <input name="model_poster" type="file" id="model_poster" accept="image/*" />
@@ -191,21 +191,21 @@ function expoxr_edit_model_size_box($post) {
                     </div>
                 </div>
                 
-                <div class="expoxr-tab-content" id="library-poster">
-                    <div class="expoxr-form-group">
+                <div class="explorexr-tab-content" id="library-poster">
+                    <div class="explorexr-form-group">
                         <input type="hidden" name="model_poster_id" id="model_poster_id" value="<?php echo esc_attr($poster_id); ?>">
-                        <div class="expoxr-input-group">
+                        <div class="explorexr-input-group">
                             <input type="text" name="model_poster_url" id="model_poster_url" value="<?php echo esc_attr($poster_url); ?>" readonly placeholder="No image selected">
-                            <button type="button" class="button" id="expoxr-select-poster">
+                            <button type="button" class="button" id="explorexr-select-poster">
                                 <span class="dashicons dashicons-admin-media"></span> Select Image
                             </button>
                         </div>
-                        <div id="expoxr-poster-preview" class="<?php echo empty($poster_url) ? 'hidden' : ''; ?>">
+                        <div id="explorexr-poster-preview" class="<?php echo empty($poster_url) ? 'hidden' : ''; ?>">
                             <?php if (!empty($poster_url)) : ?>
                                 <?php if (!empty($poster_id)) : ?>
                                     <?php echo wp_get_attachment_image($poster_id, 'medium', false, array('alt' => esc_attr__('Poster preview', 'explorexr'), 'loading' => 'lazy')); ?>
                                 <?php elseif (!empty($poster_url)) : ?>
-                                    <div class="expoxr-poster-wrapper">
+                                    <div class="explorexr-poster-wrapper">
                                         <?php
                                         // phpcs:disable PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage
                                         printf(
@@ -217,7 +217,6 @@ function expoxr_edit_model_size_box($post) {
                                         ?>
                                     </div>
                                 <?php endif; ?>
-                            <?php endif; ?>
                             <?php endif; ?>
                         </div>
                     </div>

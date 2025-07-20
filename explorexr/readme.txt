@@ -14,7 +14,32 @@ ExploreXR brings your website to life with interactive 3D models. Display GLB, G
 
 **Transform Your Website with Immersive 3D Content**
 
-ExploreXR is a powerful WordPress plugin that enables you to showcase interactive 3D models on your website with minimal effort. Using Google's Model Viewer technology, ExploreXR brings depth and engagement to your product displays, portfolios, educational content, and more.
+ExploreXR is a plugin for displaying 3D models on your website. Upload GLB/GLTF 3D models and embed them anywhere using simple shortcodes. The free version provides core 3D model display functionality with basic customization options.
+
+**🚀 Free Version Features:**
+
+- **3D Model Display** - Upload and display GLB/GLTF 3D models 
+- **Shortcode Integration** - Easy embedding with [explorexr] shortcode
+- **Basic Customization** - Control size, background, and display options
+- **Responsive Design** - Models adapt to different screen sizes
+- **Admin Interface** - Simple model management dashboard
+- **Progressive Loading** - Models load smoothly with indicators
+- **Cross-browser Support** - Works on modern browsers with WebGL
+
+**✨ Perfect for:**
+- Basic 3D model display needs
+- Simple product visualization
+- Educational content with 3D models
+- Portfolio showcasing 3D work
+- Small business websites
+- Personal projects and blogs
+
+**🎯 Want More? Upgrade to Premium for:**
+- Augmented Reality (AR) viewing on mobile devices
+- WooCommerce integration for product displays  
+- Elementor widget for visual page builders
+- Professional addon system
+- Priority support and updates
 
 Whether you're showcasing products for e-commerce, architectural designs, artwork, educational models, or manufacturing components — ExploreXR makes it simple with no coding required.
 
@@ -85,7 +110,7 @@ No! ExploreXR is designed to be user-friendly for everyone. You just need 3D mod
 Yes, ExploreXR is designed to work on all modern devices and browsers with WebGL support. For older browsers or devices without 3D support, you can configure fallback images.
 
 = Can visitors view models in AR (Augmented Reality)? =
-Yes! Models can be viewed in AR on compatible devices (most modern iOS and Android devices). The AR button appears automatically on compatible devices.
+AR viewing is available in ExploreXR Premium. The free version focuses on standard 3D model display in the browser.
 
 = Is ExploreXR compatible with my theme? =
 ExploreXR is designed to be compatible with any properly coded WordPress theme. The plugin includes responsive sizing options to ensure models look great in any layout.
@@ -108,7 +133,7 @@ Basic integration is available in the free version. Advanced features like the E
 3. Model browser with preview capabilities
 4. Shortcode configuration options
 5. Frontend display with controls
-6. Mobile view with AR capabilities
+6. Mobile view with 3D model display
 7. Settings page with customization options
 8. Loading options configuration
 
@@ -120,7 +145,7 @@ Basic integration is available in the free version. Advanced features like the E
 * SECURITY: Added comprehensive ABSPATH protection to all PHP files
 * SECURITY: Enhanced .htaccess protection for models directory
 * FIXED: PHP syntax error in uninstall.php that prevented proper cleanup
-* FIXED: Function prefixing - renamed sanitize_hex_color to expoxr_sanitize_hex_color
+* FIXED: Function prefixing - renamed sanitize_hex_color to ExploreXR_sanitize_hex_color
 * FIXED: Removed all inline CSS/JS from upgrade system for WordPress compliance
 * IMPROVED: Streamlined uninstall process - preserves user settings and models
 * IMPROVED: Enhanced script/style enqueueing with proper dependencies
@@ -129,10 +154,10 @@ Basic integration is available in the free version. Advanced features like the E
 * GPL: Verified all dependencies are GPL-compatible
 
 = 1.0.1 =
-* Fixed: AR support attributes removed from free version model-viewer tags
+* Fixed: Premium feature references removed from free version
 * Fixed: 3D model delete functionality - added missing AJAX handler
 * Fixed: Modal viewer now displays models at full container size
-* Fixed: Removed troubleshooting tips from model preview overlays
+* Fixed: Removed addon integration from free version interface
 * Improved: Enhanced security validation for model deletion
 * Improved: Better error handling for AJAX operations
 
@@ -203,4 +228,4 @@ ExploreXR is powered by:
 * WordPress API and best practices
 * Open source contributors
 
-Built with ❤️ by Ayal Othman from ExpoXR
+Built with ❤️ by Ayal Othman from ExploreXR

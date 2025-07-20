@@ -3,7 +3,7 @@
  * Redirector for Edit Links
  * Redirects standard WordPress edit URLs to our custom edit page
  * 
- * @package ExpoXR
+  * @package ExploreXR
  */
 
 // Exit if accessed directly
@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
  * @param string $context The context for the edit link
  * @return string The modified URL
  */
-function expoxr_custom_edit_link($url, $post_id, $context) {
+function explorexr_custom_edit_link($url, $post_id, $context) {
     // Ensure we have valid post ID
     if (empty($post_id)) {
         return $url;
@@ -27,9 +27,9 @@ function expoxr_custom_edit_link($url, $post_id, $context) {
     
     // Check if this is a 3D model post type and if the custom edit page function exists
     $post_type = get_post_type($post_id);
-    if ($post_type === 'expoxr_model' && function_exists('expoxr_edit_model_page')) {
+    if ($post_type === 'explorexr_model' && function_exists('explorexr_edit_model_page')) {
         // Create our custom edit URL
-        $custom_url = admin_url('admin.php?page=expoxr-edit-model&model_id=' . $post_id);
+        $custom_url = admin_url('admin.php?page=explorexr-edit-model&model_id=' . $post_id);
         
         // Return the custom URL
         return $custom_url;
@@ -38,12 +38,12 @@ function expoxr_custom_edit_link($url, $post_id, $context) {
     // Return the original URL for all other post types or if custom edit page doesn't exist
     return $url;
 }
-add_filter('get_edit_post_link', 'expoxr_custom_edit_link', 10, 3);
+add_filter('get_edit_post_link', 'explorexr_custom_edit_link', 10, 3);
 
 /**
  * Check for standard WordPress edit.php access and redirect if needed
  */
-function expoxr_redirect_standard_edit_page() {
+function explorexr_redirect_standard_edit_page() {
     global $pagenow, $typenow;
     
     // Check if we're on the post edit page and the post ID is set
@@ -56,9 +56,9 @@ function expoxr_redirect_standard_edit_page() {
         $post_type = get_post_type($post_id);
         
         // Check if this is a 3D model post type and if the custom edit page function exists
-        if ($post_type === 'expoxr_model' && function_exists('expoxr_edit_model_page')) {
+        if ($post_type === 'explorexr_model' && function_exists('explorexr_edit_model_page')) {
             // Create our custom edit URL
-            $redirect_url = admin_url('admin.php?page=expoxr-edit-model&model_id=' . $post_id);
+            $redirect_url = admin_url('admin.php?page=explorexr-edit-model&model_id=' . $post_id);
             
             // Make sure no output has been sent to the browser yet
             if (!headers_sent()) {
@@ -69,21 +69,21 @@ function expoxr_redirect_standard_edit_page() {
         }
     }
 }
-add_action('init', 'expoxr_redirect_standard_edit_page');
+add_action('init', 'explorexr_redirect_standard_edit_page');
 
 /**
  * Add a custom row action for edit links in the post list table
  */
-function expoxr_custom_row_actions($actions, $post) {
+function explorexr_custom_row_actions($actions, $post) {
     // Make sure $post is a valid object and has a post_type property
     if (!is_object($post) || !isset($post->post_type) || !isset($post->ID)) {
         return $actions;
     }
     
     // Check if this is a 3D model post type and if the custom edit page function exists
-    if ($post->post_type === 'expoxr_model' && function_exists('expoxr_edit_model_page')) {
+    if ($post->post_type === 'explorexr_model' && function_exists('explorexr_edit_model_page')) {
         // Create our custom edit URL
-        $custom_url = admin_url('admin.php?page=expoxr-edit-model&model_id=' . $post->ID);
+        $custom_url = admin_url('admin.php?page=explorexr-edit-model&model_id=' . $post->ID);
         
         // Replace the edit action with our custom URL
         if (isset($actions['edit'])) {
@@ -93,7 +93,7 @@ function expoxr_custom_row_actions($actions, $post) {
     
     return $actions;
 }
-add_filter('post_row_actions', 'expoxr_custom_row_actions', 10, 2);
+add_filter('post_row_actions', 'explorexr_custom_row_actions', 10, 2);
 
 
 

@@ -1,5 +1,5 @@
 /**
- * ExpoXR AR Integration JavaScript
+ * ExploreXR AR Integration JavaScript
  * 
  * Handles AR addon notice dismissal functionality and console warnings
  */
@@ -8,20 +8,20 @@ jQuery(document).ready(function($) {
     'use strict';
     
     // Handle AR notice dismissal
-    $(document).on('click', '.expoxr-dismiss-ar-notice', function(e) {
+    $(document).on('click', '.explorexr-dismiss-ar-notice', function(e) {
         e.preventDefault();
         
         const $notice = $(this).closest('.notice');
         
         // Show loading state
-        $(this).prop('disabled', true).text(expoxrARIntegration.strings.dismissing);
+        $(this).prop('disabled', true).text(explorexrARIntegration.strings.dismissing);
         
         $.ajax({
-            url: expoxrARIntegration.ajaxUrl,
+            url: explorexrARIntegration.ajaxUrl,
             type: 'POST',
             data: {
-                action: 'expoxr_dismiss_ar_notice',
-                nonce: expoxrARIntegration.nonce
+                action: 'explorexr_dismiss_ar_notice',
+                nonce: explorexrARIntegration.nonce
             },
             success: function(response) {
                 $notice.slideUp(300, function() {
@@ -30,8 +30,8 @@ jQuery(document).ready(function($) {
             },
             error: function() {
                 // Reset button on error
-                $(this).prop('disabled', false).text(expoxrARIntegration.strings.dismissNotice);
-                alert(expoxrARIntegration.strings.dismissError);
+                $(this).prop('disabled', false).text(explorexrARIntegration.strings.dismissNotice);
+                alert(explorexrARIntegration.strings.dismissError);
             }
         });
     });

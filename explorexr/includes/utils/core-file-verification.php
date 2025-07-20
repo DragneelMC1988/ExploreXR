@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
 /**
  * Check critical WordPress core JavaScript files
  */
-function expoxr_verify_core_js_files() {
+function explorexr_verify_core_js_files() {
     $core_js_files = array(
         ABSPATH . 'wp-admin/js/user-profile.min.js',
         ABSPATH . 'wp-includes/js/dist/url.min.js',
@@ -56,8 +56,8 @@ function expoxr_verify_core_js_files() {
 /**
  * Display verification results
  */
-function expoxr_display_verification_results() {
-    $results = expoxr_verify_core_js_files();
+function explorexr_display_verification_results() {
+    $results = explorexr_verify_core_js_files();
     
     echo "<h2>WordPress Core File Verification</h2>\n";
     echo "<table border='1' cellpadding='5' cellspacing='0'>\n";
@@ -121,7 +121,7 @@ if (isset($_SERVER['PHP_SELF']) && basename(sanitize_text_field(wp_unslash($_SER
         </style>
     </head>
     <body>
-        <?php expoxr_display_verification_results(); ?>
+        <?php explorexr_display_verification_results(); ?>
     </body>
     </html>
     <?php

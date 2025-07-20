@@ -2,7 +2,7 @@
 /**
  * Helper functions for handling 3D models
  * 
- * @package ExpoXR
+  * @package ExploreXR
  */
 
 // Exit if accessed directly
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Include debugging functions
-require_once EXPOXR_PLUGIN_DIR . 'includes/utils/debugging.php';
+require_once EXPLOREXR_PLUGIN_DIR . 'includes/utils/debugging.php';
 
 /**
  * Handle model file upload
@@ -19,7 +19,7 @@ require_once EXPOXR_PLUGIN_DIR . 'includes/utils/debugging.php';
  * @param array $file The uploaded file data
  * @return array|bool Array of file data on success, false on failure
  */
-function expoxr_handle_model_upload($file) {
+function explorexr_handle_model_upload($file) {
     // Allowed file types
     $allowed_types = array(
         'model/gltf-binary' => 'glb',
@@ -30,8 +30,8 @@ function expoxr_handle_model_upload($file) {
     
     // Check if a valid file was uploaded
     if (!isset($file['tmp_name']) || empty($file['tmp_name'])) {
-        if (get_option('expoxr_debug_mode', false)) {
-            expoxr_log('ExpoXR: No file was uploaded or file is empty', 'warning');
+        if (get_option('explorexr_debug_mode', false)) {
+            explorexr_log('ExploreXR: No file was uploaded or file is empty', 'warning');
         }
         return false;
     }
@@ -52,14 +52,14 @@ function expoxr_handle_model_upload($file) {
         $valid_mime = true;
     }
       if (!$valid_mime) {
-        if (get_option('expoxr_debug_mode', false)) {
-            expoxr_log('ExpoXR: Invalid file format. Only GLB and GLTF files are allowed. Received: ' . $mime_type . ' with extension ' . $file_ext, 'error');
+        if (get_option('explorexr_debug_mode', false)) {
+            explorexr_log('ExploreXR: Invalid file format. Only GLB and GLTF files are allowed. Received: ' . $mime_type . ' with extension ' . $file_ext, 'error');
         }
         return false;
     }
     
     // Use the WordPress uploads models directory
-    $models_dir = EXPOXR_MODELS_DIR;
+    $models_dir = EXPLOREXR_MODELS_DIR;
     
     // Create models directory if it doesn't exist
     if (!file_exists($models_dir)) {
@@ -78,8 +78,8 @@ function expoxr_handle_model_upload($file) {
     ));
     
     if (!$upload_result || isset($upload_result['error'])) {
-        if (get_option('expoxr_debug_mode', false)) {
-            expoxr_log('ExpoXR: Failed to move uploaded file: ' . (isset($upload_result['error']) ? $upload_result['error'] : 'Unknown error'), 'error');
+        if (get_option('explorexr_debug_mode', false)) {
+            explorexr_log('ExploreXR: Failed to move uploaded file: ' . (isset($upload_result['error']) ? $upload_result['error'] : 'Unknown error'), 'error');
         }
         return false;
     }
@@ -88,8 +88,8 @@ function expoxr_handle_model_upload($file) {
     $new_file = $models_dir . $filename;
     if (!copy($upload_result['file'], $new_file)) {
         wp_delete_file($upload_result['file']); // Clean up temp file
-        if (get_option('expoxr_debug_mode', false)) {
-            expoxr_log('ExpoXR: Failed to copy file to models directory: ' . $new_file, 'error');
+        if (get_option('explorexr_debug_mode', false)) {
+            explorexr_log('ExploreXR: Failed to copy file to models directory: ' . $new_file, 'error');
         }
         return false;
     }
@@ -109,17 +109,17 @@ function expoxr_handle_model_upload($file) {
         $wp_filesystem->chmod($new_file, 0644);
     } else {
         // Log error if WP_Filesystem is not available for chmod operation
-        if (function_exists('error_log') && get_option('expoxr_debug_mode', false)) {
-            expoxr_log('ExploreXR: WP_Filesystem not available for chmod operation', 'error');
+        if (function_exists('error_log') && get_option('explorexr_debug_mode', false)) {
+            explorexr_log('ExploreXR: WP_Filesystem not available for chmod operation', 'error');
         }
     }
     
     // Return the model data using plugin-defined constants
-    $file_url = EXPOXR_MODELS_URL . $filename;
+    $file_url = EXPLOREXR_MODELS_URL . $filename;
     
     // Debug log for successful upload
-    if (get_option('expoxr_debug_mode', false)) {
-        expoxr_log('ExpoXR: Successfully uploaded model file to: ' . $file_url);
+    if (get_option('explorexr_debug_mode', false)) {
+        explorexr_log('ExploreXR: Successfully uploaded model file to: ' . $file_url);
     }
       return array(
         'file_path' => $new_file,
@@ -136,11 +136,11 @@ function expoxr_handle_model_upload($file) {
  * @param int $model_id The model ID to associate the USDZ file with
  * @return array|false Upload result array or false on failure
  */
-function expoxr_handle_usdz_upload($file, $model_id = null) {
+function explorexr_handle_usdz_upload($file, $model_id = null) {
     // Check for upload errors first
     if (!isset($file['error']) || is_array($file['error'])) {
-        if (get_option('expoxr_debug_mode', false)) {
-            expoxr_log('ExpoXR: Invalid file parameters for USDZ upload', 'error');
+        if (get_option('explorexr_debug_mode', false)) {
+            explorexr_log('ExploreXR: Invalid file parameters for USDZ upload', 'error');
         }
         return false;
     }
@@ -150,19 +150,19 @@ function expoxr_handle_usdz_upload($file, $model_id = null) {
         case UPLOAD_ERR_OK:
             break;
         case UPLOAD_ERR_NO_FILE:
-            if (get_option('expoxr_debug_mode', false)) {
-                expoxr_log('ExpoXR: No USDZ file was uploaded', 'warning');
+            if (get_option('explorexr_debug_mode', false)) {
+                explorexr_log('ExploreXR: No USDZ file was uploaded', 'warning');
             }
             return false;
         case UPLOAD_ERR_INI_SIZE:
         case UPLOAD_ERR_FORM_SIZE:
-            if (get_option('expoxr_debug_mode', false)) {
-                expoxr_log('ExpoXR: USDZ file exceeded the upload size limit', 'error');
+            if (get_option('explorexr_debug_mode', false)) {
+                explorexr_log('ExploreXR: USDZ file exceeded the upload size limit', 'error');
             }
             return false;
         default:
-            if (get_option('expoxr_debug_mode', false)) {
-                expoxr_log('ExpoXR: Unknown error during USDZ file upload', 'error');
+            if (get_option('explorexr_debug_mode', false)) {
+                explorexr_log('ExploreXR: Unknown error during USDZ file upload', 'error');
             }
             return false;
     }
@@ -172,17 +172,17 @@ function expoxr_handle_usdz_upload($file, $model_id = null) {
     $file_ext = isset($file_info['extension']) ? strtolower($file_info['extension']) : '';
     
     if ($file_ext !== 'usdz') {
-        if (get_option('expoxr_debug_mode', false)) {
-            expoxr_log('ExpoXR: Invalid USDZ file extension: ' . $file_ext, 'error');
+        if (get_option('explorexr_debug_mode', false)) {
+            explorexr_log('ExploreXR: Invalid USDZ file extension: ' . $file_ext, 'error');
         }
         return false;
     }
     
     // Check file size limit (same as models)
-    $max_size = get_option('expoxr_max_upload_size', 50) * 1024 * 1024; // Convert to bytes
+    $max_size = get_option('explorexr_max_upload_size', 50) * 1024 * 1024; // Convert to bytes
     if ($file['size'] > $max_size) {
-        if (get_option('expoxr_debug_mode', false)) {
-            expoxr_log('ExpoXR: USDZ file size exceeds limit: ' . $file['size'], 'error');
+        if (get_option('explorexr_debug_mode', false)) {
+            explorexr_log('ExploreXR: USDZ file size exceeds limit: ' . $file['size'], 'error');
         }
         return false;
     }
@@ -197,17 +197,17 @@ function expoxr_handle_usdz_upload($file, $model_id = null) {
     // Make sure filename is unique
     $counter = 1;
     $original_filename = $filename;
-    while (file_exists(EXPOXR_MODELS_DIR . $filename)) {
+    while (file_exists(EXPLOREXR_MODELS_DIR . $filename)) {
         $filename = pathinfo($original_filename, PATHINFO_FILENAME) . '_' . $counter . '.' . $file_ext;
         $counter++;
     }
     
     // Move the uploaded file
-    $new_file = EXPOXR_MODELS_DIR . $filename;
+    $new_file = EXPLOREXR_MODELS_DIR . $filename;
     
     // Ensure upload directory exists
-    if (!file_exists(EXPOXR_MODELS_DIR)) {
-        wp_mkdir_p(EXPOXR_MODELS_DIR);
+    if (!file_exists(EXPLOREXR_MODELS_DIR)) {
+        wp_mkdir_p(EXPLOREXR_MODELS_DIR);
     }
     
     // Move the uploaded file using WordPress upload handling
@@ -217,8 +217,8 @@ function expoxr_handle_usdz_upload($file, $model_id = null) {
     ));
     
     if (!$upload_result || isset($upload_result['error'])) {
-        if (get_option('expoxr_debug_mode', false)) {
-            expoxr_log('ExpoXR: Failed to move uploaded USDZ file: ' . (isset($upload_result['error']) ? $upload_result['error'] : 'Unknown error'), 'error');
+        if (get_option('explorexr_debug_mode', false)) {
+            explorexr_log('ExploreXR: Failed to move uploaded USDZ file: ' . (isset($upload_result['error']) ? $upload_result['error'] : 'Unknown error'), 'error');
         }
         return false;
     }
@@ -226,8 +226,8 @@ function expoxr_handle_usdz_upload($file, $model_id = null) {
     // Move to our models directory
     if (!copy($upload_result['file'], $new_file)) {
         wp_delete_file($upload_result['file']); // Clean up temp file
-        if (get_option('expoxr_debug_mode', false)) {
-            expoxr_log('ExpoXR: Failed to copy USDZ file to models directory: ' . $new_file, 'error');
+        if (get_option('explorexr_debug_mode', false)) {
+            explorexr_log('ExploreXR: Failed to copy USDZ file to models directory: ' . $new_file, 'error');
         }
         return false;
     }
@@ -248,16 +248,16 @@ function expoxr_handle_usdz_upload($file, $model_id = null) {
     } else {
         // Log error if WP_Filesystem is not available for chmod operation
         if (function_exists('error_log')) {
-            expoxr_log('ExploreXR: WP_Filesystem not available for chmod operation', 'error');
+            explorexr_log('ExploreXR: WP_Filesystem not available for chmod operation', 'error');
         }
     }
     
     // Return the file data
-    $file_url = EXPOXR_MODELS_URL . $filename;
+    $file_url = explorexr_MODELS_URL . $filename;
     
     // Debug log for successful upload
-    if (get_option('expoxr_debug_mode', false)) {
-        expoxr_log('ExpoXR: Successfully uploaded USDZ file to: ' . $file_url);
+    if (get_option('explorexr_debug_mode', false)) {
+        explorexr_log('ExploreXR: Successfully uploaded USDZ file to: ' . $file_url);
     }
     
     return array(
@@ -274,52 +274,52 @@ function expoxr_handle_usdz_upload($file, $model_id = null) {
  * @param int $post_id The post ID
  * @return array Model data
  */
-function expoxr_get_model_data($post_id) {
+function explorexr_get_model_data($post_id) {
     $model_data = array(
-        'model_file' => get_post_meta($post_id, '_expoxr_model_file', true),
-        'model_name' => get_post_meta($post_id, '_expoxr_model_name', true),
-        'model_alt_text' => get_post_meta($post_id, '_expoxr_model_alt_text', true),
-        'poster' => get_post_meta($post_id, '_expoxr_model_poster', true),
-        'poster_id' => get_post_meta($post_id, '_expoxr_model_poster_id', true),
+        'model_file' => get_post_meta($post_id, '_explorexr_model_file', true),
+        'model_name' => get_post_meta($post_id, '_explorexr_model_name', true),
+        'model_alt_text' => get_post_meta($post_id, '_explorexr_model_alt_text', true),
+        'poster' => get_post_meta($post_id, '_explorexr_model_poster', true),
+        'poster_id' => get_post_meta($post_id, '_explorexr_model_poster_id', true),
         
         // Viewer size settings
-        'viewer_size' => get_post_meta($post_id, '_expoxr_viewer_size', true),
-        'viewer_width' => get_post_meta($post_id, '_expoxr_viewer_width', true),
-        'viewer_height' => get_post_meta($post_id, '_expoxr_viewer_height', true),
-        'tablet_viewer_width' => get_post_meta($post_id, '_expoxr_tablet_viewer_width', true),
-        'tablet_viewer_height' => get_post_meta($post_id, '_expoxr_tablet_viewer_height', true),
-        'mobile_viewer_width' => get_post_meta($post_id, '_expoxr_mobile_viewer_width', true),
-        'mobile_viewer_height' => get_post_meta($post_id, '_expoxr_mobile_viewer_height', true),
+        'viewer_size' => get_post_meta($post_id, '_explorexr_viewer_size', true),
+        'viewer_width' => get_post_meta($post_id, '_explorexr_viewer_width', true),
+        'viewer_height' => get_post_meta($post_id, '_explorexr_viewer_height', true),
+        'tablet_viewer_width' => get_post_meta($post_id, '_explorexr_tablet_viewer_width', true),
+        'tablet_viewer_height' => get_post_meta($post_id, '_explorexr_tablet_viewer_height', true),
+        'mobile_viewer_width' => get_post_meta($post_id, '_explorexr_mobile_viewer_width', true),
+        'mobile_viewer_height' => get_post_meta($post_id, '_explorexr_mobile_viewer_height', true),
         
         // Camera settings
-        'camera_controls' => get_post_meta($post_id, '_expoxr_camera_controls', true),
-        'disable_pan' => get_post_meta($post_id, '_expoxr_disable_pan', true),
-        'disable_tap' => get_post_meta($post_id, '_expoxr_disable_tap', true),
-        'disable_zoom' => get_post_meta($post_id, '_expoxr_disable_zoom', true),
-        'touch_action' => get_post_meta($post_id, '_expoxr_touch_action', true),
-        'orbit_sensitivity' => get_post_meta($post_id, '_expoxr_orbit_sensitivity', true),
-        'zoom_sensitivity' => get_post_meta($post_id, '_expoxr_zoom_sensitivity', true),
-        'pan_sensitivity' => get_post_meta($post_id, '_expoxr_pan_sensitivity', true),
+        'camera_controls' => get_post_meta($post_id, '_explorexr_camera_controls', true),
+        'disable_pan' => get_post_meta($post_id, '_explorexr_disable_pan', true),
+        'disable_tap' => get_post_meta($post_id, '_explorexr_disable_tap', true),
+        'disable_zoom' => get_post_meta($post_id, '_explorexr_disable_zoom', true),
+        'touch_action' => get_post_meta($post_id, '_explorexr_touch_action', true),
+        'orbit_sensitivity' => get_post_meta($post_id, '_explorexr_orbit_sensitivity', true),
+        'zoom_sensitivity' => get_post_meta($post_id, '_explorexr_zoom_sensitivity', true),
+        'pan_sensitivity' => get_post_meta($post_id, '_explorexr_pan_sensitivity', true),
         
         // Auto-rotate settings
-        'auto_rotate' => get_post_meta($post_id, '_expoxr_auto_rotate', true),
-        'auto_rotate_delay' => get_post_meta($post_id, '_expoxr_auto_rotate_delay', true),
-        'rotation_per_second' => get_post_meta($post_id, '_expoxr_rotation_per_second', true),
+        'auto_rotate' => get_post_meta($post_id, '_explorexr_auto_rotate', true),
+        'auto_rotate_delay' => get_post_meta($post_id, '_explorexr_auto_rotate_delay', true),
+        'rotation_per_second' => get_post_meta($post_id, '_explorexr_rotation_per_second', true),
         
         // Interaction prompt settings
-        'interaction_prompt' => get_post_meta($post_id, '_expoxr_interaction_prompt', true),
-        'interaction_prompt_style' => get_post_meta($post_id, '_expoxr_interaction_prompt_style', true),
-        'interaction_prompt_threshold' => get_post_meta($post_id, '_expoxr_interaction_prompt_threshold', true),
+        'interaction_prompt' => get_post_meta($post_id, '_explorexr_interaction_prompt', true),
+        'interaction_prompt_style' => get_post_meta($post_id, '_explorexr_interaction_prompt_style', true),
+        'interaction_prompt_threshold' => get_post_meta($post_id, '_explorexr_interaction_prompt_threshold', true),
         
         // Basic camera settings (advanced camera controls are not available in free version)
-        'camera_orbit' => get_post_meta($post_id, '_expoxr_camera_orbit', true),
-        'camera_target' => get_post_meta($post_id, '_expoxr_camera_target', true),
-        'field_of_view' => get_post_meta($post_id, '_expoxr_field_of_view', true),
-        'max_camera_orbit' => get_post_meta($post_id, '_expoxr_max_camera_orbit', true),
-        'min_camera_orbit' => get_post_meta($post_id, '_expoxr_min_camera_orbit', true),
-        'max_field_of_view' => get_post_meta($post_id, '_expoxr_max_field_of_view', true),
-        'min_field_of_view' => get_post_meta($post_id, '_expoxr_min_field_of_view', true),
-        'interpolation_decay' => get_post_meta($post_id, '_expoxr_interpolation_decay', true),
+        'camera_orbit' => get_post_meta($post_id, '_explorexr_camera_orbit', true),
+        'camera_target' => get_post_meta($post_id, '_explorexr_camera_target', true),
+        'field_of_view' => get_post_meta($post_id, '_explorexr_field_of_view', true),
+        'max_camera_orbit' => get_post_meta($post_id, '_explorexr_max_camera_orbit', true),
+        'min_camera_orbit' => get_post_meta($post_id, '_explorexr_min_camera_orbit', true),
+        'max_field_of_view' => get_post_meta($post_id, '_explorexr_max_field_of_view', true),
+        'min_field_of_view' => get_post_meta($post_id, '_explorexr_min_field_of_view', true),
+        'interpolation_decay' => get_post_meta($post_id, '_explorexr_interpolation_decay', true),
         
         // Animation settings are not available in the Free version
         // This feature is available in the Pro version only
@@ -362,14 +362,14 @@ function expoxr_get_model_data($post_id) {
     $model_data['annotations'] = null;
     
     // Log model data when in debug mode
-    if (get_option('expoxr_debug_mode', false)) {
+    if (get_option('explorexr_debug_mode', false)) {
         // Only log essential info to avoid huge logs
         $log_data = array(
             'model_file' => $model_data['model_file'],
             'camera_controls' => $model_data['camera_controls'],
             'auto_rotate' => $model_data['auto_rotate']
         );
-        expoxr_log('ExpoXR: Retrieved model data for post #' . $post_id . ': ' . json_encode($log_data));
+        explorexr_log('ExploreXR: Retrieved model data for post #' . $post_id . ': ' . json_encode($log_data));
     }
     
     return $model_data;

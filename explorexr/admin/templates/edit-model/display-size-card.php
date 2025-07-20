@@ -4,7 +4,7 @@
  * 
  * Options for predefined and custom model viewer sizes
  *
- * @package ExpoXR
+  * @package ExploreXR
  */
 
 // Prevent direct access
@@ -25,96 +25,96 @@ if (!isset($model_id) || empty($model_id)) {
 
 // Ensure required variables are defined
 if (!isset($viewer_size)) {
-    $viewer_size = get_post_meta($model_id, '_expoxr_viewer_size', true) ?: 'custom';
+    $viewer_size = get_post_meta($model_id, '_explorexr_viewer_size', true) ?: 'custom';
 }
 
 if (!isset($viewer_width)) {
-    $viewer_width = get_post_meta($model_id, '_expoxr_viewer_width', true) ?: '100%';
+    $viewer_width = get_post_meta($model_id, '_explorexr_viewer_width', true) ?: '100%';
 }
 
 if (!isset($viewer_height)) {
-    $viewer_height = get_post_meta($model_id, '_expoxr_viewer_height', true) ?: '500px';
+    $viewer_height = get_post_meta($model_id, '_explorexr_viewer_height', true) ?: '500px';
 }
 
 if (!isset($tablet_viewer_width)) {
-    $tablet_viewer_width = get_post_meta($model_id, '_expoxr_tablet_viewer_width', true) ?: '';
+    $tablet_viewer_width = get_post_meta($model_id, '_explorexr_tablet_viewer_width', true) ?: '';
 }
 
 if (!isset($tablet_viewer_height)) {
-    $tablet_viewer_height = get_post_meta($model_id, '_expoxr_tablet_viewer_height', true) ?: '';
+    $tablet_viewer_height = get_post_meta($model_id, '_explorexr_tablet_viewer_height', true) ?: '';
 }
 
 if (!isset($mobile_viewer_width)) {
-    $mobile_viewer_width = get_post_meta($model_id, '_expoxr_mobile_viewer_width', true) ?: '';
+    $mobile_viewer_width = get_post_meta($model_id, '_explorexr_mobile_viewer_width', true) ?: '';
 }
 
 if (!isset($mobile_viewer_height)) {
-    $mobile_viewer_height = get_post_meta($model_id, '_expoxr_mobile_viewer_height', true) ?: '';
+    $mobile_viewer_height = get_post_meta($model_id, '_explorexr_mobile_viewer_height', true) ?: '';
 }
 ?>
 
 <!-- Display Size Settings -->
-<div class="expoxr-card">
-    <div class="expoxr-card-header">
+<div class="explorexr-card">
+    <div class="explorexr-card-header">
         <h2><span class="dashicons dashicons-editor-distractionfree"></span> Display Size</h2>
     </div>
-    <div class="expoxr-card-content">
-        <div class="expoxr-tabs">
-            <button type="button" class="expoxr-tab <?php echo ($viewer_size !== 'custom') ? 'active' : ''; ?>" data-tab="predefined-sizes">Predefined Sizes</button>
-            <button type="button" class="expoxr-tab <?php echo ($viewer_size === 'custom') ? 'active' : ''; ?>" data-tab="custom-sizes">Custom Sizes</button>
+    <div class="explorexr-card-content">
+        <div class="explorexr-tabs">
+            <button type="button" class="explorexr-tab <?php echo ($viewer_size !== 'custom') ? 'active' : ''; ?>" data-tab="predefined-sizes">Predefined Sizes</button>
+            <button type="button" class="explorexr-tab <?php echo ($viewer_size === 'custom') ? 'active' : ''; ?>" data-tab="custom-sizes">Custom Sizes</button>
         </div>
         
-        <div class="expoxr-tab-content <?php echo ($viewer_size !== 'custom') ? 'active' : ''; ?>" id="predefined-sizes">
-            <div class="expoxr-size-options">
-                <label class="expoxr-size-option">
+        <div class="explorexr-tab-content <?php echo ($viewer_size !== 'custom') ? 'active' : ''; ?>" id="predefined-sizes">
+            <div class="explorexr-size-options">
+                <label class="explorexr-size-option">
                     <input type="radio" name="viewer_size" value="small" <?php checked($viewer_size, 'small'); ?>>
-                    <div class="expoxr-size-preview">
-                        <div class="expoxr-size-box expoxr-size-box-small"></div>
+                    <div class="explorexr-size-preview">
+                        <div class="explorexr-size-box explorexr-size-box-small"></div>
                         <span>Small (300x300px)</span>
                     </div>
                 </label>
                 
-                <label class="expoxr-size-option">
+                <label class="explorexr-size-option">
                     <input type="radio" name="viewer_size" value="medium" <?php checked($viewer_size, 'medium'); ?>>
-                    <div class="expoxr-size-preview">
-                        <div class="expoxr-size-box expoxr-size-box-medium"></div>
+                    <div class="explorexr-size-preview">
+                        <div class="explorexr-size-box explorexr-size-box-medium"></div>
                         <span>Medium (500x500px)</span>
                     </div>
                 </label>
                 
-                <label class="expoxr-size-option">
+                <label class="explorexr-size-option">
                     <input type="radio" name="viewer_size" value="large" <?php checked($viewer_size, 'large'); ?>>
-                    <div class="expoxr-size-preview">
-                        <div class="expoxr-size-box expoxr-size-box-large"></div>
+                    <div class="explorexr-size-preview">
+                        <div class="explorexr-size-box explorexr-size-box-large"></div>
                         <span>Large (800x600px)</span>
                     </div>
                 </label>
             </div>
         </div>
         
-        <div class="expoxr-tab-content <?php echo ($viewer_size === 'custom') ? 'active' : ''; ?>" id="custom-sizes">
-            <div class="expoxr-device-tabs">
-                <button type="button" class="expoxr-device-tab active" data-device="desktop">
+        <div class="explorexr-tab-content <?php echo ($viewer_size === 'custom') ? 'active' : ''; ?>" id="custom-sizes">
+            <div class="explorexr-device-tabs">
+                <button type="button" class="explorexr-device-tab active" data-device="desktop">
                     <span class="dashicons dashicons-desktop"></span> Desktop
                 </button>
-                <button type="button" class="expoxr-device-tab" data-device="tablet">
+                <button type="button" class="explorexr-device-tab" data-device="tablet">
                     <span class="dashicons dashicons-tablet"></span> Tablet
                 </button>
-                <button type="button" class="expoxr-device-tab" data-device="mobile">
+                <button type="button" class="explorexr-device-tab" data-device="mobile">
                     <span class="dashicons dashicons-smartphone"></span> Mobile
                 </button>
             </div>
             
-            <div class="expoxr-device-content active" id="desktop-size">
-                <div class="expoxr-form-group">
+            <div class="explorexr-device-content active" id="desktop-size">
+                <div class="explorexr-form-group">
                     <h3>Desktop Size</h3>
-                    <div class="expoxr-form-row">
+                    <div class="explorexr-form-row">
                         <label for="viewer_width">Width:</label>
                         <input type="text" name="viewer_width" id="viewer_width" value="<?php echo esc_attr($viewer_width); ?>" class="small-text">
                         <span class="description">(e.g., 500px, 100%, etc.)</span>
                     </div>
                     
-                    <div class="expoxr-form-row">
+                    <div class="explorexr-form-row">
                         <label for="viewer_height">Height:</label>
                         <input type="text" name="viewer_height" id="viewer_height" value="<?php echo esc_attr($viewer_height); ?>" class="small-text">
                         <span class="description">(e.g., 500px, 400px, etc.)</span>
@@ -122,16 +122,16 @@ if (!isset($mobile_viewer_height)) {
                 </div>
             </div>
             
-            <div class="expoxr-device-content" id="tablet-size">
-                <div class="expoxr-form-group">
+            <div class="explorexr-device-content" id="tablet-size">
+                <div class="explorexr-form-group">
                     <h3>Tablet Size</h3>
-                    <div class="expoxr-form-row">
+                    <div class="explorexr-form-row">
                         <label for="tablet_viewer_width">Width:</label>
                         <input type="text" name="tablet_viewer_width" id="tablet_viewer_width" value="<?php echo esc_attr($tablet_viewer_width); ?>" class="small-text">
                         <span class="description">(e.g., 500px, 100%, etc.)</span>
                     </div>
                     
-                    <div class="expoxr-form-row">
+                    <div class="explorexr-form-row">
                         <label for="tablet_viewer_height">Height:</label>
                         <input type="text" name="tablet_viewer_height" id="tablet_viewer_height" value="<?php echo esc_attr($tablet_viewer_height); ?>" class="small-text">
                         <span class="description">(e.g., 400px, 350px, etc.)</span>
@@ -139,16 +139,16 @@ if (!isset($mobile_viewer_height)) {
                 </div>
             </div>
             
-            <div class="expoxr-device-content" id="mobile-size">
-                <div class="expoxr-form-group">
+            <div class="explorexr-device-content" id="mobile-size">
+                <div class="explorexr-form-group">
                     <h3>Mobile Size</h3>
-                    <div class="expoxr-form-row">
+                    <div class="explorexr-form-row">
                         <label for="mobile_viewer_width">Width:</label>
                         <input type="text" name="mobile_viewer_width" id="mobile_viewer_width" value="<?php echo esc_attr($mobile_viewer_width); ?>" class="small-text">
                         <span class="description">(e.g., 300px, 100%, etc.)</span>
                     </div>
                     
-                    <div class="expoxr-form-row">
+                    <div class="explorexr-form-row">
                         <label for="mobile_viewer_height">Height:</label>
                         <input type="text" name="mobile_viewer_height" id="mobile_viewer_height" value="<?php echo esc_attr($mobile_viewer_height); ?>" class="small-text">
                         <span class="description">(e.g., 300px, 400px, etc.)</span>

@@ -17,7 +17,7 @@
      */
     function initializeModelViewers() {
         // Find all model viewers in the page
-        const modelViewers = document.querySelectorAll('model-viewer.expoxr-model');
+        const modelViewers = document.querySelectorAll('model-viewer.explorexr-model');
         
         modelViewers.forEach(function(modelViewer) {
             // Add event listeners for model-viewer events
@@ -105,7 +105,7 @@
         
         // Create a more user-friendly error display
         const errorContainer = document.createElement('div');
-        errorContainer.className = 'expoxr-model-error';
+        errorContainer.className = 'explorexr-model-error';
         errorContainer.style.cssText = `
             padding: 20px;
             text-align: center;
@@ -117,10 +117,10 @@
         `;
         
         errorContainer.innerHTML = `
-            <div class="expoxr-model-error-icon" style="font-size: 48px; margin-bottom: 10px;">📦</div>
-            <div class="expoxr-model-error-title" style="font-size: 18px; font-weight: 600; margin-bottom: 8px; color: #333;">${errorMessage}</div>
-            ${troubleshooting ? `<div class="expoxr-model-error-details" style="font-size: 14px; margin-bottom: 15px;">${troubleshooting}</div>` : ''}
-            <button class="expoxr-retry-load" style="
+            <div class="explorexr-model-error-icon" style="font-size: 48px; margin-bottom: 10px;">📦</div>
+            <div class="explorexr-model-error-title" style="font-size: 18px; font-weight: 600; margin-bottom: 8px; color: #333;">${errorMessage}</div>
+            ${troubleshooting ? `<div class="explorexr-model-error-details" style="font-size: 14px; margin-bottom: 15px;">${troubleshooting}</div>` : ''}
+            <button class="explorexr-retry-load" style="
                 background: #0073aa;
                 color: white;
                 border: none;
@@ -130,7 +130,7 @@
                 margin-right: 10px;
                 font-size: 14px;
             ">Try Again</button>
-            <button class="expoxr-hide-error" style="
+            <button class="explorexr-hide-error" style="
                 background: #666;
                 color: white;
                 border: none;
@@ -142,7 +142,7 @@
         `;
         
         // Add retry functionality
-        const retryButton = errorContainer.querySelector('.expoxr-retry-load');
+        const retryButton = errorContainer.querySelector('.explorexr-retry-load');
         retryButton.addEventListener('click', function() {
             const src = modelViewer.getAttribute('src');
             if (src) {
@@ -153,7 +153,7 @@
         });
         
         // Add hide functionality
-        const hideButton = errorContainer.querySelector('.expoxr-hide-error');
+        const hideButton = errorContainer.querySelector('.explorexr-hide-error');
         hideButton.addEventListener('click', function() {
             errorContainer.style.display = 'none';
         });
@@ -213,7 +213,7 @@
             // The free version provides basic model viewing only
             
             // Trigger a custom event for premium features
-            const event = new CustomEvent('expoxr-animations-detected', {
+            const event = new CustomEvent('explorexr-animations-detected', {
                 detail: {
                     modelViewer: modelViewer,
                     animations: modelViewer.availableAnimations,
@@ -256,7 +256,7 @@
      */
     function setupAnimationControls() {
         // Listen for animation button clicks
-        $(document).on('click', '.expoxr-animation-button', function() {
+        $(document).on('click', '.explorexr-animation-button', function() {
             // This is handled in the createAnimationControls function
         });
     }

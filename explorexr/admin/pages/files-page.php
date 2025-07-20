@@ -5,15 +5,15 @@ if (!defined('ABSPATH')) {
 }
 
 // Files page callback
-function expoxr_files_page() {
+function explorexr_files_page() {
     // Handle file upload
     if (isset($_POST['upload_file_submit']) && isset($_FILES['model_file_upload']) && isset($_FILES['model_file_upload']['size']) && $_FILES['model_file_upload']['size'] > 0) {
         // Verify nonce for security
-        if (!isset($_POST['_wpnonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_wpnonce'])), 'expoxr_upload_file')) {
+        if (!isset($_POST['_wpnonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_wpnonce'])), 'explorexr_upload_file')) {
             echo '<div class="notice notice-error"><p>Security check failed. Please try again.</p></div>';
         } else {
-            // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- File upload array is handled by expoxr_handle_model_upload()
-            $upload_result = expoxr_handle_model_upload($_FILES['model_file_upload']);
+            // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- File upload array is handled by explorexr_handle_model_upload()
+            $upload_result = explorexr_handle_model_upload($_FILES['model_file_upload']);
             
             if ($upload_result) {
                 echo '<div class="notice notice-success"><p>File uploaded successfully! Refresh the page to see it in the list.</p></div>';
@@ -26,23 +26,23 @@ function expoxr_files_page() {
     // Handle file deletion
     if (isset($_GET['action']) && sanitize_text_field(wp_unslash($_GET['action'])) === 'delete' && isset($_GET['file'])) {
         // Verify nonce for security
-        if (isset($_GET['_wpnonce']) && wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['_wpnonce'])), 'expoxr_delete_file')) {
+        if (isset($_GET['_wpnonce']) && wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['_wpnonce'])), 'explorexr_delete_file')) {
             $file_name = sanitize_file_name(wp_unslash($_GET['file']));
-            $file_path = EXPOXR_MODELS_DIR . $file_name;
+            $file_path = EXPLOREXR_MODELS_DIR . $file_name;
             
             // Check if the file exists and is within our models directory to prevent path traversal
-            if (file_exists($file_path) && strpos(realpath($file_path), realpath(EXPOXR_MODELS_DIR)) === 0) {
+            if (file_exists($file_path) && strpos(realpath($file_path), realpath(EXPLOREXR_MODELS_DIR)) === 0) {
                 // Check if the file is being used by any models using WP_Query
-                $file_url = EXPOXR_MODELS_URL . $file_name;
+                $file_url = EXPLOREXR_MODELS_URL . $file_name;
                 
                 $usage_query = new WP_Query([
-                    'post_type' => 'expoxr_model',
+                    'post_type' => 'explorexr_model',
                     'post_status' => 'publish',
                     'posts_per_page' => 1,
                     // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Required for checking if file is in use before deletion
                     'meta_query' => [
                         [
-                            'key' => '_expoxr_model_file',
+                            'key' => '_explorexr_model_file',
                             'value' => $file_url,
                             'compare' => 'LIKE'
                         ]
@@ -56,13 +56,13 @@ function expoxr_files_page() {
                 // Get model names if the file is used
                 if ($is_used) {
                     $model_query = new WP_Query([
-                        'post_type' => 'expoxr_model',
+                        'post_type' => 'explorexr_model',
                         'post_status' => 'publish',
                         'posts_per_page' => 5,
                         // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Required for displaying which models use the file
                         'meta_query' => [
                             [
-                                'key' => '_expoxr_model_file',
+                                'key' => '_explorexr_model_file',
                                 'value' => $file_url,
                                 'compare' => 'LIKE'
                             ]
@@ -96,7 +96,7 @@ function expoxr_files_page() {
     }
     
     // Include the model-viewer script
-    include EXPOXR_PLUGIN_DIR . 'template-parts/model-viewer-script.php';
+    include EXPLOREXR_PLUGIN_DIR . 'template-parts/model-viewer-script.php';
     
     // Set up header variables
     $page_title = '3D Model Files';
@@ -104,27 +104,27 @@ function expoxr_files_page() {
                         <span class="dashicons dashicons-upload" style="margin-right: 5px;"></span> Upload New File
                        </button>';
     ?>
-    <div class="wrap expoxr-admin-container">
+    <div class="wrap explorexr-admin-container">
         <!-- WordPress admin notices appear here automatically before our custom content -->
         
-        <?php include EXPOXR_PLUGIN_DIR . 'admin/templates/notifications-area.php'; ?>
-        <?php include EXPOXR_PLUGIN_DIR . 'admin/templates/admin-header.php'; ?>
+        <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/notifications-area.php'; ?>
+        <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/admin-header.php'; ?>
         
         <!-- Upload form card (hidden by default) -->
-        <div class="expoxr-card" id="upload-form-card" style="display: none; margin-bottom: 20px;">
-            <div class="expoxr-card-header">
+        <div class="explorexr-card" id="upload-form-card" style="display: none; margin-bottom: 20px;">
+            <div class="explorexr-card-header">
                 <h2>Upload New Model File</h2>
                 <span class="dashicons dashicons-upload"></span>
             </div>
-            <div class="expoxr-card-content">
+            <div class="explorexr-card-content">
                 <form method="post" enctype="multipart/form-data">
-                    <?php wp_nonce_field('expoxr_upload_file'); ?>
-                    <div class="expoxr-form-group">
+                    <?php wp_nonce_field('explorexr_upload_file'); ?>
+                    <div class="explorexr-form-group">
                         <label for="model_file_upload">Select 3D Model File</label>
                         <input name="model_file_upload" type="file" id="model_file_upload" accept=".glb,.gltf,.usdz" required />
-                        <p class="description">Accepted formats: GLB, GLTF, USDZ. Maximum file size: <?php echo esc_html(get_option('expoxr_max_upload_size', 50)); ?>MB</p>
+                        <p class="description">Accepted formats: GLB, GLTF, USDZ. Maximum file size: <?php echo esc_html(get_option('explorexr_max_upload_size', 50)); ?>MB</p>
                     </div>
-                    <div class="expoxr-card-footer" style="border-top: none; padding-top: 0;">
+                    <div class="explorexr-card-footer" style="border-top: none; padding-top: 0;">
                         <input type="submit" name="upload_file_submit" class="button button-primary" value="Upload File" />
                         <button type="button" class="button" id="cancel-upload">Cancel</button>
                     </div>
@@ -133,7 +133,7 @@ function expoxr_files_page() {
         </div>
         
         <?php
-        $models_dir = EXPOXR_MODELS_DIR;
+        $models_dir = EXPLOREXR_MODELS_DIR;
         
         // Create models directory if it doesn't exist
         if (!file_exists($models_dir)) {
@@ -153,12 +153,12 @@ function expoxr_files_page() {
         }
         ?>
           <!-- Files card -->
-        <div class="expoxr-card">
-            <div class="expoxr-card-header">
+        <div class="explorexr-card">
+            <div class="explorexr-card-header">
                 <h2>Available 3D Model Files</h2>
                 
             </div>
-            <div class="expoxr-card-content">
+            <div class="explorexr-card-content">
                 <?php if (!empty($files)) : ?>
                     <table class="wp-list-table widefat fixed striped">
                         <thead>
@@ -175,17 +175,17 @@ function expoxr_files_page() {
                                 $file_name = basename($file);
                                 $file_type = pathinfo($file, PATHINFO_EXTENSION);
                                 $file_size = size_format(filesize($file));
-                                $file_url = EXPOXR_MODELS_URL . $file_name;
+                                $file_url = EXPLOREXR_MODELS_URL . $file_name;
                                 $delete_url = wp_nonce_url(
                                     add_query_arg(
                                         array(
-                                            'page' => 'expoxr-files',
+                                            'page' => 'explorexr-files',
                                             'action' => 'delete',
                                             'file' => $file_name,
                                         ),
                                         admin_url('admin.php')
                                     ),
-                                    'expoxr_delete_file'
+                                    'explorexr_delete_file'
                                 );
                             ?>
                                 <tr>
@@ -205,7 +205,7 @@ function expoxr_files_page() {
                         </tbody>
                     </table>
                 <?php else : ?>
-                    <div class="expoxr-alert info">
+                    <div class="explorexr-alert info">
                         <span class="dashicons dashicons-info"></span>
                         <div>
                             <p>No 3D model files found in the models directory. Upload models using the form above.</p>
@@ -214,7 +214,7 @@ function expoxr_files_page() {
                 <?php endif; ?>
             </div>
             <?php if (empty($files)) : ?>
-                <div class="expoxr-card-footer">
+                <div class="explorexr-card-footer">
                     <button type="button" class="button button-primary" id="show-upload-form-footer">Upload New File</button>
                 </div>
             <?php endif; ?>
@@ -223,11 +223,11 @@ function expoxr_files_page() {
     
     <?php
     // Include the model viewer modal
-    include EXPOXR_PLUGIN_DIR . 'admin/templates/model-viewer-modal.php';
+    include EXPLOREXR_PLUGIN_DIR . 'admin/templates/model-viewer-modal.php';
     ?>
     
-    <!-- ExpoXR Footer -->
-    <?php include EXPOXR_PLUGIN_DIR . 'admin/templates/admin-footer.php'; ?>
+    <!-- ExploreXR Footer -->
+    <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/admin-footer.php'; ?>
     
     <?php
 }

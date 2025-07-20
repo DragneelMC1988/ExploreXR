@@ -1,10 +1,10 @@
 <?php
 /**
- * ExpoXR Import/Export Settings
+ * ExploreXR Import/Export Settings
  *
  * Handles importing and exporting plugin settings
  *
- * @package ExpoXR
+  * @package ExploreXR
  */
 
 // Exit if accessed directly
@@ -15,45 +15,45 @@ if (!defined('ABSPATH')) {
 /**
  * Register import/export settings section
  */
-function expoxr_register_import_export_settings() {
+function explorexr_register_import_export_settings() {
     // Add Import/Export settings section
     add_settings_section(
-        'expoxr_import_export_settings',
+        'explorexr_import_export_settings',
         esc_html__('Import/Export Settings', 'explorexr'),
-        'expoxr_import_export_settings_callback',
-        'expoxr-settings'
+        'explorexr_import_export_settings_callback',
+        'explorexr-settings'
     );
 
     // Add Import/Export field
     add_settings_field(
-        'expoxr_import_export',
+        'explorexr_import_export',
         esc_html__('Backup & Restore', 'explorexr'),
-        'expoxr_import_export_callback',
-        'expoxr-settings',
-        'expoxr_import_export_settings'
+        'explorexr_import_export_callback',
+        'explorexr-settings',
+        'explorexr_import_export_settings'
     );
 }
-add_action('admin_init', 'expoxr_register_import_export_settings');
+add_action('admin_init', 'explorexr_register_import_export_settings');
 
 /**
  * Import/Export settings section callback
  */
-function expoxr_import_export_settings_callback() {
-    echo '<p>' . esc_html__('Backup your ExpoXR settings or restore from a previous backup.', 'explorexr') . '</p>';
+function explorexr_import_export_settings_callback() {
+    echo '<p>' . esc_html__('Backup your ExploreXR settings or restore from a previous backup.', 'explorexr') . '</p>';
 }
 
 /**
  * Import/Export field callback
  */
-function expoxr_import_export_callback() {
+function explorexr_import_export_callback() {
     ?>
-    <div class="expoxr-import-export-container">
-        <div class="expoxr-export-section">
+    <div class="explorexr-import-export-container">
+        <div class="explorexr-export-section">
             <h4><?php esc_html_e('Export Settings', 'explorexr'); ?></h4>
-            <p><?php esc_html_e('Export all your ExpoXR settings as a JSON file that you can use to restore your configuration later or migrate to another site.', 'explorexr'); ?></p>
-            <form method="post" action="" id="expoxr-export-form">
-                <?php wp_nonce_field('expoxr_export_nonce', 'expoxr_export_nonce'); ?>
-                <input type="hidden" name="expoxr_action" value="export_settings" />
+            <p><?php esc_html_e('Export all your ExploreXR settings as a JSON file that you can use to restore your configuration later or migrate to another site.', 'explorexr'); ?></p>
+            <form method="post" action="" id="explorexr-export-form">
+                <?php wp_nonce_field('explorexr_export_nonce', 'explorexr_export_nonce'); ?>
+                <input type="hidden" name="explorexr_action" value="export_settings" />
                 <p>
                     <button type="submit" class="button button-primary">
                         <span class="dashicons dashicons-download"></span>
@@ -61,31 +61,31 @@ function expoxr_import_export_callback() {
                     </button>
                 </p>
                 <div class="export-note">
-                    <p><em><?php esc_html_e('Note: The exported file will contain all ExpoXR settings including viewer configuration, loading options, and plugin preferences.', 'explorexr'); ?></em></p>
+                    <p><em><?php esc_html_e('Note: The exported file will contain all ExploreXR settings including viewer configuration, loading options, and plugin preferences.', 'explorexr'); ?></em></p>
                 </div>
             </form>
         </div>
 
-        <div class="expoxr-import-section">
+        <div class="explorexr-import-section">
             <h4><?php esc_html_e('Import Settings', 'explorexr'); ?></h4>
             <p><?php esc_html_e('Import settings from a previously exported JSON file.', 'explorexr'); ?></p>
-            <form method="post" enctype="multipart/form-data" action="" id="expoxr-import-form">
-                <?php wp_nonce_field('expoxr_import_nonce', 'expoxr_import_nonce'); ?>
-                <input type="hidden" name="expoxr_action" value="import_settings" />
+            <form method="post" enctype="multipart/form-data" action="" id="explorexr-import-form">
+                <?php wp_nonce_field('explorexr_import_nonce', 'explorexr_import_nonce'); ?>
+                <input type="hidden" name="explorexr_action" value="import_settings" />
                 
                 <div class="import-note">
                     <p><span class="dashicons dashicons-info"></span> <?php esc_html_e('Importing settings will merge them with your existing configuration. You can choose to override existing settings with the checkbox below.', 'explorexr'); ?></p>
                 </div>
                 
                 <p>
-                    <input type="file" name="expoxr_import_file" id="expoxr-import-file" required accept=".json" />
+                    <input type="file" name="explorexr_import_file" id="explorexr-import-file" required accept=".json" />
                 </p>
                 
-                <div id="expoxr-import-preview"></div>
+                <div id="explorexr-import-preview"></div>
                 
                 <p>
                     <label>
-                        <input type="checkbox" name="expoxr_import_override" value="1" />
+                        <input type="checkbox" name="explorexr_import_override" value="1" />
                         <?php esc_html_e('Override existing settings', 'explorexr'); ?>
                     </label>
                     <p class="description"><?php esc_html_e('If checked, imported settings will replace your existing settings. If unchecked, only new settings will be added.', 'explorexr'); ?></p>
@@ -105,13 +105,13 @@ function expoxr_import_export_callback() {
 /**
  * Handle export request
  */
-function expoxr_handle_settings_export() {
-    if (!isset($_POST['expoxr_action']) || sanitize_text_field(wp_unslash($_POST['expoxr_action'])) !== 'export_settings') {
+function explorexr_handle_settings_export() {
+    if (!isset($_POST['explorexr_action']) || sanitize_text_field(wp_unslash($_POST['explorexr_action'])) !== 'export_settings') {
         return;
     }
 
     // Verify nonce
-    if (!isset($_POST['expoxr_export_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['expoxr_export_nonce'])), 'expoxr_export_nonce')) {
+    if (!isset($_POST['explorexr_export_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['explorexr_export_nonce'])), 'explorexr_export_nonce')) {
         wp_die(esc_html__('Security check failed. Please try again.', 'explorexr'));
     }
 
@@ -120,12 +120,12 @@ function expoxr_handle_settings_export() {
         wp_die(esc_html__('You do not have sufficient permissions to export settings.', 'explorexr'));
     }
 
-    // Get all options that start with 'expoxr_' using WordPress functions
-    $expoxr_options = wp_load_alloptions();
+    // Get all options that start with 'explorexr_' using WordPress functions
+    $explorexr_options = wp_load_alloptions();
     $options = [];
     
-    foreach ($expoxr_options as $option_name => $option_value) {
-        if (strpos($option_name, 'expoxr_') === 0) {
+    foreach ($explorexr_options as $option_name => $option_value) {
+        if (strpos($option_name, 'explorexr_') === 0) {
             $options[] = (object) [
                 'option_name' => $option_name,
                 'option_value' => $option_value
@@ -154,22 +154,22 @@ function expoxr_handle_settings_export() {
         
         // Categorize settings
         if (in_array($option_name, array(
-            'expoxr_cdn_source',
-            'expoxr_model_viewer_version',
-            'expoxr_max_upload_size',
-            'expoxr_debug_mode',
-            'expoxr_view_php_errors'
+            'explorexr_cdn_source',
+            'explorexr_model_viewer_version',
+            'explorexr_max_upload_size',
+            'explorexr_debug_mode',
+            'explorexr_view_php_errors'
         ))) {
             $export_data['core_settings'][$option_name] = $option_value;
         }        // Viewer settings
-        elseif ($option_name && is_string($option_name) && strpos($option_name, 'expoxr_viewer_') === 0) {
+        elseif ($option_name && is_string($option_name) && strpos($option_name, 'explorexr_viewer_') === 0) {
             $export_data['viewer_settings'][$option_name] = $option_value;
         }
         // Loading settings
         elseif ($option_name && is_string($option_name) && (
-                strpos($option_name, 'expoxr_loading_') === 0 || 
-                strpos($option_name, 'expoxr_large_model_') === 0 ||
-                strpos($option_name, 'expoxr_percentage_') === 0)) {
+                strpos($option_name, 'explorexr_loading_') === 0 || 
+                strpos($option_name, 'explorexr_large_model_') === 0 ||
+                strpos($option_name, 'explorexr_percentage_') === 0)) {
             $export_data['loading_settings'][$option_name] = $option_value;
         }
         // Everything else
@@ -190,7 +190,7 @@ function expoxr_handle_settings_export() {
     // Add export metadata
     $export_data['_export_info'] = array(
         'date' => gmdate('Y-m-d H:i:s'),
-        'plugin_version' => EXPOXR_VERSION,
+        'plugin_version' => EXPLOREXR_VERSION,
         'site' => get_bloginfo('name'),
         'url' => get_bloginfo('url'),
         'setting_count' => $setting_count,
@@ -199,7 +199,7 @@ function expoxr_handle_settings_export() {
 
     // Generate filename
     $site_name = sanitize_title_with_dashes(get_bloginfo('name'));
-    $filename = 'expoxr-settings-' . $site_name . '-' . gmdate('Y-m-d') . '.json';
+    $filename = 'explorexr-settings-' . $site_name . '-' . gmdate('Y-m-d') . '.json';
 
     // Clean any previous output to prevent headers already sent error
     if (ob_get_length()) {
@@ -218,36 +218,36 @@ function expoxr_handle_settings_export() {
     echo wp_json_encode($export_data, JSON_PRETTY_PRINT);
     exit;
 }
-add_action('admin_init', 'expoxr_handle_settings_export');
+add_action('admin_init', 'explorexr_handle_settings_export');
 
 /**
  * Handle import request
  */
-function expoxr_handle_settings_import() {
-    if (!isset($_POST['expoxr_action']) || sanitize_text_field(wp_unslash($_POST['expoxr_action'])) !== 'import_settings') {
+function explorexr_handle_settings_import() {
+    if (!isset($_POST['explorexr_action']) || sanitize_text_field(wp_unslash($_POST['explorexr_action'])) !== 'import_settings') {
         return;
     }
 
     // Verify nonce
-    if (!isset($_POST['expoxr_import_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['expoxr_import_nonce'])), 'expoxr_import_nonce')) {
-        add_settings_error('expoxr_messages', 'expoxr_import_error', esc_html__('Security check failed. Please try again.', 'explorexr'), 'error');
+    if (!isset($_POST['explorexr_import_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['explorexr_import_nonce'])), 'explorexr_import_nonce')) {
+        add_settings_error('explorexr_messages', 'explorexr_import_error', esc_html__('Security check failed. Please try again.', 'explorexr'), 'error');
         return;
     }
 
     // Check user capabilities
     if (!current_user_can('manage_options')) {
-        add_settings_error('expoxr_messages', 'expoxr_import_error', esc_html__('You do not have sufficient permissions to import settings.', 'explorexr'), 'error');
+        add_settings_error('explorexr_messages', 'explorexr_import_error', esc_html__('You do not have sufficient permissions to import settings.', 'explorexr'), 'error');
         return;
     }
 
     // Check if a file was uploaded
-    if (!isset($_FILES['expoxr_import_file']) || empty($_FILES['expoxr_import_file']['tmp_name'])) {
-        add_settings_error('expoxr_messages', 'expoxr_import_error', esc_html__('No file was uploaded. Please select a file to import.', 'explorexr'), 'error');
+    if (!isset($_FILES['explorexr_import_file']) || empty($_FILES['explorexr_import_file']['tmp_name'])) {
+        add_settings_error('explorexr_messages', 'explorexr_import_error', esc_html__('No file was uploaded. Please select a file to import.', 'explorexr'), 'error');
         return;
     }
 
     // Check for upload errors
-    if (isset($_FILES['expoxr_import_file']['error']) && $_FILES['expoxr_import_file']['error'] !== UPLOAD_ERR_OK) {
+    if (isset($_FILES['explorexr_import_file']['error']) && $_FILES['explorexr_import_file']['error'] !== UPLOAD_ERR_OK) {
         $upload_error_messages = array(
             UPLOAD_ERR_INI_SIZE => 'The uploaded file exceeds the upload_max_filesize directive in php.ini.',
             UPLOAD_ERR_FORM_SIZE => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form.',
@@ -257,40 +257,40 @@ function expoxr_handle_settings_import() {
             UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk.',
             UPLOAD_ERR_EXTENSION => 'A PHP extension stopped the file upload.'
         );
-        $file_error = isset($_FILES['expoxr_import_file']['error']) ? intval($_FILES['expoxr_import_file']['error']) : UPLOAD_ERR_NO_FILE;
+        $file_error = isset($_FILES['explorexr_import_file']['error']) ? intval($_FILES['explorexr_import_file']['error']) : UPLOAD_ERR_NO_FILE;
         $error_message = isset($upload_error_messages[$file_error]) ? 
                          $upload_error_messages[$file_error] : 
                          'Unknown upload error.';
         
         /* translators: %s: Error message from file upload */
-        add_settings_error('expoxr_messages', 'expoxr_import_error', sprintf(esc_html__('Error uploading file: %s', 'explorexr'), $error_message), 'error');
+        add_settings_error('explorexr_messages', 'explorexr_import_error', sprintf(esc_html__('Error uploading file: %s', 'explorexr'), $error_message), 'error');
         return;
     }
 
     // Check file size
-    if (isset($_FILES['expoxr_import_file']['size']) && $_FILES['expoxr_import_file']['size'] > 5242880) { // 5MB limit
-        add_settings_error('expoxr_messages', 'expoxr_import_error', esc_html__('File is too large. Maximum size is 5MB.', 'explorexr'), 'error');
+    if (isset($_FILES['explorexr_import_file']['size']) && $_FILES['explorexr_import_file']['size'] > 5242880) { // 5MB limit
+        add_settings_error('explorexr_messages', 'explorexr_import_error', esc_html__('File is too large. Maximum size is 5MB.', 'explorexr'), 'error');
         return;
     }
 
     // Check file extension
-    if (isset($_FILES['expoxr_import_file']['name'])) {
-        $file_extension = strtolower(pathinfo(sanitize_file_name($_FILES['expoxr_import_file']['name']), PATHINFO_EXTENSION));
+    if (isset($_FILES['explorexr_import_file']['name'])) {
+        $file_extension = strtolower(pathinfo(sanitize_file_name($_FILES['explorexr_import_file']['name']), PATHINFO_EXTENSION));
         if ($file_extension !== 'json') {
-            add_settings_error('expoxr_messages', 'expoxr_import_error', esc_html__('Invalid file format. Please upload a JSON file.', 'explorexr'), 'error');
+            add_settings_error('explorexr_messages', 'explorexr_import_error', esc_html__('Invalid file format. Please upload a JSON file.', 'explorexr'), 'error');
             return;
         }
     }
 
     // Get file contents
-    if (isset($_FILES['expoxr_import_file']['tmp_name'])) {
+    if (isset($_FILES['explorexr_import_file']['tmp_name'])) {
         // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- File path is handled by WordPress file upload
-        $import_file = file_get_contents($_FILES['expoxr_import_file']['tmp_name']);
+        $import_file = file_get_contents($_FILES['explorexr_import_file']['tmp_name']);
     } else {
         $import_file = false;
     }
     if (!$import_file) {
-        add_settings_error('expoxr_messages', 'expoxr_import_error', esc_html__('Could not read the import file. Please try again.', 'explorexr'), 'error');
+        add_settings_error('explorexr_messages', 'explorexr_import_error', esc_html__('Could not read the import file. Please try again.', 'explorexr'), 'error');
         return;
     }
 
@@ -298,8 +298,8 @@ function expoxr_handle_settings_import() {
     $import_data = json_decode($import_file, true);
     if (json_last_error() !== JSON_ERROR_NONE) {
         add_settings_error(
-            'expoxr_messages', 
-            'expoxr_import_error', 
+            'explorexr_messages', 
+            'explorexr_import_error', 
             /* translators: %s: JSON error message */
             sprintf(esc_html__('Invalid JSON file: %s. Could not import settings.', 'explorexr'), json_last_error_msg()), 
             'error'
@@ -307,19 +307,19 @@ function expoxr_handle_settings_import() {
         return;
     }
 
-    // Validate that this is an ExpoXR settings file
+    // Validate that this is an ExploreXR settings file
     if (!isset($import_data['_export_info'])) {
         add_settings_error(
-            'expoxr_messages',
-            'expoxr_import_error',
-            esc_html__('This does not appear to be a valid ExpoXR settings file. Missing export metadata.', 'explorexr'),
+            'explorexr_messages',
+            'explorexr_import_error',
+            esc_html__('This does not appear to be a valid ExploreXR settings file. Missing export metadata.', 'explorexr'),
             'error'
         );
         return;
     }
 
     // Check if override is enabled
-    $override = isset($_POST['expoxr_import_override']) && sanitize_text_field(wp_unslash($_POST['expoxr_import_override'])) === '1';
+    $override = isset($_POST['explorexr_import_override']) && sanitize_text_field(wp_unslash($_POST['explorexr_import_override'])) === '1';
     
     // Import counts
     $imported = 0;
@@ -352,8 +352,8 @@ function expoxr_handle_settings_import() {
                     continue;
                 }
                 
-                // Only process ExpoXR options
-                if (!is_string($option_name) || strpos($option_name, 'expoxr_') !== 0) {
+                // Only process ExploreXR options
+                if (!is_string($option_name) || strpos($option_name, 'explorexr_') !== 0) {
                     $skipped++;
                     continue;
                 }
@@ -400,8 +400,8 @@ function expoxr_handle_settings_import() {
                 continue;
             }
             
-            // Only process ExpoXR options
-            if (!is_string($option_name) || strpos($option_name, 'expoxr_') !== 0) {
+            // Only process ExploreXR options
+            if (!is_string($option_name) || strpos($option_name, 'explorexr_') !== 0) {
                 $skipped++;
                 continue;
             }
@@ -427,9 +427,9 @@ function expoxr_handle_settings_import() {
             // Track which category of settings was modified
             // Make sure option_name is a string before using strpos
             if (is_string($option_name)) {
-                if (strpos($option_name, 'expoxr_loading_') === 0) {
+                if (strpos($option_name, 'explorexr_loading_') === 0) {
                     $modified_categories['loading'] = true;
-                } elseif (strpos($option_name, 'expoxr_viewer_') === 0) {
+                } elseif (strpos($option_name, 'explorexr_viewer_') === 0) {
                     $modified_categories['viewer'] = true;
                 }
             }
@@ -481,37 +481,37 @@ function expoxr_handle_settings_import() {
         );
     }
     
-    add_settings_error('expoxr_messages', 'expoxr_import_success', $message, 'success');
+    add_settings_error('explorexr_messages', 'explorexr_import_success', $message, 'success');
 }
-add_action('admin_init', 'expoxr_handle_settings_import');
+add_action('admin_init', 'explorexr_handle_settings_import');
 
 /**
  * Enqueue Import/Export assets
  */
-function expoxr_enqueue_import_export_assets($hook) {
+function explorexr_enqueue_import_export_assets($hook) {
     // Only load on our settings page
-    if ($hook !== 'expoxr_page_expoxr-settings') {
+    if ($hook !== 'explorexr_page_explorexr-settings') {
         return;
     }
     
     // Enqueue CSS
     wp_enqueue_style(
-        'expoxr-import-export-css',
-        EXPOXR_PLUGIN_URL . 'admin/css/import-export.css',
+        'explorexr-import-export-css',
+        EXPLOREXR_PLUGIN_URL . 'admin/css/import-export.css',
         array(),
-        EXPOXR_VERSION
+        EXPLOREXR_VERSION
     );
     
     // Enqueue JS
     wp_enqueue_script(
-        'expoxr-import-export-js',
-        EXPOXR_PLUGIN_URL . 'admin/js/import-export.js',
+        'explorexr-import-export-js',
+        EXPLOREXR_PLUGIN_URL . 'admin/js/import-export.js',
         array('jquery'),
-        EXPOXR_VERSION,
+        EXPLOREXR_VERSION,
         true
     );
 }
-add_action('admin_enqueue_scripts', 'expoxr_enqueue_import_export_assets');
+add_action('admin_enqueue_scripts', 'explorexr_enqueue_import_export_assets');
 
 
 

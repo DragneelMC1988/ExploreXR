@@ -1,8 +1,8 @@
 <?php
 /**
- * Sanitization functions for ExpoXR
+ * Sanitization functions for ExploreXR
  *
- * @package ExpoXR
+  * @package ExploreXR
  */
 
 // Exit if accessed directly
@@ -16,8 +16,8 @@ if (!defined('ABSPATH')) {
  * @param string $color Color string to sanitize
  * @return string Sanitized color or default color
  */
-if (!function_exists('expoxr_sanitize_hex_color')) {
-    function expoxr_sanitize_hex_color($color) {
+if (!function_exists('explorexr_sanitize_hex_color')) {
+    function explorexr_sanitize_hex_color($color) {
         if ('' === $color) {
             return '';
         }
@@ -39,10 +39,10 @@ if (!function_exists('expoxr_sanitize_hex_color')) {
  * @param array $file File data from $_FILES
  * @return array|false Array with file information or false on failure
  */
-function expoxr_sanitize_model_upload($file) {
+function explorexr_sanitize_model_upload($file) {
     // Check if original function exists
-    if (function_exists('expoxr_handle_model_upload')) {
-        return expoxr_handle_model_upload($file);
+    if (function_exists('explorexr_handle_model_upload')) {
+        return explorexr_handle_model_upload($file);
     }
     
     return false;
@@ -56,7 +56,7 @@ function expoxr_sanitize_model_upload($file) {
  * @param mixed $default Default value
  * @return mixed Meta value or default
  */
-function expoxr_get_model_meta($post_id, $key, $default = '') {
+function explorexr_get_model_meta($post_id, $key, $default = '') {
     $value = get_post_meta($post_id, $key, true);
     return !empty($value) ? $value : $default;
 }
@@ -67,7 +67,7 @@ function expoxr_get_model_meta($post_id, $key, $default = '') {
  * @param string $value Camera orbit value
  * @return string Validated value
  */
-function expoxr_validate_camera_orbit($value) {
+function explorexr_validate_camera_orbit($value) {
     // Allow empty values
     if (empty($value)) {
         return '';
@@ -87,7 +87,7 @@ function expoxr_validate_camera_orbit($value) {
  * @param string $value Field of view value
  * @return string Validated value
  */
-function expoxr_validate_field_of_view($value) {
+function explorexr_validate_field_of_view($value) {
     // Allow empty values
     if (empty($value)) {
         return '';
@@ -107,7 +107,7 @@ function expoxr_validate_field_of_view($value) {
  * @param string $value Camera target value
  * @return string Validated value
  */
-function expoxr_validate_camera_target($value) {
+function explorexr_validate_camera_target($value) {
     // Allow empty values
     if (empty($value)) {
         return '';
@@ -130,7 +130,7 @@ function expoxr_validate_camera_target($value) {
  * @param float $default Default value if invalid
  * @return float Validated value
  */
-function expoxr_validate_numeric_range($value, $min, $max, $default) {
+function explorexr_validate_numeric_range($value, $min, $max, $default) {
     $value = (float) $value;
     
     if ($value < $min || $value > $max) {

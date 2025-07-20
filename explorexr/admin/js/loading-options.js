@@ -17,22 +17,22 @@
      */
     function initAdminPreview() {
         // Update preview when loading type changes
-        $('input[name="expoxr_loading_type"]').on('change', function() {
+        $('input[name="explorexr_loading_type"]').on('change', function() {
             const loadingType = $(this).val();
-            const previewContainer = $('.expoxr-loading-preview');
+            const previewContainer = $('.explorexr-loading-preview');
             
             previewContainer.attr('data-loading-type', loadingType);
             
             // Show/hide elements based on loading type
             if (loadingType === 'bar') {
-                previewContainer.find('.expoxr-loading-progress-bar').show();
-                previewContainer.find('.expoxr-loading-percentage').hide();
+                previewContainer.find('.explorexr-loading-progress-bar').show();
+                previewContainer.find('.explorexr-loading-percentage').hide();
             } else if (loadingType === 'percentage') {
-                previewContainer.find('.expoxr-loading-progress-bar').hide();
-                previewContainer.find('.expoxr-loading-percentage').show();
+                previewContainer.find('.explorexr-loading-progress-bar').hide();
+                previewContainer.find('.explorexr-loading-percentage').show();
             } else {
-                previewContainer.find('.expoxr-loading-progress-bar').show();
-                previewContainer.find('.expoxr-loading-percentage').show();
+                previewContainer.find('.explorexr-loading-progress-bar').show();
+                previewContainer.find('.explorexr-loading-percentage').show();
             }
         });
     }
@@ -42,7 +42,7 @@
      */
     function initLoadingOptions() {
         // Find all model viewers in the page
-        const modelViewers = document.querySelectorAll('model-viewer.expoxr-model');
+        const modelViewers = document.querySelectorAll('model-viewer.explorexr-model');
         
         modelViewers.forEach(function(modelViewer) {
             // Get loading options from data attributes
@@ -51,15 +51,15 @@
             
             // Create loading container
             const loadingContainer = document.createElement('div');
-            loadingContainer.className = 'expoxr-loading-container';
+            loadingContainer.className = 'explorexr-loading-container';
             
             // Create progress bar
             if (loadingType === 'bar' || loadingType === 'both') {
                 const progressBar = document.createElement('div');
-                progressBar.className = 'expoxr-loading-progress-bar';
+                progressBar.className = 'explorexr-loading-progress-bar';
                 
                 const progressIndicator = document.createElement('div');
-                progressIndicator.className = 'expoxr-loading-progress';
+                progressIndicator.className = 'explorexr-loading-progress';
                 progressIndicator.style.backgroundColor = loadingColor;
                 
                 progressBar.appendChild(progressIndicator);
@@ -69,7 +69,7 @@
             // Create percentage indicator
             if (loadingType === 'percentage' || loadingType === 'both') {
                 const percentageIndicator = document.createElement('div');
-                percentageIndicator.className = 'expoxr-loading-percentage';
+                percentageIndicator.className = 'explorexr-loading-percentage';
                 percentageIndicator.textContent = '0%';
                 percentageIndicator.style.color = loadingColor;
                 
@@ -85,13 +85,13 @@
                 const progressPercent = Math.floor(progress);
                 
                 // Update progress bar if it exists
-                const progressBar = loadingContainer.querySelector('.expoxr-loading-progress');
+                const progressBar = loadingContainer.querySelector('.explorexr-loading-progress');
                 if (progressBar) {
                     progressBar.style.width = progressPercent + '%';
                 }
                 
                 // Update percentage if it exists
-                const percentageIndicator = loadingContainer.querySelector('.expoxr-loading-percentage');
+                const percentageIndicator = loadingContainer.querySelector('.explorexr-loading-percentage');
                 if (percentageIndicator) {
                     percentageIndicator.textContent = progressPercent + '%';
                 }

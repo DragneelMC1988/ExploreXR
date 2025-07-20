@@ -5,8 +5,8 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     // File input change handlers
-    const modelFileInput = document.getElementById('expoxr_model_file_upload');
-    const posterFileInput = document.getElementById('expoxr_model_poster_upload');
+    const modelFileInput = document.getElementById('explorexr_model_file_upload');
+    const posterFileInput = document.getElementById('explorexr_model_poster_upload');
     
     if (modelFileInput) {
         modelFileInput.addEventListener('change', handleModelFileSelect);
@@ -23,18 +23,18 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('Form submission detected - adding edit mode marker');
             
             // Add a hidden field to signal this is coming from the edit form
-            let editModeField = document.getElementById('expoxr_edit_mode_field');
+            let editModeField = document.getElementById('explorexr_edit_mode_field');
             if (!editModeField) {
                 editModeField = document.createElement('input');
                 editModeField.type = 'hidden';
-                editModeField.name = 'expoxr_edit_mode';
-                editModeField.id = 'expoxr_edit_mode_field';
+                editModeField.name = 'explorexr_edit_mode';
+                editModeField.id = 'explorexr_edit_mode_field';
                 editModeField.value = '1';
                 postForm.appendChild(editModeField);
             }
               // Add a nonce field if it doesn't exist
-            if (!document.querySelector('input[name="expoxr_nonce"]')) {
-                console.warn('ExpoXR: No nonce field found in model-uploader.js - adding backup nonce field');
+            if (!document.querySelector('input[name="explorexr_nonce"]')) {
+                console.warn('ExploreXR: No nonce field found in model-uploader.js - adding backup nonce field');
                 
                 // Try to find any WordPress nonce field to use its value
                 const wpNonce = document.querySelector('input[name="_wpnonce"]');
@@ -43,12 +43,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Create our specific nonce field
                 const nonceField = document.createElement('input');
                 nonceField.type = 'hidden';
-                nonceField.name = 'expoxr_nonce';
-                nonceField.id = 'expoxr_nonce';
+                nonceField.name = 'explorexr_nonce';
+                nonceField.id = 'explorexr_nonce';
                 nonceField.value = nonceValue;
                 postForm.appendChild(nonceField);
                 
-                console.log('ExpoXR: Added backup nonce field with value: ' + (nonceValue ? 'present' : 'empty'));
+                console.log('ExploreXR: Added backup nonce field with value: ' + (nonceValue ? 'present' : 'empty'));
             }
             
             // Create hidden fields for all checkboxes to ensure their state is saved
@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initExistingPreviews();
     
     // Add a debug notice to indicate the enhanced JS is loaded
-    console.log('ExpoXR Edit Mode enhanced v1.0.2 - Model uploader loaded');
+    console.log('ExploreXR Edit Mode enhanced v1.0.2 - Model uploader loaded');
 });
 
 /**
@@ -127,7 +127,7 @@ function captureFormChanges() {
     const metaboxes = document.querySelectorAll('.postbox');
     
     metaboxes.forEach(function(metabox) {
-        if (metabox.id.startsWith('expoxr_model_')) {
+        if (metabox.id.startsWith('explorexr_model_')) {
             const inputs = metabox.querySelectorAll('input, textarea, select');
             
             inputs.forEach(function(input) {
@@ -171,7 +171,7 @@ function setupChangeTracking() {
  * Initialize previews for existing models
  */
 function initExistingPreviews() {
-    const modelPreview = document.getElementById('expoxr-model-preview');
+    const modelPreview = document.getElementById('explorexr-model-preview');
     if (!modelPreview) return;
     
     const modelUrl = modelPreview.dataset.modelUrl;
@@ -201,7 +201,7 @@ function handleModelFileSelect(event) {
     }
     
     // Create a preview
-    const modelPreview = document.getElementById('expoxr-model-preview');
+    const modelPreview = document.getElementById('explorexr-model-preview');
     if (modelPreview) {
         // Get URL for the uploaded file
         const objectUrl = URL.createObjectURL(file);
@@ -213,16 +213,16 @@ function handleModelFileSelect(event) {
         updateModelPreview(objectUrl, posterUrl);
         
         // Update file name display
-        const fileNameDisplay = document.getElementById('expoxr-model-filename');
+        const fileNameDisplay = document.getElementById('explorexr-model-filename');
         if (fileNameDisplay) {
             fileNameDisplay.textContent = file.name;
         }
         
         // Store file information in hidden fields for form submission
-        document.getElementById('expoxr_model_file_name').value = file.name;
+        document.getElementById('explorexr_model_file_name').value = file.name;
         
         // Mark that we have a new file
-        document.getElementById('expoxr_model_has_new_file').value = '1';
+        document.getElementById('explorexr_model_has_new_file').value = '1';
     }
 }
 
@@ -241,7 +241,7 @@ function handlePosterFileSelect(event) {
     }
     
     // Create a preview
-    const posterPreview = document.getElementById('expoxr-poster-preview');
+    const posterPreview = document.getElementById('explorexr-poster-preview');
     if (posterPreview) {
         // Get URL for the uploaded file
         const objectUrl = URL.createObjectURL(file);
@@ -251,7 +251,7 @@ function handlePosterFileSelect(event) {
         posterPreview.style.display = 'block';
         
         // Get the current model URL
-        const modelPreview = document.getElementById('expoxr-model-preview');
+        const modelPreview = document.getElementById('explorexr-model-preview');
         const modelUrl = modelPreview ? modelPreview.dataset.modelUrl : '';
         
         // Update model viewer with new poster
@@ -260,10 +260,10 @@ function handlePosterFileSelect(event) {
         }
         
         // Store file information in hidden fields for form submission
-        document.getElementById('expoxr_model_poster_name').value = file.name;
+        document.getElementById('explorexr_model_poster_name').value = file.name;
         
         // Mark that we have a new poster
-        document.getElementById('expoxr_model_has_new_poster').value = '1';
+        document.getElementById('explorexr_model_has_new_poster').value = '1';
     }
 }
 
@@ -271,7 +271,7 @@ function handlePosterFileSelect(event) {
  * Update the model preview with a new model and/or poster
  */
 function updateModelPreview(modelUrl, posterUrl) {
-    const modelPreview = document.getElementById('expoxr-model-preview');
+    const modelPreview = document.getElementById('explorexr-model-preview');
     if (!modelPreview) return;
     
     // Store URLs for later reference

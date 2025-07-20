@@ -1,35 +1,35 @@
 /* Premium Upgrade Styles for ExploreXR */
 
-.expoxr-premium-notice {
+.explorexr-premium-notice {
     border: none !important;
     border-left: 4px solid #667eea !important;
     background: white;
 }
 
-.expoxr-premium-notice h3 {
+.explorexr-premium-notice h3 {
     color: #333;
     font-size: 16px;
 }
 
-.expoxr-premium-notice p {
+.explorexr-premium-notice p {
     color: #666;
     line-height: 1.5;
 }
 
-.expoxr-premium-notice .button-primary {
+.explorexr-premium-notice .button-primary {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border: none;
     box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
     transition: all 0.3s ease;
 }
 
-.expoxr-premium-notice .button-primary:hover {
+.explorexr-premium-notice .button-primary:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(102, 126, 234, 0.4);
 }
 
 /* Premium Feature Cards */
-.expoxr-premium-card {
+.explorexr-premium-card {
     background: white;
     border: 1px solid #e0e0e0;
     border-radius: 8px;
@@ -40,7 +40,7 @@
     overflow: hidden;
 }
 
-.expoxr-premium-card::before {
+.explorexr-premium-card::before {
     content: '';
     position: absolute;
     top: 0;
@@ -50,7 +50,7 @@
     background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
 }
 
-.expoxr-premium-card.disabled {
+.explorexr-premium-card.disabled {
     opacity: 0.6;
     background: #f9f9f9;
 }
@@ -140,12 +140,12 @@
 }
 
 /* Premium Model Edit Page Styles */
-.expoxr-free-version .addon-card {
+.explorexr-free-version .addon-card {
     position: relative;
     opacity: 0.7;
 }
 
-.expoxr-free-version .addon-card::after {
+.explorexr-free-version .addon-card::after {
     content: '';
     position: absolute;
     top: 0;
@@ -203,7 +203,7 @@
 }
 
 /* Dashboard Premium Widgets */
-.expoxr-premium-widget {
+.explorexr-premium-widget {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     padding: 25px;
@@ -213,19 +213,19 @@
     box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
 
-.expoxr-premium-widget h3 {
+.explorexr-premium-widget h3 {
     color: white;
     margin: 0 0 15px 0;
     font-size: 24px;
 }
 
-.expoxr-premium-widget p {
+.explorexr-premium-widget p {
     margin: 0 0 20px 0;
     opacity: 0.9;
     line-height: 1.6;
 }
 
-.expoxr-premium-widget .button {
+.explorexr-premium-widget .button {
     background: rgba(255, 255, 255, 0.2);
     color: white;
     border: 2px solid rgba(255, 255, 255, 0.3);
@@ -236,7 +236,7 @@
     transition: all 0.3s ease;
 }
 
-.expoxr-premium-widget .button:hover {
+.explorexr-premium-widget .button:hover {
     background: white;
     color: #667eea;
     text-decoration: none;
@@ -244,7 +244,7 @@
 }
 
 /* Feature Teasers */
-.expoxr-feature-teaser {
+.explorexr-feature-teaser {
     display: flex;
     align-items: center;
     padding: 15px;
@@ -255,7 +255,7 @@
     transition: all 0.3s ease;
 }
 
-.expoxr-feature-teaser:hover {
+.explorexr-feature-teaser:hover {
     border-color: #667eea;
     box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
 }
@@ -287,12 +287,12 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .expoxr-premium-notice > div {
+    .explorexr-premium-notice > div {
         flex-direction: column !important;
         gap: 15px !important;
     }
     
-    .expoxr-premium-notice .button {
+    .explorexr-premium-notice .button {
         align-self: flex-start;
     }
     
@@ -302,7 +302,7 @@
         gap: 10px;
     }
     
-    .expoxr-feature-teaser {
+    .explorexr-feature-teaser {
         flex-direction: column;
         text-align: center;
     }
@@ -317,7 +317,7 @@
         margin-top: 10px;
     }
     
-    .expoxr-premium-hero {
+    .explorexr-premium-hero {
         flex-direction: column;
         text-align: center;
     }
@@ -410,20 +410,20 @@
 
 
 
-    .expoxr-premium-upgrade-page {
+    .explorexr-premium-upgrade-page {
         max-width: none;
         margin: 0;
         padding: 0;
     }
 
-    .expoxr-premium-header {
+    .explorexr-premium-header {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
         padding: 40px 20px;
         margin: 0 -20px 30px -20px;
     }
 
-    .expoxr-premium-hero {
+    .explorexr-premium-hero {
         max-width: 1200px;
         margin: 0 auto;
         display: flex;
@@ -474,7 +474,7 @@
         height: auto;
     }
 
-    .expoxr-premium-content {
+    .explorexr-premium-content {
         margin: 0 auto;
         padding: 0;
     }
@@ -698,7 +698,7 @@
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
         padding: 60px 40px;
-        margin: 60px -20px 0 -20px;
+        margin: 60px 0 0 0;
         text-align: center;
     }
 
@@ -859,7 +859,7 @@
         text-align: center;
     }
 
-    .expoxr-premium-metabox {
+    .explorexr-premium-metabox {
             padding: 15px;
         }
         
@@ -904,7 +904,7 @@
             font-size: 13px;
         }
 
-        .expoxr-premium-overlay {
+        .explorexr-premium-overlay {
             position: fixed;
             top: 0;
             left: 0;
@@ -917,7 +917,7 @@
             justify-content: center;
         }
         
-        .expoxr-premium-popup {
+        .explorexr-premium-popup {
             background: white;
             border-radius: 12px;
             max-width: 400px;

@@ -58978,9 +58978,9 @@ configuration or device capabilities');
 	    return c > 3 && r && Object.defineProperty(target, key, r), r;
 	};
 	const PROGRESS_BAR_UPDATE_THRESHOLD = 100;
-	const DEFAULT_DRACO_DECODER_LOCATION = (window.expoxrPluginUrl || '/wp-content/plugins/explorexr/') + 'assets/vendor/draco/';
-	const DEFAULT_KTX2_TRANSCODER_LOCATION = (window.expoxrPluginUrl || '/wp-content/plugins/explorexr/') + 'assets/vendor/basis-universal/';
-	const DEFAULT_LOTTIE_LOADER_LOCATION = (window.expoxrPluginUrl || '/wp-content/plugins/explorexr/') + 'assets/vendor/three/LottieLoader.js';
+	const DEFAULT_DRACO_DECODER_LOCATION = (window.explorexrPluginUrl || '/wp-content/plugins/explorexr/') + 'assets/vendor/draco/';
+	const DEFAULT_KTX2_TRANSCODER_LOCATION = (window.explorexrPluginUrl || '/wp-content/plugins/explorexr/') + 'assets/vendor/basis-universal/';
+	const DEFAULT_LOTTIE_LOADER_LOCATION = (window.explorexrPluginUrl || '/wp-content/plugins/explorexr/') + 'assets/vendor/three/LottieLoader.js';
 	const RevealStrategy = {
 	    AUTO: 'auto',
 	    MANUAL: 'manual'

@@ -25,34 +25,34 @@ if (plugin_basename(__FILE__) !== WP_UNINSTALL_PLUGIN) {
  * Clean up temporary plugin data only
  * Preserves user settings and uploaded models
  */
-function expoxr_free_uninstall() {
+function explorexr_free_uninstall() {
     global $wpdb;
 
     // Clean up temporary transients only (temporary cached data)
     // Use WordPress API to clean up transients individually for better compliance
-    $transient_options = get_option('exploxr_temp_transients', array());
+    $transient_options = get_option('explorexr_temp_transients', array());
     if (!empty($transient_options)) {
         foreach ($transient_options as $transient_key) {
             delete_transient($transient_key);
         }
-        delete_option('exploxr_temp_transients');
+        delete_option('explorexr_temp_transients');
     }
     
     // Alternative: Clean up known transients individually
-    delete_transient('expoxr_model_cache');
-    delete_transient('expoxr_admin_stats');
-    delete_transient('expoxr_file_validation');
+    delete_transient('explorexr_model_cache');
+    delete_transient('explorexr_admin_stats');
+    delete_transient('explorexr_file_validation');
 
     // Clean up temporary admin notices
-    delete_option('expoxr_admin_notice');
-    delete_option('expoxr_debug_log_data');
+    delete_option('explorexr_admin_notice');
+    delete_option('explorexr_debug_log_data');
     
     // Flush rewrite rules
     flush_rewrite_rules();
 }
 
 // Run the minimal uninstall
-expoxr_free_uninstall();
+explorexr_free_uninstall();
 
 
 

@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 ?>
 
 <!-- WordPress Notifications Area -->
-<div id="expoxr-notifications-area" class="expoxr-notifications-wrapper">
+<div id="explorexr-notifications-area" class="explorexr-notifications-wrapper">
     <?php
     // Display any WordPress admin notices that should appear above the ExploreXR header
     // This area will be populated by WordPress notices and ExploreXR notifications
@@ -60,7 +60,7 @@ if (!defined('ABSPATH')) {
 <script type="text/javascript">
 jQuery(document).ready(function($) {
     // Handle dismiss functionality for notices in our notifications area
-    $(document).on('click', '#expoxr-notifications-area .notice-dismiss', function(e) {
+    $(document).on('click', '#explorexr-notifications-area .notice-dismiss', function(e) {
         e.preventDefault();
         $(this).closest('.notice').fadeOut(300, function() {
             $(this).remove();
@@ -69,7 +69,7 @@ jQuery(document).ready(function($) {
     
     // Auto-dismiss notifications after a set time (optional)
     setTimeout(function() {
-        $('#expoxr-notifications-area .notice.is-dismissible').each(function() {
+        $('#explorexr-notifications-area .notice.is-dismissible').each(function() {
             var $notice = $(this);
             // Only auto-dismiss if it's not an error notice
             if (!$notice.hasClass('notice-error')) {

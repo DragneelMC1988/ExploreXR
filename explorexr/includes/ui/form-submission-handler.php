@@ -1,11 +1,11 @@
 <?php
 /**
- * ExpoXR Form Submission Handler
+ * ExploreXR Form Submission Handler
  *
- * Handles form submissions for the ExpoXR plugin, ensuring proper data validation,
+ * Handles form submissions for the ExploreXR plugin, ensuring proper data validation,
  * sanitization, and preservation of settings between different sections.
  *
- * @package ExpoXR
+ * @package ExploreXR
  */
 
 // Exit if accessed directly
@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
  * @param bool $edit_mode Whether we're in edit mode or not
  * @return array Processed form data
  */
-function expoxr_process_form_submission($post_data, $post_id = 0, $edit_mode = false) {
+function ExploreXR_process_form_submission($post_data, $post_id = 0, $edit_mode = false) {
     // Default result array
     $result = array(
         'success' => true,
@@ -39,13 +39,13 @@ function expoxr_process_form_submission($post_data, $post_id = 0, $edit_mode = f
     }
     
     // Log for debugging
-    if (get_option('expoxr_debug_mode')) {
-        expoxr_log('ExpoXR Form Handler: Processing form submission for post ID ' . $post_id);
-        expoxr_log('ExpoXR Form Handler: Edit mode: ' . ($edit_mode ? 'enabled' : 'disabled'));
+    if (get_option('ExploreXR_debug_mode')) {
+        ExploreXR_log('ExploreXR Form Handler: Processing form submission for post ID ' . $post_id);
+        ExploreXR_log('ExploreXR Form Handler: Edit mode: ' . ($edit_mode ? 'enabled' : 'disabled'));
         
         // Only log POST data in debug mode
-        if (get_option('expoxr_view_php_errors')) {
-            expoxr_log('ExpoXR Form Handler: POST data: ' . $post_data);
+        if (get_option('ExploreXR_view_php_errors')) {
+            ExploreXR_log('ExploreXR Form Handler: POST data: ' . $post_data);
         }
     }
     
@@ -57,8 +57,8 @@ function expoxr_process_form_submission($post_data, $post_id = 0, $edit_mode = f
             if (!isset($post_data[$original_key]) && $value) {
                 $post_data[$original_key] = $value;
                 
-                if (get_option('expoxr_debug_mode')) {
-                    expoxr_log("ExpoXR Edit Mode Handler: Setting {$original_key} to {$post_data[$original_key]} based on state field");
+                if (get_option('ExploreXR_debug_mode')) {
+                    ExploreXR_log("ExploreXR Edit Mode Handler: Setting {$original_key} to {$post_data[$original_key]} based on state field");
                 }
             }
         }
@@ -70,8 +70,8 @@ function expoxr_process_form_submission($post_data, $post_id = 0, $edit_mode = f
             // Use a custom size
             $post_data['viewer_size'] = $post_data['viewer_size_value'];
             
-            if (get_option('expoxr_debug_mode')) {
-                expoxr_log('ExpoXR Form Handler: Using viewer_size_value: ' . $post_data['viewer_size_value']);
+            if (get_option('ExploreXR_debug_mode')) {
+                ExploreXR_log('ExploreXR Form Handler: Using viewer_size_value: ' . $post_data['viewer_size_value']);
             }
         }
         // Handle viewer_size_preset (preset size)
@@ -79,8 +79,8 @@ function expoxr_process_form_submission($post_data, $post_id = 0, $edit_mode = f
             // Use a preset size
             $post_data['viewer_size'] = $post_data['viewer_size_preset'];
             
-            if (get_option('expoxr_debug_mode')) {
-                expoxr_log('ExpoXR Form Handler: Using viewer_size_preset: ' . $post_data['viewer_size_preset']);
+            if (get_option('ExploreXR_debug_mode')) {
+                ExploreXR_log('ExploreXR Form Handler: Using viewer_size_preset: ' . $post_data['viewer_size_preset']);
             }
         }
         // Handle if viewer_size is directly provided as an array
@@ -89,8 +89,8 @@ function expoxr_process_form_submission($post_data, $post_id = 0, $edit_mode = f
             // Just ensure it's a string
             $post_data['viewer_size'] = implode(',', $post_data['viewer_size']);
             
-            if (get_option('expoxr_debug_mode')) {
-                expoxr_log('ExpoXR Form Handler: viewer_size is an array: ' . $post_data['viewer_size']);
+            if (get_option('ExploreXR_debug_mode')) {
+                ExploreXR_log('ExploreXR Form Handler: viewer_size is an array: ' . $post_data['viewer_size']);
             }
         }
         // Default fallback
@@ -98,8 +98,8 @@ function expoxr_process_form_submission($post_data, $post_id = 0, $edit_mode = f
             // Set default size if none specified
             $post_data['viewer_size'] = 'medium';
             
-            if (get_option('expoxr_debug_mode')) {
-                expoxr_log('ExpoXR Form Handler: Setting default viewer_size to medium');
+            if (get_option('ExploreXR_debug_mode')) {
+                ExploreXR_log('ExploreXR Form Handler: Setting default viewer_size to medium');
             }
         }
         
@@ -129,15 +129,15 @@ function expoxr_process_form_submission($post_data, $post_id = 0, $edit_mode = f
                 // If checkbox was submitted, use its value
                 if (isset($post_data[$field])) {
                     // Checkbox is present in the form submission
-                    if (get_option('expoxr_debug_mode')) {
-                        expoxr_log("ExpoXR Form Handler: Setting {$field} to {$post_data[$field]} based on state field");
+                    if (get_option('ExploreXR_debug_mode')) {
+                        ExploreXR_log("ExploreXR Form Handler: Setting {$field} to {$post_data[$field]} based on state field");
                     }
                 } else {
                     // Checkbox was not submitted, which means it's unchecked
                     $post_data[$field] = 'off';
                     
-                    if (get_option('expoxr_debug_mode')) {
-                        expoxr_log("ExpoXR Form Handler: Setting {$field} to 'off' (not in form data)");
+                    if (get_option('ExploreXR_debug_mode')) {
+                        ExploreXR_log("ExploreXR Form Handler: Setting {$field} to 'off' (not in form data)");
                     }
                 }
                 
@@ -159,7 +159,7 @@ function expoxr_process_form_submission($post_data, $post_id = 0, $edit_mode = f
  * @param array $data Form data to sanitize
  * @return array Sanitized form data
  */
-function expoxr_sanitize_form_data($data) {
+function ExploreXR_sanitize_form_data($data) {
     $sanitized = array();
     
     // Ensure data is an array and not null
@@ -198,7 +198,7 @@ function expoxr_sanitize_form_data($data) {
         }
         // Color fields
         elseif (in_array($key, array('background_color', 'loading_color'))) {
-            $sanitized[$key] = expoxr_sanitize_hex_color($value);
+            $sanitized[$key] = ExploreXR_sanitize_hex_color($value);
         }
         // Select fields (specific options)
         elseif ($key === 'viewer_size') {
@@ -226,7 +226,7 @@ function expoxr_sanitize_form_data($data) {
  * @param string $value The current value to preserve
  * @return string HTML for hidden state field
  */
-function expoxr_create_state_field($field_name, $value = '') {
+function ExploreXR_create_state_field($field_name, $value = '') {
     return '<input type="hidden" name="' . esc_attr($field_name) . '_state" value="' . esc_attr($value) . '">';
 }
 

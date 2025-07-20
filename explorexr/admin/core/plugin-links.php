@@ -11,16 +11,16 @@ if (!defined('ABSPATH')) {
 /**
  * Add plugin action links to easily access addon management
  */
-function expoxr_plugin_action_links($links) {
+function explorexr_plugin_action_links($links) {
     // Add link to Addon Management
-    $addon_link = '<a href="' . esc_url(admin_url('admin.php?page=expoxr-addons')) . '">Addons</a>';
+    $addon_link = '<a href="' . esc_url(admin_url('admin.php?page=explorexr-addons')) . '">Addons</a>';
     
     // Add at the beginning of the array
     array_unshift($links, $addon_link);
     
     return $links;
 }
-add_filter('plugin_action_links_expoxr/exploreXR.php', 'expoxr_plugin_action_links');
+add_filter('plugin_action_links_explorexr/exploreXR.php', 'explorexr_plugin_action_links');
 
 
 

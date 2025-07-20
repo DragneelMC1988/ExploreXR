@@ -1,5 +1,5 @@
 /**
- * ExpoXR Admin - Files Page
+ * ExploreXR Admin - Files Page
  * Handles file interactions and previews in the files admin page
  */
 jQuery(document).ready(function($) {
@@ -21,9 +21,9 @@ jQuery(document).ready(function($) {
     });
     
     // Model viewer modal functionality
-    const modal = $('#expoxr-model-modal');
-    const modelViewer = $('#expoxr-model-viewer');
-    const modelTitle = $('#expoxr-model-title');
+    const modal = $('#explorexr-model-modal');
+    const modelViewer = $('#explorexr-model-viewer');
+    const modelTitle = $('#explorexr-model-title');
     
     // Open modal when clicking View Model
     $('.view-3d-model').on('click', function(e) {
@@ -40,7 +40,7 @@ jQuery(document).ready(function($) {
     });
     
     // Close modal
-    $('.expoxr-model-close').on('click', function() {
+    $('.explorexr-model-close').on('click', function() {
         modal.css('display', 'none');
         modelViewer.attr('src', '');
     });

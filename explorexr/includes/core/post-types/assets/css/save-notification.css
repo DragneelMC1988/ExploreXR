@@ -1,5 +1,5 @@
 /* Save notification styling */
-.expoxr-save-notice {
+.explorexr-save-notice {
     position: relative;
     margin-top: 20px;
     margin-bottom: 20px;
@@ -7,21 +7,21 @@
     border-left: 4px solid #2AACE2;
     background-color: #ecf7ed;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    animation: expoxr-save-notice-fadein 0.5s;
+    animation: explorexr-save-notice-fadein 0.5s;
 }
 
-.expoxr-save-notice p {
+.explorexr-save-notice p {
     font-size: 14px;
     margin: 0.5em 0;
     padding: 2px;
 }
 
-.expoxr-save-notice strong {
+.explorexr-save-notice strong {
     color: #2c8e37;
 }
 
 /* Animate the notice appearing */
-@keyframes expoxr-save-notice-fadein {
+@keyframes explorexr-save-notice-fadein {
     from { opacity: 0; transform: translateY(-10px); }
     to   { opacity: 1; transform: translateY(0); }
 }

@@ -1,5 +1,5 @@
 /**
- * ExpoXR Model Size Handler
+ * ExploreXR Model Size Handler
  *
  * Handles the model size options and poster selection in the model size metabox
  */
@@ -24,16 +24,16 @@
             const method = $(this).val();
             
             if (method === 'upload') {
-                $('#expoxr-poster-upload').show();
-                $('#expoxr-poster-library').hide();
+                $('#explorexr-poster-upload').show();
+                $('#explorexr-poster-library').hide();
             } else {
-                $('#expoxr-poster-upload').hide();
-                $('#expoxr-poster-library').show();
+                $('#explorexr-poster-upload').hide();
+                $('#explorexr-poster-library').show();
             }
         });
         
         // Media Library selection for poster
-        $('#expoxr-select-poster').on('click', function(e) {
+        $('#explorexr-select-poster').on('click', function(e) {
             e.preventDefault();
             
             // If the wp.media API is available
@@ -55,7 +55,7 @@
                     $('#model_poster_url').val(attachment.url);
                     
                     // Update preview
-                    $('#expoxr-poster-preview').show().find('img').attr('src', attachment.url);
+                    $('#explorexr-poster-preview').show().find('img').attr('src', attachment.url);
                 });
                 
                 frame.open();
@@ -104,11 +104,11 @@
                     img.style.border = '1px solid #ddd';
                     
                     // Create or update preview
-                    const previewDiv = $('#expoxr-poster-upload-preview');
+                    const previewDiv = $('#explorexr-poster-upload-preview');
                     if (previewDiv.length === 0) {
-                        $('<div id="expoxr-poster-upload-preview" style="margin-top: 10px;"></div>')
+                        $('<div id="explorexr-poster-upload-preview" style="margin-top: 10px;"></div>')
                             .append(img)
-                            .appendTo('#expoxr-poster-upload');
+                            .appendTo('#explorexr-poster-upload');
                     } else {
                         previewDiv.html(img);
                     }

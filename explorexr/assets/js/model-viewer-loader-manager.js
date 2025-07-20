@@ -1,27 +1,27 @@
 /**
- * ExpoXR Model Viewer Loading Manager
+ * ExploreXR Model Viewer Loading Manager
  * Prevents duplicate loading and coordinates multiple scripts attempting to load model-viewer
  */
 (function() {
     'use strict';
 
     // Helper function to check if debug logging is enabled
-    function expoxrDebugLog(message, ...args) {
+    function explorexrDebugLog(message, ...args) {
         // Check if loading options are available and debug mode is enabled
-        if (typeof expoxrLoadingOptions !== 'undefined' && expoxrLoadingOptions.debug_mode) {
+        if (typeof explorexrLoadingOptions !== 'undefined' && explorexrLoadingOptions.debug_mode) {
             console.log(message, ...args);
         }
     }
 
-    function expoxrDebugError(message, ...args) {
+    function explorexrDebugError(message, ...args) {
         // Always show errors, but check for debug mode for additional context
-        if (typeof expoxrLoadingOptions !== 'undefined' && expoxrLoadingOptions.debug_mode) {
+        if (typeof explorexrLoadingOptions !== 'undefined' && explorexrLoadingOptions.debug_mode) {
             console.error(message, ...args);
         }
     }
 
     // Global state management
-    window.ExpoXRModelViewerLoader = window.ExpoXRModelViewerLoader || {
+    window.ExploreXRModelViewerLoader = window.ExploreXRModelViewerLoader || {
         state: 'unloaded', // 'unloaded', 'loading', 'loaded', 'error'
         loadingPromise: null,
         callbacks: [],
@@ -60,19 +60,19 @@
         load: function(config = {}) {
             // If already loaded, resolve immediately
             if (this.getState() === 'loaded') {
-                expoxrDebugLog('ExpoXR ModelViewerLoader: Already loaded');
+                explorexrDebugLog('ExploreXR ModelViewerLoader: Already loaded');
                 return Promise.resolve();
             }
 
             // If currently loading, return the existing promise
             if (this.state === 'loading' && this.loadingPromise) {
-                expoxrDebugLog('ExpoXR ModelViewerLoader: Loading in progress, waiting...');
+                explorexrDebugLog('ExploreXR ModelViewerLoader: Loading in progress, waiting...');
                 return this.loadingPromise;
             }
 
             // If too many attempts, reject
             if (this.loadAttempts >= this.maxAttempts) {
-                expoxrDebugError('ExpoXR ModelViewerLoader: Max load attempts reached');
+                explorexrDebugError('ExploreXR ModelViewerLoader: Max load attempts reached');
                 return Promise.reject(new Error('Max load attempts reached'));
             }
 
@@ -80,7 +80,7 @@
             this.scriptUrl = config.scriptUrl || this.scriptUrl || this._getDefaultScriptUrl();
             this.scriptType = config.scriptType || this.scriptType || 'umd';
 
-            expoxrDebugLog('ExpoXR ModelViewerLoader: Starting load attempt', this.loadAttempts + 1);
+            explorexrDebugLog('ExploreXR ModelViewerLoader: Starting load attempt', this.loadAttempts + 1);
             
             // Create loading promise
             this.state = 'loading';
@@ -93,7 +93,7 @@
                         if (window.customElements && window.customElements.get('model-viewer')) {
                             this.state = 'loaded';
                             this._notifyCallbacks(null);
-                            expoxrDebugLog('ExpoXR ModelViewerLoader: Successfully loaded');
+                            explorexrDebugLog('ExploreXR ModelViewerLoader: Successfully loaded');
                             resolve();
                         } else {
                             const error = new Error('model-viewer element not registered after script load');
@@ -103,7 +103,7 @@
                         }
                     })
                     .catch(error => {
-                        expoxrDebugError('ExpoXR ModelViewerLoader: Load failed', error);
+                        explorexrDebugError('ExploreXR ModelViewerLoader: Load failed', error);
                         this.state = 'error';
                         this._notifyCallbacks(error);
                         reject(error);
@@ -142,16 +142,16 @@
          */
         _getDefaultScriptUrl: function() {
             // Try to get from global config
-            if (window.expoxrScriptConfig && window.expoxrScriptConfig.modelViewerScriptUrl) {
-                this.scriptType = window.expoxrScriptConfig.scriptType || 'umd';
-                return window.expoxrScriptConfig.modelViewerScriptUrl;
+            if (window.explorexrScriptConfig && window.explorexrScriptConfig.modelViewerScriptUrl) {
+                this.scriptType = window.explorexrScriptConfig.scriptType || 'umd';
+                return window.explorexrScriptConfig.modelViewerScriptUrl;
             }
 
             // Fallback to local UMD version (WordPress.org compliance)
             const version = '3.3.0';
             this.scriptType = 'umd';
-            return (window.expoxrScriptConfig && window.expoxrScriptConfig.pluginUrl) 
-                ? window.expoxrScriptConfig.pluginUrl + 'assets/js/model-viewer-umd.js'
+            return (window.explorexrScriptConfig && window.explorexrScriptConfig.pluginUrl) 
+                ? window.explorexrScriptConfig.pluginUrl + 'assets/js/model-viewer-umd.js'
                 : '/wp-content/plugins/explorexr/assets/js/model-viewer-umd.js';
         },
 
@@ -167,7 +167,7 @@
                 if (this.scriptType === 'module') {
                     script.type = 'module';
                 }                script.onload = () => {
-                    console.log('ExpoXR ModelViewerLoader: Script loaded from', this.scriptUrl);
+                    console.log('ExploreXR ModelViewerLoader: Script loaded from', this.scriptUrl);
                     
                     // Check if model-viewer is now available
                     if (window.customElements && window.customElements.get('model-viewer')) {
@@ -208,7 +208,7 @@
                     if (message && typeof message === 'string' && 
                         message.includes('model-viewer') && 
                         message.includes('already been used')) {
-                        console.warn('ExpoXR ModelViewerLoader: model-viewer already registered, continuing...');
+                        console.warn('ExploreXR ModelViewerLoader: model-viewer already registered, continuing...');
                         if (window.customElements && window.customElements.get('model-viewer')) {
                             resolve();
                             return true;
@@ -237,7 +237,7 @@
                 try {
                     callback(error);
                 } catch (e) {
-                    console.error('ExpoXR ModelViewerLoader: Callback error', e);
+                    console.error('ExploreXR ModelViewerLoader: Callback error', e);
                 }
             });
         },
@@ -254,25 +254,25 @@
     };
 
     // Initialize state check
-    window.ExpoXRModelViewerLoader.getState();
+    window.ExploreXRModelViewerLoader.getState();
 
     // Expose convenience methods globally
     window.loadModelViewer = function(config) {
-        return window.ExpoXRModelViewerLoader.load(config);
+        return window.ExploreXRModelViewerLoader.load(config);
     };
 
     window.isModelViewerLoaded = function() {
-        return window.ExpoXRModelViewerLoader.isLoaded();
+        return window.ExploreXRModelViewerLoader.isLoaded();
     };
 
     // Listen for custom events that indicate script loading
-    document.addEventListener('expoxr-script-loaded', function() {
-        window.ExpoXRModelViewerLoader.getState();
+    document.addEventListener('explorexr-script-loaded', function() {
+        window.ExploreXRModelViewerLoader.getState();
     });
 
-    document.addEventListener('expoxr-model-viewer-ready', function() {
-        window.ExpoXRModelViewerLoader.getState();
+    document.addEventListener('explorexr-model-viewer-ready', function() {
+        window.ExploreXRModelViewerLoader.getState();
     });
 
-    expoxrDebugLog('ExpoXR ModelViewerLoader: Manager initialized');
+    explorexrDebugLog('ExploreXR ModelViewerLoader: Manager initialized');
 })();

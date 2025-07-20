@@ -5,11 +5,11 @@ if (!defined('ABSPATH')) {
 }
 ?>
 <!-- Model viewer modal for previewing 3D models -->
-<div id="expoxr-model-modal" class="expoxr-model-modal">
-    <div class="expoxr-model-modal-content">
-        <span class="expoxr-model-close">&times;</span>
-        <h3 id="expoxr-model-title" class="expoxr-model-title">3D Model Preview</h3>
-        <model-viewer id="expoxr-model-viewer" camera-controls auto-rotate
+<div id="explorexr-model-modal" class="explorexr-model-modal">
+    <div class="explorexr-model-modal-content">
+        <span class="explorexr-model-close">&times;</span>
+        <h3 id="explorexr-model-title" class="explorexr-model-title">3D Model Preview</h3>
+        <model-viewer id="explorexr-model-viewer" camera-controls auto-rotate
                      loading="eager"
                      reveal="interaction">
         </model-viewer>
