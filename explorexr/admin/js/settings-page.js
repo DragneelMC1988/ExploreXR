@@ -112,8 +112,6 @@ jQuery(document).ready(function($) {
         'explorexr_debug_log',
         'explorexr_view_php_errors',
         'explorexr_console_logging',
-        'explorexr_debug_ar_features',
-        'explorexr_debug_camera_controls',
         'explorexr_debug_animations',
         'explorexr_debug_annotations',
         'explorexr_debug_loading_info'
@@ -153,20 +151,12 @@ jQuery(document).ready(function($) {
         if ($(this).is(':checked')) {
             $('#explorexr_debug_mode_hidden').val('1');
         } else {
-            let anyDebugOptionChecked = false;
+            // Allow debug mode to be unchecked - also uncheck all debug options
             debuggingCheckboxes.forEach(function(checkboxId) {
-                if ($(`#${checkboxId}`).is(':checked')) {
-                    anyDebugOptionChecked = true;
-                }
+                $(`#${checkboxId}`).prop('checked', false);
+                $(`#${checkboxId}_hidden`).val('');
             });
-            
-            // If any debug option is checked, don't allow debug mode to be disabled
-            if (anyDebugOptionChecked) {
-                $('#explorexr_debug_mode').prop('checked', true);
-                $('#explorexr_debug_mode_hidden').val('1');
-            } else {
-                $('#explorexr_debug_mode_hidden').val('');
-            }
+            $('#explorexr_debug_mode_hidden').val('');
         }
     });
     

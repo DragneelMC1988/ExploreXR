@@ -87,5 +87,3 @@ function explorexr_free_ajax_response() {
 
 // Register AJAX handlers
 add_action('wp_ajax_explorexr_delete_model', 'explorexr_ajax_delete_model');
-add_action('wp_ajax_explorexr_save_addon_settings', 'explorexr_free_ajax_response');
-add_action('wp_ajax_nopriv_explorexr_save_addon_settings', 'explorexr_free_ajax_response');

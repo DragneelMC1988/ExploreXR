@@ -201,7 +201,7 @@ function explorexr_is_premium_available() {
 
 // Helper function to get premium upgrade URL
 function explorexr_get_premium_upgrade_url() {
-    return 'https://expoxr.com/premium/';
+    return 'https://expoxr.com/explorexr/premium/';
 }
 
 

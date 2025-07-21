@@ -6,7 +6,7 @@
 (function() {
     'use strict';
     
-    // Debug flag - will be set based on WordPress options
+    // De
     let debugMode = false;
     let debugAR = false;
     let debugCamera = false;
@@ -18,6 +18,14 @@
     document.addEventListener('DOMContentLoaded', function() {
         initExploreXR();
     });
+    
+    /**
+     * Check if we're in WordPress admin area
+     */
+    function isWordPressAdmin() {
+        return document.body.classList.contains('wp-admin') || 
+               window.location.pathname.includes('/wp-admin/');
+    }
     
     /**
      * Initialize ExploreXR functionality
@@ -34,14 +42,14 @@
         }
         
         // Log plugin initialization if debug mode is enabled
-        if (debugMode) {
+        if (debugMode && !isWordPressAdmin()) {
             console.log('ExploreXR Debug: Initializing plugin v' + (exploreXRDebug.version || 'unknown'));
         }
         
         // Get all model viewers on the page
         const modelViewers = document.querySelectorAll('model-viewer');
         
-        if (debugMode) {
+        if (debugMode && !isWordPressAdmin()) {
             console.log(`ExploreXR Debug: Found ${modelViewers.length} model viewer(s) on this page`);
         }
         
@@ -152,23 +160,31 @@
         
         modelViewer.addEventListener('preload', function() {
             loadStartTime = performance.now();
-            console.log(`ExploreXR Debug [${modelViewer.id}]: Preload started`);
+            if (debugLoading && !isWordPressAdmin()) {
+                console.log(`ExploreXR Debug [${modelViewer.id}]: Preload started`);
+            }
         });
         
         modelViewer.addEventListener('progress', function(event) {
-            // Round to nearest 25% increment (0%, 25%, 50%, 75%, 100%)
-            const progressPercent = Math.round(event.detail.totalProgress * 4) * 25;
-            console.log(`ExploreXR Debug [${modelViewer.id}]: Loading progress: ${progressPercent}%`);
+            if (debugLoading && !isWordPressAdmin()) {
+                // Round to nearest 25% increment (0%, 25%, 50%, 75%, 100%)
+                const progressPercent = Math.round(event.detail.totalProgress * 4) * 25;
+                console.log(`ExploreXR Debug [${modelViewer.id}]: Loading progress: ${progressPercent}%`);
+            }
         });
         
         modelViewer.addEventListener('load', function() {
-            const loadTime = performance.now() - loadStartTime;
-            console.log(`ExploreXR Debug [${modelViewer.id}]: Model loaded successfully in ${loadTime.toFixed(2)}ms`);
-            logModelDetails(modelViewer);
+            if (debugLoading && !isWordPressAdmin()) {
+                const loadTime = loadStartTime ? performance.now() - loadStartTime : 0;
+                console.log(`ExploreXR Debug [${modelViewer.id}]: Model loaded successfully in ${loadTime.toFixed(2)}ms`);
+                logModelDetails(modelViewer);
+            }
         });
         
         modelViewer.addEventListener('error', function(error) {
-            console.warn(`ExploreXR Debug [${modelViewer.id}]: Model encountered an issue:`, error);
+            if (debugMode) {
+                console.warn(`ExploreXR Debug [${modelViewer.id}]: Model encountered an issue:`, error);
+            }
         });
     }
     

@@ -3,7 +3,7 @@
 [![WordPress Compatible](https://img.shields.io/badge/WordPress-5.0%2B-0073aa.svg)](https://wordpress.org/)
 [![PHP Version](https://img.shields.io/badge/PHP-7.4%2B-8892bf.svg)](https://php.net/)
 [![License](https://img.shields.io/badge/License-GPL%20v2-007ec6.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
-[![Version](https://img.shields.io/badge/Version-1.0.1-brightgreen.svg)](https://github.com/DragneelMC1988/explorexr/releases)
+[![Version](https://img.shields.io/badge/Version-1.0.2-brightgreen.svg)](https://github.com/DragneelMC1988/explorexr/releases)
 
 ## 🌐 Transform Your WordPress Site with Interactive 3D Content
 
@@ -182,10 +182,6 @@ explorexr/
 [explorexr_model id="123"]
 ```
 
-### Advanced Shortcode with Options
-```
-[explorexr_model id="123" width="800px" height="600px"]
-```
 
 ### PHP Template Integration
 ```php
@@ -240,16 +236,16 @@ ExploreXR is built with security as a top priority:
 - **GDPR Compliance** - No personal data collection
 - **Clean Code** - Following WordPress security best practices
 
-## 🚀 Future Premium Add-ons
+## 🚀 Premium Features
 
-ExploreXR is designed with a modular architecture to support premium add-ons:
+ExploreXR Premium unlocks powerful features for advanced 3D model experiences:
 
-- **🎥 Camera Controls Add-on** - Advanced camera presets and controls
-- **📍 Annotations Add-on** - Interactive hotspots and information panels  
-- **🎨 Materials Add-on** - Material variant switching and customization
-- **🎬 Animation Add-on** - Advanced animation controls and sequencing
-- **🛒 E-commerce Add-on** - Enhanced WooCommerce integration
-- **📊 Analytics Add-on** - Detailed engagement tracking and insights
+- **🎥 Camera Controls** - Advanced camera presets and controls
+- **📍 Annotations** - Interactive hotspots and information panels  
+- **🎨 Materials Editing** - Material variant switching and customization
+- **🎬 Animations** - Advanced animation controls and sequencing
+- **🛒 E-commerce Integration** - Enhanced WooCommerce integration
+- **📊 Analytics** - Detailed engagement tracking and insights
 
 ## 🤝 Contributing
 
@@ -260,6 +256,37 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
+
+## 📋 Changelog
+
+### Version 1.0.2 (Latest)
+* **MAJOR**: Model storage relocated to WordPress uploads directory (wp-content/uploads/explorexr_models/)
+* **SECURITY**: Fixed all external CDN dependencies - now uses local files only
+* **SECURITY**: Added comprehensive ABSPATH protection to all PHP files
+* **SECURITY**: Enhanced .htaccess protection for models directory
+* **FIXED**: PHP syntax error in uninstall.php that prevented proper cleanup
+* **FIXED**: Function prefixing - renamed sanitize_hex_color to ExploreXR_sanitize_hex_color
+* **FIXED**: Removed all inline CSS/JS from upgrade system for WordPress compliance
+* **IMPROVED**: Streamlined uninstall process - preserves user settings and models
+* **IMPROVED**: Enhanced script/style enqueueing with proper dependencies
+* **IMPROVED**: All vendor dependencies now included locally (Draco, Basis Universal, Three.js)
+* **COMPLIANCE**: Full WordPress.org Plugin Directory guidelines compliance
+* **GPL**: Verified all dependencies are GPL-compatible
+
+### Version 1.0.1
+* Fixed: Premium feature references removed from free version
+* Fixed: 3D model delete functionality - added missing AJAX handler
+* Fixed: Modal viewer now displays models at full container size
+* Fixed: Removed addon integration from free version interface
+* Improved: Enhanced security validation for model deletion
+* Improved: Better error handling for AJAX operations
+
+### Version 1.0.0
+* Initial stable release with complete feature set
+* Modern admin interface with comprehensive model management
+* Progressive loading system with customizable indicators
+* Security framework with input validation and access controls
+* Responsive design with device-specific configurations
 
 ## 📝 License
 

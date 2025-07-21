@@ -43,21 +43,18 @@
 .explorexr-admin-container .explorexr-notice,
 /* Addon integration removed from free version */
 /* License management CSS removed from free version */
-.wrap.explorexr-edit-model-page .explorexr-notice,
-.notice.explorexr-premium-notice,
-.notice-info.explorexr-premium-notice {
+.wrap.explorexr-edit-model-page .explorexr-notice {
     display: block !important;
 }
 
-/* Additional rule to ensure premium notices always show regardless of location */
-.explorexr-premium-notice.notice,
-.explorexr-premium-notice.notice-info,
-div.explorexr-premium-notice,
-.wrap .explorexr-premium-notice {
-    display: flex !important;
-    flex-direction: row !important;
-    visibility: visible !important;
-    opacity: 1 !important;
+/* Allow WordPress admin notices to show ONLY above the ExploreXR admin header */
+#explorexr-notifications-area .notice,
+#explorexr-notifications-area .notice-error,
+#explorexr-notifications-area .notice-warning,
+#explorexr-notifications-area .notice-success,
+#explorexr-notifications-area .notice-info,
+#explorexr-notifications-area .explorexr-premium-notice {
+    display: block !important;
 }
 
 /* Notifications area positioning and styling */

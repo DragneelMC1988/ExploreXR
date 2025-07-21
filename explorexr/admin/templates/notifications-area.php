@@ -67,12 +67,12 @@ jQuery(document).ready(function($) {
         });
     });
     
-    // Auto-dismiss notifications after a set time (optional)
+    // Auto-dismiss only plugin-specific notifications after a set time (optional)
     setTimeout(function() {
         $('#explorexr-notifications-area .notice.is-dismissible').each(function() {
             var $notice = $(this);
-            // Only auto-dismiss if it's not an error notice
-            if (!$notice.hasClass('notice-error')) {
+            // Only auto-dismiss plugin-specific notices, not WordPress admin notices like premium notices
+            if (!$notice.hasClass('notice-error') && !$notice.hasClass('explorexr-premium-notice')) {
                 $notice.fadeOut(300, function() {
                     $(this).remove();
                 });

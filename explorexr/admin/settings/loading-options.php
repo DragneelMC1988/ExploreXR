@@ -16,13 +16,13 @@ if (!defined('ABSPATH')) {
  * Register loading options settings
  */
 function explorexr_register_loading_options_settings() {
-    // Register loading type setting
+    // Register loading type setting (use same name as admin page)
     register_setting(
         'explorexr_options',
-        'explorexr_loading_type',
+        'explorexr_loading_display',
         array(
             'type' => 'string',
-            'default' => 'both',
+            'default' => 'bar',
             'sanitize_callback' => 'sanitize_text_field'
         )
     );
@@ -30,7 +30,7 @@ function explorexr_register_loading_options_settings() {
     // Register loading color setting (for free version this is set and not changeable)
     register_setting(
         'explorexr_options',
-        'explorexr_loading_color',
+        'explorexr_loading_bar_color',
         array(
             'type' => 'string',
             'default' => '#1e88e5',
@@ -45,8 +45,8 @@ add_action('admin_init', 'explorexr_register_loading_options_settings');
  */
 function explorexr_get_loading_options() {
     $options = array(
-        'loading_type' => get_option('explorexr_loading_type', 'both'),
-        'loading_color' => get_option('explorexr_loading_color', '#1e88e5'), 
+        'loading_type' => get_option('explorexr_loading_display', 'bar'), // Use the same option name as admin page
+        'loading_color' => get_option('explorexr_loading_bar_color', '#1e88e5'), // Match the actual option name
         'show_progress_bar' => true,
         'show_percentage' => true,
         'version' => EXPLOREXR_VERSION,
@@ -65,38 +65,39 @@ function explorexr_get_loading_options() {
 }
 
 /**
- * Add the loading options to the page admin
+ * Add the loading options to the page admin (legacy, not used)
  */
-function explorexr_add_loading_options_page() {
+function explorexr_add_loading_options_page_legacy() {
     add_submenu_page(
         'explorexr-dashboard',
         __('Loading Options', 'explorexr'),
         __('Loading Options', 'explorexr'),
         'manage_options',
-        'explorexr-loading-options',
-        'explorexr_render_loading_options_page'
+        'explorexr-loading-options-legacy',
+        'explorexr_render_loading_options_page_legacy'
     );
 }
-add_action('admin_menu', 'explorexr_add_loading_options_page', 30);
+// Don't add this legacy menu
+// add_action('admin_menu', 'explorexr_add_loading_options_page_legacy', 30);
 
 /**
- * Render loading options admin page
+ * Render loading options admin page (legacy, not used)
  */
-function explorexr_render_loading_options_page() {
+function explorexr_render_loading_options_page_legacy() {
     // Check user capabilities
     if (!current_user_can('manage_options')) {
         return;
     }
     
-    // Get current options
-    $loading_type = get_option('explorexr_loading_type', 'both');
+    // Get current options (use same option names as admin page)
+    $loading_type = get_option('explorexr_loading_display', 'bar');
     
     // Save settings if form is submitted
     if (isset($_POST['explorexr_save_loading_options']) && check_admin_referer('explorexr_loading_options_nonce')) {
-        $loading_type = isset($_POST['explorexr_loading_type']) ? sanitize_text_field(wp_unslash($_POST['explorexr_loading_type'])) : 'both';
+        $loading_type = isset($_POST['explorexr_loading_type']) ? sanitize_text_field(wp_unslash($_POST['explorexr_loading_type'])) : 'bar';
         
-        // Save options
-        update_option('explorexr_loading_type', $loading_type);
+        // Save options (use same option names as admin page)
+        update_option('explorexr_loading_display', $loading_type);
         
         // Show success message
         echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Loading options saved.', 'explorexr') . '</p></div>';

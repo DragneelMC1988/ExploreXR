@@ -44,31 +44,3 @@
 .copy-system-info-button {
     margin-bottom: 15px;
 }
-
-/* Addon status styles */
-.addon-status {
-    padding: 4px 8px;
-    border-radius: 3px;
-    font-size: 11px;
-    font-weight: bold;
-    text-transform: uppercase;
-}
-
-.addon-status.active-compatible {
-    background: #2AACE2;
-    color: white;
-}
-
-.addon-status.active-incompatible {
-    background: #8062AA;
-    color: white;
-}
-
-.addon-status.inactive {
-    background: #ddd;
-    color: #666;
-}
-
-.explorexr-addon-status table {
-    margin-top: 10px;
-}

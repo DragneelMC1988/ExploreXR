@@ -488,7 +488,21 @@ function initExploreXRModelViewers() {
                     const modelSrc = modelViewer.getAttribute('data-src');
                     modelViewer.setAttribute('src', modelSrc);
                 }
-                  // Show loading UI
+                
+                // Ensure correct interaction settings are applied after loading
+                // Check if interactions should be disabled
+                if (modelViewer.hasAttribute('no-camera-controls') || 
+                    modelViewer.hasAttribute('data-no-camera-controls')) {
+                    modelViewer.removeAttribute('camera-controls');
+                }
+                
+                // Check if auto-rotate should be disabled  
+                if (modelViewer.hasAttribute('no-auto-rotate') || 
+                    modelViewer.hasAttribute('data-no-auto-rotate')) {
+                    modelViewer.removeAttribute('auto-rotate');
+                }
+                
+                // Show loading UI
                 const loadingContainer = modelViewer.loadingContainer;
                 if (loadingContainer) {
                     loadingContainer.style.display = 'flex';
@@ -528,7 +542,23 @@ function hexToRgba(hex, opacity) {
  */
 function loadExploreXRModel(modelInstanceId, modelFileUrl, modelAttributes) {
         ExploreXRDebugLog(`[ExploreXR] Loading model dynamically: ${modelInstanceId}`);
-        console.log('ExploreXR: Model attributes received:', modelAttributes);
+        ExploreXRDebugLog('ExploreXR: Model attributes received:', modelAttributes);
+        
+        // Ensure modelAttributes is an object, not an array or string
+        if (typeof modelAttributes === 'string') {
+            try {
+                modelAttributes = JSON.parse(modelAttributes);
+            } catch (e) {
+                console.error('ExploreXR: Failed to parse model attributes JSON:', e);
+                modelAttributes = {};
+            }
+        }
+        
+        // If modelAttributes is not a proper object, convert it
+        if (!modelAttributes || typeof modelAttributes !== 'object' || Array.isArray(modelAttributes)) {
+            ExploreXRDebugWarn('ExploreXR: Invalid modelAttributes received, using empty object');
+            modelAttributes = {};
+        }
         
         // Hide poster container and show viewer container
         const posterContainer = document.getElementById(`${modelInstanceId}-poster`);
@@ -549,8 +579,13 @@ function loadExploreXRModel(modelInstanceId, modelFileUrl, modelAttributes) {
                 modelViewer.setAttribute('id', `${modelInstanceId}-model`);
                 modelViewer.classList.add('ExploreXR-model');
                 
-                // Set default attributes if not provided
-                if (!modelAttributes.hasOwnProperty('camera-controls')) {
+                // Check if camera controls should be disabled
+                const shouldDisableCameraControls = modelAttributes.hasOwnProperty('no-camera-controls');
+                const shouldDisableAutoRotate = modelAttributes.hasOwnProperty('no-auto-rotate');
+                
+                // Set default attributes only if not provided and if they should be enabled
+                if (!modelAttributes.hasOwnProperty('camera-controls') && !shouldDisableCameraControls) {
+                    // Only add camera-controls if it's not explicitly excluded
                     modelViewer.setAttribute('camera-controls', '');
                 }
                 
@@ -570,13 +605,21 @@ function loadExploreXRModel(modelInstanceId, modelFileUrl, modelAttributes) {
                 modelViewer.style.width = '100%';
                 modelViewer.style.height = '100%';
                 
-                // Apply all provided model attributes
+                // Apply all provided model attributes, except our custom control flags
                 for (const [key, value] of Object.entries(modelAttributes)) {
+                    // Skip our custom control flags as they're not real model-viewer attributes
+                    if (key === 'no-camera-controls' || key === 'no-auto-rotate') {
+                        continue;
+                    }
+                    
                     // Validate attribute name: must be a string and start with a letter
                     if (typeof key === 'string' && /^[a-zA-Z]/.test(key) && value !== null && value !== undefined) {
                         modelViewer.setAttribute(key, value);
                     } else if (typeof key !== 'string' || !/^[a-zA-Z]/.test(key)) {
-                        console.warn('ExploreXR: Invalid attribute name skipped:', key);
+                        // Only show this warning if debug mode is enabled to prevent console spam
+                        if (typeof ExploreXRLoadingOptions !== 'undefined' && ExploreXRLoadingOptions.debug_mode) {
+                            console.warn('ExploreXR: Invalid attribute name skipped:', key);
+                        }
                     }
                 }
                 

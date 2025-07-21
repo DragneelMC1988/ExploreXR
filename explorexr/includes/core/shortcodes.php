@@ -23,7 +23,7 @@ function EXPLOREXR_enqueue_model_loader() {
     wp_enqueue_script('explorexr-model-loader', EXPLOREXR_PLUGIN_URL . 'assets/js/model-loader.js', array(), '1.0', true);
     
     // Pass debug settings to model-loader script
-    $debug_mode = get_option('EXPLOREXR_debug_mode', false);
+    $debug_mode = get_option('explorexr_debug_mode', false);
     if ($debug_mode) {
         wp_localize_script('explorexr-model-loader', 'exploreXRDebug', array(
             'enabled' => true,
@@ -47,12 +47,32 @@ function EXPLOREXR_build_model_attributes($model_id, $model_file, $alt_text, $wi
     }
     
     // Basic interaction controls (free version)
-    // Check enable_interactions setting
-    $enable_interactions = get_post_meta($model_id, '_explorexr_enable_interactions', true) === 'on';
+    // Check enable_interactions setting with backward compatibility
+    $enable_interactions = get_post_meta($model_id, '_explorexr_enable_interactions', true);
+    
+    // If the enable_interactions field is empty (not set), check for legacy values
+    if ($enable_interactions === '') {
+        // Check legacy camera_controls setting
+        $legacy_camera_controls = get_post_meta($model_id, '_explorexr_camera_controls', true);
+        
+        // If legacy setting exists, use it; otherwise default to enabled (true)
+        if ($legacy_camera_controls !== '') {
+            $enable_interactions = ($legacy_camera_controls === 'on') ? 'on' : 'off';
+        } else {
+            // Default for new models is interactions enabled
+            $enable_interactions = 'on';
+        }
+        
+        // Save the migrated value for future use
+        update_post_meta($model_id, '_explorexr_enable_interactions', $enable_interactions);
+    }
     
     // Add camera-controls if interactions are enabled
-    if ($enable_interactions) {
+    if ($enable_interactions === 'on') {
         $attributes['camera-controls'] = '';
+    } else {
+        // Add a flag to indicate camera-controls should not be added automatically
+        $attributes['no-camera-controls'] = 'true';
     }
     
     // Add touch-action
@@ -91,6 +111,9 @@ function EXPLOREXR_build_model_attributes($model_id, $model_file, $alt_text, $wi
         }
         
         $attributes['rotation-per-second'] = $rotation_per_second;
+    } else {
+        // Add a flag to indicate auto-rotate should not be added automatically
+        $attributes['no-auto-rotate'] = 'true';
     }
     
     // Add interaction prompt settings
@@ -164,6 +187,11 @@ function EXPLOREXR_generate_attributes_html($attributes) {
     foreach ($attributes as $key => $value) {
         // Annotations are not available in the Free version
         if ($key === 'annotations') {
+            continue;
+        }
+        
+        // Skip internal flags that shouldn't appear in the HTML
+        if ($key === 'no-camera-controls' || $key === 'no-auto-rotate') {
             continue;
         }
         
@@ -294,8 +322,8 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
     ob_start();
     include EXPLOREXR_PLUGIN_DIR . 'template-parts/model-viewer-script.php';
     $script = ob_get_clean();    // Check if the model is a large file that needs special handling
-    $large_model_handling = get_option('EXPLOREXR_large_model_handling', 'direct');
-    $large_model_size_threshold = get_option('EXPLOREXR_large_model_size_threshold', 16);
+    $large_model_handling = get_option('explorexr_large_model_handling', 'direct');
+    $large_model_size_threshold = get_option('explorexr_large_model_size_threshold', 16);
     
     // Check file size if the file exists locally
     $is_large_model = false;
@@ -349,8 +377,8 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
         // Check for JSON encoding errors
         if ($model_attributes_json === false) {
             // Log error and fall back to empty object
-            if (get_option('EXPLOREXR_debug_mode', false)) {
-                EXPLOREXR_log('ExploreXR: JSON encoding error in model attributes for model ID: ' . $model_id, 'error');
+            if (get_option('explorexr_debug_mode', false)) {
+                explorexr_log('ExploreXR: JSON encoding error in model attributes for model ID: ' . $model_id, 'error');
             }
             $model_attributes_json = '{}';
         }
@@ -393,6 +421,15 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
         // Return the complete HTML with responsive CSS
         return $responsive_css . $script . $model_html;
     }
+});
+
+// Add user-friendly shortcode aliases
+add_shortcode('explorexr', function ($atts) {
+    return do_shortcode('[EXPLOREXR_model id="' . (isset($atts['id']) ? $atts['id'] : '') . '"]');
+});
+
+add_shortcode('explorexr_model', function ($atts) {
+    return do_shortcode('[EXPLOREXR_model id="' . (isset($atts['id']) ? $atts['id'] : '') . '"]');
 });
 
 // Enqueue admin scripts

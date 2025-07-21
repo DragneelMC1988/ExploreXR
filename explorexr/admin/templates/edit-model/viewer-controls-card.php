@@ -4,7 +4,7 @@
  * 
  * Basic controls like camera controls and auto-rotate
  *
-  * @package ExploreXR
+ * @package ExploreXR
  */
 
 // Prevent direct access
@@ -23,13 +23,13 @@ if (!isset($model_id) || empty($model_id)) {
     }
 }
 
-// Ensure interactions and auto_rotate variables are defined
+// Ensure interactions and auto_rotate variables are defined with proper defaults
 if (!isset($enable_interactions)) {
-    // Same pattern as auto_rotate
-    $enable_interactions = get_post_meta($model_id, '_explorexr_enable_interactions', true) === 'on';
+    // Get the current value and apply backward compatibility
+    $enable_interactions_meta = get_post_meta($model_id, '_explorexr_enable_interactions', true);
     
-    // For backward compatibility, if enable_interactions is not set, check legacy fields
-    if (get_post_meta($model_id, '_explorexr_enable_interactions', true) === '') {
+    if ($enable_interactions_meta === '') {
+        // For backward compatibility, if enable_interactions is not set, check legacy fields
         $interactions_disabled = get_post_meta($model_id, '_explorexr_disable_interactions', true) === 'on';
         $camera_controls_legacy = get_post_meta($model_id, '_explorexr_camera_controls', true);
         
@@ -43,11 +43,19 @@ if (!isset($enable_interactions)) {
         
         // Save the migrated value for future use
         update_post_meta($model_id, '_explorexr_enable_interactions', $enable_interactions ? 'on' : 'off');
+    } else {
+        $enable_interactions = ($enable_interactions_meta === 'on');
     }
 }
 
 if (!isset($auto_rotate)) {
-    $auto_rotate = get_post_meta($model_id, '_explorexr_auto_rotate', true) === 'on';
+    $auto_rotate_meta = get_post_meta($model_id, '_explorexr_auto_rotate', true);
+    if ($auto_rotate_meta === '') {
+        $auto_rotate = false; // Default to disabled
+        update_post_meta($model_id, '_explorexr_auto_rotate', 'off');
+    } else {
+        $auto_rotate = ($auto_rotate_meta === 'on');
+    }
 }
 ?>
 
@@ -116,7 +124,7 @@ jQuery(document).ready(function($) {
         $('input[name="explorexr_enable_interactions_state"]').val(stateValue);
     });
     
-    // Toggle auto-rotate settings visibility and handle state
+    // Toggle auto-rotate settings visibility
     $('#explorexr_auto_rotate').on('change', function() {
         if ($(this).is(':checked')) {
             $('#auto-rotate-settings').slideDown();

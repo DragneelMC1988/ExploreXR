@@ -19,66 +19,16 @@ function explorexr_is_premium_feature_available($feature) {
 }
 
 /**
- * Check if an addon is licensed
- * Always returns false in free version
- */
-function explorexr_is_addon_licensed($addon) {
-    return false;
-}
-
-/**
- * Check if Camera add-on is installed, active, and licensed
- * Always returns false in free version
- */
-function explorexr_camera_addon_available() {
-    return false;
-}
-
-/**
- * Check if AR add-on is installed, active, and licensed
- * Always returns false in free version
- */
-function explorexr_ar_addon_available() {
-    return false;
-}
-
-/**
- * Check if Animation add-on is installed, active, and licensed
- * Always returns false in free version
- */
-function explorexr_animation_addon_available() {
-    return false;
-}
-
-/**
- * Check if Annotations add-on is installed, active, and licensed
- * Always returns false in free version
- */
-function explorexr_annotations_addon_available() {
-    return false;
-}
-
-/**
- * Dummy function for addon license check
- * Always returns false in free version
- */
-function explorexr_is_addon_licensed_function($addon) {
-    return false;
-}
-
-// Alias the function for backward compatibility
-if (!function_exists('explorexr_is_addon_licensed')) {
-    function explorexr_is_addon_licensed($addon) {
-        return explorexr_is_addon_licensed_function($addon);
-    }
-}
-
-/**
  * Show admin notice to promote premium upgrade
  */
 function explorexr_show_premium_upgrade_notice() {
-    // Don't show on ExploreXR premium page to avoid redundancy
+    // Only show on ExploreXR admin pages
     $screen = get_current_screen();
+    if (!$screen || strpos($screen->id, 'explorexr') === false) {
+        return;
+    }
+    
+    // Don't show on ExploreXR premium page to avoid redundancy
     if ($screen && $screen->id === 'toplevel_page_explorexr-premium') {
         return;
     }
@@ -108,9 +58,9 @@ function explorexr_show_premium_upgrade_notice() {
  */
 function explorexr_add_premium_upgrade_metaboxes() {
     add_meta_box(
-        'explorexr-premium-addons',
-        '🚀 Premium Addons',
-        'explorexr_premium_addons_metabox',
+        'explorexr-premium-features',
+        '🚀 Premium Features',
+        'explorexr_premium_features_metabox',
         'explorexr_model',
         'side',
         'high'
@@ -118,29 +68,42 @@ function explorexr_add_premium_upgrade_metaboxes() {
 }
 
 /**
- * Premium addons metabox content
+ * Premium features metabox content
  */
-function explorexr_premium_addons_metabox($post) {
+function explorexr_premium_features_metabox($post) {
         ?>
         <div class="explorexr-premium-metabox">
-            <div class="premium-addon-list">
-                <div class="premium-addon-item">
-                    <span class="addon-icon">📱</span>
-                    <span class="addon-name">AR Support</span>
+            <div class="premium-feature-list">
+                <div class="premium-feature-item">
+                    <span class="feature-icon">📱</span>
+                    <span class="feature-name">AR Support</span>
                     <span class="premium-badge">Premium</span>
                 </div>
-                <div class="premium-addon-item">
-                    <span class="addon-icon">📷</span>
-                    <span class="addon-name">Camera Controls</span>
+                <div class="premium-feature-item">
+                    <span class="feature-icon">📷</span>
+                    <span class="feature-name">Camera Controls</span>
+                    <span class="premium-badge">Premium</span>
+                </div>
+                <div class="premium-feature-item">
+                    <span class="feature-icon">🎬</span>
+                    <span class="feature-name">Animations</span>
+                    <span class="premium-badge">Premium</span>
+                </div>
+                <div class="premium-feature-item">
+                    <span class="feature-icon">💬</span>
+                    <span class="feature-name">Annotations</span>
                     <span class="premium-badge">Premium</span>
                 </div>
             </div>
             
             <div class="premium-upgrade-cta">
-                <p><strong>Unlock these powerful features:</strong></p>
+                <p><strong>Unlock powerful features:</strong></p>
                 <ul>
                     <li>✅ Interactive AR experiences</li>
                     <li>✅ Advanced camera controls</li>
+                    <li>✅ Model animations</li>
+                    <li>✅ Information hotspots</li>
+                    <li>✅ And much more!</li>
                 </ul>
                 
                 <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-premium')); ?>" class="button button-primary button-large" style="width: 100%; text-align: center; margin-top: 15px;">
@@ -303,35 +266,6 @@ class explorexr_free_License_Stub {
             'type' => 'Free Version'
         );
     }
-}
-
-/**
- * Stub class for addon manager (premium-only feature)
- */
-class explorexr_free_Addon_Stub {
-    public function get_registered_addons() {
-        return array();
-    }
-    
-    public function is_addon_active($slug) {
-        return false;
-    }
-    
-    public function get_addon($slug) {
-        return null;
-    }
-}
-
-/**
- * Stub function for addon manager (premium-only feature)
- * Returns stub object in free version
- */
-function exploreXR_addon_manager() {
-    static $stub = null;
-    if ($stub === null) {
-        $stub = new explorexr_free_Addon_Stub();
-    }
-    return $stub;
 }
 
 /**

@@ -23,25 +23,25 @@ function explorexr_premium_upgrade_page() {
         <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/admin-header.php'; ?>
         
         <div class="explorexr-premium-content">
-            <section class="addon-summary">
-                <h2>Addon-Powered Premium Experience</h2>
-                <p class="summary-description">ExploreXR Premium offers a modular approach with 7+ specialized addons. Choose the ones that fit your needs based on your subscription tier.</p>
+            <section class="premium-summary">
+                <h2>Premium Feature Experience</h2>
+                <p class="summary-description">ExploreXR Premium offers powerful features to enhance your 3D models. Choose the subscription tier that fits your needs.</p>
                 
-                <div class="addon-tier-overview">
+                <div class="premium-tier-overview">
                     <div class="tier-overview-card">
                         <h4>Pro</h4>
                         <div class="tier-number">2</div>
-                        <p>Choose any 2 addons</p>
+                        <p>Essential Premium Features</p>
                     </div>
                     <div class="tier-overview-card">
                         <h4>Plus</h4>
                         <div class="tier-number">4</div>
-                        <p>Choose any 4 addons</p>
+                        <p>Advanced Premium Features</p>
                     </div>
                     <div class="tier-overview-card">
                         <h4>Ultra</h4>
-                        <div class="tier-number">7+</div>
-                        <p>Includes All Current<br> & Future Addons</p>
+                        <div class="tier-number">All</div>
+                        <p>Complete Premium<br>Feature Set</p>
                     </div>
                 </div>
             </section>
@@ -130,10 +130,11 @@ function explorexr_premium_upgrade_page() {
                     <div class="pricing-card">
                         <h3>Pro</h3>
                         <div class="price">€59<span>/year</span></div>
-                        <div class="addon-count">2 Addons Included</div>
+                        <div class="feature-count">Essential Features</div>
                         <ul>
                             <li>Basic 3D Features</li>
-                            <li>Choose any 2 addons</li>                           
+                            <li>AR Support</li>
+                            <li>Camera Controls</li>                            
                             <li>Email Support</li>                            
                         </ul>
                     </div>
@@ -142,10 +143,11 @@ function explorexr_premium_upgrade_page() {
                         <h3>Plus</h3>
                         <div class="price">€99<span>/year</span></div>
                         <div class="badge">Most Popular</div>
-                        <div class="addon-count">4 Addons Included</div>
+                        <div class="feature-count">Advanced Features</div>
                         <ul>
                             <li>All Pro Features</li>
-                            <li>Choose any 4 addons</li>                           
+                            <li>Animations</li>
+                            <li>Annotations</li>                           
                             <li>Priority Support</li>                            
                         </ul>
                     </div>
@@ -153,27 +155,28 @@ function explorexr_premium_upgrade_page() {
                     <div class="pricing-card">
                         <h3>Ultra</h3>
                         <div class="price">€179<span>/year</span></div>
-                        <div class="addon-count">All Addons Included</div>
+                        <div class="feature-count">Complete Feature Set</div>
                         <ul>
                             <li>All Plus Features</li>
-                            <li>All 7 Current Addons Included</li>
-                            <li>All Future Addons Included</li>
+                            <li>Materials Editing</li>
+                            <li>WooCommerce Integration</li>
+                            <li>Analytics & Tracking</li>
                             <li>Priority Feature Requests</li>
                         </ul>
                     </div>
                 </div>
             </section>
 
-            <section class="addons-showcase">
-                <h2>Available Premium Addons</h2>
-                <p class="section-description">Enhance your 3D experience with our powerful addon collection. Each addon is designed to provide specific functionality to meet your needs.</p>
+            <section class="features-showcase">
+                <h2>Available Premium Features</h2>
+                <p class="section-description">Enhance your 3D experience with our powerful feature collection. Each feature is designed to provide specific functionality to meet your needs.</p>
                 
-                <div class="addons-grid">
-                    <div class="addon-card">
-                        <div class="addon-icon">🚀</div>
-                        <h3>AR Addon</h3>
-                        <p class="addon-description">Bring your 3D models into the real world with Augmented Reality support for mobile devices.</p>
-                        <ul class="addon-features">
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🚀</div>
+                        <h3>AR Support</h3>
+                        <p class="feature-description">Bring your 3D models into the real world with Augmented Reality support for mobile devices.</p>
+                        <ul class="feature-features">
                             <li>iOS Quick Look AR support</li>
                             <li>Android Scene Viewer integration</li>
                             <li>Custom AR button styling</li>
@@ -182,11 +185,11 @@ function explorexr_premium_upgrade_page() {
                         </ul>
                     </div>
 
-                    <div class="addon-card">
-                        <div class="addon-icon">🎬</div>
-                        <h3>Animation Addon</h3>
-                        <p class="addon-description">Add life to your models with interactive animations and smooth transitions.</p>
-                        <ul class="addon-features">
+                    <div class="feature-card">
+                        <div class="feature-icon">🎬</div>
+                        <h3>Animations</h3>
+                        <p class="feature-description">Add life to your models with interactive animations and smooth transitions.</p>
+                        <ul class="feature-features">
                             <li>Multiple animation sequences</li>
                             <li>Animation timeline control</li>
                             <li>Auto-play and loop options</li>
@@ -195,11 +198,11 @@ function explorexr_premium_upgrade_page() {
                         </ul>
                     </div>
 
-                    <div class="addon-card">
-                        <div class="addon-icon">💬</div>
-                        <h3>Annotations Addon</h3>
-                        <p class="addon-description">Add interactive hotspots and information overlays to highlight specific parts of your models.</p>
-                        <ul class="addon-features">
+                    <div class="feature-card">
+                        <div class="feature-icon">💬</div>
+                        <h3>Annotations</h3>
+                        <p class="feature-description">Add interactive hotspots and information overlays to highlight specific parts of your models.</p>
+                        <ul class="feature-features">
                             <li>Interactive hotspot creation</li>
                             <li>Rich text annotations</li>
                             <li>Custom hotspot styling</li>
@@ -208,11 +211,11 @@ function explorexr_premium_upgrade_page() {
                         </ul>
                     </div>
 
-                    <div class="addon-card">
-                        <div class="addon-icon">📷</div>
-                        <h3>Camera Controls Addon</h3>
-                        <p class="addon-description">Advanced camera interaction and movement controls for enhanced user experience.</p>
-                        <ul class="addon-features">
+                    <div class="feature-card">
+                        <div class="feature-icon">📷</div>
+                        <h3>Camera Controls</h3>
+                        <p class="feature-description">Advanced camera interaction and movement controls for enhanced user experience.</p>
+                        <ul class="feature-features">
                             <li>Custom camera positions</li>
                             <li>Smooth camera transitions</li>
                             <li>Orbit control limitations</li>
@@ -221,11 +224,11 @@ function explorexr_premium_upgrade_page() {
                         </ul>
                     </div>
 
-                    <div class="addon-card">
-                        <div class="addon-icon">⏳</div>
-                        <h3>Loading Options Addon</h3>
-                        <p class="addon-description">Customize the loading experience with beautiful progress indicators and overlays.</p>
-                        <ul class="addon-features">
+                    <div class="feature-card">
+                        <div class="feature-icon">⏳</div>
+                        <h3>Loading Options</h3>
+                        <p class="feature-description">Customize the loading experience with beautiful progress indicators and overlays.</p>
+                        <ul class="feature-features">
                             <li>Custom loading animations</li>
                             <li>Progress bar styling</li>
                             <li>Loading text customization</li>
@@ -234,11 +237,11 @@ function explorexr_premium_upgrade_page() {
                         </ul>
                     </div>
 
-                    <div class="addon-card">
-                        <div class="addon-icon">🎨</div>
-                        <h3>Materials Addon</h3>
-                        <p class="addon-description">Real-time material editing and customization for dynamic visual experiences.</p>
-                        <ul class="addon-features">
+                    <div class="feature-card">
+                        <div class="feature-icon">🎨</div>
+                        <h3>Materials Editing</h3>
+                        <p class="feature-description">Real-time material editing and customization for dynamic visual experiences.</p>
+                        <ul class="feature-features">
                             <li>Real-time material editing</li>
                             <li>Color and texture changes</li>
                             <li>Material variant switching</li>
@@ -247,11 +250,11 @@ function explorexr_premium_upgrade_page() {
                         </ul>
                     </div>
 
-                    <div class="addon-card">
-                        <div class="addon-icon">🛒</div>
-                        <h3>WooCommerce Addon</h3>
-                        <p class="addon-description">Enhanced e-commerce integration for product showcasing and sales optimization.</p>
-                        <ul class="addon-features">
+                    <div class="feature-card">
+                        <div class="feature-icon">🛒</div>
+                        <h3>WooCommerce Integration</h3>
+                        <p class="feature-description">Enhanced e-commerce integration for product showcasing and sales optimization.</p>
+                        <ul class="feature-features">
                             <li>Product gallery integration</li>
                             <li>Variant-based model switching</li>
                             <li>Add-to-cart functionality</li>
@@ -260,11 +263,11 @@ function explorexr_premium_upgrade_page() {
                         </ul>
                     </div>
 
-                    <div class="addon-card addon-coming-soon">
-                        <div class="addon-icon">🚀</div>
-                        <h3>And More Many Addons Coming Soon</h3>
-                        <p class="addon-description">We're constantly working on exciting new addons to enhance your 3D experience even further!</p>
-                        <ul class="addon-features">
+                    <div class="feature-card feature-coming-soon">
+                        <div class="feature-icon">🚀</div>
+                        <h3>And Many More Features Coming Soon</h3>
+                        <p class="feature-description">We're constantly working on exciting new features to enhance your 3D experience even further!</p>
+                        <ul class="feature-features">
                             <li>Advanced Analytics & Tracking</li>
                             <li>Multi-language Support</li>
                             <li>Mouse Tracker</li>

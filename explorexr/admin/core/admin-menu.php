@@ -25,11 +25,6 @@ require_once EXPLOREXR_PLUGIN_DIR . 'admin/core/edit-redirector.php';
 // Include the model debug tool
 require_once EXPLOREXR_PLUGIN_DIR . 'admin/models/model-debug.php';
 
-
-
-// Include custom plugin action links
-require_once EXPLOREXR_PLUGIN_DIR . 'admin/core/plugin-links.php';
-
 // Include premium upgrade page
 require_once EXPLOREXR_PLUGIN_DIR . 'admin/pages/premium-upgrade-page.php';
 
@@ -90,6 +85,11 @@ function explorexr_admin_enqueue_scripts($hook) {
     // Get current screen to determine which page we're on
     $screen = get_current_screen();
     
+    // Add viewport meta tag for admin pages that use model-viewer
+    if ($screen && strpos($screen->id, 'explorexr') !== false) {
+        add_action('admin_head', 'explorexr_add_admin_viewport_meta');
+    }
+    
     // Common CSS for all admin pages
     wp_enqueue_style('explorexr-admin-styles', EXPLOREXR_PLUGIN_URL . 'admin/css/admin-styles.css', array(), EXPLOREXR_VERSION);
     wp_enqueue_style('explorexr-button-system', EXPLOREXR_PLUGIN_URL . 'admin/css/button-system.css', array(), EXPLOREXR_VERSION);
@@ -127,8 +127,8 @@ function explorexr_admin_enqueue_scripts($hook) {
             wp_enqueue_script('explorexr-browse-models-js', EXPLOREXR_PLUGIN_URL . 'admin/js/browse-models.js', array('jquery'), EXPLOREXR_VERSION, true);
             
             // Localize script with nonce and URLs
-            wp_localize_script('explorexr-browse-models-js', 'EXPLOREXR_admin', array(
-                'nonce' => wp_create_nonce('EXPLOREXR_admin_nonce'),
+            wp_localize_script('explorexr-browse-models-js', 'explorexr_admin', array(
+                'nonce' => wp_create_nonce('explorexr_admin_nonce'),
                 'create_model_url' => admin_url('admin.php?page=explorexr-create-model'),
                 'ajax_url' => admin_url('admin-ajax.php')
             ));
@@ -139,8 +139,8 @@ function explorexr_admin_enqueue_scripts($hook) {
             wp_enqueue_script('explorexr-create-model-js', EXPLOREXR_PLUGIN_URL . 'admin/js/create-model.js', array('jquery'), EXPLOREXR_VERSION, true);
             
             // Localize script with nonce
-            wp_localize_script('explorexr-create-model-js', 'EXPLOREXR_admin', array(
-                'nonce' => wp_create_nonce('EXPLOREXR_admin_nonce'),
+            wp_localize_script('explorexr-create-model-js', 'explorexr_admin', array(
+                'nonce' => wp_create_nonce('explorexr_admin_nonce'),
                 'ajax_url' => admin_url('admin-ajax.php')
             ));
         }
@@ -148,6 +148,12 @@ function explorexr_admin_enqueue_scripts($hook) {
         if (strpos($hook ?? '', 'explorexr-settings') !== false) {
             wp_enqueue_style('explorexr-settings-page-css', EXPLOREXR_PLUGIN_URL . 'admin/css/settings-page.css', array(), EXPLOREXR_VERSION);
             wp_enqueue_script('explorexr-settings-page-js', EXPLOREXR_PLUGIN_URL . 'admin/js/settings-page.js', array('jquery'), EXPLOREXR_VERSION, true);
+            
+            // Localize script for AJAX functionality
+            wp_localize_script('explorexr-settings-page-js', 'explorexr_settings', array(
+                'nonce' => wp_create_nonce('explorexr_debug_nonce'),
+                'ajax_url' => admin_url('admin-ajax.php')
+            ));
         }
         
         // Dashboard page specific
@@ -167,7 +173,7 @@ function explorexr_admin_enqueue_scripts($hook) {
             'strings' => array(
                 'modelPreviewTitle' => __('Model Preview', 'explorexr')
             ),
-            'nonce' => wp_create_nonce('EXPLOREXR_admin_nonce'),
+            'nonce' => wp_create_nonce('explorexr_admin_nonce'),
             'ajax_url' => admin_url('admin-ajax.php')
         ));
         
@@ -189,8 +195,8 @@ function explorexr_admin_enqueue_scripts($hook) {
             wp_enqueue_script('wp-color-picker');
             
             // Localize script with data
-            wp_localize_script('explorexr-edit-model-js', 'EXPLOREXR_admin', array(
-                'nonce' => wp_create_nonce('EXPLOREXR_admin_nonce'),
+            wp_localize_script('explorexr-edit-model-js', 'explorexr_admin', array(
+                'nonce' => wp_create_nonce('explorexr_admin_nonce'),
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'plugin_url' => EXPLOREXR_PLUGIN_URL,
                 'is_premium' => false,
@@ -202,12 +208,30 @@ function explorexr_admin_enqueue_scripts($hook) {
 add_action('admin_enqueue_scripts', 'explorexr_admin_enqueue_scripts');
 
 /**
+ * Add viewport meta tag to admin pages that use model-viewer
+ */
+function explorexr_add_admin_viewport_meta() {
+    echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">' . "\n";
+}
+
+/**
+ * Initialize viewport meta tag for ExploreXR admin pages
+ */
+function explorexr_init_admin_viewport_meta() {
+    $screen = get_current_screen();
+    if ($screen && strpos($screen->id, 'explorexr') !== false) {
+        add_action('admin_head', 'explorexr_add_admin_viewport_meta');
+    }
+}
+add_action('current_screen', 'explorexr_init_admin_viewport_meta');
+
+/**
  * Add custom body classes for admin pages
  */
 function EXPLOREXR_admin_body_class($classes) {
     $screen = get_current_screen();
     
-    if (strpos($screen->base, 'explorexr') !== false) {
+    if ($screen && strpos($screen->base, 'explorexr') !== false) {
         $classes .= ' explorexr-admin-page explorexr-version';
     }
     
@@ -382,7 +406,7 @@ function EXPLOREXR_ajax_dismiss_premium_banner() {
  */
 function EXPLOREXR_ajax_get_premium_info() {
     // Verify nonce
-    if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'EXPLOREXR_admin_nonce')) {
+    if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'explorexr_admin_nonce')) {
         wp_die('Security check failed');
     }
     
@@ -441,7 +465,7 @@ function EXPLOREXR_ajax_get_premium_info() {
  */
 function EXPLOREXR_ajax_get_premium_features() {
     // Verify nonce
-    if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'EXPLOREXR_admin_nonce')) {
+    if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'explorexr_admin_nonce')) {
         wp_die('Security check failed');
     }
     
@@ -493,14 +517,12 @@ function EXPLOREXR_ajax_clear_all_debug_logs() {
     
     try {
         // Clear main debug logs
-        delete_option('EXPLOREXR_debug_log_data');
-        delete_transient('EXPLOREXR_debug_log_cache');
+        delete_option('explorexr_debug_log_data');
+        delete_transient('explorexr_debug_log_cache');
         
         // Clear debug logs
         $debug_options = array(
-            'EXPLOREXR_debug_ar_log',
-            'EXPLOREXR_debug_camera_log',
-            'EXPLOREXR_debug_loading_log'
+            'explorexr_debug_loading_log'
             // Animation and annotation debug features are not available in the Free version
         );
         
@@ -613,7 +635,6 @@ function EXPLOREXR_generate_system_diagnostics() {
         'EXPLOREXR_debug_log' => 'Debug Logging',
         'EXPLOREXR_view_php_errors' => 'PHP Error Display',
         'EXPLOREXR_console_logging' => 'Console Logging',
-        'EXPLOREXR_debug_camera_controls' => 'Camera Controls Debug',
         'EXPLOREXR_debug_loading_info' => 'Loading Info Debug'
     );
     
@@ -666,18 +687,16 @@ function EXPLOREXR_generate_debug_export() {
     // ExploreXR Settings
     $export .= "ExploreXR SETTINGS\n";
     $export .= "---------------\n";
-    $export .= "Debug Mode: " . (get_option('EXPLOREXR_debug_mode') ? 'Enabled' : 'Disabled') . "\n";
-    $export .= "Model Viewer Version: " . get_option('EXPLOREXR_model_viewer_version', '3.3.0') . "\n";
-    $export .= "CDN Source: " . get_option('EXPLOREXR_cdn_source', 'cdn') . "\n";
+    $export .= "Debug Mode: " . (get_option('explorexr_debug_mode') ? 'Enabled' : 'Disabled') . "\n";
+    $export .= "Model Viewer Version: " . get_option('explorexr_model_viewer_version', '3.3.0') . "\n";
+    $export .= "CDN Source: " . get_option('explorexr_cdn_source', 'cdn') . "\n";
     
     $debug_settings = array(
-        'EXPLOREXR_debug_log' => 'Debug Logging',
-        'EXPLOREXR_view_php_errors' => 'PHP Error Display',
-        'EXPLOREXR_console_logging' => 'Console Logging',
-        'EXPLOREXR_debug_ar_features' => 'AR Features Debug',
-        'EXPLOREXR_debug_camera_controls' => 'Camera Controls Debug',
+        'explorexr_debug_log' => 'Debug Logging',
+        'explorexr_view_php_errors' => 'PHP Error Display',
+        'explorexr_console_logging' => 'Console Logging',
         // Animation and annotation debug features are not available in the Free version
-        'EXPLOREXR_debug_loading_info' => 'Loading Info Debug'
+        'explorexr_debug_loading_info' => 'Loading Info Debug'
     );
     
     foreach ($debug_settings as $option => $label) {

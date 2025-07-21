@@ -196,6 +196,16 @@ jQuery(document).ready(function($) {
     
     // AR functionality removed from free version - available in premium only
     
+    // Auto-rotate settings toggle
+    $('#explorexr_auto_rotate').on('change', function() {
+        const autoRotateSettings = $('#auto-rotate-settings');
+        if ($(this).is(':checked')) {
+            autoRotateSettings.slideDown();
+        } else {
+            autoRotateSettings.slideUp();
+        }
+    });
+    
     function isValidURL(string) {
         try {
             new URL(string);

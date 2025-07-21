@@ -72,7 +72,8 @@
 }
 
 /* Load model button styling */
-.explorexr-load-model-btn {
+.explorexr-load-model-btn,
+.ExploreXR-load-model-btn {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -87,7 +88,8 @@
     transition: background-color 0.3s ease;
 }
 
-.explorexr-load-model-btn:hover {
+.explorexr-load-model-btn:hover,
+.ExploreXR-load-model-btn:hover {
     background-color: #005177;
 }
 

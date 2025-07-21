@@ -79,9 +79,6 @@ function explorexr_settings_page() {
             'explorexr_debug_log',
             'explorexr_view_php_errors',
             'explorexr_console_logging',
-            'explorexr_debug_ar_features',
-            'explorexr_debug_camera_controls',
-            // Animation and annotation debug features are not available in the Free version
             'explorexr_debug_loading_info',
             'explorexr_debug_mode'
         );
@@ -189,8 +186,6 @@ function explorexr_settings_page() {
             <input type="hidden" id="explorexr_debug_log_hidden" name="explorexr_debug_log" value="<?php echo esc_attr(get_option('explorexr_debug_log', '') ? '1' : ''); ?>">
             <input type="hidden" id="explorexr_view_php_errors_hidden" name="explorexr_view_php_errors" value="<?php echo esc_attr(get_option('explorexr_view_php_errors', '') ? '1' : ''); ?>">
             <input type="hidden" id="explorexr_console_logging_hidden" name="explorexr_console_logging" value="<?php echo esc_attr(get_option('explorexr_console_logging', '') ? '1' : ''); ?>">
-            <input type="hidden" id="explorexr_debug_ar_features_hidden" name="explorexr_debug_ar_features" value="<?php echo esc_attr(get_option('explorexr_debug_ar_features', '') ? '1' : ''); ?>">
-            <input type="hidden" id="explorexr_debug_camera_controls_hidden" name="explorexr_debug_camera_controls" value="<?php echo esc_attr(get_option('explorexr_debug_camera_controls', '') ? '1' : ''); ?>">
             <!-- Animation and annotation debug features are not available in the Free version -->
             <input type="hidden" id="explorexr_debug_loading_info_hidden" name="explorexr_debug_loading_info" value="<?php echo esc_attr(get_option('explorexr_debug_loading_info', '') ? '1' : ''); ?>">
             
@@ -292,18 +287,30 @@ function explorexr_settings_page() {
                     <p class="description">Enable Debug Log to access debugging tools.</p>
                 <?php endif; ?>
                   <div class="explorexr-debug-info">
-                    <h4>Core Debugging Features</h4>
+                    <h4>Debug Features Status</h4>
                     <ul class="explorexr-debug-status-list">
                         <li>
-                            <span class="explorexr-debug-status-label">Loading Information Debugging:</span>
-                            <span class="explorexr-debug-status-value <?php echo esc_attr(get_option('explorexr_debug_loading_info') ? 'active' : 'inactive'); ?>">
-                                <?php echo esc_html(get_option('explorexr_debug_loading_info') ? 'Active' : 'Inactive'); ?>
+                            <span class="explorexr-debug-status-label">Debug Log:</span>
+                            <span class="explorexr-debug-status-value <?php echo esc_attr(get_option('explorexr_debug_log') ? 'active' : 'inactive'); ?>">
+                                <?php echo esc_html(get_option('explorexr_debug_log') ? 'Active' : 'Inactive'); ?>
+                            </span>
+                        </li>
+                        <li>
+                            <span class="explorexr-debug-status-label">View PHP Errors:</span>
+                            <span class="explorexr-debug-status-value <?php echo esc_attr(get_option('explorexr_view_php_errors') ? 'active' : 'inactive'); ?>">
+                                <?php echo esc_html(get_option('explorexr_view_php_errors') ? 'Active' : 'Inactive'); ?>
                             </span>
                         </li>
                         <li>
                             <span class="explorexr-debug-status-label">Console Logging:</span>
                             <span class="explorexr-debug-status-value <?php echo esc_attr(get_option('explorexr_console_logging') ? 'active' : 'inactive'); ?>">
                                 <?php echo esc_html(get_option('explorexr_console_logging') ? 'Active' : 'Inactive'); ?>
+                            </span>
+                        </li>
+                        <li>
+                            <span class="explorexr-debug-status-label">Loading Information Debugging:</span>
+                            <span class="explorexr-debug-status-value <?php echo esc_attr(get_option('explorexr_debug_loading_info') ? 'active' : 'inactive'); ?>">
+                                <?php echo esc_html(get_option('explorexr_debug_loading_info') ? 'Active' : 'Inactive'); ?>
                             </span>
                         </li>
                     </ul>

@@ -52,6 +52,7 @@ function explorexr_log($message, $level = 'info') {
  */
 function explorexr_init_debugging() {
     // Register AJAX handlers for debug log operations
+    add_action('wp_ajax_explorexr_get_debug_log', 'explorexr_ajax_get_debug_log');
     add_action('wp_ajax_explorexr_clear_debug_log', 'explorexr_ajax_clear_debug_log');
     
     // Add console logging if enabled
@@ -148,9 +149,6 @@ function explorexr_add_console_logging() {
     
     // Get debugging options
     $plugin_version = EXPLOREXR_VERSION;
-    $debug_ar = get_option('explorexr_debug_ar_features', false) ? 'true' : 'false';
-    $debug_camera = get_option('explorexr_debug_camera_controls', false) ? 'true' : 'false';
-    // Animation and annotation debug features are not available in the Free version
     $debug_loading = get_option('explorexr_debug_loading_info', false) ? 'true' : 'false';
     
     ?>
@@ -210,25 +208,17 @@ function explorexr_debug_log($message, $level = 'info') {
  * AJAX handler for getting debug log contents
  */
 function explorexr_ajax_get_debug_log() {
-    // Use centralized security validation
-    $security_check = explorexr_validate_ajax_security('explorexr_debug_nonce', 'manage_options');
-    if (is_wp_error($security_check)) {
-        wp_send_json_error(array('message' => $security_check->get_error_message()));
+    // Verify nonce
+    if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'explorexr_debug_nonce')) {
+        wp_send_json_error(array('message' => 'Security check failed'));
         return;
     }
     
-    // Rate limiting - allow 10 requests per minute
-    if (!explorexr_check_rate_limit('debug_log_get', 10, 60)) {
-        wp_send_json_error(array('message' => 'Rate limit exceeded. Please wait before requesting debug log again.'));
+    // Check user capabilities
+    if (!current_user_can('manage_options')) {
+        wp_send_json_error(array('message' => 'Insufficient permissions'));
         return;
     }
-    
-    // Log security event
-    explorexr_log_security_event('debug_log_accessed', array(
-        'user_id' => get_current_user_id(),
-        'ip' => explorexr_get_client_ip(),
-        'timestamp' => current_time('mysql')
-    ));
     
     $log_file = EXPLOREXR_PLUGIN_DIR . 'debug.log';
     
@@ -236,7 +226,7 @@ function explorexr_ajax_get_debug_log() {
         $content = file_get_contents($log_file);
         wp_send_json_success(array('content' => $content));
     } else {
-        wp_send_json_success(array('content' => 'No debug log file exists yet.'));
+        wp_send_json_success(array('content' => ''));
     }
 }
 
@@ -244,51 +234,29 @@ function explorexr_ajax_get_debug_log() {
  * AJAX handler for clearing debug log
  */
 function explorexr_ajax_clear_debug_log() {
-    // Validate security using centralized function
-    $security_check = explorexr_validate_ajax_security('explorexr_debug_nonce', 'manage_options');
-    if (is_wp_error($security_check)) {
-        explorexr_log_security_event(
-            'ajax_security_failure',
-            'Debug log clear blocked: ' . $security_check->get_error_message(),
-            // Note: nonce verification is handled by explorexr_validate_ajax_security() function
-            // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in explorexr_validate_ajax_security()
-            array('action' => 'clear_debug_log', 'nonce_provided' => isset($_POST['nonce']))
-        );
-        wp_send_json_error(array('message' => $security_check->get_error_message()));
+    // Verify nonce
+    if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'explorexr_debug_nonce')) {
+        wp_send_json_error(array('message' => 'Security check failed'));
+        return;
     }
     
-    // Check rate limiting (max 5 clear operations per minute)
-    if (!explorexr_check_rate_limit('clear_debug_log', 5, 60)) {
-        explorexr_log_security_event(
-            'rate_limit_exceeded',
-            'Debug log clear rate limit exceeded',
-            array('action' => 'clear_debug_log', 'limit' => 5)
-        );
-        wp_send_json_error(array('message' => 'Too many clear requests. Please wait before trying again.'));
+    // Check user capabilities
+    if (!current_user_can('manage_options')) {
+        wp_send_json_error(array('message' => 'Insufficient permissions'));
+        return;
     }
-    
-    // Log security event for debug log clearing
-    explorexr_log_security_event('debug_log_cleared', array(
-        'user_id' => get_current_user_id(),
-        'ip' => explorexr_get_client_ip(),
-        'timestamp' => current_time('mysql')
-    ));
     
     $log_file = EXPLOREXR_PLUGIN_DIR . 'debug.log';
     
     if (file_exists($log_file)) {
-        // Clear the file using WordPress file functions
-        if (WP_Filesystem()) {
-            global $wp_filesystem;
-            $wp_filesystem->put_contents($log_file, '');
-            wp_send_json_success(array('message' => 'Debug log cleared successfully.'));
-        } else {
-            wp_send_json_error(array('message' => 'Unable to access file system.'));
-        }
+        // Clear the file content
+        file_put_contents($log_file, '');
+        wp_send_json_success(array('message' => 'Debug log cleared successfully.'));
     } else {
         wp_send_json_success(array('message' => 'No debug log file exists.'));
     }
 }
+
 
 /**
  * Add sample debug entries to log file for testing

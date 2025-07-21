@@ -399,7 +399,7 @@ function explorexr_save_camera_settings($post_id, $edit_mode = false) {
  * @param string $license_key The license key
  * @return bool Whether the feature is ready to use
  */
-function explorexr_is_addon_available($feature_slug, $license_key) {
+function explorexr_is_premium_feature_available_with_license($feature_slug, $license_key) {
     // Premium features are not available in the Free version
     return false;
 }

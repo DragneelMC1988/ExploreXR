@@ -228,4 +228,4 @@ ExploreXR is powered by:
 * WordPress API and best practices
 * Open source contributors
 
-Built with ❤️ by Ayal Othman from ExploreXR
+Built with ❤️ by Ayal Othman from ExpoXR
