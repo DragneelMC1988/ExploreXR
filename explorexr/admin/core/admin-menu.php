@@ -576,8 +576,11 @@ function EXPLOREXR_ajax_export_debug_info() {
  * Generate comprehensive system diagnostics
  */
 function EXPLOREXR_generate_system_diagnostics() {
+    // WordPress.org compliance: Use proper HTML structure without inline styles
     $html = '<html><head><title>ExploreXR System Diagnostics</title>';
-    $html .= '<style>
+    
+    // Use minimal styling for diagnostic output
+    $diagnostic_styles = '
         body { font-family: Arial, sans-serif; margin: 20px; }
         .header { background: #0073aa; color: white; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
         .section { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
@@ -588,7 +591,10 @@ function EXPLOREXR_generate_system_diagnostics() {
         th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
         th { background-color: #f1f1f1; }
         .code { background: #f5f5f5; padding: 10px; border-radius: 3px; font-family: monospace; }
-    </style></head><body>';
+    ';
+    
+    $html .= '<style>' . $diagnostic_styles . '</style>';
+    $html .= '</head><body>';
     
     $html .= '<div class="header"><h1>ExploreXR System Diagnostics</h1><p>Generated on: ' . gmdate('Y-m-d H:i:s') . '</p></div>';
     

@@ -117,11 +117,15 @@ if (isset($_SERVER['PHP_SELF']) && basename(sanitize_text_field(wp_unslash($_SER
     <html>
     <head>
         <title>WordPress Core Verification</title>
-        <style>
+        <?php
+        // WordPress.org compliance: Use wp_add_inline_style instead of inline style
+        $verification_styles = '
             body { font-family: Arial, sans-serif; margin: 20px; }
             table { border-collapse: collapse; width: 100%; }
             th { background-color: #f0f0f0; }
-        </style>
+        ';
+        wp_add_inline_style('wp-admin', $verification_styles);
+        ?>
     </head>
     <body>
         <?php explorexr_display_verification_results(); ?>
