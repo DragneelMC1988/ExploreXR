@@ -19,15 +19,21 @@ add_action('add_attachment', function ($post_id) {
 
     // Check if the uploaded file is a 3D model
     if (in_array($filetype['ext'], ['glb', 'gltf', 'usdz'])) {
-        $upload_dir = EXPLOREXR_MODELS_DIR;
+        // Ensure constants are defined before using them
+        if (!defined('EXPLOREXR_MODELS_DIR')) {
+            $upload_dir = wp_upload_dir();
+            $models_dir = $upload_dir['basedir'] . '/explorexr_models/';
+        } else {
+            $models_dir = EXPLOREXR_MODELS_DIR;
+        }
         
         // Create the models folder if it doesn't exist
-        if (!file_exists($upload_dir)) {
-            wp_mkdir_p($upload_dir);
+        if (!file_exists($models_dir)) {
+            wp_mkdir_p($models_dir);
         }
 
         // Move the uploaded file to the models folder
-        $new_file = $upload_dir . basename($file);
+        $new_file = $models_dir . basename($file);
         
         // Initialize WP_Filesystem
         if (!function_exists('WP_Filesystem')) {

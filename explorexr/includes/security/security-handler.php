@@ -230,7 +230,7 @@ function ExploreXR_validate_file_upload($file, $allowed_types = array(), $max_si
         // Basic file header validation
         $file_header = file_get_contents($file['tmp_name'], false, null, 0, 12);
         
-        if ($extension === 'glb' && substr($file_header, 0, 4) !== 'glTF') {
+        if ($extension === 'glb' && is_string($file_header) && substr($file_header, 0, 4) !== 'glTF') {
             return new WP_Error(
                 'invalid_glb_file',
                 __('Invalid GLB file format.', 'explorexr')

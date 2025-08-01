@@ -235,7 +235,7 @@ function explorexr_dashboard_page() {
                                     
                                     // Use the model file URL directly if it's a full URL
                                     // Otherwise, use it as-is
-                                    $file_url = (strpos($model_file, 'http') === 0) ? $model_file : $model_file;
+                                    $file_url = (!empty($model_file) && strpos($model_file, 'http') === 0) ? $model_file : $model_file;
                                     
                                     if ($model_file) : 
                                     ?>

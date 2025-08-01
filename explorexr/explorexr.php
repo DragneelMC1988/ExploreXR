@@ -39,12 +39,6 @@ if (defined('EXPLOREXR_VERSION') || class_exists('ExploreXR_License_Handler')) {
 // Define plugin constants
 define('EXPLOREXR_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('EXPLOREXR_PLUGIN_URL', plugin_dir_url(__FILE__));
-
-// Define models directory in WordPress uploads folder
-$upload_dir = wp_upload_dir();
-define('EXPLOREXR_MODELS_DIR', $upload_dir['basedir'] . '/explorexr_models/');
-define('EXPLOREXR_MODELS_URL', $upload_dir['baseurl'] . '/explorexr_models/');
-
 define('EXPLOREXR_VERSION', '1.0.3');
 
 // Development mode constant (set to false for production)
@@ -53,7 +47,17 @@ define('EXPLOREXR_DEV_MODE', false);
 // Mark this as the free version
 define('EXPLOREXR_IS_FREE', true);
 
-// Create models directory if it doesn't exist
+// Define models directory constants after WordPress is loaded
+add_action('plugins_loaded', function () {
+    // Define models directory in WordPress uploads folder
+    if (!defined('EXPLOREXR_MODELS_DIR')) {
+        $upload_dir = wp_upload_dir();
+        define('EXPLOREXR_MODELS_DIR', $upload_dir['basedir'] . '/explorexr_models/');
+        define('EXPLOREXR_MODELS_URL', $upload_dir['baseurl'] . '/explorexr_models/');
+    }
+}, 1); // Early priority
+
+// Create models directory and load includes
 add_action('plugins_loaded', function () {
     // Ensure models directory exists
     if (!file_exists(EXPLOREXR_MODELS_DIR)) {
@@ -69,7 +73,7 @@ add_action('plugins_loaded', function () {
     
     // Load all includes after WordPress is ready
     explorexr_free_load_includes();
-});
+}, 10); // After constants are defined
 
 function explorexr_free_load_includes() {
     // Load emergency script fix first to prevent WordPress corruption

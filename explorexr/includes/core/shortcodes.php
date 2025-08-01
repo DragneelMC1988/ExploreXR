@@ -331,8 +331,8 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
     // Check file size if the file exists locally
     $is_large_model = false;
     $file_path = '';
-      // Only run str_replace if $model_file is a string
-    if (is_string($model_file)) {
+      // Only run str_replace if $model_file is a string and constants are defined
+    if (is_string($model_file) && defined('EXPLOREXR_MODELS_URL') && defined('EXPLOREXR_MODELS_DIR')) {
         $file_path = str_replace(EXPLOREXR_MODELS_URL, EXPLOREXR_MODELS_DIR, $model_file);
         
         if (file_exists($file_path)) {
@@ -340,7 +340,7 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
             if ($file_size_mb >= $large_model_size_threshold) {
                 $is_large_model = true;
             }
-        } elseif (strpos($model_file, 'http') === 0) {
+        } elseif (!empty($model_file) && strpos($model_file, 'http') === 0) {
             // For external files, try to get the size with a HEAD request
             $request = wp_remote_head($model_file);
             if (!is_wp_error($request) && isset($request['headers']['content-length'])) {

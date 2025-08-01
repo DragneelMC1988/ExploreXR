@@ -23,7 +23,8 @@ function explorexr_model_file_exists($model_file_url) {
     }
     
     // Check if it's a local file in our models directory
-    if (strpos($model_file_url, EXPLOREXR_MODELS_URL) === 0) {
+    if (defined('EXPLOREXR_MODELS_URL') && defined('EXPLOREXR_MODELS_DIR') && 
+        strpos($model_file_url, EXPLOREXR_MODELS_URL) === 0) {
         $file_path = str_replace(EXPLOREXR_MODELS_URL, EXPLOREXR_MODELS_DIR, $model_file_url);
         return file_exists($file_path);
     }

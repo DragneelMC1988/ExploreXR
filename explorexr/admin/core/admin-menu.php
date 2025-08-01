@@ -104,7 +104,7 @@ function explorexr_admin_enqueue_scripts($hook) {
     ));
     
     // Page-specific styles and scripts
-    if (strpos($hook, 'explorexr') !== false) {
+    if (strpos($hook ?? '', 'explorexr') !== false) {
         // Specific CSS files
         if (strpos($hook ?? '', 'explorexr-files') !== false) {
             wp_enqueue_style('explorexr-files-page-css', EXPLOREXR_PLUGIN_URL . 'admin/css/files-page.css', array(), EXPLOREXR_VERSION);

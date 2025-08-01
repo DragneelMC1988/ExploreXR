@@ -250,7 +250,7 @@ function explorexr_handle_usdz_upload($file, $model_id = null) {
     }
     
     // Return the file data
-    $file_url = explorexr_MODELS_URL . $filename;
+    $file_url = EXPLOREXR_MODELS_URL . $filename;
     
     // Debug log for successful upload
     if (explorexr_is_debug_enabled()) {
