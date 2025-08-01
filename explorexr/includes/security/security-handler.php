@@ -313,7 +313,7 @@ function ExploreXR_get_client_ip() {
  * @param string|array $message Event message or data
  * @param array $context Additional context data
  */
-function ExploreXR_log_security_event($event_type, $message, $context = array()) {
+function explorexr_log_security_event($event_type, $message, $context = array()) {
     if (!explorexr_is_debug_enabled()) {
         return; // Only log when debug mode is enabled
     }
@@ -338,7 +338,7 @@ function ExploreXR_log_security_event($event_type, $message, $context = array())
     );
     
     if (explorexr_is_debug_enabled()) {
-        ExploreXR_log('ExploreXR Security Event: ' . $log_entry, 'warning');
+        explorexr_log('ExploreXR Security Event: ' . $log_entry, 'warning');
     }
 }
 
@@ -353,8 +353,8 @@ function ExploreXR_init_security() {
     
     // Initialize security logging
     if (explorexr_is_debug_enabled()) {
-        add_action('wp_login_failed', 'ExploreXR_log_failed_login');
-        add_action('wp_login', 'ExploreXR_log_successful_login');
+        add_action('wp_login_failed', 'explorexr_log_failed_login');
+        add_action('wp_login', 'explorexr_log_successful_login');
     }
 }
 
@@ -381,8 +381,8 @@ function ExploreXR_add_security_headers() {
 /**
  * Log failed login attempts
  */
-function ExploreXR_log_failed_login($username) {
-    ExploreXR_log_security_event(
+function explorexr_log_failed_login($username) {
+    explorexr_log_security_event(
         'login_failed',
         'Failed login attempt for username: ' . $username,
         array('username' => $username)
@@ -392,9 +392,9 @@ function ExploreXR_log_failed_login($username) {
 /**
  * Log successful logins
  */
-function ExploreXR_log_successful_login($user_login, $user = null) {
+function explorexr_log_successful_login($user_login, $user = null) {
     if ($user) {
-        ExploreXR_log_security_event(
+        explorexr_log_security_event(
             'login_success',
             'Successful login for user: ' . $user_login,
             array('user_id' => $user->ID, 'username' => $user_login)

@@ -49,32 +49,6 @@ if (!function_exists('explorexr_log')) {
         error_log('ExploreXR [' . strtoupper($level) . ']: ' . $message);
     }
 }
-
-/**
- * Legacy uppercase function for backwards compatibility
- * Used by security handler and other legacy code
- * 
- * @param mixed $message The message to log
- * @param string $level Optional log level
- */
-if (!function_exists('ExploreXR_log')) {
-    function ExploreXR_log($message, $level = 'info') {
-        explorexr_log($message, $level);
-    }
-}
-
-/**
- * Legacy function for backwards compatibility - use WordPress standard debugging
- * 
- * @param mixed $message The message to log
- * @param string $level Optional log level
- */
-if (!function_exists('explorexr_debug_log')) {
-    function explorexr_debug_log($message, $level = 'info') {
-        explorexr_log($message, $level);
-    }
-}
-
 /**
  * Initialize debugging system
  * Called by main plugin file during initialization

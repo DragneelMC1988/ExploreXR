@@ -48,7 +48,7 @@ add_action('add_attachment', function ($post_id) {
         } elseif (!$wp_filesystem) {
             // Log error if WP_Filesystem is not available
             if (function_exists('error_log') && explorexr_is_debug_enabled()) {
-                EXPLOREXR_log('ExploreXR: WP_Filesystem not available for file move operation', 'error');
+                explorexr_log('ExploreXR: WP_Filesystem not available for file move operation', 'error');
             }
         }
     }

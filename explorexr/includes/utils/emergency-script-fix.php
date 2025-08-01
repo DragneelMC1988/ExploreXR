@@ -23,7 +23,7 @@ function ExploreXR_emergency_script_fix() {
     
     // Log the emergency fix activation
     if (explorexr_is_debug_enabled()) {
-        ExploreXR_log('ExploreXR: Emergency script fix activated - all scripts disabled to prevent WordPress core corruption', 'error');
+        explorexr_log('ExploreXR: Emergency script fix activated - all scripts disabled to prevent WordPress core corruption', 'error');
     }
 }
 

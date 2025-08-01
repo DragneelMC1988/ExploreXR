@@ -165,6 +165,13 @@ register_activation_hook(__FILE__, 'explorexr_free_activate');
  * Plugin activation function
  */
 function explorexr_free_activate() {
+    // Define models directory constants for activation (since plugins_loaded hasn't fired yet)
+    if (!defined('EXPLOREXR_MODELS_DIR')) {
+        $upload_dir = wp_upload_dir();
+        define('EXPLOREXR_MODELS_DIR', $upload_dir['basedir'] . '/explorexr_models/');
+        define('EXPLOREXR_MODELS_URL', $upload_dir['baseurl'] . '/explorexr_models/');
+    }
+    
     // Create models directory in WordPress uploads folder
     if (!file_exists(EXPLOREXR_MODELS_DIR)) {
         wp_mkdir_p(EXPLOREXR_MODELS_DIR);
