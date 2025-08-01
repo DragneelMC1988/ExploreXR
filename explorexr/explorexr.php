@@ -3,7 +3,7 @@
  * Plugin Name: ExploreXR
  * Plugin URI: https://expoxr.com/explorexr/
  * Description: Bring your website to life with interactive 3D models. ExploreXR lets you showcase GLB, GLTF, and USDZ files with ease — no coding required. Start free, upgrade anytime.
- * Version: 1.0.2
+ * Version: 1.0.3
  * Requires at least: 5.0
  * Requires PHP: 7.4
  * Author: Ayal Othman
@@ -45,7 +45,7 @@ $upload_dir = wp_upload_dir();
 define('EXPLOREXR_MODELS_DIR', $upload_dir['basedir'] . '/explorexr_models/');
 define('EXPLOREXR_MODELS_URL', $upload_dir['baseurl'] . '/explorexr_models/');
 
-define('EXPLOREXR_VERSION', '1.0.2');
+define('EXPLOREXR_VERSION', '1.0.3');
 
 // Development mode constant (set to false for production)
 define('EXPLOREXR_DEV_MODE', false);

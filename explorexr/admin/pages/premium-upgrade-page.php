@@ -16,7 +16,14 @@ function explorexr_premium_upgrade_page() {
                         <span class="dashicons dashicons-star-filled" style="margin-right: 5px;"></span> Upgrade Now
                        </a>';
     ?>
-    <div class="wrap explorexr-admin-container">
+    <div class="wrap">
+        <h1>ExploreXR Premium</h1>
+        
+        <!-- WordPress.org Compliance: This div.wp-header-end is required for WordPress to place admin notices properly -->
+        <div class="wp-header-end"></div>
+        
+        <!-- ExploreXR Plugin Content -->
+        <div class="explorexr-admin-container">
         <!-- WordPress admin notices appear here automatically before our custom content -->
         
         <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/notifications-area.php'; ?>
@@ -312,6 +319,10 @@ function explorexr_premium_upgrade_page() {
     
     <!-- ExploreXR Footer -->
     <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/admin-footer.php'; ?>
+    
+        </div><!-- .explorexr-admin-container -->
+    </div><!-- .wrap -->
+    
     <?php
 }
 

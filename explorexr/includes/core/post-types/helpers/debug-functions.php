@@ -17,6 +17,15 @@ if (!defined('ABSPATH')) {
  * @return array Debug information collected
  */
 function explorexr_debug_log_post_data($post_id) {
+    // WordPress.org compliance: Verify nonce before accessing $_POST
+    if (!isset($_POST['explorexr_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['explorexr_nonce'])), 'explorexr_save_model')) {
+        return array(
+            'error' => 'Invalid nonce - POST data not logged for security',
+            'post_id' => $post_id,
+            'timestamp' => current_time('mysql')
+        );
+    }
+    
     // Only log essential info to avoid huge logs
     $important_keys = array(
         'explorexr_model_file',

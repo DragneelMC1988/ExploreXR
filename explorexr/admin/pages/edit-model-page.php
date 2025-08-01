@@ -397,8 +397,14 @@ function ExploreXR_edit_model_page() {
     
     // Render the page
     ?>
-    <div class="wrap ExploreXR-admin-page ExploreXR-edit-model-page ExploreXR-admin-menu-fix">
-        <!-- WordPress admin notices appear here automatically before our custom content -->
+    <div class="wrap">
+        <h1>Edit 3D Model</h1>
+        
+        <!-- WordPress.org Compliance: This div.wp-header-end is required for WordPress to place admin notices properly -->
+        <div class="wp-header-end"></div>
+        
+        <!-- ExploreXR Plugin Content -->
+        <div class="ExploreXR-admin-page ExploreXR-edit-model-page ExploreXR-admin-menu-fix">
         
         <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/notifications-area.php'; ?>
         <?php 
@@ -505,7 +511,9 @@ function ExploreXR_edit_model_page() {
                     <span class="dashicons dashicons-update"></span> Update 3D Model
                 </button>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-browse-models')); ?>" class="button button-large">Cancel</a>            </div>        </form>
-    </div>
+        
+        </div><!-- .ExploreXR-admin-page -->
+    </div><!-- .wrap -->
     
     <?php
     

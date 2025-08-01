@@ -276,10 +276,9 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
     // Generate unique CSS ID for this model instance
     $model_css_id = 'explorexr-model-' . $model_id . '-' . uniqid();
     
-    // Generate responsive CSS if tablet or mobile sizes are set
-    $responsive_css = '';
+    // Generate responsive CSS if tablet or mobile sizes are set (WordPress.org compliance)
     if (!empty($tablet_width) || !empty($tablet_height) || !empty($mobile_width) || !empty($mobile_height)) {
-        $responsive_css .= '<style>';
+        $responsive_css = '';
         
         // Tablet styles (768px to 1024px)
         if (!empty($tablet_width) || !empty($tablet_height)) {
@@ -309,8 +308,12 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
             $responsive_css .= '}';
         }
         
-        $responsive_css .= '</style>';
+        // WordPress.org compliance: Use wp_add_inline_style instead of inline <style>
+        wp_add_inline_style('explorexr-model-viewer', $responsive_css);
     }
+    
+    // Set responsive_css to empty since we're using wp_add_inline_style
+    $responsive_css = '';
     
     // Annotations are not available in the free version
     $annotations = null;

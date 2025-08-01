@@ -23,8 +23,14 @@ function explorexr_browse_models_page() {
                         <span class="dashicons dashicons-plus" style="margin-right: 5px;"></span> Create New Model
                        </a>';
     ?>
-    <div class="wrap explorexr-admin-container">
-        <!-- WordPress admin notices appear here automatically before our custom content -->
+    <div class="wrap">
+        <h1>Browse 3D Models</h1>
+        
+        <!-- WordPress.org Compliance: This div.wp-header-end is required for WordPress to place admin notices properly -->
+        <div class="wp-header-end"></div>
+        
+        <!-- ExploreXR Plugin Content -->
+        <div class="explorexr-admin-container">
         
         <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/notifications-area.php'; ?>
         <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/admin-header.php'; ?>
@@ -191,7 +197,9 @@ function explorexr_browse_models_page() {
     
     <!-- ExploreXR Footer -->
     <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/admin-footer.php'; ?>
-    </div>
+    
+        </div><!-- .explorexr-admin-container -->
+    </div><!-- .wrap -->
     <?php
 }
 

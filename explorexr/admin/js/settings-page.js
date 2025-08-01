@@ -109,7 +109,6 @@ jQuery(document).ready(function($) {
     // Fix for debugging options: Ensure debug mode is enabled when any debugging option is checked
     // Get all debugging section checkboxes
     const debuggingCheckboxes = [
-        'explorexr_debug_log',
         'explorexr_view_php_errors',
         'explorexr_console_logging',
         'explorexr_debug_animations',

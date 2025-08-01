@@ -10,9 +10,6 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-// Include debugging functions
-require_once EXPLOREXR_PLUGIN_DIR . 'includes/utils/debugging.php';
-
 /**
  * Handle model file upload
  * 

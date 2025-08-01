@@ -71,7 +71,12 @@ function explorexr_model_file_meta_box($post) {
         </div>
     </div>
     
-    <script type="text/javascript">
+    <?php
+    // Enqueue the model file handler script
+    wp_enqueue_script('explorexr-model-file-handler', EXPLOREXR_PLUGIN_URL . 'includes/post-types/assets/js/model-file-handler.js', array('jquery'), '1.0', true);
+    
+    // Add inline script for model file metabox functionality
+    $inline_script = "
     jQuery(document).ready(function($) {
         // Show/hide the file upload field
         $('#explorexr_change_model_btn').on('click', function() {
@@ -83,9 +88,11 @@ function explorexr_model_file_meta_box($post) {
             console.log('Enhanced model uploader not detected, loading it manually');
         }
     });
-    </script>
+    ";
     
-    <?php wp_enqueue_script('explorexr-model-file-handler', EXPLOREXR_PLUGIN_URL . 'includes/post-types/assets/js/model-file-handler.js', array('jquery'), '1.0', true); ?>
+    wp_add_inline_script('explorexr-model-file-handler', $inline_script);
+    ?>
+    
     <?php
 }
 

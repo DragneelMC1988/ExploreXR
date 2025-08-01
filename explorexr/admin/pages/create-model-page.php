@@ -171,8 +171,14 @@ function explorexr_create_model_page() {
     }
     
     ?>
-    <div class="wrap explorexr-admin-container">
-        <!-- WordPress admin notices appear here automatically before our custom content -->
+    <div class="wrap">
+        <h1>Create New 3D Model</h1>
+        
+        <!-- WordPress.org Compliance: This div.wp-header-end is required for WordPress to place admin notices properly -->
+        <div class="wp-header-end"></div>
+        
+        <!-- ExploreXR Plugin Content -->
+        <div class="explorexr-admin-container">
         
         <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/notifications-area.php'; ?>
         <?php 
@@ -419,8 +425,13 @@ function explorexr_create_model_page() {
     </div>
     
  
+    <?php
+    // Enqueue required scripts for create model page
+    wp_enqueue_script('jquery');
+    wp_enqueue_media(); // For WordPress media uploader
     
-    <script>
+    // Create model page functionality
+    $create_model_script = "
         jQuery(document).ready(function($) {
             // Tab functionality
             $('.explorexr-tab').on('click', function() {
@@ -433,7 +444,7 @@ function explorexr_create_model_page() {
                 
                 // Show the selected tab content
                 tabGroup.find('.explorexr-tab-content').removeClass('active');
-                tabGroup.find(`#${tabId}`).addClass('active');
+                tabGroup.find('#' + tabId).addClass('active');
                 
                 // Update hidden input values for form submission
                 if (tabId === 'upload-model') {
@@ -457,11 +468,11 @@ function explorexr_create_model_page() {
                 
                 // Show the selected device content
                 deviceGroup.find('.explorexr-device-content').removeClass('active');
-                deviceGroup.find(`#${deviceId}-size`).addClass('active');
+                deviceGroup.find('#' + deviceId + '-size').addClass('active');
             });
             
             // Handle predefined size selection
-            $('input[name="viewer_size"]').on('change', function() {
+            $('input[name=\"viewer_size\"]').on('change', function() {
                 const selectedSize = $(this).val();
                 
                 if (selectedSize !== 'custom') {
@@ -534,11 +545,16 @@ function explorexr_create_model_page() {
                 mediaUploader.open();
             });
         });
-    </script>
+    ";
+    
+    wp_add_inline_script('jquery', $create_model_script);
+    ?>
     
     <!-- ExploreXR Footer -->
     <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/admin-footer.php'; ?>
-    </div>
+    
+        </div><!-- .explorexr-admin-container -->
+    </div><!-- .wrap -->
     <?php
 }
 

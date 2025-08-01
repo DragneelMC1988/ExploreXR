@@ -980,3 +980,11 @@
             text-decoration: none;
             color: white;
         }
+
+        .premium-tier-overview {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+        }

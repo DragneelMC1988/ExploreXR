@@ -104,7 +104,14 @@ function explorexr_files_page() {
                         <span class="dashicons dashicons-upload" style="margin-right: 5px;"></span> Upload New File
                        </button>';
     ?>
-    <div class="wrap explorexr-admin-container">
+    <div class="wrap">
+        <h1>3D Model Files</h1>
+        
+        <!-- WordPress.org Compliance: This div.wp-header-end is required for WordPress to place admin notices properly -->
+        <div class="wp-header-end"></div>
+        
+        <!-- ExploreXR Plugin Content -->
+        <div class="explorexr-admin-container">
         <!-- WordPress admin notices appear here automatically before our custom content -->
         
         <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/notifications-area.php'; ?>
@@ -228,6 +235,9 @@ function explorexr_files_page() {
     
     <!-- ExploreXR Footer -->
     <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/admin-footer.php'; ?>
+    
+        </div><!-- .explorexr-admin-container -->
+    </div><!-- .wrap -->
     
     <?php
 }

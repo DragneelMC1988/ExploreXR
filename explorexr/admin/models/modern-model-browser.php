@@ -247,7 +247,12 @@ function explorexr_modern_model_browser_page() {
     <!-- Include the model viewer modal -->
     <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/model-viewer-modal.php'; ?>
     
-    <script>
+    <?php
+    // Enqueue required scripts for modern model browser
+    wp_enqueue_script('jquery');
+    
+    // Modern model browser functionality
+    $model_browser_script = "
     jQuery(document).ready(function($) {
         // Model viewer modal functionality
         const modal = $('#explorexr-model-modal');
@@ -298,12 +303,12 @@ function explorexr_modern_model_browser_page() {
             navigator.clipboard.writeText(shortcode);
             
             // Show a quick success notification
-            const $this = $(this);
-            const originalIcon = $this.html();
-            $this.html('<span class="dashicons dashicons-yes" style="color:#46b450;"></span>');
+            const \$this = $(this);
+            const originalIcon = \$this.html();
+            \$this.html('<span class=\"dashicons dashicons-yes\" style=\"color:#46b450;\"></span>');
             
             setTimeout(function() {
-                $this.html(originalIcon);
+                \$this.html(originalIcon);
             }, 1500);
         });
         
@@ -312,12 +317,16 @@ function explorexr_modern_model_browser_page() {
             const modelName = $(this).data('model-name');
             const deleteUrl = $(this).data('delete-url');
             
-            if (confirm('Are you sure you want to delete the model "' + modelName + '"? This action cannot be undone.')) {
+            if (confirm('Are you sure you want to delete the model \"' + modelName + '\"? This action cannot be undone.')) {
                 window.location.href = deleteUrl;
             }
         });
     });
-    </script>
+    ";
+    
+    wp_add_inline_script('jquery', $model_browser_script);
+    ?>
+    
     <?php
 }
 

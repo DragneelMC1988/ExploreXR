@@ -255,29 +255,31 @@ function explorexr_orphaned_models_widget_callback() {
         <div id="explorexr-check-result"></div>
     </div>
     
-    <script>
+    <?php
+    // WordPress.org compliance: Convert inline script to wp_add_inline_script
+    $cleanup_script = '
     jQuery(document).ready(function($) {
-        $('#explorexr-check-orphaned-models').on('click', function(e) {
+        $("#explorexr-check-orphaned-models").on("click", function(e) {
             e.preventDefault();
             
             const $button = $(this);
-            const $spinner = $button.next('.spinner');
-            const $result = $('#explorexr-check-result');
+            const $spinner = $button.next(".spinner");
+            const $result = $("#explorexr-check-result");
             
-            $button.prop('disabled', true);
-            $spinner.addClass('is-active');
-            $result.html('');
+            $button.prop("disabled", true);
+            $spinner.addClass("is-active");
+            $result.html("");
             
             $.ajax({
                 url: ajaxurl,
-                type: 'POST',
+                type: "POST",
                 data: {
-                    action: 'explorexr_cleanup_models',
-                    _wpnonce: '<?php echo esc_js(wp_create_nonce('explorexr_cleanup_models')); ?>'
+                    action: "explorexr_cleanup_models",
+                    _wpnonce: "' . esc_js(wp_create_nonce('explorexr_cleanup_models')) . '"
                 },
                 success: function(response) {
                     if (response.success) {
-                        $result.html('<p class="explorexr-success">' + response.data.message + '</p>');
+                        $result.html("<p class=\"explorexr-success\">" + response.data.message + "</p>");
                         
                         // Refresh the page if orphaned models were found
                         if (response.data.results.orphaned > 0) {
@@ -286,21 +288,25 @@ function explorexr_orphaned_models_widget_callback() {
                             }, 2000);
                         }
                     } else {
-                        $result.html('<p class="explorexr-error">Error: ' + response.data.message + '</p>');
+                        $result.html("<p class=\"explorexr-error\">Error: " + response.data.message + "</p>");
                     }
                 },
                 error: function() {
-                    $result.html('<p class="explorexr-error">Error checking models. Please try again.</p>');
+                    $result.html("<p class=\"explorexr-error\">Error checking models. Please try again.</p>");
                 },
                 complete: function() {
-                    $button.prop('disabled', false);
-                    $spinner.removeClass('is-active');
+                    $button.prop("disabled", false);
+                    $spinner.removeClass("is-active");
                 }
             });
         });
     });
-    </script>
-    <style>
+    ';
+    
+    wp_add_inline_script('jquery', $cleanup_script);
+    
+    // WordPress.org compliance: Convert inline style to wp_add_inline_style
+    $cleanup_style = '
     .explorexr-dashboard-widget .explorexr-success {
         color: #46b450;
     }
@@ -313,7 +319,10 @@ function explorexr_orphaned_models_widget_callback() {
     .explorexr-dashboard-widget #explorexr-check-result {
         margin-top: 10px;
     }
-    </style>
+    ';
+    
+    wp_add_inline_style('wp-admin', $cleanup_style);
+    ?>
     <?php
 }
 

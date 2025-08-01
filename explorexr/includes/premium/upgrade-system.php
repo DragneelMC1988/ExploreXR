@@ -18,40 +18,7 @@ function explorexr_is_premium_feature_available($feature) {
     return false;
 }
 
-/**
- * Show admin notice to promote premium upgrade
- */
-function explorexr_show_premium_upgrade_notice() {
-    // Only show on ExploreXR admin pages
-    $screen = get_current_screen();
-    if (!$screen || strpos($screen->id, 'explorexr') === false) {
-        return;
-    }
-    
-    // Don't show on ExploreXR premium page to avoid redundancy
-    if ($screen && $screen->id === 'toplevel_page_explorexr-premium') {
-        return;
-    }
-    
-    $dismissed = get_user_meta(get_current_user_id(), 'explorexr_premium_notice_dismissed', true);
-    
-    if (!$dismissed) {
-        ?>
-        <div class="notice notice-info explorexr-premium-notice is-dismissible" data-notice="premium-upgrade">
-            <div style="display: flex; align-items: center; gap: 15px; padding: 10px 0;">
-                <div style="font-size: 32px;">🚀</div>
-                <div style="flex: 1;">
-                    <h3 style="margin: 0 0 5px 0;">Unlock Advanced 3D Features</h3>
-                    <p style="margin: 0;">Add AR and Camera Controls to your 3D models with ExploreXR Premium. Transform how users interact with your content!</p>
-                </div>
-                <div>
-                    <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-premium')); ?>" class="button button-primary">Upgrade Now</a>
-                </div>
-            </div>
-        </div>
-        <?php
-    }
-}
+
 
 /**
  * Add premium upgrade metaboxes to model edit page
@@ -209,6 +176,47 @@ function explorexr_get_premium_features() {
             )
         );
     }
+
+/**
+ * Show premium upgrade notice in admin
+ */
+function explorexr_show_premium_upgrade_notice() {
+    // Only show to users who can manage options
+    if (!current_user_can('manage_options')) {
+        return;
+    }
+    
+    // Check if user has dismissed this notice
+    if (get_user_meta(get_current_user_id(), 'explorexr_premium_notice_dismissed', true)) {
+        return;
+    }
+    
+    // Only show on ExploreXR admin pages
+    $screen = get_current_screen();
+    if (!$screen || strpos($screen->id, 'explorexr') === false) {
+        return;
+    }
+    
+    ?>
+    <div class="notice notice-info is-dismissible" id="explorexr-premium-notice">
+        <p><strong>ExploreXR Premium:</strong> Unlock advanced features like animations, annotations, and priority support. <a href="<?php echo esc_url(explorexr_get_premium_upgrade_url()); ?>" target="_blank">Learn more</a></p>
+    </div>
+    <?php
+    // WordPress.org compliance: Convert inline script to wp_add_inline_script
+    $premium_notice_script = '
+    jQuery(document).ready(function($) {
+        $("#explorexr-premium-notice").on("click", ".notice-dismiss", function() {
+            $.post(ajaxurl, {
+                action: "explorexr_dismiss_premium_notice",
+                nonce: "' . esc_js(wp_create_nonce('explorexr_dismiss_notice')) . '"
+            });
+        });
+    });
+    ';
+    wp_add_inline_script('jquery', $premium_notice_script);
+    ?>
+    <?php
+}
 
 // Initialize the premium upgrade system hooks
 add_action('admin_notices', 'explorexr_show_premium_upgrade_notice');

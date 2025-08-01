@@ -59,9 +59,8 @@ function explorexr_dashboard_page() {
       // Check if Model Viewer is fully operational
     $cdn_source = get_option('explorexr_cdn_source', 'local');
     $model_viewer_version = get_option('explorexr_model_viewer_version', '3.3.0');
-    $model_viewer_url = ($cdn_source === 'cdn') 
-        ? "https://unpkg.com/@google/model-viewer@{$model_viewer_version}/dist/model-viewer.min.js"
-        : EXPLOREXR_PLUGIN_URL . 'assets/js/model-viewer.min.js';
+    // WordPress.org compliance: Always use local files, no CDN
+    $model_viewer_url = EXPLOREXR_PLUGIN_URL . 'assets/js/model-viewer.min.js';
     
     $model_viewer_status = 'operational';
     if ($cdn_source === 'cdn') {
@@ -84,8 +83,14 @@ function explorexr_dashboard_page() {
                         <span class="dashicons dashicons-plus" style="margin-right: 5px;"></span> Create New Model
                        </a>';
     ?>
-    <div class="wrap explorexr-admin-container">
-        <!-- WordPress admin notices appear here automatically before our custom content -->
+    <div class="wrap">
+        <h1><?php echo esc_html($page_title); ?></h1>
+        
+        <!-- WordPress.org Compliance: This div.wp-header-end is required for WordPress to place admin notices properly -->
+        <div class="wp-header-end"></div>
+        
+        <!-- ExploreXR Plugin Content -->
+        <div class="explorexr-admin-container">
         
         <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/notifications-area.php'; ?>
         
@@ -424,7 +429,9 @@ function explorexr_dashboard_page() {
     
     <!-- ExploreXR Footer -->
     <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/admin-footer.php'; ?>
-    </div>
+    
+        </div><!-- .explorexr-admin-container -->
+    </div><!-- .wrap -->
     <?php
 }
 

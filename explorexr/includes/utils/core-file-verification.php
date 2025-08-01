@@ -15,19 +15,22 @@ if (!defined('ABSPATH')) {
  * Check critical WordPress core JavaScript files
  */
 function explorexr_verify_core_js_files() {
+    // Use proper WordPress functions instead of ABSPATH
+    $wp_root = get_home_path();
+    
     $core_js_files = array(
-        ABSPATH . 'wp-admin/js/user-profile.min.js',
-        ABSPATH . 'wp-includes/js/dist/url.min.js',
-        ABSPATH . 'wp-includes/js/dist/lodash.min.js',
-        ABSPATH . 'wp-includes/js/dist/react-dom.min.js',
-        ABSPATH . 'wp-admin/js/common.min.js',
-        ABSPATH . 'wp-includes/js/jquery/jquery.min.js'
+        'wp-admin/js/user-profile.min.js',
+        'wp-includes/js/dist/url.min.js',
+        'wp-includes/js/dist/lodash.min.js',
+        'wp-includes/js/dist/react-dom.min.js',
+        'wp-admin/js/common.min.js',
+        'wp-includes/js/jquery/jquery.min.js'
     );
     
     $results = array();
     
-    foreach ($core_js_files as $file) {
-        $relative_path = str_replace(ABSPATH, '', $file);
+    foreach ($core_js_files as $relative_path) {
+        $file = $wp_root . $relative_path;
         
         if (!file_exists($file)) {
             $results[$relative_path] = 'MISSING';

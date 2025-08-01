@@ -119,8 +119,14 @@ function explorexr_settings_page() {
                         <span class="dashicons dashicons-book settings-icon"></span> Documentation
                       </a>';
     ?>
-    <div class="wrap explorexr-admin-container explorexr-settings-page">
-        <!-- WordPress admin notices appear here automatically before our custom content -->
+    <div class="wrap">
+        <h1>ExploreXR Settings</h1>
+        
+        <!-- WordPress.org Compliance: This div.wp-header-end is required for WordPress to place admin notices properly -->
+        <div class="wp-header-end"></div>
+        
+        <!-- ExploreXR Plugin Content -->
+        <div class="explorexr-admin-container explorexr-settings-page">
         
         <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/notifications-area.php'; ?>
         <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/admin-header.php'; ?>
@@ -183,7 +189,6 @@ function explorexr_settings_page() {
             
             <!-- Add hidden fields to preserve debugging settings when submitting general settings -->
             <input type="hidden" name="explorexr_preserve_settings" value="1">
-            <input type="hidden" id="explorexr_debug_log_hidden" name="explorexr_debug_log" value="<?php echo esc_attr(get_option('explorexr_debug_log', '') ? '1' : ''); ?>">
             <input type="hidden" id="explorexr_view_php_errors_hidden" name="explorexr_view_php_errors" value="<?php echo esc_attr(get_option('explorexr_view_php_errors', '') ? '1' : ''); ?>">
             <input type="hidden" id="explorexr_console_logging_hidden" name="explorexr_console_logging" value="<?php echo esc_attr(get_option('explorexr_console_logging', '') ? '1' : ''); ?>">
             <!-- Animation and annotation debug features are not available in the Free version -->
@@ -209,18 +214,9 @@ function explorexr_settings_page() {
             <?php wp_nonce_field('explorexr_settings-options'); ?>
             
             <p><strong>Configure debugging options for troubleshooting and development purposes.</strong></p>
+            <p class="description">Note: ExploreXR now uses WordPress standard debugging. Enable WP_DEBUG and WP_DEBUG_LOG in your wp-config.php file for debug logging.</p>
             
             <table class="form-table" role="presentation">
-                <tr>
-                    <th scope="row">
-                        <label for="explorexr_debug_log">Debug Log</label>
-                    </th>
-                    <td>
-                        <input type="checkbox" id="explorexr_debug_log" name="explorexr_debug_log" value="1" <?php checked(get_option('explorexr_debug_log', false)); ?>>
-                        <label for="explorexr_debug_log">Enable debug logging to track plugin operations</label>
-                        <p class="description">Logs debug information to help troubleshoot issues.</p>
-                    </td>
-                </tr>
                 <tr>
                     <th scope="row">
                         <label for="explorexr_view_php_errors">View PHP Errors</label>
@@ -288,13 +284,8 @@ function explorexr_settings_page() {
                 <?php endif; ?>
                   <div class="explorexr-debug-info">
                     <h4>Debug Features Status</h4>
+                    <p class="description">WordPress standard debugging is now used. Check your wp-config.php for WP_DEBUG and WP_DEBUG_LOG settings.</p>
                     <ul class="explorexr-debug-status-list">
-                        <li>
-                            <span class="explorexr-debug-status-label">Debug Log:</span>
-                            <span class="explorexr-debug-status-value <?php echo esc_attr(get_option('explorexr_debug_log') ? 'active' : 'inactive'); ?>">
-                                <?php echo esc_html(get_option('explorexr_debug_log') ? 'Active' : 'Inactive'); ?>
-                            </span>
-                        </li>
                         <li>
                             <span class="explorexr-debug-status-label">View PHP Errors:</span>
                             <span class="explorexr-debug-status-value <?php echo esc_attr(get_option('explorexr_view_php_errors') ? 'active' : 'inactive'); ?>">
@@ -508,7 +499,9 @@ function explorexr_settings_page() {
     
     <!-- ExploreXR Footer -->
     <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/admin-footer.php'; ?>
-    </div>
+    
+        </div><!-- .explorexr-admin-container -->
+    </div><!-- .wrap -->
     <?php
 }
 

@@ -51,62 +51,74 @@ if (!defined('ABSPATH')) {
             <?php echo esc_html__('Load 3D Model', 'explorexr'); ?>
         </button>
         
-        <!-- Adding direct script for better mobile compatibility -->
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                // Get the button element
-                var loadButton = document.getElementById('<?php echo esc_js($model_instance_id); ?>-btn');
-                
-                // Add both click and touchend events for better mobile compatibility
-                loadButton.addEventListener('click', loadModel);
-                loadButton.addEventListener('touchend', function(e) {
-                    e.preventDefault(); // Prevent default touch behavior
-                    loadModel(e);
-                });
-                
-                function loadModel(e) {
-                    e.stopPropagation(); // Prevent event bubbling
-                    loadExploreXRModel('<?php echo esc_js($model_instance_id); ?>', '<?php echo esc_js($model_file); ?>', <?php echo wp_json_encode($model_attributes_json); ?>);
-                }
+        <?php
+        // WordPress.org compliance: Convert inline script to wp_add_inline_script
+        $large_model_script = '
+        document.addEventListener("DOMContentLoaded", function() {
+            // Get the button element
+            var loadButton = document.getElementById("' . esc_js($model_instance_id) . '-btn");
+            
+            // Add both click and touchend events for better mobile compatibility
+            loadButton.addEventListener("click", loadModel);
+            loadButton.addEventListener("touchend", function(e) {
+                e.preventDefault(); // Prevent default touch behavior
+                loadModel(e);
             });
-        </script>
+            
+            function loadModel(e) {
+                e.stopPropagation(); // Prevent event bubbling
+                loadExploreXRModel("' . esc_js($model_instance_id) . '", "' . esc_js($model_file) . '", ' . wp_json_encode($model_attributes_json) . ');
+            }
+        });
+        ';
+        wp_add_inline_script('explorexr-model-loader', $large_model_script);
+        ?>
     </div>
     <div id="<?php echo esc_attr($model_instance_id); ?>-viewer" style="width: 100%; height: 100%; display: none;">
         <!-- Model viewer will be inserted here via JavaScript -->
     </div>
     
     <?php if (isset($model_attributes['ar']) && !empty($model_attributes['ar'])) : ?>
-    <script>
-        // Add AR button customization after model is loaded
-        document.addEventListener('ExploreXRModelLoaded', function(event) {
-            if (event.detail.instanceId === '<?php echo esc_js($model_instance_id); ?>') {
-                const modelViewer = document.querySelector('#<?php echo esc_js($model_instance_id); ?>-viewer model-viewer');
-                if (modelViewer) {
-                    <?php if (isset($model_attributes['ar-button-image']) && !empty($model_attributes['ar-button-image'])) : ?>
-                    // Add custom AR button with image
-                    const arButton = document.createElement('button');
-                    arButton.setAttribute('slot', 'ar-button');
-                    arButton.className = 'ExploreXR-ar-button';
-                    
-                    const arButtonImg = document.createElement('img');
-                    arButtonImg.src = '<?php echo esc_js($model_attributes['ar-button-image']); ?>';
-                    arButtonImg.alt = '<?php echo isset($model_attributes['ar-button-text']) ? esc_js($model_attributes['ar-button-text']) : 'View in AR'; ?>';
-                    
-                    arButton.appendChild(arButtonImg);
-                    modelViewer.appendChild(arButton);
-                    <?php elseif (isset($model_attributes['ar-button-text']) && !empty($model_attributes['ar-button-text'])) : ?>
-                    // Add custom AR button with text
-                    const arButton = document.createElement('button');
-                    arButton.setAttribute('slot', 'ar-button');
-                    arButton.className = 'ExploreXR-ar-button';
-                    arButton.textContent = '<?php echo esc_js($model_attributes['ar-button-text']); ?>';
-                    
-                    modelViewer.appendChild(arButton);
-                    <?php endif; ?>
-                }
+    <?php
+    // WordPress.org compliance: Convert inline script to wp_add_inline_script
+    $ar_customization_script = '
+    // Add AR button customization after model is loaded
+    document.addEventListener("ExploreXRModelLoaded", function(event) {
+        if (event.detail.instanceId === "' . esc_js($model_instance_id) . '") {
+            const modelViewer = document.querySelector("#' . esc_js($model_instance_id) . '-viewer model-viewer");
+            if (modelViewer) {';
+    
+    if (isset($model_attributes['ar-button-image']) && !empty($model_attributes['ar-button-image'])) {
+        $ar_customization_script .= '
+                // Add custom AR button with image
+                const arButton = document.createElement("button");
+                arButton.setAttribute("slot", "ar-button");
+                arButton.className = "ExploreXR-ar-button";
+                
+                const arButtonImg = document.createElement("img");
+                arButtonImg.src = "' . esc_js($model_attributes['ar-button-image']) . '";
+                arButtonImg.alt = "' . (isset($model_attributes['ar-button-text']) ? esc_js($model_attributes['ar-button-text']) : 'View in AR') . '";
+                
+                arButton.appendChild(arButtonImg);
+                modelViewer.appendChild(arButton);';
+    } elseif (isset($model_attributes['ar-button-text']) && !empty($model_attributes['ar-button-text'])) {
+        $ar_customization_script .= '
+                // Add custom AR button with text
+                const arButton = document.createElement("button");
+                arButton.setAttribute("slot", "ar-button");
+                arButton.className = "ExploreXR-ar-button";
+                arButton.textContent = "' . esc_js($model_attributes['ar-button-text']) . '";
+                
+                modelViewer.appendChild(arButton);';
+    }
+    
+    $ar_customization_script .= '
             }
-        });
-    </script>
+        }
+    });
+    ';
+    wp_add_inline_script('explorexr-model-loader', $ar_customization_script);
+    ?>
     <?php endif; ?>
 </div>
 

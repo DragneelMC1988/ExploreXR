@@ -1,6 +1,6 @@
 /**
  * ExploreXR Admin Notifications
- * Adds save confirmation messages for 3D model updates
+ * Adds save confirmation messages for 3D model updates - WordPress Compliant Version
  */
 jQuery(document).ready(function($) {
     // Check if we're on the model edit page
@@ -10,36 +10,14 @@ jQuery(document).ready(function($) {
         // Look for WordPress update message
         const $message = $('#message');
         if ($message.length && $message.hasClass('updated')) {
-            // Use the global notification system if available
-            if (typeof window.explorexrCreateNotification === 'function') {
-                window.explorexrCreateNotification(
-                    '<strong>3D Model updated successfully!</strong> All changes have been saved.',
-                    'save',
-                    true
-                );
-            } else {
-                // Fallback to original method
-                const $customMessage = $('<div class="notice notice-success explorexr-save-notice is-dismissible">' +
-                    '<p><strong>3D Model updated successfully!</strong> All changes have been saved.</p>' +
-                    '<button type="button" class="notice-dismiss"><span class="screen-reader-text">Dismiss this notice.</span></button>' +
-                    '</div>');
-                
-                // Add the message to the page
-                $('#wpbody-content').prepend($customMessage);
-                
-                // Automatically dismiss after 5 seconds
-                setTimeout(function() {
-                    $customMessage.fadeOut(300, function() {
-                        $(this).remove();
-                    });
-                }, 5000);
-                
-                // Handle manual dismiss
-                $customMessage.find('.notice-dismiss').on('click', function() {
-                    $customMessage.fadeOut(300, function() {
-                        $(this).remove();
-                    });
-                });
+            // WordPress.org Compliance: Do not manipulate WordPress notice positioning
+            // Instead, enhance the existing WordPress notice with our content
+            
+            // Find the existing WordPress message paragraph
+            const $existingP = $message.find('p').first();
+            if ($existingP.length) {
+                // Enhance the existing message instead of creating new notice containers
+                $existingP.html('<strong>3D Model updated successfully!</strong> All changes have been saved.');
             }
             
             // Add visual highlight to the publish button to confirm save

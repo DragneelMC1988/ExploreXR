@@ -156,7 +156,13 @@ function explorexr_add_model_debug_script() {    // Only add on model-related pa
     }
     
     ?>
-    <script type="text/javascript">
+    
+    <?php
+    // Enqueue required scripts for model debug functionality
+    wp_enqueue_script('jquery');
+    
+    // Model debug functionality
+    $model_debug_script = "
     jQuery(document).ready(function($) {
         // Add debug button next to view buttons - only on specific debug and edit pages
         $('.view-3d-model').each(function() {
@@ -164,12 +170,12 @@ function explorexr_add_model_debug_script() {    // Only add on model-related pa
             
             // Check if a debug button already exists
             if ($(this).next('.explorexr-debug-model').length === 0) {
-                const $debugButton = $('<button type="button" class="button button-small explorexr-debug-model" style="margin-left: 5px; background-color: #f0f0f0;">' +
-                            '<span class="dashicons dashicons-code-standards" style="color: #0073aa;"></span> Debug' +
+                const \$debugButton = $('<button type=\"button\" class=\"button button-small explorexr-debug-model\" style=\"margin-left: 5px; background-color: #f0f0f0;\">' +
+                            '<span class=\"dashicons dashicons-code-standards\" style=\"color: #0073aa;\"></span> Debug' +
                             '</button>');
                 
-                $debugButton.data('model-url', modelUrl);
-                $(this).after($debugButton);
+                \$debugButton.data('model-url', modelUrl);
+                $(this).after(\$debugButton);
             }
         });
         
@@ -177,11 +183,11 @@ function explorexr_add_model_debug_script() {    // Only add on model-related pa
         $(document).on('click', '.explorexr-debug-model', function(e) {
             e.preventDefault();
             const modelUrl = $(this).data('model-url');
-            const $button = $(this);
+            const \$button = $(this);
             
             // Disable button and show loading state
-            $button.prop('disabled', true);
-            $button.html('<span class="dashicons dashicons-update spinning"></span>');
+            \$button.prop('disabled', true);
+            \$button.html('<span class=\"dashicons dashicons-update spinning\"></span>');
             
             // Send AJAX request to check file
             $.ajax({
@@ -196,85 +202,86 @@ function explorexr_add_model_debug_script() {    // Only add on model-related pa
                     if (response.success) {
                         // Create debug modal
                         const result = response.data;
-                        const html = `
-                        <div class="explorexr-debug-modal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 999999; background-color: rgba(0,0,0,0.5));\">
-                            <div class="explorexr-debug-modal-content" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80%; max-width: 800px; background-color: #fff; padding: 20px; border-radius: 4px; box-shadow: 0 0 20px rgba(0,0,0,0.3));\">
-                                <span class="explorexr-debug-close" style="position: absolute; top: 10px; right: 15px; font-size: 20px; cursor: pointer;">&times;</span>
-                                <h2 style="margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px;">3D Model Debug Information</h2>
-                                <div class="explorexr-debug-results" style="max-height: 400px; overflow-y: auto;">
-                                    <p><strong>Result:</strong> <span style="color: ${result.exists ? 'green' : 'red'};">${result.message}</span></p>
-                                    <h3>File Information</h3>
-                                    <table style="width: 100%; border-collapse: collapse;">
-                                        <tr style="background-color: #f9f9f9;">
-                                            <td style="padding: 8px; border: 1px solid #ddd; width: 30%;"><strong>URL:</strong></td>
-                                            <td style="padding: 8px; border: 1px solid #ddd; word-break: break-all;">${result.url}</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding: 8px; border: 1px solid #ddd;"><strong>File Exists:</strong></td>
-                                            <td style="padding: 8px; border: 1px solid #ddd;">${result.exists ? 'Yes' : 'No'}</td>
-                                        </tr>
-                                        <tr style="background-color: #f9f9f9;">
-                                            <td style="padding: 8px; border: 1px solid #ddd;"><strong>File Size:</strong></td>
-                                            <td style="padding: 8px; border: 1px solid #ddd;">${result.size || 'N/A'}</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding: 8px; border: 1px solid #ddd;"><strong>MIME Type:</strong></td>
-                                            <td style="padding: 8px; border: 1px solid #ddd;">${result.mime_type || 'N/A'}</td>
-                                        </tr>
-                                        <tr style="background-color: #f9f9f9;">
-                                            <td style="padding: 8px; border: 1px solid #ddd;"><strong>File Location:</strong></td>
-                                            <td style="padding: 8px; border: 1px solid #ddd;">${result.is_local ? 'Local' : 'Remote'}</td>
-                                        </tr>
-                                        ${result.is_local ? `<tr>
-                                            <td style="padding: 8px; border: 1px solid #ddd;"><strong>Server Path:</strong></td>
-                                            <td style="padding: 8px; border: 1px solid #ddd; word-break: break-all;">${result.path}</td>
-                                        </tr>` : ''}
-                                    </table>
-                                    
-                                    <div style="margin-top: 20px; background-color: #f9f9f9; padding: 15px; border-left: 4px solid #0073aa;">
-                                        <h3 style="margin-top: 0;">Troubleshooting Tips</h3>
-                                        <ul style="margin-left: 20px;">
-                                            <li>Make sure the file exists at the specified path</li>
-                                            <li>Check that the file has the correct MIME type (should be model/gltf-binary for .glb files)</li>
-                                            <li>Ensure the file is accessible via the web (try opening the URL directly in your browser)</li>
-                                            <li>Verify that the file is a valid 3D model in GLB or GLTF format</li>
-                                            <li>Check for file permission issues if the file exists but cannot be accessed</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div style="margin-top: 20px; text-align: right;">
-                                    <button class="button explorexr-debug-close-btn">Close</button>
-                                </div>
-                            </div>
-                        </div>
-                        `;
+                        const html = '<div class=\"explorexr-debug-modal\" style=\"position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 999999; background-color: rgba(0,0,0,0.5);\">' +
+                            '<div class=\"explorexr-debug-modal-content\" style=\"position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80%; max-width: 800px; background-color: #fff; padding: 20px; border-radius: 4px; box-shadow: 0 0 20px rgba(0,0,0,0.3);\">' +
+                                '<span class=\"explorexr-debug-close\" style=\"position: absolute; top: 10px; right: 15px; font-size: 20px; cursor: pointer;\">&times;</span>' +
+                                '<h2 style=\"margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px;\">3D Model Debug Information</h2>' +
+                                '<div class=\"explorexr-debug-results\" style=\"max-height: 400px; overflow-y: auto;\">' +
+                                    '<p><strong>Result:</strong> <span style=\"color: ' + (result.exists ? 'green' : 'red') + ';\">' + result.message + '</span></p>' +
+                                    '<h3>File Information</h3>' +
+                                    '<table style=\"width: 100%; border-collapse: collapse;\">' +
+                                        '<tr style=\"background-color: #f9f9f9;\">' +
+                                            '<td style=\"padding: 8px; border: 1px solid #ddd; width: 30%;\"><strong>URL:</strong></td>' +
+                                            '<td style=\"padding: 8px; border: 1px solid #ddd; word-break: break-all;\">' + result.url + '</td>' +
+                                        '</tr>' +
+                                        '<tr>' +
+                                            '<td style=\"padding: 8px; border: 1px solid #ddd;\"><strong>File Exists:</strong></td>' +
+                                            '<td style=\"padding: 8px; border: 1px solid #ddd;\">' + (result.exists ? 'Yes' : 'No') + '</td>' +
+                                        '</tr>' +
+                                        '<tr style=\"background-color: #f9f9f9;\">' +
+                                            '<td style=\"padding: 8px; border: 1px solid #ddd;\"><strong>File Size:</strong></td>' +
+                                            '<td style=\"padding: 8px; border: 1px solid #ddd;\">' + (result.size || 'N/A') + '</td>' +
+                                        '</tr>' +
+                                        '<tr>' +
+                                            '<td style=\"padding: 8px; border: 1px solid #ddd;\"><strong>MIME Type:</strong></td>' +
+                                            '<td style=\"padding: 8px; border: 1px solid #ddd;\">' + (result.mime_type || 'N/A') + '</td>' +
+                                        '</tr>' +
+                                        '<tr style=\"background-color: #f9f9f9;\">' +
+                                            '<td style=\"padding: 8px; border: 1px solid #ddd;\"><strong>File Location:</strong></td>' +
+                                            '<td style=\"padding: 8px; border: 1px solid #ddd;\">' + (result.is_local ? 'Local' : 'Remote') + '</td>' +
+                                        '</tr>' +
+                                        (result.is_local ? '<tr>' +
+                                            '<td style=\"padding: 8px; border: 1px solid #ddd;\"><strong>Server Path:</strong></td>' +
+                                            '<td style=\"padding: 8px; border: 1px solid #ddd; word-break: break-all;\">' + result.path + '</td>' +
+                                        '</tr>' : '') +
+                                    '</table>' +
+                                    '<div style=\"margin-top: 20px; background-color: #f9f9f9; padding: 15px; border-left: 4px solid #0073aa;\">' +
+                                        '<h3 style=\"margin-top: 0;\">Troubleshooting Tips</h3>' +
+                                        '<ul style=\"margin-left: 20px;\">' +
+                                            '<li>Make sure the file exists at the specified path</li>' +
+                                            '<li>Check that the file has the correct MIME type (should be model/gltf-binary for .glb files)</li>' +
+                                            '<li>Ensure the file is accessible via the web (try opening the URL directly in your browser)</li>' +
+                                            '<li>Verify that the file is a valid 3D model in GLB or GLTF format</li>' +
+                                            '<li>Check for file permission issues if the file exists but cannot be accessed</li>' +
+                                        '</ul>' +
+                                    '</div>' +
+                                '</div>' +
+                                '<div style=\"margin-top: 20px; text-align: right;\">' +
+                                    '<button class=\"button explorexr-debug-close-btn\">Close</button>' +
+                                '</div>' +
+                            '</div>' +
+                        '</div>';
                         
                         // Append to body
-                        $('body').append(html);
+                        \$('body').append(html);
                         
                         // Handle close button click
-                        $('.explorexr-debug-close, .explorexr-debug-close-btn').on('click', function() {
-                            $('.explorexr-debug-modal').remove();
+                        \$('.explorexr-debug-close, .explorexr-debug-close-btn').on('click', function() {
+                            \$('.explorexr-debug-modal').remove();
                         });
                     } else {
                         alert('Error checking file: ' + (response.data ? response.data.message : 'Unknown error'));
                     }
                     
                     // Reset button
-                    $button.prop('disabled', false);
-                    $button.html('<span class="dashicons dashicons-code-standards" style="color: #0073aa;"></span> Debug');
+                    \$button.prop('disabled', false);
+                    \$button.html('<span class=\"dashicons dashicons-code-standards\" style=\"color: #0073aa;\"></span> Debug');
                 },
                 error: function() {
                     alert('Error connecting to server');
                     
                     // Reset button
-                    $button.prop('disabled', false);
-                    $button.html('<span class="dashicons dashicons-code-standards" style="color: #0073aa;"></span> Debug');
+                    \$button.prop('disabled', false);
+                    \$button.html('<span class=\"dashicons dashicons-code-standards\" style=\"color: #0073aa;\"></span> Debug');
                 }
             });
         });
     });
-    </script>
+    ";
+    
+    wp_add_inline_script('jquery', $model_debug_script);
+    ?>
+    
     <?php
 }
 

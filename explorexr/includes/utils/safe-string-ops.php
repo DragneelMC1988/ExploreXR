@@ -5,7 +5,7 @@
  * Provides safe string manipulation functions for ExploreXR plugin
  * 
  * @package ExploreXR
- * @version 1.0.2
+ * @version 1.0.3
  */
 
 // Prevent direct access

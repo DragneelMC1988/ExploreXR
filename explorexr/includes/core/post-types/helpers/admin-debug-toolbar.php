@@ -102,66 +102,76 @@ function explorexr_add_debug_scripts() {
         // Get checkbox debug data
         $checkbox_debug = get_post_meta($post->ID, '_explorexr_checkbox_debug', true);
         
-        // Add JavaScript to display the data
-        ?>
-        <script>
+        // WordPress.org compliance: Convert inline script to wp_add_inline_script
+        $debug_script = '
             // Function to show model info
             function explorexrShowModelInfo() {
-                console.group('ExploreXR Model Info');
-                console.log('Model ID: <?php echo esc_js($post->ID); ?>');
-                console.log('Model Name: <?php echo esc_js($model_info['model_name']); ?>');
-                console.log('Model File: <?php echo esc_js($model_info['model_file']); ?>');
-                console.log('Camera Controls: <?php echo esc_js($model_info['camera_controls']); ?>');
-                console.log('Animation Enabled: <?php echo esc_js($model_info['animation_enabled']); ?>');
-                console.log('Auto Rotate: <?php echo esc_js($model_info['auto_rotate']); ?>');
-                console.log('AR Enabled: <?php echo esc_js($model_info['ar_enabled']); ?>');
+                console.group("ExploreXR Model Info");
+                console.log("Model ID: ' . esc_js($post->ID) . '");
+                console.log("Model Name: ' . esc_js($model_info['model_name']) . '");
+                console.log("Model File: ' . esc_js($model_info['model_file']) . '");
+                console.log("Camera Controls: ' . esc_js($model_info['camera_controls']) . '");
+                console.log("Animation Enabled: ' . esc_js($model_info['animation_enabled']) . '");
+                console.log("Auto Rotate: ' . esc_js($model_info['auto_rotate']) . '");
+                console.log("AR Enabled: ' . esc_js($model_info['ar_enabled']) . '");
                 console.groupEnd();
                 
-                // Also show an alert for users who don't have console open
-                alert('ExploreXR Model Info:\n\n' + 
-                      'Model ID: <?php echo esc_js($post->ID); ?>\n' +
-                      'Model Name: <?php echo esc_js($model_info['model_name']); ?>\n' +
-                      'Model File: <?php echo esc_js($model_info['model_file']); ?>\n' +
-                      'Camera Controls: <?php echo esc_js($model_info['camera_controls']); ?>\n' +
-                      'Animation Enabled: <?php echo esc_js($model_info['animation_enabled']); ?>\n' +
-                      'Auto Rotate: <?php echo esc_js($model_info['auto_rotate']); ?>\n' +
-                      'AR Enabled: <?php echo esc_js($model_info['ar_enabled']); ?>');
+                // Also show an alert for users who don\'t have console open
+                alert("ExploreXR Model Info:\\n\\n" + 
+                      "Model ID: ' . esc_js($post->ID) . '\\n" +
+                      "Model Name: ' . esc_js($model_info['model_name']) . '\\n" +
+                      "Model File: ' . esc_js($model_info['model_file']) . '\\n" +
+                      "Camera Controls: ' . esc_js($model_info['camera_controls']) . '\\n" +
+                      "Animation Enabled: ' . esc_js($model_info['animation_enabled']) . '\\n" +
+                      "Auto Rotate: ' . esc_js($model_info['auto_rotate']) . '\\n" +
+                      "AR Enabled: ' . esc_js($model_info['ar_enabled']) . '");
             }
             
             // Function to show last form data
-            function explorexrShowFormData() {
-                <?php if (!empty($last_edit_debug)) : ?>
-                    console.group('ExploreXR Last Form Data (<?php echo esc_js($last_edit_time); ?>)');
-                    console.log(<?php echo wp_json_encode(json_decode($last_edit_debug, true)); ?>);
-                    console.groupEnd();
-                    
-                    // Show a simple alert with some basic info
-                    alert('ExploreXR Last Form Data:\n\n' +
-                          'Last Edit Time: <?php echo esc_js($last_edit_time); ?>\n\n' +
-                          'See browser console for complete form data');
-                <?php else : ?>
-                    console.log('No form data available. Try saving the form first.');
-                    alert('No form data available. Try saving the form first.');
-                <?php endif; ?>
+            function explorexrShowFormData() {';
+        
+        if (!empty($last_edit_debug)) {
+            $debug_script .= '
+                console.group("ExploreXR Last Form Data (' . esc_js($last_edit_time) . ')");
+                console.log(' . wp_json_encode(json_decode($last_edit_debug, true)) . ');
+                console.groupEnd();
+                
+                // Show a simple alert with some basic info
+                alert("ExploreXR Last Form Data:\\n\\n" +
+                      "Last Edit Time: ' . esc_js($last_edit_time) . '\\n\\n" +
+                      "See browser console for complete form data");';
+        } else {
+            $debug_script .= '
+                console.log("No form data available. Try saving the form first.");
+                alert("No form data available. Try saving the form first.");';
+        }
+        
+        $debug_script .= '
             }
             
             // Function to show checkbox states
-            function explorexrShowCheckboxStates() {
-                <?php if (!empty($checkbox_debug)) : ?>
-                    console.group('ExploreXR Checkbox States');
-                    console.log(<?php echo wp_json_encode(json_decode($checkbox_debug, true)); ?>);
-                    console.groupEnd();
-                    
-                    // Show a simple alert
-                    alert('ExploreXR Checkbox States:\n\n' +
-                          'See browser console for complete checkbox debug data');
-                <?php else : ?>
-                    console.log('No checkbox debug data available. Try saving the form first.');
-                    alert('No checkbox debug data available. Try saving the form first.');
-                <?php endif; ?>
+            function explorexrShowCheckboxStates() {';
+        
+        if (!empty($checkbox_debug)) {
+            $debug_script .= '
+                console.group("ExploreXR Checkbox States");
+                console.log(' . wp_json_encode(json_decode($checkbox_debug, true)) . ');
+                console.groupEnd();
+                
+                // Show a simple alert
+                alert("ExploreXR Checkbox States:\\n\\n" +
+                      "See browser console for complete checkbox debug data");';
+        } else {
+            $debug_script .= '
+                console.log("No checkbox debug data available. Try saving the form first.");
+                alert("No checkbox debug data available. Try saving the form first.");';
+        }
+        
+        $debug_script .= '
             }
-        </script>
-        <?php
+        ';
+        
+        wp_add_inline_script('wp-admin', $debug_script);
     }
 }
 add_action('admin_footer', 'explorexr_add_debug_scripts');

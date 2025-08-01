@@ -14,30 +14,39 @@ if (!defined('ABSPATH')) {
     </div>
 </div>
 
-<script>
+<?php
+// WordPress.org compliance: Convert inline script to wp_add_inline_script
+$modal_script = '
 // Only load model-viewer when the modal is actually opened
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener("DOMContentLoaded", function() {
     let modelViewerLoaded = false;
     
     function loadModelViewer() {
         if (modelViewerLoaded) return;
         
-        const container = document.getElementById('explorexr-model-viewer-container');
+        const container = document.getElementById("explorexr-model-viewer-container");
         if (container) {
-            container.innerHTML = '<model-viewer id="explorexr-model-viewer" camera-controls auto-rotate loading="eager" reveal="interaction"></model-viewer>';
+            container.innerHTML = "<model-viewer id=\"explorexr-model-viewer\" camera-controls auto-rotate loading=\"eager\" reveal=\"interaction\"></model-viewer>";
             modelViewerLoaded = true;
             
             // Trigger model-viewer script loading if needed
-            if (typeof window.loadExploreXRModelViewer === 'function') {
+            if (typeof window.loadExploreXRModelViewer === "function") {
                 window.loadExploreXRModelViewer();
             }
         }
     }
     
     // Load model-viewer when modal is opened
-    document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('preview-model') || 
-            e.target.closest('.preview-model')) {
+    document.addEventListener("click", function(e) {
+        if (e.target.classList.contains("preview-model") || 
+            e.target.closest(".preview-model")) {
+            loadModelViewer();
+        }
+    });
+});
+';
+wp_add_inline_script('jquery', $modal_script);
+?>
             loadModelViewer();
         }
     });

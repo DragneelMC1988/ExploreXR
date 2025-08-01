@@ -302,16 +302,6 @@ add_action('admin_init', function() {
         'explorexr-settings'
     );
     
-    // Register Debug Log field
-    add_settings_field(
-        'EXPLOREXR_debug_log',
-        'Debug Log',
-        'EXPLOREXR_debug_log_callback',
-        'explorexr-settings',
-        'EXPLOREXR_debugging_section',
-        array('label_for' => 'EXPLOREXR_debug_log')
-    );
-    
     // Register View PHP Errors field
     add_settings_field(
         'EXPLOREXR_view_php_errors',
@@ -355,9 +345,6 @@ add_action('admin_init', function() {
     ));
     
     // Register debugging settings with sanitization
-    register_setting('EXPLOREXR_settings', 'EXPLOREXR_debug_log', array(
-        'sanitize_callback' => 'sanitize_text_field'
-    ));
     register_setting('EXPLOREXR_settings', 'EXPLOREXR_view_php_errors', array(
         'sanitize_callback' => 'sanitize_text_field'
     ));

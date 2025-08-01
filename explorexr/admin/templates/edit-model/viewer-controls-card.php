@@ -116,34 +116,39 @@ if (!isset($auto_rotate)) {
     </div>
 </div>
 
-<script>
+<?php
+// WordPress.org compliance: Convert inline script to wp_add_inline_script
+$viewer_controls_script = '
 jQuery(document).ready(function($) {
     // Update state field when enable interactions checkbox changes
-    $('#explorexr_enable_interactions').on('change', function() {
-        var stateValue = $(this).is(':checked') ? '1' : '0';
-        $('input[name="explorexr_enable_interactions_state"]').val(stateValue);
+    $("#explorexr_enable_interactions").on("change", function() {
+        var stateValue = $(this).is(":checked") ? "1" : "0";
+        $("input[name=\"explorexr_enable_interactions_state\"]").val(stateValue);
     });
     
     // Toggle auto-rotate settings visibility
-    $('#explorexr_auto_rotate').on('change', function() {
-        if ($(this).is(':checked')) {
-            $('#auto-rotate-settings').slideDown();
+    $("#explorexr_auto_rotate").on("change", function() {
+        if ($(this).is(":checked")) {
+            $("#auto-rotate-settings").slideDown();
             // Ensure the input fields are enabled
-            $('#explorexr_auto_rotate_delay, #explorexr_auto_rotate_speed').prop('disabled', false);
+            $("#explorexr_auto_rotate_delay, #explorexr_auto_rotate_speed").prop("disabled", false);
         } else {
-            $('#auto-rotate-settings').slideUp();
+            $("#auto-rotate-settings").slideUp();
             // Optionally disable the fields when auto-rotate is off
-            // This ensures they're not submitted with the form when auto-rotate is off
-            // $('#explorexr_auto_rotate_delay, #explorexr_auto_rotate_speed').prop('disabled', true);
+            // This ensures they are not submitted with the form when auto-rotate is off
+            // $("#explorexr_auto_rotate_delay, #explorexr_auto_rotate_speed").prop("disabled", true);
         }
     });
     
     // Initialize fields on page load
-    if (!$('#explorexr_auto_rotate').is(':checked')) {
-        $('#auto-rotate-settings').hide();
+    if (!$("#explorexr_auto_rotate").is(":checked")) {
+        $("#auto-rotate-settings").hide();
     }
 });
-</script>
+';
+
+wp_add_inline_script('jquery', $viewer_controls_script);
+?>
 
 
 

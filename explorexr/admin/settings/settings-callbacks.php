@@ -75,21 +75,6 @@ function explorexr_debugging_section_callback() {
 }
 
 /**
- * Debug log callback
- */
-function explorexr_debug_log_callback() {
-    $debug_log = get_option('explorexr_debug_log', false);
-    ?>
-    <label>
-        <input type="checkbox" name="explorexr_debug_log" value="1" <?php checked($debug_log, true); ?>>
-        Enable debugging log
-    </label>
-    <p class="description">When enabled, ExploreXR will log plugin activity to a debug log file. This can help identify issues with model loading, AR functionality, etc.</p>
-    <p class="description">Log location: <code><?php echo esc_html(EXPLOREXR_PLUGIN_DIR . 'debug.log'); ?></code></p>
-    <?php
-}
-
-/**
  * View PHP errors callback
  */
 function explorexr_view_php_errors_callback() {
@@ -179,7 +164,8 @@ function explorexr_get_system_info() {
     
     // Plugin-specific info
     $model_viewer_version = get_option('explorexr_model_viewer_version', '3.3.0');
-    $model_viewer_source = get_option('explorexr_cdn_source', 'cdn') === 'cdn' ? 'CDN (unpkg.com)' : 'Local File';
+    // WordPress.org compliance: Local files only
+    $model_viewer_source = 'Local File';
     $debug_mode = get_option('explorexr_debug_mode', false);
     
     // Return all info as an array
