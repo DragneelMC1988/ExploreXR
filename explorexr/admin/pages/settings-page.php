@@ -335,7 +335,7 @@ define('WP_DEBUG_DISPLAY', false);</pre>
                 <?php 
                 // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage -- Plugin logo for admin interface
                 printf('<img src="%s" alt="%s" class="explorexr-logo" loading="lazy">', 
-                    esc_url(EXPLOREXR_PLUGIN_URL . 'assets/img/logos/exploreXR-Logo-Dark.png'), 
+                    esc_url(EXPLOREXR_PLUGIN_URL . 'assets/img/logos/explorexr-Logo-dark.png'), 
                     esc_attr__('ExploreXR Logo', 'explorexr')
                 );
                 ?>

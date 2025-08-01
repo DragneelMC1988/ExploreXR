@@ -33,24 +33,41 @@ function explorexr_premium_upgrade_page() {
             <section class="premium-summary">
                 <h2>Premium Feature Experience</h2>
                 <p class="summary-description">ExploreXR Premium offers powerful features to enhance your 3D models. Choose the subscription tier that fits your needs.</p>
-                
-                <div class="premium-tier-overview">
-                    <div class="tier-overview-card">
-                        <h4>Pro</h4>
-                        <div class="tier-number">2</div>
-                        <p>Essential Premium Features</p>
+                <div class="pricing-grid">
+                    <div class="pricing-card">
+                        <h3>Pro</h3>
+                        <div class="price">€59<span>/year</span></div>
+                        <div class="feature-count">Essential Features</div>
+                        <ul>
+                            <li>Basic 3D Features</li>
+                            <li>Any 2 addons from the addons collection</li>
+                            <li>Email Support</li>
+                        </ul>
                     </div>
-                    <div class="tier-overview-card">
-                        <h4>Plus</h4>
-                        <div class="tier-number">4</div>
-                        <p>Advanced Premium Features</p>
+
+                    <div class="pricing-card featured">
+                        <h3>Plus</h3>
+                        <div class="price">€99<span>/year</span></div>
+                        <div class="badge">Most Popular</div>
+                        <div class="feature-count">Advanced Features</div>
+                        <ul>
+                            <li>Basic 3D Features</li>
+                            <li>Any 4 addons from the addons collection</li>                                                       
+                            <li>Priority Support</li>                            
+                        </ul>
                     </div>
-                    <div class="tier-overview-card">
-                        <h4>Ultra</h4>
-                        <div class="tier-number">All</div>
-                        <p>Complete Premium<br>Feature Set</p>
+
+                    <div class="pricing-card">
+                        <h3>Ultra</h3>
+                        <div class="price">€179<span>/year</span></div>
+                        <div class="feature-count">Complete Feature Set</div>
+                        <ul>
+                            <li>Basic 3D Features</li>
+                            <li>Access to all addons included</li>  
+                            <li>Priority Support</li>                          
+                        </ul>
                     </div>
-                </div>
+                </div>               
             </section>
 
             <section class="feature-comparison">
@@ -130,49 +147,7 @@ function explorexr_premium_upgrade_page() {
                     </table>
                 </div>
             </section>
-
-            <section class="pricing-tiers">
-                <h2>Premium Pricing Tiers</h2>
-                <div class="pricing-grid">
-                    <div class="pricing-card">
-                        <h3>Pro</h3>
-                        <div class="price">€59<span>/year</span></div>
-                        <div class="feature-count">Essential Features</div>
-                        <ul>
-                            <li>Basic 3D Features</li>
-                            <li>AR Support</li>
-                            <li>Camera Controls</li>                            
-                            <li>Email Support</li>                            
-                        </ul>
-                    </div>
-
-                    <div class="pricing-card featured">
-                        <h3>Plus</h3>
-                        <div class="price">€99<span>/year</span></div>
-                        <div class="badge">Most Popular</div>
-                        <div class="feature-count">Advanced Features</div>
-                        <ul>
-                            <li>All Pro Features</li>
-                            <li>Animations</li>
-                            <li>Annotations</li>                           
-                            <li>Priority Support</li>                            
-                        </ul>
-                    </div>
-
-                    <div class="pricing-card">
-                        <h3>Ultra</h3>
-                        <div class="price">€179<span>/year</span></div>
-                        <div class="feature-count">Complete Feature Set</div>
-                        <ul>
-                            <li>All Plus Features</li>
-                            <li>Materials Editing</li>
-                            <li>WooCommerce Integration</li>
-                            <li>Analytics & Tracking</li>
-                            <li>Priority Feature Requests</li>
-                        </ul>
-                    </div>
-                </div>
-            </section>
+            
 
             <section class="features-showcase">
                 <h2>Available Premium Features</h2>
@@ -284,17 +259,7 @@ function explorexr_premium_upgrade_page() {
                         </ul>
                         <div class="coming-soon-badge">Coming Soon</div>
                     </div>
-                </div>
-
-                <div class="addons-note">
-                    <p><strong>Addon Availability by Tier:</strong></p>
-                    <ul class="tier-addon-list">
-                        <li><strong>Pro (€59/year):</strong> Choose any 2 addons from the collection above</li>
-                        <li><strong>Plus (€99/year):</strong> Choose any 4 addons from the collection above</li>
-                        <li><strong>Ultra (€179/year):</strong> Access to all addons included</li>
-                    </ul>
-                    <p><em>All tiers include the core 3D model viewer functionality. Addons can be activated/deactivated through your license dashboard.</em></p>
-                </div>
+                </div>                
             </section>
 
             <section class="upgrade-cta">
