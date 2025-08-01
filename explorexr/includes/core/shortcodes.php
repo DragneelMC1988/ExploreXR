@@ -23,7 +23,7 @@ function EXPLOREXR_enqueue_model_loader() {
     wp_enqueue_script('explorexr-model-loader', EXPLOREXR_PLUGIN_URL . 'assets/js/model-loader.js', array(), '1.0', true);
     
     // Pass debug settings to model-loader script
-    $debug_mode = get_option('explorexr_debug_mode', false);
+    $debug_mode = explorexr_is_debug_enabled();
     if ($debug_mode) {
         wp_localize_script('explorexr-model-loader', 'exploreXRDebug', array(
             'enabled' => true,
@@ -380,7 +380,7 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
         // Check for JSON encoding errors
         if ($model_attributes_json === false) {
             // Log error and fall back to empty object
-            if (get_option('explorexr_debug_mode', false)) {
+            if (explorexr_is_debug_enabled()) {
                 explorexr_log('ExploreXR: JSON encoding error in model attributes for model ID: ' . $model_id, 'error');
             }
             $model_attributes_json = '{}';
@@ -442,6 +442,7 @@ add_action('admin_enqueue_scripts', function ($hook) {
         wp_enqueue_script('explorexr-model-loader', EXPLOREXR_PLUGIN_URL . 'assets/js/model-loader.js', array('jquery'), EXPLOREXR_VERSION, true);
     }
 });
+
 
 
 

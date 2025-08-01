@@ -13,6 +13,17 @@ if (!defined('ABSPATH')) {
 }
 
 /**
+ * Check if WordPress debugging is enabled
+ * 
+ * @return bool True if WordPress debugging is enabled
+ */
+if (!function_exists('explorexr_is_debug_enabled')) {
+    function explorexr_is_debug_enabled() {
+        return defined('WP_DEBUG') && WP_DEBUG && defined('WP_DEBUG_LOG') && WP_DEBUG_LOG;
+    }
+}
+
+/**
  * Standard WordPress logging function
  * 
  * @param mixed $message The message to log (string, array, object, etc.)
@@ -21,7 +32,7 @@ if (!defined('ABSPATH')) {
 if (!function_exists('explorexr_log')) {
     function explorexr_log($message, $level = 'info') {
         // Only log if WordPress debugging is enabled
-        if (!defined('WP_DEBUG') || !WP_DEBUG || !defined('WP_DEBUG_LOG') || !WP_DEBUG_LOG) {
+        if (!explorexr_is_debug_enabled()) {
             return;
         }
         

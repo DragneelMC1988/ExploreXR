@@ -314,7 +314,7 @@ function ExploreXR_get_client_ip() {
  * @param array $context Additional context data
  */
 function ExploreXR_log_security_event($event_type, $message, $context = array()) {
-    if (!get_option('ExploreXR_debug_mode', false)) {
+    if (!explorexr_is_debug_enabled()) {
         return; // Only log when debug mode is enabled
     }
     
@@ -337,7 +337,7 @@ function ExploreXR_log_security_event($event_type, $message, $context = array())
         'context' => $context
     );
     
-    if (get_option('ExploreXR_debug_mode', false)) {
+    if (explorexr_is_debug_enabled()) {
         ExploreXR_log('ExploreXR Security Event: ' . $log_entry, 'warning');
     }
 }
@@ -352,7 +352,7 @@ function ExploreXR_init_security() {
     }
     
     // Initialize security logging
-    if (get_option('ExploreXR_debug_mode', false)) {
+    if (explorexr_is_debug_enabled()) {
         add_action('wp_login_failed', 'ExploreXR_log_failed_login');
         add_action('wp_login', 'ExploreXR_log_successful_login');
     }
@@ -404,6 +404,7 @@ function ExploreXR_log_successful_login($user_login, $user = null) {
 
 // Initialize security features
 add_action('init', 'ExploreXR_init_security');
+
 
 
 

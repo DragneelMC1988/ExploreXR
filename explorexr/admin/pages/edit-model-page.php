@@ -24,7 +24,7 @@ function ExploreXR_safe_include_template($template_path, $fallback_path = '', $v
         }
         
         // Get variables from calling function's symbol table (only in debug mode)
-        if (get_option('explorexr_debug_mode', false)) {
+        if (explorexr_is_debug_enabled()) {
             // Gate debug_backtrace() behind WP_DEBUG check for WordPress coding standards
             if (defined('WP_DEBUG') && WP_DEBUG) {
                 // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace -- Used for debugging purposes only
@@ -176,9 +176,17 @@ function ExploreXR_edit_model_page() {
     if (isset($_POST['ExploreXR_edit_model_submit']) && check_admin_referer('ExploreXR_edit_model', 'ExploreXR_edit_nonce')) {
         
         // Debug: Log all POST data if debug mode is enabled
-        if (get_option('explorexr_debug_mode')) {
+        if (explorexr_is_debug_enabled()) {
             if (function_exists('explorexr_debug_log')) {
-                explorexr_debug_log('ExploreXR Edit Model Form Submission - POST Data: ' . wp_json_encode($_POST));
+                // WordPress.org compliance: Log specific sanitized fields instead of entire $_POST
+                $sanitized_post_data = array();
+                $important_fields = array('post_title', 'explorexr_model_file', 'explorexr_model_name', 'viewer_size');
+                foreach ($important_fields as $field) {
+                    if (isset($_POST[$field])) {
+                        $sanitized_post_data[$field] = sanitize_text_field(wp_unslash($_POST[$field]));
+                    }
+                }
+                explorexr_debug_log('ExploreXR Edit Model Form Submission - Sanitized Data: ' . wp_json_encode($sanitized_post_data));
             }
         }
         
@@ -297,7 +305,7 @@ function ExploreXR_edit_model_page() {
             update_post_meta($model_id, '_explorexr_enable_interactions', $enable_interactions_value);
             
             // Debug logging if enabled
-            if (get_option('explorexr_debug_mode')) {
+            if (explorexr_is_debug_enabled()) {
                 if (function_exists('explorexr_debug_log')) {
                     explorexr_debug_log('ExploreXR: Saving enable_interactions: ' . $enable_interactions_value . ' (checkbox was ' . (isset($_POST['explorexr_enable_interactions']) ? 'checked' : 'unchecked') . ')');
                 }
@@ -312,7 +320,7 @@ function ExploreXR_edit_model_page() {
             update_post_meta($model_id, '_explorexr_auto_rotate', $auto_rotate_value);
             
             // Debug logging if enabled
-            if (get_option('explorexr_debug_mode')) {
+            if (explorexr_is_debug_enabled()) {
                 if (function_exists('explorexr_debug_log')) {
                     explorexr_debug_log('ExploreXR: Saving auto_rotate: ' . $auto_rotate_value . ' (checkbox was ' . (isset($_POST['explorexr_auto_rotate']) ? 'checked' : 'unchecked') . ')');
                 }
@@ -322,7 +330,7 @@ function ExploreXR_edit_model_page() {
             if (isset($_POST['explorexr_auto_rotate_delay'])) {
                 $auto_rotate_delay = sanitize_text_field(wp_unslash($_POST['explorexr_auto_rotate_delay']));
                 update_post_meta($model_id, '_explorexr_auto_rotate_delay', $auto_rotate_delay);
-                if (get_option('explorexr_debug_mode')) {
+                if (explorexr_is_debug_enabled()) {
                     if (function_exists('explorexr_debug_log')) {
                         explorexr_debug_log('ExploreXR: Explicitly saved auto-rotate delay: ' . $auto_rotate_delay);
                     }
@@ -332,7 +340,7 @@ function ExploreXR_edit_model_page() {
             if (isset($_POST['explorexr_auto_rotate_speed'])) {
                 $auto_rotate_speed = sanitize_text_field(wp_unslash($_POST['explorexr_auto_rotate_speed']));
                 update_post_meta($model_id, '_explorexr_rotation_per_second', $auto_rotate_speed);
-                if (get_option('explorexr_debug_mode')) {
+                if (explorexr_is_debug_enabled()) {
                     if (function_exists('explorexr_debug_log')) {
                         explorexr_debug_log('ExploreXR: Explicitly saved rotation speed: ' . $auto_rotate_speed);
                     }

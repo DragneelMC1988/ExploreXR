@@ -101,11 +101,6 @@ if (!wp_script_is($script_handle, 'enqueued')) {
                 });
             }
             
-            // Log error for debugging
-            if (function_exists('error_log') && get_option('explorexr_debug_mode', false)) {
-                explorexr_log('ExploreXR: Model Viewer script files not found. UMD: ' . $local_umd_path . ', Min: ' . $local_min_path, 'error');
-            }
-            
             return; // Exit without loading any script
         }
     } else {
@@ -122,10 +117,6 @@ if (!wp_script_is($script_handle, 'enqueued')) {
             });
         }
         
-        // Log error for debugging
-        if (function_exists('error_log') && get_option('explorexr_debug_mode', false)) {
-            explorexr_log('ExploreXR: CDN source attempted but not allowed. WordPress.org Plugin Check requires local assets only.', 'warning');
-        }
         
         return; // Exit without loading any external script
     }
@@ -136,15 +127,6 @@ wp_enqueue_script('explorexr-model-viewer-loader-manager', EXPLOREXR_PLUGIN_URL 
 
 // Enqueue the custom model loader script
 wp_enqueue_script('explorexr-model-loader', EXPLOREXR_PLUGIN_URL . 'assets/js/model-loader.js', array('jquery', 'explorexr-model-viewer-loader-manager'), EXPLOREXR_VERSION, true);
-
-// Pass debug settings to model-loader script as well
-$debug_mode = get_option('explorexr_debug_mode', false);
-if ($debug_mode) {
-    wp_localize_script('explorexr-model-loader', 'exploreXRDebug', array(
-        'enabled' => true,
-        'version' => EXPLOREXR_VERSION
-    ));
-}
 
 // Enqueue model viewer wrapper for enhanced UI
 wp_enqueue_script('explorexr-model-viewer-wrapper', EXPLOREXR_PLUGIN_URL . 'assets/js/model-viewer-wrapper.js', array('jquery', 'explorexr-model-viewer-loader-manager'), EXPLOREXR_VERSION, true);
@@ -290,35 +272,6 @@ $ar_fix_js = "
 ";
 wp_add_inline_script('explorexr-model-viewer-wrapper', $ar_fix_js, 'after');
 
-// Pass debugging settings to JavaScript
-$debug_mode = get_option('explorexr_debug_mode', false);
-$debug_ar = get_option('explorexr_debug_ar_features', false);
-$debug_camera = get_option('explorexr_debug_camera_controls', false);
-// Animation and annotation debug features are not available in the Free version
-$debug_loading = get_option('explorexr_debug_loading_info', false);
-$console_logging = get_option('explorexr_console_logging', false);
-
-// Only add debug settings if at least one debug option is enabled
-if ($debug_mode || $debug_ar || $debug_camera || $debug_loading || $console_logging) {
-    wp_localize_script('explorexr-model-handler', 'exploreXRDebug', array(
-        'enabled' => $debug_mode ? true : false,
-        'ar' => $debug_ar ? true : false,
-        'camera' => $debug_camera ? true : false,
-        // Animation and annotation debug features are not available in the Free version
-        'loading' => $debug_loading ? true : false,
-        'version' => EXPLOREXR_VERSION
-    ));
-}
-
-// Add debug information if debug mode is enabled
-if ($debug_mode && current_user_can('manage_options')) {
-    wp_add_inline_script($script_handle, "
-        console.log('ExploreXR Debug Mode: ON');
-        console.log('Model Viewer Version: " . esc_js($model_viewer_version) . "');
-        console.log('Source: " . esc_js($cdn_source === 'local' ? 'Local' : 'CDN') . "');
-    ", 'before');
-}
-
 // Only add this filter once
 static $filter_added = false;
 if (!$filter_added) {
@@ -422,16 +375,10 @@ if (!function_exists('explorexr_add_ondemand_script_loader')) {
                 $script_url = EXPLOREXR_PLUGIN_URL . 'assets/js/model-viewer-umd.js';
             } else {
                 // If local file doesn't exist, show error instead of using CDN
-                if (get_option('explorexr_debug_mode', false)) {
-                    explorexr_log('ExploreXR: model-viewer-umd.js not found for on-demand loading', 'warning');
-                }
                 return; // Don't output any script loader
             }
         } else {
             // CDN is disabled for WordPress.org compliance
-            if (get_option('explorexr_debug_mode', false)) {
-                explorexr_log('ExploreXR: CDN usage attempted but disabled for WordPress.org compliance', 'warning');
-            }
             return; // Don't output any script loader
         }
         

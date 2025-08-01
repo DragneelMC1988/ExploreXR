@@ -316,21 +316,6 @@
     box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3) !important;
 }
 
-/* Premium Banner Button */
-.explorexr-pro-banner .button {
-    background: linear-gradient(135deg, var(--explorexr-primary) 0%, var(--explorexr-primary-dark) 100%) !important;
-    color: white !important;
-    font-weight: 600 !important;
-    box-shadow: 0 3px 6px rgba(42, 172, 226, 0.4) !important;
-    padding: 10px 20px !important;
-}
-
-.explorexr-pro-banner .button:hover {
-    background: linear-gradient(135deg, var(--explorexr-primary-dark) 0%, var(--explorexr-primary-darker) 100%) !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 5px 10px rgba(42, 172, 226, 0.5) !important;
-}
-
 /* Header Action Buttons */
 .explorexr-header-actions .button-primary {
     background: linear-gradient(135deg, var(--explorexr-primary) 0%, var(--explorexr-primary-dark) 100%) !important;
@@ -344,28 +329,6 @@
     color: var(--explorexr-dark) !important;
     border: 1px solid #dee2e6 !important;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
-}
-
-/* Banner Dismiss Button */
-.explorexr-banner-dismiss {
-    background: rgba(255, 255, 255, 0.2) !important;
-    color: white !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-    border-radius: 50% !important;
-    width: 30px !important;
-    height: 30px !important;
-    padding: 0 !important;
-    font-size: 18px !important;
-    line-height: 1 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
-
-.explorexr-banner-dismiss:hover {
-    background: rgba(255, 255, 255, 0.3) !important;
-    color: white !important;
-    transform: scale(1.1) !important;
 }
 
 /* Form Submit Buttons */

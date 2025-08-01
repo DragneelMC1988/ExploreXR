@@ -50,7 +50,7 @@ function explorexr_get_loading_options() {
         'show_progress_bar' => true,
         'show_percentage' => true,
         'version' => EXPLOREXR_VERSION,
-        'debug_mode' => get_option('explorexr_debug_mode', false),
+        'debug_mode' => explorexr_is_debug_enabled(),
         'timestamp' => time() // Add timestamp for cache busting
     );
     
@@ -185,6 +185,7 @@ function explorexr_add_loading_options_to_model_viewer($attributes, $model_id = 
     return $attributes;
 }
 add_filter('explorexr_model_viewer_attributes', 'explorexr_add_loading_options_to_model_viewer', 10, 2);
+
 
 
 

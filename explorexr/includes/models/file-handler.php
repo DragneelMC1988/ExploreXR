@@ -41,7 +41,7 @@ add_action('add_attachment', function ($post_id) {
             update_attached_file($post_id, $new_file);
         } elseif (!$wp_filesystem) {
             // Log error if WP_Filesystem is not available
-            if (function_exists('error_log') && get_option('EXPLOREXR_debug_mode', false)) {
+            if (function_exists('error_log') && explorexr_is_debug_enabled()) {
                 EXPLOREXR_log('ExploreXR: WP_Filesystem not available for file move operation', 'error');
             }
         }
@@ -50,6 +50,7 @@ add_action('add_attachment', function ($post_id) {
 
 // Note: The EXPLOREXR_handle_model_upload function has been moved to model-helper.php
 // to avoid duplicate function declarations.
+
 
 
 

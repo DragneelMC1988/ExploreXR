@@ -110,31 +110,6 @@ function explorexr_dashboard_page() {
         
         <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/admin-header.php'; ?>
         
-        <?php 
-        // Free version always shows upgrade banner unless dismissed
-        if (defined('EXPLOREXR_IS_FREE') && EXPLOREXR_IS_FREE) : 
-            // Check if banner has been dismissed for this session
-            $banner_dismissed = get_transient('explorexr_pro_banner_dismissed_' . get_current_user_id());
-            if (!$banner_dismissed) :
-        ?>
-        <div class="explorexr-pro-banner" id="explorexr-pro-banner">
-            <div class="explorexr-pro-banner-content">
-                <button type="button" class="explorexr-banner-dismiss" aria-label="Dismiss banner">&times;</button>
-                <h3>Upgrade to ExploreXR Pro!</h3>
-                <p>Enhance your 3D model experience with premium features.</p>
-                <ul class="explorexr-pro-features">
-                    <li><span class="dashicons dashicons-yes"></span> Advanced AR Features</li>
-                    <li><span class="dashicons dashicons-yes"></span> Expert Camera Controls</li>
-                    <li><span class="dashicons dashicons-yes"></span> Priority Support</li>
-                </ul>
-                <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-premium')); ?>" class="button button-primary">Learn More</a>
-            </div>           
-        </div>
-        <?php 
-            endif; // End banner dismissed check
-        endif; // End free version check
-        ?>
-        
         <?php if ($model_viewer_status !== 'operational') : 
             $alert_message = '';
             if ($model_viewer_status === 'issue') {

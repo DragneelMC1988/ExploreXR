@@ -156,9 +156,7 @@ function explorexr_handle_settings_export() {
         if (in_array($option_name, array(
             'explorexr_cdn_source',
             'explorexr_model_viewer_version',
-            'explorexr_max_upload_size',
-            'explorexr_debug_mode',
-            'explorexr_view_php_errors'
+            'explorexr_max_upload_size'
         ))) {
             $export_data['core_settings'][$option_name] = $option_value;
         }        // Viewer settings
@@ -282,10 +280,18 @@ function explorexr_handle_settings_import() {
         }
     }
 
-    // Get file contents
+    // Get file contents using WordPress filesystem API
     if (isset($_FILES['explorexr_import_file']['tmp_name'])) {
+        // Initialize WordPress filesystem
+        global $wp_filesystem;
+        if (empty($wp_filesystem)) {
+            require_once ABSPATH . '/wp-admin/includes/file.php';
+            WP_Filesystem();
+        }
+        
+        // Use WordPress filesystem to read the uploaded file
         // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- File path is handled by WordPress file upload
-        $import_file = file_get_contents($_FILES['explorexr_import_file']['tmp_name']);
+        $import_file = $wp_filesystem->get_contents($_FILES['explorexr_import_file']['tmp_name']);
     } else {
         $import_file = false;
     }

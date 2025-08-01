@@ -59,9 +59,12 @@ add_action('plugins_loaded', function () {
     if (!file_exists(EXPLOREXR_MODELS_DIR)) {
         wp_mkdir_p(EXPLOREXR_MODELS_DIR);
         
-        // Create index.php for security
+        // Create index.php for security using WordPress filesystem
+        require_once(ABSPATH . 'wp-admin/includes/file.php');
+        WP_Filesystem();
+        global $wp_filesystem;
         $index_content = "<?php\n// Silence is golden.\n";
-        file_put_contents(EXPLOREXR_MODELS_DIR . 'index.php', $index_content);
+        $wp_filesystem->put_contents(EXPLOREXR_MODELS_DIR . 'index.php', $index_content, FS_CHMOD_FILE);
     }
     
     // Load all includes after WordPress is ready
@@ -162,18 +165,21 @@ function explorexr_free_activate() {
     if (!file_exists(EXPLOREXR_MODELS_DIR)) {
         wp_mkdir_p(EXPLOREXR_MODELS_DIR);
         
-        // Create index.php for security
+        // Create index.php for security using WordPress filesystem
+        require_once(ABSPATH . 'wp-admin/includes/file.php');
+        WP_Filesystem();
+        global $wp_filesystem;
         $index_content = "<?php\n// Silence is golden.\n";
-        file_put_contents(EXPLOREXR_MODELS_DIR . 'index.php', $index_content);
+        $wp_filesystem->put_contents(EXPLOREXR_MODELS_DIR . 'index.php', $index_content, FS_CHMOD_FILE);
         
-        // Create .htaccess for additional security
+        // Create .htaccess for additional security using WordPress filesystem
         $htaccess_content = "# ExploreXR Models Directory Protection\n";
         $htaccess_content .= "Options -Indexes\n";
         $htaccess_content .= "<FilesMatch \"\\.(php|php3|php4|php5|phtml|pl|py|jsp|asp|aspx|sh|cgi)$\">\n";
         $htaccess_content .= "    Order Allow,Deny\n";
         $htaccess_content .= "    Deny from all\n";
         $htaccess_content .= "</FilesMatch>\n";
-        file_put_contents(EXPLOREXR_MODELS_DIR . '.htaccess', $htaccess_content);
+        $wp_filesystem->put_contents(EXPLOREXR_MODELS_DIR . '.htaccess', $htaccess_content, FS_CHMOD_FILE);
     }
     
     // Set default options

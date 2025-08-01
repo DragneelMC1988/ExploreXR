@@ -76,7 +76,7 @@ function explorexr_cleanup_orphaned_models() {
             $results['orphaned']++;
             
             // Log for debugging
-            if (get_option('explorexr_debug_mode', false)) {
+            if (explorexr_is_debug_enabled()) {
                 explorexr_log(sprintf(
                     'ExploreXR: Model #%d has a missing file: %s',
                     $model_id,
@@ -328,6 +328,7 @@ function explorexr_orphaned_models_widget_callback() {
 
 // Register the dashboard widget
 add_action('wp_dashboard_setup', 'explorexr_register_orphaned_models_widget');
+
 
 
 

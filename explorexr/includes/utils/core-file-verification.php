@@ -15,42 +15,25 @@ if (!defined('ABSPATH')) {
  * Check critical WordPress core JavaScript files
  */
 function explorexr_verify_core_js_files() {
-    // Use proper WordPress functions instead of ABSPATH
-    $wp_root = get_home_path();
-    
-    $core_js_files = array(
-        'wp-admin/js/user-profile.min.js',
-        'wp-includes/js/dist/url.min.js',
-        'wp-includes/js/dist/lodash.min.js',
-        'wp-includes/js/dist/react-dom.min.js',
-        'wp-admin/js/common.min.js',
-        'wp-includes/js/jquery/jquery.min.js'
+    // WordPress.org compliance: Use WordPress core functions to check dependencies
+    // Instead of manually verifying core files, check if they're properly enqueued
+    $required_scripts = array(
+        'jquery',
+        'wp-util',
+        'common',
+        'user-profile'
     );
     
     $results = array();
     
-    foreach ($core_js_files as $relative_path) {
-        $file = $wp_root . $relative_path;
-        
-        if (!file_exists($file)) {
-            $results[$relative_path] = 'MISSING';
-            continue;
-        }
-        
-        $content = file_get_contents($file);
-        
-        // Check for obvious corruption signs
-        if (empty($content)) {
-            $results[$relative_path] = 'EMPTY';
-        } elseif (strpos($content, '<?php') !== false) {
-            $results[$relative_path] = 'PHP_CORRUPTION';
-        } elseif (strlen($content) < 100) {
-            $results[$relative_path] = 'TOO_SHORT';
-        } elseif (strpos($content, 'Uncaught') !== false || strpos($content, 'SyntaxError') !== false) {
-            $results[$relative_path] = 'SYNTAX_ERROR';
-        } else {
-            $results[$relative_path] = 'OK';
-        }
+    foreach ($required_scripts as $script_handle) {
+        $script_data = wp_scripts()->query($script_handle);
+        $results[$script_handle] = array(
+            'handle' => $script_handle,
+            'registered' => !empty($script_data),
+            'dependencies' => !empty($script_data) ? $script_data->deps : array(),
+            'version' => !empty($script_data) ? $script_data->ver : 'unknown'
+        );
     }
     
     return $results;

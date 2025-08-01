@@ -39,7 +39,9 @@ document.addEventListener("DOMContentLoaded", function() {
     // Load model-viewer when modal is opened
     document.addEventListener("click", function(e) {
         if (e.target.classList.contains("preview-model") || 
-            e.target.closest(".preview-model")) {
+            e.target.closest(".preview-model") ||
+            e.target.classList.contains("view-3d-model") || 
+            e.target.closest(".view-3d-model")) {
             loadModelViewer();
         }
     });
@@ -47,11 +49,6 @@ document.addEventListener("DOMContentLoaded", function() {
 ';
 wp_add_inline_script('jquery', $modal_script);
 ?>
-            loadModelViewer();
-        }
-    });
-});
-</script>
 
 
 

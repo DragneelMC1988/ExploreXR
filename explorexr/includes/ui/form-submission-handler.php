@@ -39,7 +39,7 @@ function ExploreXR_process_form_submission($post_data, $post_id = 0, $edit_mode 
     }
     
     // Log for debugging
-    if (get_option('ExploreXR_debug_mode')) {
+    if (explorexr_is_debug_enabled()) {
         ExploreXR_log('ExploreXR Form Handler: Processing form submission for post ID ' . $post_id);
         ExploreXR_log('ExploreXR Form Handler: Edit mode: ' . ($edit_mode ? 'enabled' : 'disabled'));
         
@@ -57,7 +57,7 @@ function ExploreXR_process_form_submission($post_data, $post_id = 0, $edit_mode 
             if (!isset($post_data[$original_key]) && $value) {
                 $post_data[$original_key] = $value;
                 
-                if (get_option('ExploreXR_debug_mode')) {
+                if (explorexr_is_debug_enabled()) {
                     ExploreXR_log("ExploreXR Edit Mode Handler: Setting {$original_key} to {$post_data[$original_key]} based on state field");
                 }
             }
@@ -70,7 +70,7 @@ function ExploreXR_process_form_submission($post_data, $post_id = 0, $edit_mode 
             // Use a custom size
             $post_data['viewer_size'] = $post_data['viewer_size_value'];
             
-            if (get_option('ExploreXR_debug_mode')) {
+            if (explorexr_is_debug_enabled()) {
                 ExploreXR_log('ExploreXR Form Handler: Using viewer_size_value: ' . $post_data['viewer_size_value']);
             }
         }
@@ -79,7 +79,7 @@ function ExploreXR_process_form_submission($post_data, $post_id = 0, $edit_mode 
             // Use a preset size
             $post_data['viewer_size'] = $post_data['viewer_size_preset'];
             
-            if (get_option('ExploreXR_debug_mode')) {
+            if (explorexr_is_debug_enabled()) {
                 ExploreXR_log('ExploreXR Form Handler: Using viewer_size_preset: ' . $post_data['viewer_size_preset']);
             }
         }
@@ -89,7 +89,7 @@ function ExploreXR_process_form_submission($post_data, $post_id = 0, $edit_mode 
             // Just ensure it's a string
             $post_data['viewer_size'] = implode(',', $post_data['viewer_size']);
             
-            if (get_option('ExploreXR_debug_mode')) {
+            if (explorexr_is_debug_enabled()) {
                 ExploreXR_log('ExploreXR Form Handler: viewer_size is an array: ' . $post_data['viewer_size']);
             }
         }
@@ -98,7 +98,7 @@ function ExploreXR_process_form_submission($post_data, $post_id = 0, $edit_mode 
             // Set default size if none specified
             $post_data['viewer_size'] = 'medium';
             
-            if (get_option('ExploreXR_debug_mode')) {
+            if (explorexr_is_debug_enabled()) {
                 ExploreXR_log('ExploreXR Form Handler: Setting default viewer_size to medium');
             }
         }
@@ -129,14 +129,14 @@ function ExploreXR_process_form_submission($post_data, $post_id = 0, $edit_mode 
                 // If checkbox was submitted, use its value
                 if (isset($post_data[$field])) {
                     // Checkbox is present in the form submission
-                    if (get_option('ExploreXR_debug_mode')) {
+                    if (explorexr_is_debug_enabled()) {
                         ExploreXR_log("ExploreXR Form Handler: Setting {$field} to {$post_data[$field]} based on state field");
                     }
                 } else {
                     // Checkbox was not submitted, which means it's unchecked
                     $post_data[$field] = 'off';
                     
-                    if (get_option('ExploreXR_debug_mode')) {
+                    if (explorexr_is_debug_enabled()) {
                         ExploreXR_log("ExploreXR Form Handler: Setting {$field} to 'off' (not in form data)");
                     }
                 }
@@ -229,6 +229,7 @@ function ExploreXR_sanitize_form_data($data) {
 function ExploreXR_create_state_field($field_name, $value = '') {
     return '<input type="hidden" name="' . esc_attr($field_name) . '_state" value="' . esc_attr($value) . '">';
 }
+
 
 
 

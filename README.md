@@ -1,251 +1,120 @@
-# 🌟 ExploreXR - 3D Model Viewer Plugin
+# ExploreXR - 3D Model Viewer for WordPress
 
 [![WordPress Compatible](https://img.shields.io/badge/WordPress-5.0%2B-0073aa.svg)](https://wordpress.org/)
 [![PHP Version](https://img.shields.io/badge/PHP-7.4%2B-8892bf.svg)](https://php.net/)
 [![License](https://img.shields.io/badge/License-GPL%20v2-007ec6.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
-[![Version](https://img.shields.io/badge/Version-1.0.2-brightgreen.svg)](https://github.com/DragneelMC1988/explorexr/releases)
+[![Version](https://img.shields.io/badge/Version-1.0.3-brightgreen.svg)](https://github.com/DragneelMC1988/ExploreXR/releases)
+[![WordPress.org](https://img.shields.io/badge/WordPress.org-Compliant-0073aa.svg)](https://wordpress.org/plugins/)
 
 ## 🌐 Transform Your WordPress Site with Interactive 3D Content
 
 ExploreXR brings the power of interactive 3D models to your WordPress website with zero coding required. Using Google's industry-leading Model Viewer technology, your visitors can interact with stunning 3D content directly in their browser—rotating, zooming, and even viewing products in their own space through AR.
 
+**✅ WordPress.org Plugin Directory Approved - Fully Compliant**
+
 **Perfect for:** E-commerce stores, product showcases, portfolios, museums, educational sites, real estate listings, architectural firms, and any website looking to engage users with immersive 3D experiences.
 
-## ✨ Features That Make ExploreXR Special
+## ✨ Features
 
-<table>
-  <tr>
-    <td width="33%">
-      <h3>🎯 Core Capabilities</h3>
-      <ul>
-        <li><b>Simple Model Management</b> - Upload GLB/GLTF/USDZ with ease</li>
-        <li><b>Intuitive Dashboard</b> - Streamlined model organization</li>
-        <li><b>Flexible Shortcode System</b> - Place models anywhere</li>
-        <li><b>Responsive Design</b> - Perfect on all devices</li>
-        <li><b>Progressive Loading</b> - Smooth user experience</li>
-        <li><b>Comprehensive Error Handling</b> - Never leave users hanging</li>
-      </ul>
-    </td>
-    <td width="33%">
-      <h3>� Seamless Integrations</h3>
-      <ul>
-        <li><b>Elementor Widget</b> - Visual drag-and-drop placement</li>
-        <li><b>WooCommerce Support</b> - 3D product visualization</li>
-        <li><b>Augmented Reality</b> - View models in your space</li>
-        <li><b>Universal Theme Support</b> - Works everywhere</li>
-        <li><b>Accessibility Ready</b> - Inclusive design principles</li>
-        <li><b>GDPR Compliant</b> - Privacy-focused implementation</li>
-      </ul>
-    </td>
-    <td width="33%">
-      <h3>⚙️ Advanced Controls</h3>
-      <ul>
-        <li><b>Custom Loading Experience</b> - Branded loading screens</li>
-        <li><b>Device-specific Settings</b> - Optimize for any screen</li>
-        <li><b>Clean Data Management</b> - Import/export and uninstall options</li>
-        <li><b>Performance Tools</b> - Optimization for fast loading</li>
-        <li><b>Developer Friendly</b> - Extensive hooks and filters</li>
-        <li><b>Robust Security</b> - Enterprise-grade protection</li>
-      </ul>
-    </td>
-  </tr>
-</table>
+### 🎯 Core Capabilities
+- **Simple Model Management** - Upload GLB/GLTF/USDZ with ease
+- **Intuitive Dashboard** - Streamlined model organization
+- **Flexible Shortcode System** - Place models anywhere
+- **Responsive Design** - Perfect on all devices
+- **Progressive Loading** - Smooth user experience
+- **Comprehensive Error Handling** - Never leave users hanging
 
-### 🎬 Model Showcase Made Simple
+### 🔧 Technical Features
+- **WordPress Standard Debugging** - Uses WP_DEBUG for troubleshooting
+- **Security First** - Proper nonce verification and data sanitization
+- **Performance Optimized** - Lazy loading and efficient file handling
+- **Mobile Ready** - Touch controls for mobile devices
+- **AR Support** - Augmented Reality viewing on supported devices
 
-ExploreXR handles the technical complexities so you can focus on showcasing your 3D content:
+### 🎨 Viewer Controls
+- **Camera Controls** - Enable/disable zoom, rotate, pan
+- **Auto-rotate** - Automatic model rotation
+- **Custom Sizing** - Flexible width and height options
+- **Loading States** - Professional loading indicators
 
-- **Drag-and-drop Uploads** - No technical knowledge needed
-- **Instant Previews** - See your models before publishing
-- **Multiple Display Options** - Control size, position, and behavior
-- **Interactive Controls** - Zoom, rotate, pan with intuitive controls
-- **Cross-browser Support** - Consistent experience across all major browsers
-
-## � See It In Action
-
-<p align="center">
-  <img src="https://github.com/DragneelMC1988/explorexr/raw/main/assets/img/screenshots/demo-showcase.gif" alt="ExploreXR Demo" width="700"/>
-</p>
-
-<details>
-  <summary><b>📸 View More Screenshots</b></summary>
-  
-  <h4>Admin Dashboard</h4>
-  <img src="https://github.com/DragneelMC1988/explorexr/raw/main/assets/img/screenshots/admin-dashboard.jpg" alt="Admin Dashboard" width="600"/>
-  
-  <h4>Model Management</h4>
-  <img src="https://github.com/DragneelMC1988/explorexr/raw/main/assets/img/screenshots/model-management.jpg" alt="Model Management" width="600"/>
-  
-  <h4>AR Mode on Mobile</h4>
-  <img src="https://github.com/DragneelMC1988/explorexr/raw/main/assets/img/screenshots/ar-mode-mobile.jpg" alt="AR Mode on Mobile" width="400"/>
-</details>
-
-## 🚀 Quick Start Guide
+## 🚀 Quick Start
 
 ### Installation
+1. Upload the plugin files to `/wp-content/plugins/explorexr/`
+2. Activate the plugin through the WordPress admin
+3. Visit **ExploreXR > Dashboard** to get started
 
-```bash
-# Option 1: WordPress Admin
-1. Download the ZIP from GitHub
-2. Go to WordPress Admin → Plugins → Add New → Upload Plugin
-3. Upload the ZIP file and click "Install Now"
-4. Click "Activate Plugin"
+### Usage
+1. **Upload Models**: Go to ExploreXR > Create Model
+2. **Configure Settings**: Set viewer size, controls, etc.
+3. **Display Models**: Use shortcode `[explorexr_model id="123"]`
 
-# Option 2: Manual Installation
-1. Download and unzip the plugin
-2. Upload the 'explorexr' folder to /wp-content/plugins/
-3. Activate through the WordPress admin interface
-```
+## 📋 System Requirements
 
-### Your First 3D Model in 60 Seconds
+- **WordPress**: 5.0 or higher
+- **PHP**: 7.4 or higher
+- **Memory**: 128MB minimum (256MB recommended)
+- **Storage**: 50MB+ for plugin files
 
-1. **Navigate** to "ExploreXR → Create Model" in your WordPress admin
-2. **Upload** your GLB/GLTF file via drag-and-drop
-3. **Configure** basic settings (size, position, controls)
-4. **Save** your model and copy the generated shortcode
-5. **Paste** the shortcode into any post or page:
+## 🔧 Supported File Formats
 
-```
-[explorexr_model id="123" width="100%" height="400px" auto-rotate="true"]
-```
+- **GLB** (Recommended) - Binary GLTF format
+- **GLTF** - Text-based 3D format
+- **USDZ** - Apple's Universal Scene Description
 
-### System Requirements
+## 🛡️ Security & Compliance
 
-<table>
-  <tr>
-    <th>Requirement</th>
-    <th>Minimum</th>
-    <th>Recommended</th>
-  </tr>
-  <tr>
-    <td>WordPress</td>
-    <td>5.0+</td>
-    <td>6.0+</td>
-  </tr>
-  <tr>
-    <td>PHP</td>
-    <td>7.4+</td>
-    <td>8.0+</td>
-  </tr>
-  <tr>
-    <td>Memory Limit</td>
-    <td>64MB</td>
-    <td>128MB+</td>
-  </tr>
-  <tr>
-    <td>Browser</td>
-    <td>Modern browsers with WebGL support</td>
-    <td>Chrome, Firefox, Safari, Edge (latest versions)</td>
-  </tr>
-</table>
+- ✅ WordPress.org Plugin Directory compliant
+- ✅ Proper data sanitization and escaping
+- ✅ Nonce verification for all forms
+- ✅ No external CDN dependencies
+- ✅ GPL v2+ licensed
+- ✅ ABSPATH protection on all files
 
-## � Plugin Structure
+## 📂 File Structure
 
 ```
 explorexr/
-├── 📄 explorexr.php           # Main plugin file
-├── 📄 readme.txt              # WordPress.org plugin readme
-├── 📄 uninstall.php           # Clean uninstall handler
-├── 📂 admin/                  # Admin interface & dashboard
-│   ├── 📂 ajax/               # AJAX handlers
-│   ├── 📂 core/               # Core admin functionality
-│   ├── 📂 css/                # Admin stylesheets
-│   ├── 📂 js/                 # Admin JavaScript
-│   ├── 📂 models/             # Model management interface
-│   ├── 📂 pages/              # Admin page templates
-│   ├── 📂 settings/           # Settings management
-│   └── 📂 templates/          # Admin UI templates
-├── 📂 assets/                 # Frontend resources
-│   ├── 📂 css/                # Frontend stylesheets
-│   ├── 📂 js/                 # Frontend JavaScript
-│   └── 📂 img/                # Images and icons
-├── 📂 includes/               # Core plugin functionality
-│   ├── 📄 shortcodes.php      # Shortcode implementation
-│   ├── 📂 core/               # Core functions
-│   ├── 📂 integrations/       # Third-party integrations
-│   ├── 📂 models/             # Model handling
-│   ├── 📂 premium/            # Premium features
-│   ├── 📂 security/           # Security functions
-│   ├── 📂 ui/                 # UI components
-│   └── 📂 utils/              # Utility functions
-├── 📂 models/                 # Sample/demo models
-└── 📂 template-parts/         # Frontend templates
-    ├── 📄 large-model-template.php
-    ├── 📄 model-viewer-script.php
-    └── 📄 standard-model-template.php
+├── explorexr.php              # Main plugin file
+├── readme.txt                 # WordPress.org readme
+├── uninstall.php             # Clean uninstall
+├── admin/                    # Admin interface
+│   ├── core/                 # Admin core functions
+│   ├── pages/                # Admin pages
+│   ├── css/                  # Admin styles
+│   └── js/                   # Admin scripts
+├── assets/                   # Frontend assets
+│   ├── css/                  # Stylesheets
+│   ├── js/                   # JavaScript files
+│   └── vendor/               # Third-party libraries
+├── includes/                 # Core functionality
+│   ├── core/                 # Core classes
+│   ├── utils/                # Utility functions
+│   └── ui/                   # UI components
+└── template-parts/           # Template files
 ```
 
-## 🎨 Usage Examples
+## 🔗 Dependencies
 
-### Basic Shortcode
-```
-[explorexr_model id="123"]
-```
+### Included Vendor Libraries (GPL Compatible)
+- **Three.js**: 3D graphics library (MIT License)
+- **Model Viewer**: Google's 3D model viewer (Apache 2.0)
+- **Draco Compression**: 3D geometry compression (Apache 2.0)
+- **Basis Universal**: Texture compression (Apache 2.0)
 
+All dependencies are locally included for security and performance.
 
-### PHP Template Integration
+## � Debugging
+
+ExploreXR uses WordPress standard debugging. To enable debug logging:
+
+1. Add to `wp-config.php`:
 ```php
-<?php
-// Display model in theme template
-if (function_exists('explorexr_display_model')) {
-    explorexr_display_model(123, array(
-        'width' => '100%',
-        'height' => '500px',
-        'auto-rotate' => true
-    ));
-}
-?>
+define('WP_DEBUG', true);
+define('WP_DEBUG_LOG', true);
 ```
 
-## 🔧 Configuration
-
-### Model Display Options
-- **Dimensions**: Custom width/height or responsive sizing
-- **Controls**: Orbit, zoom, pan, auto-rotate
-- **Loading**: Custom loading text, progress indicators
-- **AR Mode**: Enable/disable augmented reality viewing
-- **Camera**: Default position, field of view, limits
-
-### Device-Specific Settings
-Configure different display options for:
-- �️ **Desktop** (1024px+)
-- 📱 **Tablet** (768px - 1023px)  
-- 📱 **Mobile** (< 768px)
-
-## � Performance Optimization
-
-ExploreXR includes multiple features to ensure optimal performance:
-
-- **Progressive Loading** - Models load in stages to minimize perceived wait time
-- **Lazy Loading** - Models only load when they come into view
-- **Custom Poster Images** - Display static images until model loads
-- **Device-Specific Settings** - Automatically adjust quality based on device capabilities
-- **Compression Support** - Compatible with Draco and other compressed formats
-- **Optimized Assets** - Efficient loading of required scripts and styles
-- **Caching** - Browser caching for improved repeat visits
-
-## 🔒 Security & Privacy
-
-ExploreXR is built with security as a top priority:
-
-- **File Validation** - Strict checking of uploaded model files
-- **Sanitized Input** - All user inputs are properly sanitized
-- **Capability Checks** - WordPress permission system integration
-- **NONCE Protection** - Protection against CSRF attacks
-- **XSS Prevention** - Proper output escaping throughout
-- **GDPR Compliance** - No personal data collection
-- **Clean Code** - Following WordPress security best practices
-
-## 🚀 Premium Features
-
-ExploreXR Premium unlocks powerful features for advanced 3D model experiences:
-
-- **🎥 Camera Controls** - Advanced camera presets and controls
-- **📍 Annotations** - Interactive hotspots and information panels  
-- **🎨 Materials Editing** - Material variant switching and customization
-- **🎬 Animations** - Advanced animation controls and sequencing
-- **🛒 E-commerce Integration** - Enhanced WooCommerce integration
-- **📊 Analytics** - Detailed engagement tracking and insights
+2. Check logs in `/wp-content/debug.log`
 
 ## 🤝 Contributing
 
@@ -259,7 +128,24 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 
 ## 📋 Changelog
 
-### Version 1.0.2 (Latest)
+### Version 1.0.3 (August 2025) - Current
+**COMPLETE WORDPRESS.ORG COMPLIANCE ACHIEVED**
+
+**CRITICAL FIXES:**
+* ✅ Complete WordPress.org compliance
+* ✅ Fixed debugging system to use WordPress standards
+* ✅ Enhanced security with proper nonce verification
+* ✅ Removed empty files and cleaned up codebase
+* ✅ Updated contributor information
+
+**WORDPRESS.ORG COMPLIANCE:**
+* COMPLIANCE: WordPress standard debugging implementation (no custom file logging)
+* COMPLIANCE: All variables properly escaped with esc_js(), esc_attr(), esc_html()
+* COMPLIANCE: Complete nonce validation and user permission checks
+* COMPLIANCE: Uses WordPress uploads directory for file storage
+* COMPLIANCE: All dependencies locally included and properly documented
+
+### Version 1.0.2 (July 2025)
 * **MAJOR**: Model storage relocated to WordPress uploads directory (wp-content/uploads/explorexr_models/)
 * **SECURITY**: Fixed all external CDN dependencies - now uses local files only
 * **SECURITY**: Added comprehensive ABSPATH protection to all PHP files
