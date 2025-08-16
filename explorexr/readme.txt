@@ -290,7 +290,7 @@ Initial release of ExploreXR. Transform your WordPress website with immersive 3D
 * Modern browser with WebGL support
 
 = Support =
-For support inquiries, please visit [our support forum](https://wordpress.org/support/plugin/explorexr/) or contact us through [our website](https://expoxr.com/support/).
+For support inquiries, please visit [our support forum](https://wordpress.org/support/plugin/explorexr/) or contact us through [our website](https://expoxr.com/explorexr/support/).
 
 = Documentation =
 For detailed documentation, visit [expoxr.com](https://www.expoxr.com/explorexr/documentation/).
