@@ -116,49 +116,68 @@ function explorexr_save_all_post_meta($post_id) {
     
     // Handle new model file upload
     if (isset($_FILES['explorexr_new_model']) && isset($_FILES['explorexr_new_model']['size']) && $_FILES['explorexr_new_model']['size'] > 0) {
-        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- File upload array is handled by explorexr_handle_model_upload()
-        $upload_result = explorexr_handle_model_upload($_FILES['explorexr_new_model']);
+        // Manually sanitize $_FILES data to avoid nonce verification warnings
+        $file_upload = array(
+            'name' => isset($_FILES['explorexr_new_model']['name']) ? sanitize_file_name(wp_unslash($_FILES['explorexr_new_model']['name'])) : '',
+            'type' => isset($_FILES['explorexr_new_model']['type']) ? sanitize_mime_type(wp_unslash($_FILES['explorexr_new_model']['type'])) : '',
+            'tmp_name' => isset($_FILES['explorexr_new_model']['tmp_name']) ? sanitize_text_field(wp_unslash($_FILES['explorexr_new_model']['tmp_name'])) : '',
+            'error' => isset($_FILES['explorexr_new_model']['error']) ? absint($_FILES['explorexr_new_model']['error']) : UPLOAD_ERR_NO_FILE,
+            'size' => isset($_FILES['explorexr_new_model']['size']) ? absint($_FILES['explorexr_new_model']['size']) : 0,
+        );
         
-        if ($upload_result && !empty($upload_result['file_url'])) {
-            update_post_meta($post_id, '_explorexr_model_file', $upload_result['file_url']);
-            
-            // If no model name exists yet, set it from the filename
-            $model_name = get_post_meta($post_id, '_explorexr_model_name', true);
-            if (empty($model_name)) {
-                $filename = basename($upload_result['file_url']);
-                $model_name = preg_replace('/\.[^.]+$/', '', $filename);
-                update_post_meta($post_id, '_explorexr_model_name', $model_name);
-            }
-            
-            if ($edit_mode) {
-                if (explorexr_is_debug_enabled()) {
-                    explorexr_log('ExploreXR: Uploaded new model file: ' . $upload_result['file_url']);
-                }
+        // Validate the sanitized file data
+        $sanitized_file = explorexr_validate_model_file_upload($file_upload);
+        
+        if (is_wp_error($sanitized_file)) {
+            // Log validation error
+            if ($edit_mode && explorexr_is_debug_enabled()) {
+                explorexr_log('ExploreXR: File validation failed: ' . $sanitized_file->get_error_message());
             }
         } else {
-            // Log upload failures
-            $upload_error = isset($upload_result['error']) ? $upload_result['error'] : 'Unknown error';
-            if (explorexr_is_debug_enabled()) {
-                explorexr_log('ExploreXR: Model upload failed: ' . $upload_error, 'error');
-            }
-            
-            // Create a debug log for the upload issue
-            if ($edit_mode) {
-                $upload_debug = array(
-                    'post_id' => $post_id,
-                    'file_info' => array(
-                        'name' => isset($_FILES['explorexr_new_model']['name']) ? sanitize_file_name($_FILES['explorexr_new_model']['name']) : '',
-                        'type' => isset($_FILES['explorexr_new_model']['type']) ? sanitize_mime_type($_FILES['explorexr_new_model']['type']) : '',
-                        'size' => isset($_FILES['explorexr_new_model']['size']) ? intval($_FILES['explorexr_new_model']['size']) : 0,
-                        'error' => isset($_FILES['explorexr_new_model']['error']) ? intval($_FILES['explorexr_new_model']['error']) : 0
-                    ),
-                    'upload_result' => $upload_result,
-                    'php_version' => phpversion(),
-                    'memory_limit' => ini_get('memory_limit'),
-                    'max_upload_size' => wp_max_upload_size(),
-                    'user_id' => get_current_user_id()
-                );
-                explorexr_create_debug_log($upload_debug, 'upload-failure-' . $post_id);
+            // Pass sanitized file to upload handler
+            $upload_result = explorexr_handle_model_upload($sanitized_file);
+        
+            if ($upload_result && !empty($upload_result['file_url'])) {
+                update_post_meta($post_id, '_explorexr_model_file', $upload_result['file_url']);
+                
+                // If no model name exists yet, set it from the filename
+                $model_name = get_post_meta($post_id, '_explorexr_model_name', true);
+                if (empty($model_name)) {
+                    $filename = basename($upload_result['file_url']);
+                    $model_name = preg_replace('/\.[^.]+$/', '', $filename);
+                    update_post_meta($post_id, '_explorexr_model_name', $model_name);
+                }
+                
+                if ($edit_mode) {
+                    if (explorexr_is_debug_enabled()) {
+                        explorexr_log('ExploreXR: Uploaded new model file: ' . $upload_result['file_url']);
+                    }
+                }
+            } else {
+                // Log upload failures
+                $upload_error = isset($upload_result['error']) ? $upload_result['error'] : 'Unknown error';
+                if (explorexr_is_debug_enabled()) {
+                    explorexr_log('ExploreXR: Model upload failed: ' . $upload_error, 'error');
+                }
+                
+                // Create a debug log for the upload issue
+                if ($edit_mode) {
+                    $upload_debug = array(
+                        'post_id' => $post_id,
+                        'file_info' => array(
+                            'name' => isset($_FILES['explorexr_new_model']['name']) ? sanitize_file_name($_FILES['explorexr_new_model']['name']) : '',
+                            'type' => isset($_FILES['explorexr_new_model']['type']) ? sanitize_mime_type($_FILES['explorexr_new_model']['type']) : '',
+                            'size' => isset($_FILES['explorexr_new_model']['size']) ? intval($_FILES['explorexr_new_model']['size']) : 0,
+                            'error' => isset($_FILES['explorexr_new_model']['error']) ? intval($_FILES['explorexr_new_model']['error']) : 0
+                        ),
+                        'upload_result' => $upload_result,
+                        'php_version' => phpversion(),
+                        'memory_limit' => ini_get('memory_limit'),
+                        'max_upload_size' => wp_max_upload_size(),
+                        'user_id' => get_current_user_id()
+                    );
+                    explorexr_create_debug_log($upload_debug, 'upload-failure-' . $post_id);
+                }
             }
         }
     }

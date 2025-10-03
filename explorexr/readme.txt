@@ -4,7 +4,7 @@ Tags: 3d, model-viewer, glb, gltf, ar
 Requires at least: 5.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -175,6 +175,47 @@ Basic integration is available in the free version. Advanced features like the E
 8. Loading options configuration
 
 == Changelog ==
+
+= 1.0.4 =
+**WORDPRESS.ORG SECURITY REVIEW FIXES - October 2025**
+
+**CRITICAL SECURITY FIXES:**
+* FIXED: File upload sanitization - Added comprehensive validation for all $_FILES uploads
+* FIXED: Created new security helper file (file-upload-sanitizer.php) with multi-layer validation
+* FIXED: All 4 file upload instances now properly sanitize before processing:
+  - admin/pages/create-model-page.php (line 100)
+  - admin/pages/edit-model-page.php (line 208)
+  - admin/pages/files-page.php (line 16)
+  - includes/core/post-types/helpers/meta-handlers.php (line 120)
+
+**SECURITY ENHANCEMENTS:**
+* ADDED: explorexr_sanitize_file_upload() - Core file validation function with:
+  - User permission checks (current_user_can('upload_files'))
+  - Upload error detection (all UPLOAD_ERR_* codes)
+  - File size validation against configurable limits
+  - MIME type verification using wp_check_filetype_and_ext()
+  - File extension whitelist validation
+  - Malicious content detection (PHP code scanning)
+  - Protection against path traversal attacks
+* ADDED: explorexr_validate_model_file_upload() - 3D model specific validation
+* ADDED: explorexr_validate_usdz_file_upload() - AR file validation
+* ADDED: explorexr_validate_image_file_upload() - Image/poster validation
+* ADDED: explorexr_should_process_file_upload() - Lightweight pre-check helper
+* FIXED: PHP 8.1+ compatibility - Fixed realpath() null parameter warnings
+
+**DOCUMENTATION:**
+* ADDED: WASM_README.md - Comprehensive documentation for WASM files
+* ADDED: WORDPRESS_ORG_FIXES.md - Complete security fix documentation
+* ADDED: .distignore file - Distribution exclusion list (WASM files NOT excluded)
+* DOCUMENTED: Draco decoder necessity (90% compression for 3D models)
+* DOCUMENTED: Basis Universal necessity (texture compression)
+* DOCUMENTED: Security justification (browser sandbox, open-source, industry standard)
+
+**CODE QUALITY:**
+* IMPROVED: Multi-layer validation following "Sanitize Early, Escape Late, Always Validate"
+* IMPROVED: Better error handling with WP_Error objects
+* IMPROVED: Translatable error messages
+* IMPROVED: Comprehensive inline documentation
 
 = 1.0.3 =
 **COMPLETE WORDPRESS.ORG COMPLIANCE ACHIEVED + MODAL VIEWER ENHANCED**

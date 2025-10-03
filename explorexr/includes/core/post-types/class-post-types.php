@@ -212,7 +212,7 @@ class ExploreXR_Post_Types {
             wp_enqueue_style('explorexr-model-viewer', EXPLOREXR_PLUGIN_URL . 'assets/css/model-viewer.css', array(), EXPLOREXR_VERSION);
             wp_enqueue_script('explorexr-model-viewer-wrapper', EXPLOREXR_PLUGIN_URL . 'assets/js/model-viewer-wrapper.js', array('jquery', 'explorexr-model-viewer'), EXPLOREXR_VERSION, true);
               // IMPORTANT: Enqueue edit mode fix script FIRST to establish field tracking framework
-            wp_enqueue_script('explorexr-edit-mode-fix', EXPLOREXR_PLUGIN_URL . 'includes/post-types/assets/js/edit-mode-fix.js', array('jquery'), '1.0.3', true);
+            wp_enqueue_script('explorexr-edit-mode-fix', EXPLOREXR_PLUGIN_URL . 'includes/post-types/assets/js/edit-mode-fix.js', array('jquery'), '1.0.4', true);
               // Pass debug settings to edit mode fix script
             $debug_mode = explorexr_is_debug_enabled();
             wp_localize_script('explorexr-edit-mode-fix', 'exploreXRDebugMode', array(
@@ -221,7 +221,7 @@ class ExploreXR_Post_Types {
             ));
             
             // Now enqueue model uploader script (after the fix script)
-            wp_enqueue_script('explorexr-model-uploader', EXPLOREXR_PLUGIN_URL . 'includes/post-types/assets/js/model-uploader.js', array('jquery', 'explorexr-edit-mode-fix'), '1.0.3', true);
+            wp_enqueue_script('explorexr-model-uploader', EXPLOREXR_PLUGIN_URL . 'includes/post-types/assets/js/model-uploader.js', array('jquery', 'explorexr-edit-mode-fix'), '1.0.4', true);
             
             // Enqueue admin notifications script for save confirmations
             wp_enqueue_script('explorexr-admin-notifications', EXPLOREXR_PLUGIN_URL . 'includes/post-types/assets/js/admin-notifications.js', array('jquery'), '1.0.0', true);

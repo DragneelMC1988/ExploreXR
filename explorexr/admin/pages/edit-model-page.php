@@ -203,21 +203,37 @@ function ExploreXR_edit_model_page() {
             // Process model file changes
             if (isset($_POST['model_source']) && $_POST['model_source'] === 'upload') {
                 if (isset($_FILES['model_file']) && isset($_FILES['model_file']['size']) && $_FILES['model_file']['size'] > 0) {
-                    // Handle file upload
-                    // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- File upload array is handled by explorexr_handle_model_upload()
-                    $upload_result = explorexr_handle_model_upload($_FILES['model_file']);
+                    // Manually sanitize $_FILES data to avoid nonce verification warnings
+                    $file_upload = array(
+                        'name' => isset($_FILES['model_file']['name']) ? sanitize_file_name(wp_unslash($_FILES['model_file']['name'])) : '',
+                        'type' => isset($_FILES['model_file']['type']) ? sanitize_mime_type(wp_unslash($_FILES['model_file']['type'])) : '',
+                        'tmp_name' => isset($_FILES['model_file']['tmp_name']) ? sanitize_text_field(wp_unslash($_FILES['model_file']['tmp_name'])) : '',
+                        'error' => isset($_FILES['model_file']['error']) ? absint($_FILES['model_file']['error']) : UPLOAD_ERR_NO_FILE,
+                        'size' => isset($_FILES['model_file']['size']) ? absint($_FILES['model_file']['size']) : 0,
+                    );
                     
-                    if ($upload_result && !is_wp_error($upload_result)) {
-                        update_post_meta($model_id, '_explorexr_model_file', $upload_result['file_url']);
-                        
-                        // If model name is empty, set it from the filename
-                        if (empty($_POST['model_name'])) {
-                            $filename = basename($upload_result['file_url']);
-                            $model_name = preg_replace('/\.[^.]+$/', '', $filename);
-                            update_post_meta($model_id, '_explorexr_model_name', $model_name);
-                        }
+                    // Validate the sanitized file data
+                    $sanitized_file = explorexr_validate_model_file_upload($file_upload);
+                    
+                    if (is_wp_error($sanitized_file)) {
+                        // Handle validation error
+                        $error_message = 'File validation failed: ' . $sanitized_file->get_error_message();
                     } else {
-                        $error_message = 'Unable to upload model file: ' . ($upload_result['error'] ?? 'Unknown error');
+                        // Handle file upload with sanitized file
+                        $upload_result = explorexr_handle_model_upload($sanitized_file);
+                    
+                        if ($upload_result && !is_wp_error($upload_result)) {
+                            update_post_meta($model_id, '_explorexr_model_file', $upload_result['file_url']);
+                            
+                            // If model name is empty, set it from the filename
+                            if (empty($_POST['model_name'])) {
+                                $filename = basename($upload_result['file_url']);
+                                $model_name = preg_replace('/\.[^.]+$/', '', $filename);
+                                update_post_meta($model_id, '_explorexr_model_name', $model_name);
+                            }
+                        } else {
+                            $error_message = 'Unable to upload model file: ' . ($upload_result['error'] ?? 'Unknown error');
+                        }
                     }
                 }
             } else if (isset($_POST['model_source']) && $_POST['model_source'] === 'existing' && !empty($_POST['existing_model'])) {
