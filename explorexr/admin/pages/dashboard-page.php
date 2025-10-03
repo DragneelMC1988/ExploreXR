@@ -59,9 +59,8 @@ function explorexr_dashboard_page() {
       // Check if Model Viewer is fully operational
     $cdn_source = get_option('explorexr_cdn_source', 'local');
     $model_viewer_version = get_option('explorexr_model_viewer_version', '3.3.0');
-    $model_viewer_url = ($cdn_source === 'cdn') 
-        ? "https://unpkg.com/@google/model-viewer@{$model_viewer_version}/dist/model-viewer.min.js"
-        : EXPLOREXR_PLUGIN_URL . 'assets/js/model-viewer.min.js';
+    // WordPress.org compliance: Always use local files, no CDN
+    $model_viewer_url = EXPLOREXR_PLUGIN_URL . 'assets/js/model-viewer.min.js';
     
     $model_viewer_status = 'operational';
     if ($cdn_source === 'cdn') {
@@ -84,8 +83,14 @@ function explorexr_dashboard_page() {
                         <span class="dashicons dashicons-plus" style="margin-right: 5px;"></span> Create New Model
                        </a>';
     ?>
-    <div class="wrap explorexr-admin-container">
-        <!-- WordPress admin notices appear here automatically before our custom content -->
+    <div class="wrap">
+        <h1><?php echo esc_html($page_title); ?></h1>
+        
+        <!-- WordPress.org Compliance: This div.wp-header-end is required for WordPress to place admin notices properly -->
+        <div class="wp-header-end"></div>
+        
+        <!-- ExploreXR Plugin Content -->
+        <div class="explorexr-admin-container">
         
         <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/notifications-area.php'; ?>
         
@@ -104,31 +109,6 @@ function explorexr_dashboard_page() {
         </div>
         
         <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/admin-header.php'; ?>
-        
-        <?php 
-        // Free version always shows upgrade banner unless dismissed
-        if (defined('EXPLOREXR_IS_FREE') && EXPLOREXR_IS_FREE) : 
-            // Check if banner has been dismissed for this session
-            $banner_dismissed = get_transient('explorexr_pro_banner_dismissed_' . get_current_user_id());
-            if (!$banner_dismissed) :
-        ?>
-        <div class="explorexr-pro-banner" id="explorexr-pro-banner">
-            <div class="explorexr-pro-banner-content">
-                <button type="button" class="explorexr-banner-dismiss" aria-label="Dismiss banner">&times;</button>
-                <h3>Upgrade to ExploreXR Pro!</h3>
-                <p>Enhance your 3D model experience with premium features.</p>
-                <ul class="explorexr-pro-features">
-                    <li><span class="dashicons dashicons-yes"></span> Advanced AR Features</li>
-                    <li><span class="dashicons dashicons-yes"></span> Expert Camera Controls</li>
-                    <li><span class="dashicons dashicons-yes"></span> Priority Support</li>
-                </ul>
-                <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-premium')); ?>" class="button button-primary">Learn More</a>
-            </div>           
-        </div>
-        <?php 
-            endif; // End banner dismissed check
-        endif; // End free version check
-        ?>
         
         <?php if ($model_viewer_status !== 'operational') : 
             $alert_message = '';
@@ -255,7 +235,7 @@ function explorexr_dashboard_page() {
                                     
                                     // Use the model file URL directly if it's a full URL
                                     // Otherwise, use it as-is
-                                    $file_url = (strpos($model_file, 'http') === 0) ? $model_file : $model_file;
+                                    $file_url = (!empty($model_file) && strpos($model_file, 'http') === 0) ? $model_file : $model_file;
                                     
                                     if ($model_file) : 
                                     ?>
@@ -424,7 +404,9 @@ function explorexr_dashboard_page() {
     
     <!-- ExploreXR Footer -->
     <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/admin-footer.php'; ?>
-    </div>
+    
+        </div><!-- .explorexr-admin-container -->
+    </div><!-- .wrap -->
     <?php
 }
 

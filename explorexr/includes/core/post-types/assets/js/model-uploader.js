@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initExistingPreviews();
     
     // Add a debug notice to indicate the enhanced JS is loaded
-    console.log('ExploreXR Edit Mode enhanced v1.0.2 - Model uploader loaded');
+    console.log('ExploreXR Edit Mode enhanced v1.0.3 - Model uploader loaded');
 });
 
 /**

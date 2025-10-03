@@ -33,19 +33,28 @@ function explorexr_save_all_post_meta($post_id) {
     // Security check: verify nonce first before processing any POST data
     // Require nonce for ALL form submissions, not just edit mode
     if (!isset($_POST['explorexr_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['explorexr_nonce'])), 'explorexr_save_model')) {
-        if (get_option('explorexr_debug_mode', false)) {
+        if (explorexr_is_debug_enabled()) {
             $nonce_value = isset($_POST['explorexr_nonce']) ? sanitize_text_field(wp_unslash($_POST['explorexr_nonce'])) : 'not provided';
             explorexr_log('ExploreXR: Security check failed for post ' . $post_id . '. Nonce verification failed. Nonce: ' . $nonce_value, 'error');
         }
         
         // Create a detailed debug log for nonce failures
+        // WordPress.org compliance: Log specific sanitized keys instead of all $_POST keys
+        $important_post_keys = array('post_title', 'explorexr_model_file', 'explorexr_model_name', 'viewer_size');
+        $sanitized_post_keys = array();
+        foreach ($important_post_keys as $key) {
+            if (isset($_POST[$key])) {
+                $sanitized_post_keys[] = $key;
+            }
+        }
+        
         $nonce_debug = array(
             'post_id' => $post_id,
             'nonce_value' => isset($_POST['explorexr_nonce']) ? sanitize_text_field(wp_unslash($_POST['explorexr_nonce'])) : 'not provided',
             'nonce_action' => 'explorexr_save_model',
             'verification_result' => false,
             'user_id' => get_current_user_id(),
-            'post_data' => array_keys($_POST)
+            'post_data' => $sanitized_post_keys
         );
         explorexr_create_debug_log($nonce_debug, 'nonce-failure-' . $post_id);
         
@@ -60,7 +69,7 @@ function explorexr_save_all_post_meta($post_id) {
     
     // Add extra logging for edit mode
     if ($edit_mode) {
-        if (get_option('explorexr_debug_mode', false)) {
+        if (explorexr_is_debug_enabled()) {
             explorexr_log('ExploreXR: Processing edit mode submission for post ' . $post_id);
         }
         
@@ -72,7 +81,7 @@ function explorexr_save_all_post_meta($post_id) {
 
     // Check user permissions
     if (!current_user_can('edit_post', $post_id)) {
-        if (get_option('explorexr_debug_mode', false)) {
+        if (explorexr_is_debug_enabled()) {
             explorexr_log('ExploreXR: User lacks permission to edit post ' . $post_id, 'warning');
         }
         
@@ -91,7 +100,7 @@ function explorexr_save_all_post_meta($post_id) {
     if (array_key_exists('explorexr_model_file', $_POST)) {
         update_post_meta($post_id, '_explorexr_model_file', sanitize_text_field(wp_unslash($_POST['explorexr_model_file'])));
         if ($edit_mode) {
-            if (get_option('explorexr_debug_mode', false)) {
+            if (explorexr_is_debug_enabled()) {
                 explorexr_log('ExploreXR: Updated model file: ' . sanitize_text_field(wp_unslash($_POST['explorexr_model_file'])));
             }
         }
@@ -122,14 +131,14 @@ function explorexr_save_all_post_meta($post_id) {
             }
             
             if ($edit_mode) {
-                if (get_option('explorexr_debug_mode', false)) {
+                if (explorexr_is_debug_enabled()) {
                     explorexr_log('ExploreXR: Uploaded new model file: ' . $upload_result['file_url']);
                 }
             }
         } else {
             // Log upload failures
             $upload_error = isset($upload_result['error']) ? $upload_result['error'] : 'Unknown error';
-            if (get_option('explorexr_debug_mode', false)) {
+            if (explorexr_is_debug_enabled()) {
                 explorexr_log('ExploreXR: Model upload failed: ' . $upload_error, 'error');
             }
             
@@ -168,7 +177,7 @@ function explorexr_save_all_post_meta($post_id) {
             // Include additional debug file
             require_once plugin_dir_path(__FILE__) . 'debug-camera-settings.php';
             $camera_debug = explorexr_debug_camera_settings($post_id, $edit_mode);
-            if (get_option('explorexr_debug_mode', false)) {
+            if (explorexr_is_debug_enabled()) {
                 explorexr_log('ExploreXR: Camera settings debug collected for post ' . $post_id);
             }
         }
@@ -188,7 +197,7 @@ function explorexr_save_all_post_meta($post_id) {
         }
         
         $checkbox_report = explorexr_debug_checkbox_processing($post_id);
-        if (get_option('explorexr_debug_mode', false)) {
+        if (explorexr_is_debug_enabled()) {
             explorexr_log('ExploreXR: Generated checkbox debug report for post ' . $post_id);
         }
     }
@@ -197,7 +206,7 @@ function explorexr_save_all_post_meta($post_id) {
     
     // If in edit mode, log the save operation for debugging
     if ($edit_mode) {
-        if (get_option('explorexr_debug_mode', false)) {
+        if (explorexr_is_debug_enabled()) {
             explorexr_log('ExploreXR: Edit mode meta save completed for post ' . $post_id);
         }
     }
@@ -330,7 +339,7 @@ function explorexr_save_camera_settings($post_id, $edit_mode = false) {
     update_post_meta($post_id, '_explorexr_camera_controls', $camera_controls);
     
     if ($edit_mode) {
-        if (get_option('explorexr_debug_mode', false)) {
+        if (explorexr_is_debug_enabled()) {
             explorexr_log('ExploreXR: Interactions enabled: ' . $enable_interactions . ', Camera controls setting: ' . $camera_controls);
         }
     }
@@ -358,7 +367,7 @@ function explorexr_save_camera_settings($post_id, $edit_mode = false) {
         }
         
         if ($edit_mode) {
-            if (get_option('explorexr_debug_mode', false)) {
+            if (explorexr_is_debug_enabled()) {
                 explorexr_log('ExploreXR: Updated auto-rotate delay: ' . $delay_value);
             }
         }
@@ -372,7 +381,7 @@ function explorexr_save_camera_settings($post_id, $edit_mode = false) {
         update_post_meta($post_id, '_explorexr_rotation_per_second', $speed_value);
         
         if ($edit_mode) {
-            if (get_option('explorexr_debug_mode', false)) {
+            if (explorexr_is_debug_enabled()) {
                 explorexr_log('ExploreXR: Updated rotation speed: ' . $speed_value);
             }
         }
@@ -403,6 +412,7 @@ function explorexr_is_premium_feature_available_with_license($feature_slug, $lic
     // Premium features are not available in the Free version
     return false;
 }
+
 
 
 

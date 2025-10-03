@@ -65,7 +65,8 @@
     text-decoration: none;
 }
 
-.explorexr-model-title {
+/* Modal specific title styling */
+.explorexr-model-modal .explorexr-model-title {
     margin-top: 0;
     padding-right: 30px;
     font-size: 18px;

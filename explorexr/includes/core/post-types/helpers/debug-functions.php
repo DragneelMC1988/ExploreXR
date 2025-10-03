@@ -17,6 +17,15 @@ if (!defined('ABSPATH')) {
  * @return array Debug information collected
  */
 function explorexr_debug_log_post_data($post_id) {
+    // WordPress.org compliance: Verify nonce before accessing $_POST
+    if (!isset($_POST['explorexr_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['explorexr_nonce'])), 'explorexr_save_model')) {
+        return array(
+            'error' => 'Invalid nonce - POST data not logged for security',
+            'post_id' => $post_id,
+            'timestamp' => current_time('mysql')
+        );
+    }
+    
     // Only log essential info to avoid huge logs
     $important_keys = array(
         'explorexr_model_file',
@@ -89,7 +98,7 @@ function explorexr_debug_log_post_data($post_id) {
     $json_log_data = json_encode($log_data, JSON_PRETTY_PRINT);
     
     // Log the data
-    if (get_option('explorexr_debug_mode', false)) {
+    if (explorexr_is_debug_enabled()) {
         explorexr_log('ExploreXR: Edit mode submission debug for post ' . $post_id . ': ' . $json_log_data);
     }
     
@@ -134,15 +143,18 @@ function explorexr_create_debug_log($data, $label = '') {
     // Create logs directory if it doesn't exist
     if (!file_exists($log_dir)) {
         if (!wp_mkdir_p($log_dir)) {
-            if (get_option('explorexr_debug_mode', false)) {
+            if (explorexr_is_debug_enabled()) {
                 explorexr_log('ExploreXR: Failed to create log directory at ' . $log_dir, 'error');
             }
             return false;
         }
         
-        // Create .htaccess to protect logs
+        // Create .htaccess to protect logs using WordPress filesystem
+        require_once(ABSPATH . 'wp-admin/includes/file.php');
+        WP_Filesystem();
+        global $wp_filesystem;
         $htaccess = "Order deny,allow\nDeny from all";
-        @file_put_contents($log_dir . '/.htaccess', $htaccess);
+        $wp_filesystem->put_contents($log_dir . '/.htaccess', $htaccess, FS_CHMOD_FILE);
     }
     
     // Create log file
@@ -181,11 +193,14 @@ function explorexr_create_debug_log($data, $label = '') {
         'debug_data' => $data
     );
     
-    // Write to file
-    $result = @file_put_contents($log_file, json_encode($log_data, JSON_PRETTY_PRINT));
+    // Write to file using WordPress filesystem
+    require_once(ABSPATH . 'wp-admin/includes/file.php');
+    WP_Filesystem();
+    global $wp_filesystem;
+    $result = $wp_filesystem->put_contents($log_file, json_encode($log_data, JSON_PRETTY_PRINT), FS_CHMOD_FILE);
     
     if ($result === false) {
-        if (get_option('explorexr_debug_mode', false)) {
+        if (explorexr_is_debug_enabled()) {
             explorexr_log('ExploreXR: Failed to write to log file ' . $log_file, 'error');
         }
         return false;
@@ -193,6 +208,7 @@ function explorexr_create_debug_log($data, $label = '') {
     
     return $log_file;
 }
+
 
 
 

@@ -18,60 +18,11 @@
     margin-top: auto !important;
 }
 
-/* Prevent WordPress admin notices from appearing inside ExploreXR plugin content areas */
-/* But allow them to show above the plugin header */
-.explorexr-admin-container .notice,
-.explorexr-admin-container .error,
-.explorexr-admin-container .updated,
-.explorexr-admin-container .notice-error,
-.explorexr-admin-container .notice-warning,
-.explorexr-admin-container .notice-success,
-.explorexr-admin-container .notice-info,
-/* Addon integration removed from free version */
-/* License management functionality removed from free version */
-.wrap.explorexr-edit-model-page .notice,
-.wrap.explorexr-edit-model-page .error,
-.wrap.explorexr-edit-model-page .updated,
-.wrap.explorexr-edit-model-page .notice-error,
-.wrap.explorexr-edit-model-page .notice-warning,
-.wrap.explorexr-edit-model-page .notice-success,
-.wrap.explorexr-edit-model-page .notice-info {
-    display: none !important;
-}
-
 /* Ensure ExploreXR specific notices still appear */
 .explorexr-admin-container .explorexr-notice,
 /* Addon integration removed from free version */
 /* License management CSS removed from free version */
 .wrap.explorexr-edit-model-page .explorexr-notice {
-    display: block !important;
-}
-
-/* Allow WordPress admin notices to show ONLY above the ExploreXR admin header */
-#explorexr-notifications-area .notice,
-#explorexr-notifications-area .notice-error,
-#explorexr-notifications-area .notice-warning,
-#explorexr-notifications-area .notice-success,
-#explorexr-notifications-area .notice-info,
-#explorexr-notifications-area .explorexr-premium-notice {
-    display: block !important;
-}
-
-/* Notifications area positioning and styling */
-.explorexr-notifications-wrapper {
-    position: relative;
-    z-index: 1000;
-    margin: 20px 0 20px 0;
-    clear: both;
-}
-
-/* Allow WordPress notices that appear above the admin container to be visible */
-/* Only hide notices that appear inside the actual plugin content areas */
-
-/* Ensure our notifications area notices are visible */
-.explorexr-notifications-wrapper .notice,
-.explorexr-notifications-wrapper .error,
-.explorexr-notifications-wrapper .updated {
     display: block !important;
 }
 
@@ -422,95 +373,6 @@
     border-color: rgba(255, 255, 255, 0.5) !important;
     transform: translateY(-1px) !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
-}
-
-/* Enhanced Pro Banner Styling for Dashboard */
-.explorexr-pro-banner {
-    background-color: #f9f9f9 !important;
-    color: #23282d;
-    border-radius: 12px !important;
-    padding: 30px !important;
-    margin: 0 0 30px 0 !important;
-    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3) !important;
-    position: relative !important;
-    overflow: hidden !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-}
-
-.explorexr-pro-banner::before {
-    content: '' !important;
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%) !important;
-    animation: shimmer 3s ease-in-out infinite !important;
-    pointer-events: none !important;
-}
-
-@keyframes shimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-}
-
-.explorexr-pro-banner-content {
-    position: relative !important;
-    z-index: 2 !important;
-}
-
-.explorexr-pro-banner h3 {
-    color: #1d2327 !important;
-    font-size: 24px !important;
-    font-weight: 600 !important;
-    margin: 0 0 15px 0 !important;   
-}
-
-.explorexr-pro-banner p {
-    color: #1d2327 !important;
-    font-size: 16px !important;
-    margin: 0 0 20px 0 !important;    
-}
-
-.explorexr-pro-features {
-    list-style: none !important;
-    padding: 0 !important;
-    margin: 0 0 25px 0 !important;
-}
-
-.explorexr-pro-features li {
-    color: #1d2327 !important;
-    font-size: 14px !important;
-    padding: 8px 0 !important;
-    display: flex !important;
-    align-items: center !important;
-}
-
-.explorexr-pro-features li .dashicons {
-    color: #4ade80 !important;
-    margin-right: 10px !important;
-    font-size: 16px !important;
-    text-shadow: none !important;
-}
-
-.explorexr-pro-banner .button {
-    background: rgba(255, 255, 255, 0.2) !important;
-    color: white !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-    padding: 12px 24px !important;
-    border-radius: 0 !important;
-    font-weight: 600 !important;
-    transition: all 0.3s ease !important;
-    backdrop-filter: blur(10px) !important;
-    text-shadow: none !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
-}
-
-.explorexr-pro-banner .button:hover {
-    background: rgba(255, 255, 255, 0.3) !important;
-    border-color: rgba(255, 255, 255, 0.5) !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3) !important;
 }
 
 /* Premium Action Button Styling */
@@ -1029,7 +891,7 @@
     color: #000;
 }
 
-.explorexr-model-title {
+.explorexr-model-modal .explorexr-model-title {
     margin-top: 0;
     padding-right: 30px;
     font-size: 18px;
@@ -1514,65 +1376,4 @@
     font-size: 13px;
     opacity: 0.9;
     line-height: 1.5;
-}
-.explorexr-notifications-wrapper {
-    margin: 0 0 20px 0;
-    position: relative;
-    z-index: 1000;
-}
-
-.explorexr-notifications-wrapper .notice {
-    margin: 5px 0;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-
-.explorexr-notifications-wrapper .notice-success {
-    border-left-color: #00a32a;
-}
-
-.explorexr-notifications-wrapper .notice-error {
-    border-left-color: #d63638;
-}
-
-.explorexr-notifications-wrapper .notice-warning {
-    border-left-color: #dba617;
-}
-
-.explorexr-notifications-wrapper .notice-info {
-    border-left-color: #72aee6;
-}
-
-/* Style the notice dismiss button */
-.explorexr-notifications-wrapper .notice-dismiss {
-    padding: 9px;
-    text-decoration: none;
-}
-
-.explorexr-notifications-wrapper .notice-dismiss:before {
-    content: '\f153';
-    font-family: dashicons;
-    font-size: 16px;
-    color: #787c82;
-}
-
-.explorexr-notifications-wrapper .notice-dismiss:hover:before {
-    color: #d63638;
-}
-
-/* Ensure WordPress notices moved here display properly */
-.explorexr-notifications-wrapper .notice.is-dismissible {
-    position: relative;
-    padding-right: 38px;
-}
-
-/* Make sure moved notices have proper spacing and appearance */
-.explorexr-notifications-wrapper .notice p {
-    margin: 0.5em 0;
-    padding: 2px;
-}
-
-/* Special styling for common plugin notices that are moved here */
-.explorexr-notifications-wrapper .notice .dashicons {
-    margin-right: 8px;
-    vertical-align: middle;
 }

@@ -101,11 +101,6 @@ if (!wp_script_is($script_handle, 'enqueued')) {
                 });
             }
             
-            // Log error for debugging
-            if (function_exists('error_log') && get_option('explorexr_debug_mode', false)) {
-                explorexr_log('ExploreXR: Model Viewer script files not found. UMD: ' . $local_umd_path . ', Min: ' . $local_min_path, 'error');
-            }
-            
             return; // Exit without loading any script
         }
     } else {
@@ -122,10 +117,6 @@ if (!wp_script_is($script_handle, 'enqueued')) {
             });
         }
         
-        // Log error for debugging
-        if (function_exists('error_log') && get_option('explorexr_debug_mode', false)) {
-            explorexr_log('ExploreXR: CDN source attempted but not allowed. WordPress.org Plugin Check requires local assets only.', 'warning');
-        }
         
         return; // Exit without loading any external script
     }
@@ -136,15 +127,6 @@ wp_enqueue_script('explorexr-model-viewer-loader-manager', EXPLOREXR_PLUGIN_URL 
 
 // Enqueue the custom model loader script
 wp_enqueue_script('explorexr-model-loader', EXPLOREXR_PLUGIN_URL . 'assets/js/model-loader.js', array('jquery', 'explorexr-model-viewer-loader-manager'), EXPLOREXR_VERSION, true);
-
-// Pass debug settings to model-loader script as well
-$debug_mode = get_option('explorexr_debug_mode', false);
-if ($debug_mode) {
-    wp_localize_script('explorexr-model-loader', 'exploreXRDebug', array(
-        'enabled' => true,
-        'version' => EXPLOREXR_VERSION
-    ));
-}
 
 // Enqueue model viewer wrapper for enhanced UI
 wp_enqueue_script('explorexr-model-viewer-wrapper', EXPLOREXR_PLUGIN_URL . 'assets/js/model-viewer-wrapper.js', array('jquery', 'explorexr-model-viewer-loader-manager'), EXPLOREXR_VERSION, true);
@@ -175,8 +157,8 @@ $script_config['pluginUrl'] = EXPLOREXR_PLUGIN_URL;
 
 wp_localize_script('explorexr-model-viewer-wrapper', 'explorexrScriptConfig', $script_config);
 
-// Set global plugin URL for Model Viewer dependencies (WordPress.org compliance)
-wp_add_inline_script('explorexr-model-viewer-wrapper', 'window.explorexrPluginUrl = "' . EXPLOREXR_PLUGIN_URL . '";', 'before');
+// Set global plugin URL for Model Viewer dependencies (WordPress.org compliance - properly escaped)
+wp_add_inline_script('explorexr-model-viewer-wrapper', 'window.explorexrPluginUrl = "' . esc_js(EXPLOREXR_PLUGIN_URL) . '";', 'before');
 
 // Enqueue model-handler.js for debugging features
 wp_enqueue_script('explorexr-model-handler', EXPLOREXR_PLUGIN_URL . 'assets/js/model-handler.js', array('jquery'), EXPLOREXR_VERSION, true);
@@ -290,35 +272,6 @@ $ar_fix_js = "
 ";
 wp_add_inline_script('explorexr-model-viewer-wrapper', $ar_fix_js, 'after');
 
-// Pass debugging settings to JavaScript
-$debug_mode = get_option('explorexr_debug_mode', false);
-$debug_ar = get_option('explorexr_debug_ar_features', false);
-$debug_camera = get_option('explorexr_debug_camera_controls', false);
-// Animation and annotation debug features are not available in the Free version
-$debug_loading = get_option('explorexr_debug_loading_info', false);
-$console_logging = get_option('explorexr_console_logging', false);
-
-// Only add debug settings if at least one debug option is enabled
-if ($debug_mode || $debug_ar || $debug_camera || $debug_loading || $console_logging) {
-    wp_localize_script('explorexr-model-handler', 'exploreXRDebug', array(
-        'enabled' => $debug_mode ? true : false,
-        'ar' => $debug_ar ? true : false,
-        'camera' => $debug_camera ? true : false,
-        // Animation and annotation debug features are not available in the Free version
-        'loading' => $debug_loading ? true : false,
-        'version' => EXPLOREXR_VERSION
-    ));
-}
-
-// Add debug information if debug mode is enabled
-if ($debug_mode && current_user_can('manage_options')) {
-    wp_add_inline_script($script_handle, "
-        console.log('ExploreXR Debug Mode: ON');
-        console.log('Model Viewer Version: " . esc_js($model_viewer_version) . "');
-        console.log('Source: " . esc_js($cdn_source === 'local' ? 'Local' : 'CDN') . "');
-    ", 'before');
-}
-
 // Only add this filter once
 static $filter_added = false;
 if (!$filter_added) {
@@ -422,25 +375,18 @@ if (!function_exists('explorexr_add_ondemand_script_loader')) {
                 $script_url = EXPLOREXR_PLUGIN_URL . 'assets/js/model-viewer-umd.js';
             } else {
                 // If local file doesn't exist, show error instead of using CDN
-                if (get_option('explorexr_debug_mode', false)) {
-                    explorexr_log('ExploreXR: model-viewer-umd.js not found for on-demand loading', 'warning');
-                }
                 return; // Don't output any script loader
             }
         } else {
             // CDN is disabled for WordPress.org compliance
-            if (get_option('explorexr_debug_mode', false)) {
-                explorexr_log('ExploreXR: CDN usage attempted but disabled for WordPress.org compliance', 'warning');
-            }
             return; // Don't output any script loader
         }
         
-        // Create the script loader JavaScript
-        ?>
-        <script>
+        // WordPress.org compliance: Convert inline script to wp_add_inline_script
+        $script_loader_js = '
         (function() {
             // Store references to model viewers on the page
-            var ExploreXRModelViewers = document.querySelectorAll('.explorexr-model-viewer-container');
+            var ExploreXRModelViewers = document.querySelectorAll(".explorexr-model-viewer-container");
             var scriptLoaded = false;
             var scriptIsLoading = false;
             var modelViewersToInit = [];
@@ -448,14 +394,14 @@ if (!function_exists('explorexr_add_ondemand_script_loader')) {
             // Function to load the model-viewer script
             function loadModelViewerScript(callback) {
                 if (scriptLoaded) {
-                    if (typeof callback === 'function') callback();
+                    if (typeof callback === "function") callback();
                     return;
                 }
                 
                 if (scriptIsLoading) {
                     // Add callback to queue if script is already loading
                     window.ExploreXROnScriptLoad = window.ExploreXROnScriptLoad || [];
-                    if (typeof callback === 'function') {
+                    if (typeof callback === "function") {
                         window.ExploreXROnScriptLoad.push(callback);
                     }
                     return;
@@ -463,23 +409,23 @@ if (!function_exists('explorexr_add_ondemand_script_loader')) {
                 
                 scriptIsLoading = true;
                 window.ExploreXROnScriptLoad = window.ExploreXROnScriptLoad || [];
-                if (typeof callback === 'function') {
+                if (typeof callback === "function") {
                     window.ExploreXROnScriptLoad.push(callback);
                 }
                 
                 // Create script element
-                var script = document.createElement('script');
-                script.src = '<?php echo esc_js($script_url); ?>';
+                var script = document.createElement("script");
+                script.src = "' . esc_js($script_url) . '";
                 script.async = true;
                 script.onload = function() {
                     scriptLoaded = true;
                     scriptIsLoading = false;
-                    console.log('Model Viewer script loaded on demand');
+                    console.log("Model Viewer script loaded on demand");
                     
                     // Call all queued callbacks
                     if (window.ExploreXROnScriptLoad && window.ExploreXROnScriptLoad.length) {
                         window.ExploreXROnScriptLoad.forEach(function(fn) {
-                            if (typeof fn === 'function') fn();
+                            if (typeof fn === "function") fn();
                         });
                         window.ExploreXROnScriptLoad = [];
                     }
@@ -489,13 +435,13 @@ if (!function_exists('explorexr_add_ondemand_script_loader')) {
                 };
                 
                 script.onerror = function() {
-                    console.warn('ExploreXR: Model viewer script could not be loaded from the selected source.');
+                    console.warn("ExploreXR: Model viewer script could not be loaded from the selected source.");
                     
                     // Try to show user-friendly notification if notification system is available
-                    if (typeof window.ExploreXRCreateNotification !== 'undefined') {
+                    if (typeof window.ExploreXRCreateNotification !== "undefined") {
                         window.ExploreXRCreateNotification(
-                            'Model viewer is temporarily unavailable. Please check your internet connection or contact support.',
-                            'error',
+                            "Model viewer is temporarily unavailable. Please check your internet connection or contact support.",
+                            "error",
                             true
                         );
                     }
@@ -521,32 +467,32 @@ if (!function_exists('explorexr_add_ondemand_script_loader')) {
                 if (!container) return;
                 
                 // Check if container has already been initialized
-                if (container.dataset.initialized === 'true') {
+                if (container.dataset.initialized === "true") {
                     return;
                 }
                 
                 // Mark as initialized
-                container.dataset.initialized = 'true';
+                container.dataset.initialized = "true";
                 
                 // Get the model URL from data attribute
                 var modelUrl = container.dataset.modelUrl;
                 if (!modelUrl) return;
                 
                 // Find the model-viewer element
-                var modelViewerEl = container.querySelector('model-viewer');
+                var modelViewerEl = container.querySelector("model-viewer");
                 if (!modelViewerEl) return;
                 
                 // Set model source if not already set
-                if (!modelViewerEl.hasAttribute('src') && modelUrl) {
-                    modelViewerEl.setAttribute('src', modelUrl);
+                if (!modelViewerEl.hasAttribute("src") && modelUrl) {
+                    modelViewerEl.setAttribute("src", modelUrl);
                 }
                 
                 // Remove loading class
-                container.classList.remove('explorexr-loading');
-                container.classList.add('explorexr-loaded');
+                container.classList.remove("explorexr-loading");
+                container.classList.add("explorexr-loaded");
                 
                 // Trigger a custom event for further processing
-                var event = new CustomEvent('explorexr-model-viewer-initialized', {
+                var event = new CustomEvent("explorexr-model-viewer-initialized", {
                     bubbles: true,
                     detail: { container: container, modelViewer: modelViewerEl }
                 });
@@ -554,7 +500,7 @@ if (!function_exists('explorexr_add_ondemand_script_loader')) {
             }
             
             // Use Intersection Observer to detect when viewers come into view
-            if ('IntersectionObserver' in window) {
+            if ("IntersectionObserver" in window) {
                 var observer = new IntersectionObserver(function(entries) {
                     entries.forEach(function(entry) {
                         if (entry.isIntersecting) {
@@ -573,7 +519,7 @@ if (!function_exists('explorexr_add_ondemand_script_loader')) {
                             }
                         }
                     });
-                }, { rootMargin: '200px 0px' });
+                }, { rootMargin: "200px 0px" });
                 
                 // Start observing all model viewer containers
                 ExploreXRModelViewers.forEach(function(container) {
@@ -594,8 +540,10 @@ if (!function_exists('explorexr_add_ondemand_script_loader')) {
             // Make model initialization function available globally
             window.ExploreXRInitModelViewer = initializeModelViewer;
         })();
-        </script>
-        <?php
+        ';
+        
+        // Use wp_add_inline_script for WordPress.org compliance
+        wp_add_inline_script('explorexr-model-viewer-wrapper', $script_loader_js);
     }
 }
 ?>

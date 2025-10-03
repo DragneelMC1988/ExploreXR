@@ -10,9 +10,6 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-// Include debugging functions
-require_once EXPLOREXR_PLUGIN_DIR . 'includes/utils/debugging.php';
-
 /**
  * Handle model file upload
  * 
@@ -30,7 +27,7 @@ function explorexr_handle_model_upload($file) {
     
     // Check if a valid file was uploaded
     if (!isset($file['tmp_name']) || empty($file['tmp_name'])) {
-        if (get_option('explorexr_debug_mode', false)) {
+        if (explorexr_is_debug_enabled()) {
             explorexr_log('ExploreXR: No file was uploaded or file is empty', 'warning');
         }
         return false;
@@ -52,7 +49,7 @@ function explorexr_handle_model_upload($file) {
         $valid_mime = true;
     }
       if (!$valid_mime) {
-        if (get_option('explorexr_debug_mode', false)) {
+        if (explorexr_is_debug_enabled()) {
             explorexr_log('ExploreXR: Invalid file format. Only GLB and GLTF files are allowed. Received: ' . $mime_type . ' with extension ' . $file_ext, 'error');
         }
         return false;
@@ -78,7 +75,7 @@ function explorexr_handle_model_upload($file) {
     ));
     
     if (!$upload_result || isset($upload_result['error'])) {
-        if (get_option('explorexr_debug_mode', false)) {
+        if (explorexr_is_debug_enabled()) {
             explorexr_log('ExploreXR: Failed to move uploaded file: ' . (isset($upload_result['error']) ? $upload_result['error'] : 'Unknown error'), 'error');
         }
         return false;
@@ -88,7 +85,7 @@ function explorexr_handle_model_upload($file) {
     $new_file = $models_dir . $filename;
     if (!copy($upload_result['file'], $new_file)) {
         wp_delete_file($upload_result['file']); // Clean up temp file
-        if (get_option('explorexr_debug_mode', false)) {
+        if (explorexr_is_debug_enabled()) {
             explorexr_log('ExploreXR: Failed to copy file to models directory: ' . $new_file, 'error');
         }
         return false;
@@ -109,7 +106,7 @@ function explorexr_handle_model_upload($file) {
         $wp_filesystem->chmod($new_file, 0644);
     } else {
         // Log error if WP_Filesystem is not available for chmod operation
-        if (function_exists('error_log') && get_option('explorexr_debug_mode', false)) {
+        if (function_exists('error_log') && explorexr_is_debug_enabled()) {
             explorexr_log('ExploreXR: WP_Filesystem not available for chmod operation', 'error');
         }
     }
@@ -118,7 +115,7 @@ function explorexr_handle_model_upload($file) {
     $file_url = EXPLOREXR_MODELS_URL . $filename;
     
     // Debug log for successful upload
-    if (get_option('explorexr_debug_mode', false)) {
+    if (explorexr_is_debug_enabled()) {
         explorexr_log('ExploreXR: Successfully uploaded model file to: ' . $file_url);
     }
       return array(
@@ -139,7 +136,7 @@ function explorexr_handle_model_upload($file) {
 function explorexr_handle_usdz_upload($file, $model_id = null) {
     // Check for upload errors first
     if (!isset($file['error']) || is_array($file['error'])) {
-        if (get_option('explorexr_debug_mode', false)) {
+        if (explorexr_is_debug_enabled()) {
             explorexr_log('ExploreXR: Invalid file parameters for USDZ upload', 'error');
         }
         return false;
@@ -150,18 +147,18 @@ function explorexr_handle_usdz_upload($file, $model_id = null) {
         case UPLOAD_ERR_OK:
             break;
         case UPLOAD_ERR_NO_FILE:
-            if (get_option('explorexr_debug_mode', false)) {
+            if (explorexr_is_debug_enabled()) {
                 explorexr_log('ExploreXR: No USDZ file was uploaded', 'warning');
             }
             return false;
         case UPLOAD_ERR_INI_SIZE:
         case UPLOAD_ERR_FORM_SIZE:
-            if (get_option('explorexr_debug_mode', false)) {
+            if (explorexr_is_debug_enabled()) {
                 explorexr_log('ExploreXR: USDZ file exceeded the upload size limit', 'error');
             }
             return false;
         default:
-            if (get_option('explorexr_debug_mode', false)) {
+            if (explorexr_is_debug_enabled()) {
                 explorexr_log('ExploreXR: Unknown error during USDZ file upload', 'error');
             }
             return false;
@@ -172,7 +169,7 @@ function explorexr_handle_usdz_upload($file, $model_id = null) {
     $file_ext = isset($file_info['extension']) ? strtolower($file_info['extension']) : '';
     
     if ($file_ext !== 'usdz') {
-        if (get_option('explorexr_debug_mode', false)) {
+        if (explorexr_is_debug_enabled()) {
             explorexr_log('ExploreXR: Invalid USDZ file extension: ' . $file_ext, 'error');
         }
         return false;
@@ -181,7 +178,7 @@ function explorexr_handle_usdz_upload($file, $model_id = null) {
     // Check file size limit (same as models)
     $max_size = get_option('explorexr_max_upload_size', 50) * 1024 * 1024; // Convert to bytes
     if ($file['size'] > $max_size) {
-        if (get_option('explorexr_debug_mode', false)) {
+        if (explorexr_is_debug_enabled()) {
             explorexr_log('ExploreXR: USDZ file size exceeds limit: ' . $file['size'], 'error');
         }
         return false;
@@ -217,7 +214,7 @@ function explorexr_handle_usdz_upload($file, $model_id = null) {
     ));
     
     if (!$upload_result || isset($upload_result['error'])) {
-        if (get_option('explorexr_debug_mode', false)) {
+        if (explorexr_is_debug_enabled()) {
             explorexr_log('ExploreXR: Failed to move uploaded USDZ file: ' . (isset($upload_result['error']) ? $upload_result['error'] : 'Unknown error'), 'error');
         }
         return false;
@@ -226,7 +223,7 @@ function explorexr_handle_usdz_upload($file, $model_id = null) {
     // Move to our models directory
     if (!copy($upload_result['file'], $new_file)) {
         wp_delete_file($upload_result['file']); // Clean up temp file
-        if (get_option('explorexr_debug_mode', false)) {
+        if (explorexr_is_debug_enabled()) {
             explorexr_log('ExploreXR: Failed to copy USDZ file to models directory: ' . $new_file, 'error');
         }
         return false;
@@ -253,10 +250,10 @@ function explorexr_handle_usdz_upload($file, $model_id = null) {
     }
     
     // Return the file data
-    $file_url = explorexr_MODELS_URL . $filename;
+    $file_url = EXPLOREXR_MODELS_URL . $filename;
     
     // Debug log for successful upload
-    if (get_option('explorexr_debug_mode', false)) {
+    if (explorexr_is_debug_enabled()) {
         explorexr_log('ExploreXR: Successfully uploaded USDZ file to: ' . $file_url);
     }
     
@@ -362,7 +359,7 @@ function explorexr_get_model_data($post_id) {
     $model_data['annotations'] = null;
     
     // Log model data when in debug mode
-    if (get_option('explorexr_debug_mode', false)) {
+    if (explorexr_is_debug_enabled()) {
         // Only log essential info to avoid huge logs
         $log_data = array(
             'model_file' => $model_data['model_file'],
@@ -374,6 +371,7 @@ function explorexr_get_model_data($post_id) {
     
     return $model_data;
 }
+
 
 
 

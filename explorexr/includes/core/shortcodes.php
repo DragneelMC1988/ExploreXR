@@ -23,7 +23,7 @@ function EXPLOREXR_enqueue_model_loader() {
     wp_enqueue_script('explorexr-model-loader', EXPLOREXR_PLUGIN_URL . 'assets/js/model-loader.js', array(), '1.0', true);
     
     // Pass debug settings to model-loader script
-    $debug_mode = get_option('explorexr_debug_mode', false);
+    $debug_mode = explorexr_is_debug_enabled();
     if ($debug_mode) {
         wp_localize_script('explorexr-model-loader', 'exploreXRDebug', array(
             'enabled' => true,
@@ -276,10 +276,9 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
     // Generate unique CSS ID for this model instance
     $model_css_id = 'explorexr-model-' . $model_id . '-' . uniqid();
     
-    // Generate responsive CSS if tablet or mobile sizes are set
-    $responsive_css = '';
+    // Generate responsive CSS if tablet or mobile sizes are set (WordPress.org compliance)
     if (!empty($tablet_width) || !empty($tablet_height) || !empty($mobile_width) || !empty($mobile_height)) {
-        $responsive_css .= '<style>';
+        $responsive_css = '';
         
         // Tablet styles (768px to 1024px)
         if (!empty($tablet_width) || !empty($tablet_height)) {
@@ -309,8 +308,12 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
             $responsive_css .= '}';
         }
         
-        $responsive_css .= '</style>';
+        // WordPress.org compliance: Use wp_add_inline_style instead of inline <style>
+        wp_add_inline_style('explorexr-model-viewer', $responsive_css);
     }
+    
+    // Set responsive_css to empty since we're using wp_add_inline_style
+    $responsive_css = '';
     
     // Annotations are not available in the free version
     $annotations = null;
@@ -328,8 +331,8 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
     // Check file size if the file exists locally
     $is_large_model = false;
     $file_path = '';
-      // Only run str_replace if $model_file is a string
-    if (is_string($model_file)) {
+      // Only run str_replace if $model_file is a string and constants are defined
+    if (is_string($model_file) && defined('EXPLOREXR_MODELS_URL') && defined('EXPLOREXR_MODELS_DIR')) {
         $file_path = str_replace(EXPLOREXR_MODELS_URL, EXPLOREXR_MODELS_DIR, $model_file);
         
         if (file_exists($file_path)) {
@@ -337,7 +340,7 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
             if ($file_size_mb >= $large_model_size_threshold) {
                 $is_large_model = true;
             }
-        } elseif (strpos($model_file, 'http') === 0) {
+        } elseif (!empty($model_file) && strpos($model_file, 'http') === 0) {
             // For external files, try to get the size with a HEAD request
             $request = wp_remote_head($model_file);
             if (!is_wp_error($request) && isset($request['headers']['content-length'])) {
@@ -377,7 +380,7 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
         // Check for JSON encoding errors
         if ($model_attributes_json === false) {
             // Log error and fall back to empty object
-            if (get_option('explorexr_debug_mode', false)) {
+            if (explorexr_is_debug_enabled()) {
                 explorexr_log('ExploreXR: JSON encoding error in model attributes for model ID: ' . $model_id, 'error');
             }
             $model_attributes_json = '{}';
@@ -439,6 +442,7 @@ add_action('admin_enqueue_scripts', function ($hook) {
         wp_enqueue_script('explorexr-model-loader', EXPLOREXR_PLUGIN_URL . 'assets/js/model-loader.js', array('jquery'), EXPLOREXR_VERSION, true);
     }
 });
+
 
 
 

@@ -1,86 +1,56 @@
 <?php
 /**
- * ExploreXR Admin Notifications Area Template
+ * ExploreXR Admin Notifications Area Template - WordPress.org Compliant
  * 
- * This template provides a container for WordPress admin notices and plugin-specific notifications
- * that should appear above the ExploreXR admin header.
+ * This template only provides minimal ExploreXR-specific notifications
+ * WordPress core admin notices are handled entirely by WordPress's native system
  */
 
 // Exit if accessed directly
 if (!defined('ABSPATH')) {
     exit;
 }
-?>
 
-<!-- WordPress Notifications Area -->
-<div id="explorexr-notifications-area" class="explorexr-notifications-wrapper">
-    <?php
-    // Display any WordPress admin notices that should appear above the ExploreXR header
-    // This area will be populated by WordPress notices and ExploreXR notifications
-    
-    // Check for plugin-specific messages
-    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only display of URL parameters
-    if (isset($_GET['settings-updated']) && sanitize_text_field(wp_unslash($_GET['settings-updated'])) == 'true') {
-        echo '<div class="notice notice-success is-dismissible">
-                <p><strong>Settings saved successfully!</strong></p>
-                <button type="button" class="notice-dismiss">
-                    <span class="screen-reader-text">Dismiss this notice.</span>
-                </button>
-              </div>';
-    }
-    
-    // Check for any error messages
-    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only display of URL parameters
-    if (isset($_GET['error']) && !empty($_GET['error'])) {
-        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only display of URL parameters
-        $error_message = sanitize_text_field(wp_unslash($_GET['error']));
-        echo '<div class="notice notice-error is-dismissible">
-                <p><strong>Error:</strong> ' . esc_html($error_message) . '</p>
-                <button type="button" class="notice-dismiss">
-                    <span class="screen-reader-text">Dismiss this notice.</span>
-                </button>
-              </div>';
-    }
-    
-    // Check for success messages
-    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only display of URL parameters
-    if (isset($_GET['success']) && !empty($_GET['success'])) {
-        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only display of URL parameters
-        $success_message = sanitize_text_field(wp_unslash($_GET['success']));
-        echo '<div class="notice notice-success is-dismissible">
-                <p><strong>Success:</strong> ' . esc_html($success_message) . '</p>
-                <button type="button" class="notice-dismiss">
-                    <span class="screen-reader-text">Dismiss this notice.</span>
-                </button>
-              </div>';
-    }
-    ?>
-</div>
+// WordPress.org Compliance: Do not create custom notice containers
+// WordPress handles all notice positioning and display automatically
+// Only show ExploreXR-specific success/error messages if passed via URL parameters
 
-<script type="text/javascript">
-jQuery(document).ready(function($) {
-    // Handle dismiss functionality for notices in our notifications area
-    $(document).on('click', '#explorexr-notifications-area .notice-dismiss', function(e) {
-        e.preventDefault();
-        $(this).closest('.notice').fadeOut(300, function() {
-            $(this).remove();
-        });
+// Check for plugin-specific messages that don't interfere with WordPress notices
+// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only display of URL parameters
+if (isset($_GET['explorexr-settings-updated']) && sanitize_text_field(wp_unslash($_GET['explorexr-settings-updated'])) == 'true') {
+    add_action('admin_notices', function() {
+        echo '<div class="notice notice-success is-dismissible">
+                <p><strong>ExploreXR Settings saved successfully!</strong></p>
+              </div>';
     });
-    
-    // Auto-dismiss only plugin-specific notifications after a set time (optional)
-    setTimeout(function() {
-        $('#explorexr-notifications-area .notice.is-dismissible').each(function() {
-            var $notice = $(this);
-            // Only auto-dismiss plugin-specific notices, not WordPress admin notices like premium notices
-            if (!$notice.hasClass('notice-error') && !$notice.hasClass('explorexr-premium-notice')) {
-                $notice.fadeOut(300, function() {
-                    $(this).remove();
-                });
-            }
-        });
-    }, 8000); // 8 seconds
-});
-</script>
+}
+
+// Check for ExploreXR error messages
+// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only display of URL parameters
+if (isset($_GET['explorexr-error']) && !empty($_GET['explorexr-error'])) {
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only display of URL parameters
+    $error_message = sanitize_text_field(wp_unslash($_GET['explorexr-error']));
+    add_action('admin_notices', function() use ($error_message) {
+        echo '<div class="notice notice-error is-dismissible">
+                <p><strong>ExploreXR Error:</strong> ' . esc_html($error_message) . '</p>
+              </div>';
+    });
+}
+
+// Check for ExploreXR success messages
+// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only display of URL parameters
+if (isset($_GET['explorexr-success']) && !empty($_GET['explorexr-success'])) {
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only display of URL parameters
+    $success_message = sanitize_text_field(wp_unslash($_GET['explorexr-success']));
+    add_action('admin_notices', function() use ($success_message) {
+        echo '<div class="notice notice-success is-dismissible">
+                <p><strong>ExploreXR Success:</strong> ' . esc_html($success_message) . '</p>
+              </div>';
+    });
+}
+
+// WordPress.org Compliance: Do not manipulate WordPress notice positioning
+// All notices will appear in WordPress's standard notice area automatically
 
 
 

@@ -52,10 +52,7 @@
     color: #000;
 }
 
-.explorexr-model-title {
-    margin-top: 0;
-    padding-right: 30px;
-}
+/* Files page specific title styling - inherits from admin-styles.css */
 
 /* View Model button styling */
 .view-3d-model {

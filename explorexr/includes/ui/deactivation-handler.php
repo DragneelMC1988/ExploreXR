@@ -47,21 +47,6 @@ function explorexr_enqueue_deactivation_script($hook) {
 }
 add_action('admin_enqueue_scripts', 'explorexr_enqueue_deactivation_script');
 
-/**
- * Display an admin notice after plugin activation with info about uninstall settings
- */
-function explorexr_activation_admin_notice() {
-    if (get_transient('explorexr_just_activated')) {
-        ?>
-        <div class="notice notice-info is-dismissible">
-            <p><?php esc_html_e('Thank you for activating ExploreXR! By default, your data will be preserved even if you deactivate or uninstall the plugin.', 'explorexr'); ?></p>
-            <p><?php esc_html_e('If you wish to change this behavior, please visit the', 'explorexr'); ?> <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-settings')); ?>"><?php esc_html_e('Settings page', 'explorexr'); ?></a> <?php esc_html_e('and configure the uninstall options.', 'explorexr'); ?></p>
-        </div>
-        <?php
-        delete_transient('explorexr_just_activated');
-    }
-}
-add_action('admin_notices', 'explorexr_activation_admin_notice');
 
 /**
  * Set transient on plugin activation
@@ -99,11 +84,14 @@ function explorexr_deactivation_notice_script() {
     global $pagenow;
     
     if ($pagenow === 'plugins.php') {
-        ?>
-        <script>
+        // Enqueue required scripts for deactivation notice
+        wp_enqueue_script('jquery');
+        
+        // Deactivation notice functionality
+        $deactivation_script = "
         jQuery(document).ready(function($) {
             // Show notice when hovering over the ExploreXR deactivate link
-            $('tr[data-plugin="explorexr/explorexr.php"] .deactivate a').hover(function() {
+            $('tr[data-plugin=\"explorexr/explorexr.php\"] .deactivate a').hover(function() {
                 $('#explorexr-deactivation-notice').show();
             });
             
@@ -112,8 +100,9 @@ function explorexr_deactivation_notice_script() {
                 $('#explorexr-deactivation-notice').hide();
             });
         });
-        </script>
-        <?php
+        ";
+        
+        wp_add_inline_script('jquery', $deactivation_script);
     }
 }
 add_action('admin_footer', 'explorexr_deactivation_notice_script');

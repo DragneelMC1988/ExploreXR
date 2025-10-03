@@ -230,7 +230,7 @@ function ExploreXR_validate_file_upload($file, $allowed_types = array(), $max_si
         // Basic file header validation
         $file_header = file_get_contents($file['tmp_name'], false, null, 0, 12);
         
-        if ($extension === 'glb' && substr($file_header, 0, 4) !== 'glTF') {
+        if ($extension === 'glb' && is_string($file_header) && substr($file_header, 0, 4) !== 'glTF') {
             return new WP_Error(
                 'invalid_glb_file',
                 __('Invalid GLB file format.', 'explorexr')
@@ -313,8 +313,8 @@ function ExploreXR_get_client_ip() {
  * @param string|array $message Event message or data
  * @param array $context Additional context data
  */
-function ExploreXR_log_security_event($event_type, $message, $context = array()) {
-    if (!get_option('ExploreXR_debug_mode', false)) {
+function explorexr_log_security_event($event_type, $message, $context = array()) {
+    if (!explorexr_is_debug_enabled()) {
         return; // Only log when debug mode is enabled
     }
     
@@ -337,8 +337,8 @@ function ExploreXR_log_security_event($event_type, $message, $context = array())
         'context' => $context
     );
     
-    if (get_option('ExploreXR_debug_mode', false)) {
-        ExploreXR_log('ExploreXR Security Event: ' . $log_entry, 'warning');
+    if (explorexr_is_debug_enabled()) {
+        explorexr_log('ExploreXR Security Event: ' . $log_entry, 'warning');
     }
 }
 
@@ -352,9 +352,9 @@ function ExploreXR_init_security() {
     }
     
     // Initialize security logging
-    if (get_option('ExploreXR_debug_mode', false)) {
-        add_action('wp_login_failed', 'ExploreXR_log_failed_login');
-        add_action('wp_login', 'ExploreXR_log_successful_login');
+    if (explorexr_is_debug_enabled()) {
+        add_action('wp_login_failed', 'explorexr_log_failed_login');
+        add_action('wp_login', 'explorexr_log_successful_login');
     }
 }
 
@@ -381,8 +381,8 @@ function ExploreXR_add_security_headers() {
 /**
  * Log failed login attempts
  */
-function ExploreXR_log_failed_login($username) {
-    ExploreXR_log_security_event(
+function explorexr_log_failed_login($username) {
+    explorexr_log_security_event(
         'login_failed',
         'Failed login attempt for username: ' . $username,
         array('username' => $username)
@@ -392,9 +392,9 @@ function ExploreXR_log_failed_login($username) {
 /**
  * Log successful logins
  */
-function ExploreXR_log_successful_login($user_login, $user = null) {
+function explorexr_log_successful_login($user_login, $user = null) {
     if ($user) {
-        ExploreXR_log_security_event(
+        explorexr_log_security_event(
             'login_success',
             'Successful login for user: ' . $user_login,
             array('user_id' => $user->ID, 'username' => $user_login)
@@ -404,6 +404,7 @@ function ExploreXR_log_successful_login($user_login, $user = null) {
 
 // Initialize security features
 add_action('init', 'ExploreXR_init_security');
+
 
 
 

@@ -76,9 +76,9 @@
         window.modelViewerLoadAttempts = attempts + 1;
           console.log('ModelViewerPreloader: Loading model-viewer (attempt ' + window.modelViewerLoadAttempts + ')');
         
-        // Get script configuration from localized data
+        // WordPress.org compliance: Always use local model-viewer file, no CDN fallback
         const scriptConfig = window.explorexrScriptConfig || {};
-        const scriptUrl = scriptConfig.modelViewerScriptUrl || window.modelViewerScriptUrl || 'https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js';
+        const scriptUrl = scriptConfig.modelViewerScriptUrl || window.modelViewerScriptUrl || (window.explorexrPluginUrl + 'assets/js/model-viewer.min.js');
         const scriptType = scriptConfig.scriptType || 'module';
         
         const startTime = performance.now();

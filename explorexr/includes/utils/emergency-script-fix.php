@@ -22,8 +22,8 @@ function ExploreXR_emergency_script_fix() {
     remove_action('admin_enqueue_scripts', 'ExploreXR_conditional_enqueue_scripts', 20);
     
     // Log the emergency fix activation
-    if (get_option('ExploreXR_debug_mode', false)) {
-        ExploreXR_log('ExploreXR: Emergency script fix activated - all scripts disabled to prevent WordPress core corruption', 'error');
+    if (explorexr_is_debug_enabled()) {
+        explorexr_log('ExploreXR: Emergency script fix activated - all scripts disabled to prevent WordPress core corruption', 'error');
     }
 }
 
@@ -133,6 +133,7 @@ if (ExploreXR_should_activate_emergency_mode()) {
         add_action('plugins_loaded', 'ExploreXR_complete_script_disable', 1);
     }
 }
+
 
 
 

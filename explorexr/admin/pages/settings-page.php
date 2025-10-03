@@ -28,8 +28,7 @@ function explorexr_settings_page() {
             'explorexr_overlay_bg_color' => '#FFFFFF',
             'explorexr_overlay_bg_opacity' => 70,
             'explorexr_model_viewer_version' => '3.3.0',
-            'explorexr_max_upload_size' => 50,
-            'explorexr_debug_mode' => false
+            'explorexr_max_upload_size' => 50
         );
         
         // Update all options to defaults
@@ -62,53 +61,8 @@ function explorexr_settings_page() {
                 update_option('explorexr_max_upload_size', $max_upload);
             }
         }
-        // Process debug mode checkbox
-        if (isset($_POST['explorexr_debug_mode'])) {
-            update_option('explorexr_debug_mode', true);
-        } else {
-            update_option('explorexr_debug_mode', false);
-        }
         
         echo '<div class="notice notice-success is-dismissible"><p>General settings have been saved successfully!</p></div>';
-    }
-    
-    // Process debug settings form submission
-    if (isset($_POST['submit']) && $_POST['submit'] === 'Save Debug Settings' && isset($_POST['_wpnonce']) && wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_wpnonce'])), 'explorexr_settings-options')) {
-        // Define debug setting fields
-        $debug_fields = array(
-            'explorexr_debug_log',
-            'explorexr_view_php_errors',
-            'explorexr_console_logging',
-            'explorexr_debug_loading_info',
-            'explorexr_debug_mode'
-        );
-        
-        // Process each debug field
-        foreach ($debug_fields as $field) {
-            if (isset($_POST[$field])) {
-                // Handle checkbox values (convert "1" to true, anything else to false)
-                $value = ($_POST[$field] === '1' || $_POST[$field] === 'on') ? true : false;
-                update_option($field, $value);
-            } else {
-                // If checkbox is not submitted, it means it's unchecked
-                update_option($field, false);
-            }
-        }
-        
-        // Also process any other settings that might be in hidden fields
-        $other_fields = array(
-            'explorexr_cdn_source',
-            'explorexr_model_viewer_version',
-            'explorexr_max_upload_size'
-        );
-        
-        foreach ($other_fields as $field) {
-            if (isset($_POST[$field])) {
-                update_option($field, sanitize_text_field(wp_unslash($_POST[$field])));
-            }
-        }
-        
-        echo '<div class="notice notice-success is-dismissible"><p>Debug settings have been saved successfully!</p></div>';
     }
     
     // Get system information for the new System Info section
@@ -119,8 +73,14 @@ function explorexr_settings_page() {
                         <span class="dashicons dashicons-book settings-icon"></span> Documentation
                       </a>';
     ?>
-    <div class="wrap explorexr-admin-container explorexr-settings-page">
-        <!-- WordPress admin notices appear here automatically before our custom content -->
+    <div class="wrap">
+        <h1>ExploreXR Settings</h1>
+        
+        <!-- WordPress.org Compliance: This div.wp-header-end is required for WordPress to place admin notices properly -->
+        <div class="wp-header-end"></div>
+        
+        <!-- ExploreXR Plugin Content -->
+        <div class="explorexr-admin-container explorexr-settings-page">
         
         <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/notifications-area.php'; ?>
         <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/admin-header.php'; ?>
@@ -167,27 +127,10 @@ function explorexr_settings_page() {
                         <p class="description">Maximum file size for 3D model uploads. Server limit: <?php echo esc_html($server_max); ?> MB.</p>
                     </td>
                 </tr>
-                <tr>
-                    <th scope="row">
-                        <label for="explorexr_debug_mode">Enable Debug Mode</label>
-                    </th>
-                    <td>
-                        <label>
-                            <input type="checkbox" name="explorexr_debug_mode" id="explorexr_debug_mode" value="1" <?php checked(get_option('explorexr_debug_mode', false)); ?>>
-                            Enable debugging features
-                        </label>
-                        <p class="description">Enable debug mode to access debugging options and troubleshooting tools.</p>
-                    </td>
-                </tr>
             </table>
             
-            <!-- Add hidden fields to preserve debugging settings when submitting general settings -->
+            <!-- Add hidden fields to preserve settings when submitting general settings -->
             <input type="hidden" name="explorexr_preserve_settings" value="1">
-            <input type="hidden" id="explorexr_debug_log_hidden" name="explorexr_debug_log" value="<?php echo esc_attr(get_option('explorexr_debug_log', '') ? '1' : ''); ?>">
-            <input type="hidden" id="explorexr_view_php_errors_hidden" name="explorexr_view_php_errors" value="<?php echo esc_attr(get_option('explorexr_view_php_errors', '') ? '1' : ''); ?>">
-            <input type="hidden" id="explorexr_console_logging_hidden" name="explorexr_console_logging" value="<?php echo esc_attr(get_option('explorexr_console_logging', '') ? '1' : ''); ?>">
-            <!-- Animation and annotation debug features are not available in the Free version -->
-            <input type="hidden" id="explorexr_debug_loading_info_hidden" name="explorexr_debug_loading_info" value="<?php echo esc_attr(get_option('explorexr_debug_loading_info', '') ? '1' : ''); ?>">
             
             <?php submit_button('Save General Settings'); ?>
         </form>
@@ -196,135 +139,38 @@ function explorexr_settings_page() {
         include EXPLOREXR_PLUGIN_DIR . 'admin/templates/card.php';
         ?>
         
-        <!-- Debugging Options -->
+        <!-- WordPress Debugging Information -->
         <?php
-        // Only show debugging options card if debug mode is enabled
-        $debug_mode = get_option('explorexr_debug_mode', false);
-        
-        if ($debug_mode): // Check if debug mode is enabled
-            $card_title = 'Debugging Options';
-            $card_icon = 'code-standards';
-            ob_start();
-        ?>        <form method="post" action="" id="explorexr-debug-settings-form">
-            <?php wp_nonce_field('explorexr_settings-options'); ?>
-            
-            <p><strong>Configure debugging options for troubleshooting and development purposes.</strong></p>
-            
-            <table class="form-table" role="presentation">
-                <tr>
-                    <th scope="row">
-                        <label for="explorexr_debug_log">Debug Log</label>
-                    </th>
-                    <td>
-                        <input type="checkbox" id="explorexr_debug_log" name="explorexr_debug_log" value="1" <?php checked(get_option('explorexr_debug_log', false)); ?>>
-                        <label for="explorexr_debug_log">Enable debug logging to track plugin operations</label>
-                        <p class="description">Logs debug information to help troubleshoot issues.</p>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">
-                        <label for="explorexr_view_php_errors">View PHP Errors</label>
-                    </th>
-                    <td>
-                        <input type="checkbox" id="explorexr_view_php_errors" name="explorexr_view_php_errors" value="1" <?php checked(get_option('explorexr_view_php_errors', false)); ?>>
-                        <label for="explorexr_view_php_errors">Display PHP errors and warnings</label>
-                        <p class="description">Shows PHP errors on the frontend (use only for debugging).</p>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">
-                        <label for="explorexr_console_logging">Console Logging</label>
-                    </th>
-                    <td>
-                        <input type="checkbox" id="explorexr_console_logging" name="explorexr_console_logging" value="1" <?php checked(get_option('explorexr_console_logging', false)); ?>>
-                        <label for="explorexr_console_logging">Enable JavaScript console logging</label>
-                        <p class="description">Outputs debug information to the browser console.</p>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">
-                        <label for="explorexr_debug_loading_info">Loading Information Debug</label>
-                    </th>
-                    <td>
-                        <input type="checkbox" id="explorexr_debug_loading_info" name="explorexr_debug_loading_info" value="1" <?php checked(get_option('explorexr_debug_loading_info', false)); ?>>
-                        <label for="explorexr_debug_loading_info">Debug model loading process</label>
-                        <p class="description">Tracks model loading progress and performance metrics.</p>
-                    </td>
-                </tr>
-            </table>
-            
-            <!-- Add hidden fields to preserve general settings when submitting debugging options -->
-            <input type="hidden" name="explorexr_preserve_settings" value="1">
-            <input type="hidden" id="explorexr_cdn_source_hidden" name="explorexr_cdn_source" value="<?php echo esc_attr(get_option('explorexr_cdn_source', 'cdn')); ?>">
-            <input type="hidden" id="explorexr_model_viewer_version_hidden" name="explorexr_model_viewer_version" value="<?php echo esc_attr(get_option('explorexr_model_viewer_version', '3.3.0')); ?>">
-            <input type="hidden" id="explorexr_max_upload_size_hidden" name="explorexr_max_upload_size" value="<?php echo esc_attr(get_option('explorexr_max_upload_size', 50)); ?>">
-            <!-- Always include debug mode to ensure it stays enabled -->
-            <input type="hidden" id="explorexr_debug_mode_hidden" name="explorexr_debug_mode" value="1">
-            
-            <div class="explorexr-debugging-tools">
-                <h3>Debug Log Tools</h3>
-                
-                <?php if (get_option('explorexr_debug_log', false)): ?>
-                    <div class="explorexr-debug-tool-actions">
-                        <button type="button" id="explorexr-view-log" class="button">
-                            <span class="dashicons dashicons-visibility"></span> View Debug Log
-                        </button>
-                        <button type="button" id="explorexr-clear-log" class="button">
-                            <span class="dashicons dashicons-trash"></span> Clear Debug Log
-                        </button>
-                        <button type="button" id="explorexr-download-log" class="button">
-                            <span class="dashicons dashicons-download"></span> Download Debug Log
-                        </button>
-                    </div>
-                    
-                    <div id="explorexr-debug-log-viewer">
-                        <h4>Debug Log Contents</h4>
-                        <div class="explorexr-log-container">
-                            <pre id="explorexr-log-content">Loading log contents...</pre>
-                        </div>
-                    </div>
-                <?php else: ?>
-                    <p class="description">Enable Debug Log to access debugging tools.</p>
-                <?php endif; ?>
-                  <div class="explorexr-debug-info">
-                    <h4>Debug Features Status</h4>
-                    <ul class="explorexr-debug-status-list">
-                        <li>
-                            <span class="explorexr-debug-status-label">Debug Log:</span>
-                            <span class="explorexr-debug-status-value <?php echo esc_attr(get_option('explorexr_debug_log') ? 'active' : 'inactive'); ?>">
-                                <?php echo esc_html(get_option('explorexr_debug_log') ? 'Active' : 'Inactive'); ?>
-                            </span>
-                        </li>
-                        <li>
-                            <span class="explorexr-debug-status-label">View PHP Errors:</span>
-                            <span class="explorexr-debug-status-value <?php echo esc_attr(get_option('explorexr_view_php_errors') ? 'active' : 'inactive'); ?>">
-                                <?php echo esc_html(get_option('explorexr_view_php_errors') ? 'Active' : 'Inactive'); ?>
-                            </span>
-                        </li>
-                        <li>
-                            <span class="explorexr-debug-status-label">Console Logging:</span>
-                            <span class="explorexr-debug-status-value <?php echo esc_attr(get_option('explorexr_console_logging') ? 'active' : 'inactive'); ?>">
-                                <?php echo esc_html(get_option('explorexr_console_logging') ? 'Active' : 'Inactive'); ?>
-                            </span>
-                        </li>
-                        <li>
-                            <span class="explorexr-debug-status-label">Loading Information Debugging:</span>
-                            <span class="explorexr-debug-status-value <?php echo esc_attr(get_option('explorexr_debug_loading_info') ? 'active' : 'inactive'); ?>">
-                                <?php echo esc_html(get_option('explorexr_debug_loading_info') ? 'Active' : 'Inactive'); ?>
-                            </span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            
-            <?php submit_button('Save Debug Settings'); ?>
-        </form>
-        <?php
-            $card_content = ob_get_clean();
-            include EXPLOREXR_PLUGIN_DIR . 'admin/templates/card.php';
-        endif; // End of debug mode check
+        $card_title = 'Debugging Information';
+        $card_icon = 'admin-tools';
+        ob_start();
         ?>
-
+        <p><strong>ExploreXR uses WordPress standard debugging</strong></p>
+        <p>To enable debugging for troubleshooting purposes, add the following lines to your <code>wp-config.php</code> file:</p>
+        <pre style="background: #f0f0f1; padding: 10px; border-radius: 4px; overflow-x: auto;">
+define('WP_DEBUG', true);
+define('WP_DEBUG_LOG', true);
+define('WP_DEBUG_DISPLAY', false);</pre>
+        <p class="description">
+            <strong>WP_DEBUG:</strong> Enables WordPress debugging mode<br>
+            <strong>WP_DEBUG_LOG:</strong> Saves debug information to a log file<br>
+            <strong>WP_DEBUG_DISPLAY:</strong> Set to false to prevent errors from displaying on your site
+        </p>
+        <p>When WordPress debugging is enabled, ExploreXR will automatically log debugging information to help with troubleshooting.</p>
+        <?php if (explorexr_is_debug_enabled()): ?>
+            <div style="background: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 10px; border-radius: 4px; margin: 10px 0;">
+                <strong>✓ WordPress debugging is currently enabled</strong> - ExploreXR debug logging is active.
+            </div>
+        <?php else: ?>
+            <div style="background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 10px; border-radius: 4px; margin: 10px 0;">
+                <strong>⚠ WordPress debugging is currently disabled</strong> - Enable WP_DEBUG and WP_DEBUG_LOG in wp-config.php to activate debug logging.
+            </div>
+        <?php endif; ?>
+        <?php
+        $card_content = ob_get_clean();
+        include EXPLOREXR_PLUGIN_DIR . 'admin/templates/card.php';
+        ?>
+        
         <!-- System Information -->
         <?php
         $card_title = 'System Information';
@@ -489,7 +335,7 @@ function explorexr_settings_page() {
                 <?php 
                 // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage -- Plugin logo for admin interface
                 printf('<img src="%s" alt="%s" class="explorexr-logo" loading="lazy">', 
-                    esc_url(EXPLOREXR_PLUGIN_URL . 'assets/img/logos/exploreXR-Logo-Dark.png'), 
+                    esc_url(EXPLOREXR_PLUGIN_URL . 'assets/img/logos/explorexr-Logo-dark.png'), 
                     esc_attr__('ExploreXR Logo', 'explorexr')
                 );
                 ?>
@@ -508,7 +354,9 @@ function explorexr_settings_page() {
     
     <!-- ExploreXR Footer -->
     <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/admin-footer.php'; ?>
-    </div>
+    
+        </div><!-- .explorexr-admin-container -->
+    </div><!-- .wrap -->
     <?php
 }
 
@@ -550,6 +398,7 @@ function explorexr_general_settings_register_settings() {
     );
 }
 add_action('admin_init', 'explorexr_general_settings_register_settings');
+
 
 
 

@@ -4,37 +4,6 @@
  */
 jQuery(document).ready(function($) {
     
-    // Premium banner dismiss functionality
-    $('.explorexr-pro-banner .explorexr-banner-dismiss').on('click', function(e) {
-        e.preventDefault();
-        const banner = $(this).closest('.explorexr-pro-banner');
-        
-        // Animate banner dismissal
-        banner.addClass('banner-dismissing');
-        
-        setTimeout(function() {
-            banner.remove();
-        }, 300);
-        
-        // Send AJAX request to hide banner for this session
-        if (explorexr_dashboard && explorexr_dashboard.ajax_url && explorexr_dashboard.nonce) {
-            $.ajax({
-                url: explorexr_dashboard.ajax_url,
-                type: 'POST',
-                data: {
-                    action: 'explorexr_dismiss_premium_banner',
-                    nonce: explorexr_dashboard.nonce
-                },
-                success: function(response) {
-                    console.log('Premium banner dismissed for this session');
-                },
-                error: function(xhr, status, error) {
-                    console.log('Error dismissing banner:', error);
-                }
-            });
-        }
-    });
-    
     // Copy shortcode functionality
     $('.copy-shortcode').on('click', function() {
         const shortcode = $(this).data('shortcode');

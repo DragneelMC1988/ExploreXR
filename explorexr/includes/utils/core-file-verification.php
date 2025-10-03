@@ -15,39 +15,25 @@ if (!defined('ABSPATH')) {
  * Check critical WordPress core JavaScript files
  */
 function explorexr_verify_core_js_files() {
-    $core_js_files = array(
-        ABSPATH . 'wp-admin/js/user-profile.min.js',
-        ABSPATH . 'wp-includes/js/dist/url.min.js',
-        ABSPATH . 'wp-includes/js/dist/lodash.min.js',
-        ABSPATH . 'wp-includes/js/dist/react-dom.min.js',
-        ABSPATH . 'wp-admin/js/common.min.js',
-        ABSPATH . 'wp-includes/js/jquery/jquery.min.js'
+    // WordPress.org compliance: Use WordPress core functions to check dependencies
+    // Instead of manually verifying core files, check if they're properly enqueued
+    $required_scripts = array(
+        'jquery',
+        'wp-util',
+        'common',
+        'user-profile'
     );
     
     $results = array();
     
-    foreach ($core_js_files as $file) {
-        $relative_path = str_replace(ABSPATH, '', $file);
-        
-        if (!file_exists($file)) {
-            $results[$relative_path] = 'MISSING';
-            continue;
-        }
-        
-        $content = file_get_contents($file);
-        
-        // Check for obvious corruption signs
-        if (empty($content)) {
-            $results[$relative_path] = 'EMPTY';
-        } elseif (strpos($content, '<?php') !== false) {
-            $results[$relative_path] = 'PHP_CORRUPTION';
-        } elseif (strlen($content) < 100) {
-            $results[$relative_path] = 'TOO_SHORT';
-        } elseif (strpos($content, 'Uncaught') !== false || strpos($content, 'SyntaxError') !== false) {
-            $results[$relative_path] = 'SYNTAX_ERROR';
-        } else {
-            $results[$relative_path] = 'OK';
-        }
+    foreach ($required_scripts as $script_handle) {
+        $script_data = wp_scripts()->query($script_handle);
+        $results[$script_handle] = array(
+            'handle' => $script_handle,
+            'registered' => !empty($script_data),
+            'dependencies' => !empty($script_data) ? $script_data->deps : array(),
+            'version' => !empty($script_data) ? $script_data->ver : 'unknown'
+        );
     }
     
     return $results;
@@ -114,11 +100,15 @@ if (isset($_SERVER['PHP_SELF']) && basename(sanitize_text_field(wp_unslash($_SER
     <html>
     <head>
         <title>WordPress Core Verification</title>
-        <style>
+        <?php
+        // WordPress.org compliance: Use wp_add_inline_style instead of inline style
+        $verification_styles = '
             body { font-family: Arial, sans-serif; margin: 20px; }
             table { border-collapse: collapse; width: 100%; }
             th { background-color: #f0f0f0; }
-        </style>
+        ';
+        wp_add_inline_style('wp-admin', $verification_styles);
+        ?>
     </head>
     <body>
         <?php explorexr_display_verification_results(); ?>

@@ -45,7 +45,6 @@ function explorexr_free_uninstall() {
 
     // Clean up temporary admin notices
     delete_option('explorexr_admin_notice');
-    delete_option('explorexr_debug_log_data');
     
     // Flush rewrite rules
     flush_rewrite_rules();

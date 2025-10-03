@@ -8,8 +8,9 @@ docs/quick_commands.md
 *.glb
 *.gltf
 *.usdz
+# Ignore WASM files (not allowed by WordPress.org)
+*.wasm
 docs/git-commands.md
-to-do.md
 plugin-check/
 wp-optimize/
 woocommerce/

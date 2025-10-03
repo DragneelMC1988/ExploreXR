@@ -22,9 +22,6 @@ require_once EXPLOREXR_PLUGIN_DIR . 'admin/models/modern-model-browser.php';
 // Include the edit link redirector
 require_once EXPLOREXR_PLUGIN_DIR . 'admin/core/edit-redirector.php';
 
-// Include the model debug tool
-require_once EXPLOREXR_PLUGIN_DIR . 'admin/models/model-debug.php';
-
 // Include premium upgrade page
 require_once EXPLOREXR_PLUGIN_DIR . 'admin/pages/premium-upgrade-page.php';
 
@@ -93,7 +90,6 @@ function explorexr_admin_enqueue_scripts($hook) {
     // Common CSS for all admin pages
     wp_enqueue_style('explorexr-admin-styles', EXPLOREXR_PLUGIN_URL . 'admin/css/admin-styles.css', array(), EXPLOREXR_VERSION);
     wp_enqueue_style('explorexr-button-system', EXPLOREXR_PLUGIN_URL . 'admin/css/button-system.css', array(), EXPLOREXR_VERSION);
-    wp_enqueue_style('explorexr-banner-dismiss', EXPLOREXR_PLUGIN_URL . 'admin/css/banner-dismiss.css', array(), EXPLOREXR_VERSION);
     
     // Premium upgrade styles
     wp_enqueue_style('explorexr-premium-upgrade', EXPLOREXR_PLUGIN_URL . 'admin/css/premium-upgrade.css', array(), EXPLOREXR_VERSION);
@@ -108,7 +104,7 @@ function explorexr_admin_enqueue_scripts($hook) {
     ));
     
     // Page-specific styles and scripts
-    if (strpos($hook, 'explorexr') !== false) {
+    if (strpos($hook ?? '', 'explorexr') !== false) {
         // Specific CSS files
         if (strpos($hook ?? '', 'explorexr-files') !== false) {
             wp_enqueue_style('explorexr-files-page-css', EXPLOREXR_PLUGIN_URL . 'admin/css/files-page.css', array(), EXPLOREXR_VERSION);
@@ -148,19 +144,13 @@ function explorexr_admin_enqueue_scripts($hook) {
         if (strpos($hook ?? '', 'explorexr-settings') !== false) {
             wp_enqueue_style('explorexr-settings-page-css', EXPLOREXR_PLUGIN_URL . 'admin/css/settings-page.css', array(), EXPLOREXR_VERSION);
             wp_enqueue_script('explorexr-settings-page-js', EXPLOREXR_PLUGIN_URL . 'admin/js/settings-page.js', array('jquery'), EXPLOREXR_VERSION, true);
-            
-            // Localize script for AJAX functionality
-            wp_localize_script('explorexr-settings-page-js', 'explorexr_settings', array(
-                'nonce' => wp_create_nonce('explorexr_debug_nonce'),
-                'ajax_url' => admin_url('admin-ajax.php')
-            ));
         }
         
         // Dashboard page specific
         if (strpos($hook ?? '', 'toplevel_page_ExploreXR') !== false || $hook === 'toplevel_page_ExploreXR') {
             wp_enqueue_script('explorexr-dashboard-js', EXPLOREXR_PLUGIN_URL . 'admin/js/dashboard.js', array('jquery'), EXPLOREXR_VERSION, true);
             
-            // Localize script with data for banner dismissal
+            // Localize script with dashboard data
             wp_localize_script('explorexr-dashboard-js', 'EXPLOREXR_dashboard', array(
                 'nonce' => wp_create_nonce('EXPLOREXR_dashboard_nonce'),
                 'ajax_url' => admin_url('admin-ajax.php')
@@ -239,167 +229,60 @@ function EXPLOREXR_admin_body_class($classes) {
 }
 add_filter('admin_body_class', 'EXPLOREXR_admin_body_class');
 
-/**
- * Premium upgrade notice has been moved to upgrade-system.php
- * Now shows globally across WordPress dashboard as a proper dismissible notice
- */
-
 // Register plugin settings
 add_action('admin_init', function() {
+    // Clean up removed debug options on plugin initialization (one time)
+    $cleanup_done = get_option('explorexr_debug_cleanup_done', false);
+    if (!$cleanup_done) {
+        delete_option('explorexr_debug_mode');
+        delete_option('explorexr_view_php_errors');
+        delete_option('explorexr_console_logging');
+        delete_option('explorexr_debug_loading_info');
+        delete_option('explorexr_debug_ar_features');
+        delete_option('explorexr_debug_camera_controls');
+        update_option('explorexr_debug_cleanup_done', true);
+    }
+    
     // Register a settings section
     add_settings_section(
-        'EXPLOREXR_general_settings',
+        'explorexr_general_settings',
         'General Settings',
-        'EXPLOREXR_general_settings_callback',
+        'explorexr_general_settings_callback',
         'explorexr-settings'
-    );
-    
-    // Register CDN settings field
-    add_settings_field(
-        'EXPLOREXR_cdn_source',
-        'Model Viewer Source',
-        'EXPLOREXR_cdn_source_callback',
-        'explorexr-settings',
-        'EXPLOREXR_general_settings',
-        array('label_for' => 'EXPLOREXR_cdn_source')
     );
     
     // Register Model Viewer version field
     add_settings_field(
-        'EXPLOREXR_model_viewer_version',
+        'explorexr_model_viewer_version',
         'Model Viewer Version',
-        'EXPLOREXR_model_viewer_version_callback',
+        'explorexr_model_viewer_version_callback',
         'explorexr-settings',
-        'EXPLOREXR_general_settings',
-        array('label_for' => 'EXPLOREXR_model_viewer_version')
+        'explorexr_general_settings',
+        array('label_for' => 'explorexr_model_viewer_version')
     );
     
     // Register Max Upload Size field
     add_settings_field(
-        'EXPLOREXR_max_upload_size',
+        'explorexr_max_upload_size',
         'Max Upload Size (MB)',
-        'EXPLOREXR_max_upload_size_callback',
+        'explorexr_max_upload_size_callback',
         'explorexr-settings',
-        'EXPLOREXR_general_settings',
-        array('label_for' => 'EXPLOREXR_max_upload_size')
-    );
-    
-    // Register debug mode field
-    add_settings_field(
-        'EXPLOREXR_debug_mode',
-        'Debug Mode',
-        'EXPLOREXR_debug_mode_callback',
-        'explorexr-settings',
-        'EXPLOREXR_general_settings',
-        array('label_for' => 'EXPLOREXR_debug_mode')
-    );
-    
-    // Register Debugging section
-    add_settings_section(
-        'EXPLOREXR_debugging_section',
-        'Debugging Options',
-        'EXPLOREXR_debugging_section_callback',
-        'explorexr-settings'
-    );
-    
-    // Register Debug Log field
-    add_settings_field(
-        'EXPLOREXR_debug_log',
-        'Debug Log',
-        'EXPLOREXR_debug_log_callback',
-        'explorexr-settings',
-        'EXPLOREXR_debugging_section',
-        array('label_for' => 'EXPLOREXR_debug_log')
-    );
-    
-    // Register View PHP Errors field
-    add_settings_field(
-        'EXPLOREXR_view_php_errors',
-        'PHP Errors',
-        'EXPLOREXR_view_php_errors_callback',
-        'explorexr-settings',
-        'EXPLOREXR_debugging_section',
-        array('label_for' => 'EXPLOREXR_view_php_errors')
-    );
-    
-    // Register Console Logging field
-    add_settings_field(
-        'EXPLOREXR_console_logging',
-        'Console Logging',
-        'EXPLOREXR_console_logging_callback',
-        'explorexr-settings',
-        'EXPLOREXR_debugging_section',
-        array('label_for' => 'EXPLOREXR_console_logging')
-    );
-    
-    // Register Debug Loading Info field
-    add_settings_field(
-        'EXPLOREXR_debug_loading_info',
-        'Loading Information Debugging',
-        'EXPLOREXR_debug_loading_info_callback',
-        'explorexr-settings',
-        'EXPLOREXR_debugging_section',
-        array('label_for' => 'EXPLOREXR_debug_loading_info')
+        'explorexr_general_settings',
+        array('label_for' => 'explorexr_max_upload_size')
     );
     
     // Register settings with sanitization
-    register_setting('EXPLOREXR_settings', 'EXPLOREXR_model_viewer_version', array(
+    register_setting('explorexr_settings', 'explorexr_model_viewer_version', array(
         'sanitize_callback' => 'sanitize_text_field'
     ));
-    register_setting('EXPLOREXR_settings', 'EXPLOREXR_max_upload_size', array(
+    register_setting('explorexr_settings', 'explorexr_max_upload_size', array(
         'sanitize_callback' => 'absint',
         'default' => 50
-    ));
-    register_setting('EXPLOREXR_settings', 'EXPLOREXR_debug_mode', array(
-        'sanitize_callback' => 'sanitize_text_field'
-    ));
-    
-    // Register debugging settings with sanitization
-    register_setting('EXPLOREXR_settings', 'EXPLOREXR_debug_log', array(
-        'sanitize_callback' => 'sanitize_text_field'
-    ));
-    register_setting('EXPLOREXR_settings', 'EXPLOREXR_view_php_errors', array(
-        'sanitize_callback' => 'sanitize_text_field'
-    ));
-    register_setting('EXPLOREXR_settings', 'EXPLOREXR_console_logging', array(
-        'sanitize_callback' => 'sanitize_text_field'
-    ));
-    register_setting('EXPLOREXR_settings', 'EXPLOREXR_debug_loading_info', array(
-        'sanitize_callback' => 'sanitize_text_field'
     ));
 });
 
 // AJAX Handlers for Premium Info
 add_action('wp_ajax_EXPLOREXR_get_premium_info', 'EXPLOREXR_ajax_get_premium_info');
-
-// AJAX Handlers for Debug Tools
-add_action('wp_ajax_EXPLOREXR_clear_all_debug_logs', 'EXPLOREXR_ajax_clear_all_debug_logs');
-add_action('wp_ajax_EXPLOREXR_run_diagnostics', 'EXPLOREXR_ajax_run_diagnostics');
-add_action('wp_ajax_EXPLOREXR_export_debug_info', 'EXPLOREXR_ajax_export_debug_info');
-
-// AJAX Handler for Premium Banner Dismissal
-add_action('wp_ajax_EXPLOREXR_dismiss_premium_banner', 'EXPLOREXR_ajax_dismiss_premium_banner');
-
-/**
- * AJAX handler for dismissing premium banner
- */
-function EXPLOREXR_ajax_dismiss_premium_banner() {
-    // Verify nonce
-    if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'EXPLOREXR_dashboard_nonce')) {
-        wp_send_json_error('Security check failed');
-    }
-    
-    // Check user capabilities
-    if (!current_user_can('manage_options')) {
-        wp_send_json_error('Insufficient permissions');
-    }
-    
-    // Set transient to hide banner for this session (until browser is closed)
-    // Using a 12 hour expiration as a reasonable session length
-    set_transient('EXPLOREXR_pro_banner_dismissed_' . get_current_user_id(), true, 12 * HOUR_IN_SECONDS);
-    
-    wp_send_json_success('Premium banner dismissed for this session');
-}
 
 /**
  * AJAX handler for getting premium information
@@ -456,281 +339,3 @@ function EXPLOREXR_ajax_get_premium_info() {
         'upgrade_url' => EXPLOREXR_get_premium_upgrade_url()
     ));
 }
-
-/**
- * AJAX handler for getting premium status (Free version)
- */
-/**
- * AJAX handler for getting premium information (replaces addon status)
- */
-function EXPLOREXR_ajax_get_premium_features() {
-    // Verify nonce
-    if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'explorexr_admin_nonce')) {
-        wp_die('Security check failed');
-    }
-    
-    // Check user capabilities
-    if (!current_user_can('manage_options')) {
-        wp_send_json_error(array('message' => 'Insufficient permissions'));
-    }
-    
-    // Free version response - premium features available for upgrade
-    $premium_features = array(
-        'camera-controls' => 'Camera Controls',
-        'ar' => 'AR Support'
-    );
-    
-    $feature_status = array();
-    foreach ($premium_features as $slug => $name) {
-        $feature_status[] = array(
-            'slug' => $slug,
-            'status' => 'premium',
-            'status_text' => 'Premium Only',
-            'name' => $name,
-            'upgrade_url' => admin_url('admin.php?page=explorexr-premium')
-        );
-    }
-    
-    wp_send_json_success(array(
-        'features' => $feature_status,
-        'license_info' => array(
-            'status' => 'free',
-            'type' => 'Free Version',
-            'upgrade_url' => EXPLOREXR_get_premium_upgrade_url()
-        )
-    ));
-}
-
-/**
- * AJAX handler for clearing all debug logs
- */
-function EXPLOREXR_ajax_clear_all_debug_logs() {
-    // Verify nonce
-    if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'EXPLOREXR_clear_logs')) {
-        wp_send_json_error('Security check failed');
-    }
-    
-    // Check user capabilities
-    if (!current_user_can('manage_options')) {
-        wp_send_json_error('Insufficient permissions');
-    }
-    
-    try {
-        // Clear main debug logs
-        delete_option('explorexr_debug_log_data');
-        delete_transient('explorexr_debug_log_cache');
-        
-        // Clear debug logs
-        $debug_options = array(
-            'explorexr_debug_loading_log'
-            // Animation and annotation debug features are not available in the Free version
-        );
-        
-        foreach ($debug_options as $option) {
-            delete_option($option);
-        }
-        
-        // Clear any error logs
-        if (function_exists('error_clear_last')) {
-            error_clear_last();
-        }
-        
-        wp_send_json_success('All debug logs cleared successfully');
-    } catch (Exception $e) {
-        wp_send_json_error('Error clearing logs: ' . $e->getMessage());
-    }
-}
-
-/**
- * AJAX handler for running system diagnostics
- */
-function EXPLOREXR_ajax_run_diagnostics() {
-    // Verify nonce
-    if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'EXPLOREXR_diagnostics')) {
-        wp_send_json_error('Security check failed');
-    }
-    
-    // Check user capabilities
-    if (!current_user_can('manage_options')) {
-        wp_send_json_error('Insufficient permissions');
-    }
-    
-    try {
-        $diagnostics = EXPLOREXR_generate_system_diagnostics();
-        wp_send_json_success($diagnostics);
-    } catch (Exception $e) {
-        wp_send_json_error('Error running diagnostics: ' . $e->getMessage());
-    }
-}
-
-/**
- * AJAX handler for exporting debug information
- */
-function EXPLOREXR_ajax_export_debug_info() {
-    // Verify nonce
-    if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'EXPLOREXR_export_debug')) {
-        wp_send_json_error('Security check failed');
-    }
-    
-    // Check user capabilities
-    if (!current_user_can('manage_options')) {
-        wp_send_json_error('Insufficient permissions');
-    }
-    
-    try {
-        $debug_info = EXPLOREXR_generate_debug_export();
-        wp_send_json_success($debug_info);
-    } catch (Exception $e) {
-        wp_send_json_error('Error exporting debug info: ' . $e->getMessage());
-    }
-}
-
-/**
- * Generate comprehensive system diagnostics
- */
-function EXPLOREXR_generate_system_diagnostics() {
-    $html = '<html><head><title>ExploreXR System Diagnostics</title>';
-    $html .= '<style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .header { background: #0073aa; color: white; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
-        .section { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
-        .success { color: #46b450; font-weight: bold; }
-        .warning { color: #ffb900; font-weight: bold; }
-        .error { color: #dc3232; font-weight: bold; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
-        th { background-color: #f1f1f1; }
-        .code { background: #f5f5f5; padding: 10px; border-radius: 3px; font-family: monospace; }
-    </style></head><body>';
-    
-    $html .= '<div class="header"><h1>ExploreXR System Diagnostics</h1><p>Generated on: ' . gmdate('Y-m-d H:i:s') . '</p></div>';
-    
-    // WordPress Environment
-    $html .= '<div class="section">';
-    $html .= '<h2>WordPress Environment</h2>';
-    $html .= '<table>';
-    $html .= '<tr><th>WordPress Version</th><td>' . get_bloginfo('version') . '</td></tr>';
-    $html .= '<tr><th>PHP Version</th><td>' . PHP_VERSION . '</td></tr>';
-    $html .= '<tr><th>MySQL Version</th><td>' . $GLOBALS['wpdb']->db_version() . '</td></tr>';
-    $html .= '<tr><th>Theme</th><td>' . wp_get_theme()->get('Name') . ' v' . wp_get_theme()->get('Version') . '</td></tr>';
-    $html .= '<tr><th>Debug Mode</th><td>' . (WP_DEBUG ? '<span class="warning">Enabled</span>' : '<span class="success">Disabled</span>') . '</td></tr>';
-    $html .= '</table>';
-    $html .= '</div>';
-    
-    // ExploreXR Configuration
-    $html .= '<div class="section">';
-    $html .= '<h2>ExploreXR Configuration</h2>';
-    $html .= '<table>';
-    $html .= '<tr><th>Version</th><td>' . EXPLOREXR_VERSION . '</td></tr>';
-    $html .= '<tr><th>Debug Mode</th><td>' . (get_option('EXPLOREXR_debug_mode') ? '<span class="warning">Enabled</span>' : '<span class="success">Disabled</span>') . '</td></tr>';
-    $html .= '<tr><th>Model Viewer Version</th><td>' . get_option('EXPLOREXR_model_viewer_version', '3.3.0') . '</td></tr>';
-    $html .= '<tr><th>CDN Source</th><td>' . get_option('EXPLOREXR_cdn_source', 'cdn') . '</td></tr>';
-    $html .= '</table>';
-    $html .= '</div>';
-    
-    // Debug Settings
-    $html .= '<div class="section">';
-    $html .= '<h2>Debug Settings</h2>';
-    $debug_settings = array(
-        'EXPLOREXR_debug_log' => 'Debug Logging',
-        'EXPLOREXR_view_php_errors' => 'PHP Error Display',
-        'EXPLOREXR_console_logging' => 'Console Logging',
-        'EXPLOREXR_debug_loading_info' => 'Loading Info Debug'
-    );
-    
-    $html .= '<table>';
-    foreach ($debug_settings as $option => $label) {
-        $value = get_option($option, false);
-        $html .= '<tr>';
-        $html .= '<td>' . $label . '</td>';
-        $html .= '<td>' . ($value ? '<span class="warning">Enabled</span>' : '<span class="success">Disabled</span>') . '</td>';
-        $html .= '</tr>';
-    }
-    $html .= '</table>';
-    $html .= '</div>';
-    
-    // System Resources
-    $html .= '<div class="section">';
-    $html .= '<h2>System Resources</h2>';
-    $html .= '<table>';
-    $html .= '<tr><th>Memory Limit</th><td>' . ini_get('memory_limit') . '</td></tr>';
-    $html .= '<tr><th>Max Execution Time</th><td>' . ini_get('max_execution_time') . ' seconds</td></tr>';
-    $html .= '<tr><th>Upload Max Size</th><td>' . ini_get('upload_max_filesize') . '</td></tr>';
-    $html .= '<tr><th>Post Max Size</th><td>' . ini_get('post_max_size') . '</td></tr>';
-    $html .= '<tr><th>Max Input Vars</th><td>' . ini_get('max_input_vars') . '</td></tr>';
-    $html .= '</table>';
-    $html .= '</div>';
-    
-    $html .= '</body></html>';
-    
-    return $html;
-}
-
-/**
- * Generate debug information export
- */
-function EXPLOREXR_generate_debug_export() {
-    $export = "ExploreXR Debug Information Export\n";
-    $export .= "=====================================\n";
-    $export .= "Generated: " . gmdate('Y-m-d H:i:s') . "\n\n";
-    
-    // System Information
-    $export .= "SYSTEM INFORMATION\n";
-    $export .= "------------------\n";
-    $export .= "WordPress Version: " . get_bloginfo('version') . "\n";
-    $export .= "PHP Version: " . PHP_VERSION . "\n";
-    $export .= "MySQL Version: " . $GLOBALS['wpdb']->db_version() . "\n";
-    $export .= "ExploreXR Version: " . EXPLOREXR_VERSION . "\n";
-    $export .= "Active Theme: " . wp_get_theme()->get('Name') . " v" . wp_get_theme()->get('Version') . "\n";
-    $export .= "Debug Mode: " . (WP_DEBUG ? 'Enabled' : 'Disabled') . "\n\n";
-    
-    // ExploreXR Settings
-    $export .= "ExploreXR SETTINGS\n";
-    $export .= "---------------\n";
-    $export .= "Debug Mode: " . (get_option('explorexr_debug_mode') ? 'Enabled' : 'Disabled') . "\n";
-    $export .= "Model Viewer Version: " . get_option('explorexr_model_viewer_version', '3.3.0') . "\n";
-    $export .= "CDN Source: " . get_option('explorexr_cdn_source', 'cdn') . "\n";
-    
-    $debug_settings = array(
-        'explorexr_debug_log' => 'Debug Logging',
-        'explorexr_view_php_errors' => 'PHP Error Display',
-        'explorexr_console_logging' => 'Console Logging',
-        // Animation and annotation debug features are not available in the Free version
-        'explorexr_debug_loading_info' => 'Loading Info Debug'
-    );
-    
-    foreach ($debug_settings as $option => $label) {
-        $value = get_option($option, false);
-        $export .= $label . ": " . ($value ? 'Enabled' : 'Disabled') . "\n";
-    }
-    $export .= "\n";
-    
-    // System Resources
-    $export .= "SYSTEM RESOURCES\n";
-    $export .= "----------------\n";
-    $export .= "Memory Limit: " . ini_get('memory_limit') . "\n";
-    $export .= "Max Execution Time: " . ini_get('max_execution_time') . " seconds\n";
-    $export .= "Upload Max Size: " . ini_get('upload_max_filesize') . "\n";
-    $export .= "Post Max Size: " . ini_get('post_max_size') . "\n";
-    $export .= "Max Input Vars: " . ini_get('max_input_vars') . "\n\n";
-    
-    // Recent Errors (if debug logging is enabled)
-    if (get_option('EXPLOREXR_debug_log', false)) {
-        $export .= "RECENT DEBUG LOGS\n";
-        $export .= "-----------------\n";
-        $debug_log = get_option('EXPLOREXR_debug_log_data', '');
-        if (!empty($debug_log)) {
-            $export .= $debug_log . "\n";
-        } else {
-            $export .= "No debug log data available.\n";
-        }
-    }
-    
-    return $export;
-}
-
-
-
-
-
-
