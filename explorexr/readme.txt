@@ -4,7 +4,7 @@ Tags: 3d, model-viewer, glb, gltf, ar
 Requires at least: 5.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.5
+Stable tag: 1.0.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -175,6 +175,44 @@ Basic integration is available in the free version. Advanced features like the E
 8. Loading options configuration
 
 == Changelog ==
+
+= 1.0.6 =
+**PHP 8.1+ COMPLETE COMPATIBILITY - CRITICAL BUG FIXES - October 2025**
+
+**CRITICAL FIXES:**
+* FIXED: PHP 8.1+ deprecation warnings - strpos() null parameter errors eliminated
+* FIXED: PHP 8.1+ deprecation warnings - str_replace() null parameter errors eliminated
+* FIXED: Undefined array key 'debug_mode' in settings page
+* FIXED: Null value handling in all get_post_meta() calls used with checked() and selected()
+* FIXED: Legacy camera controls backward compatibility null safety
+
+**NULL SAFETY IMPROVEMENTS:**
+* ADDED: Form helper functions (form-helpers.php) for PHP 8.1+ compatibility
+* IMPROVED: All get_post_meta() calls now have proper default values (?: '')
+* IMPROVED: Model file loop safety with explicit type casting
+* IMPROVED: Template variable validation before passing to WordPress functions
+* IMPROVED: Debug mode status properly included in system information
+
+**CODE QUALITY:**
+* IMPROVED: Consistent null coalescing operator usage throughout codebase
+* IMPROVED: Type safety for all string comparisons
+* IMPROVED: Error prevention in admin templates
+* IMPROVED: Backward compatibility checks with null protection
+
+**AFFECTED FILES:**
+* explorexr.php - Version bump, added form-helpers include
+* admin/settings/settings-callbacks.php - Added debug_mode to system info
+* admin/pages/edit-model-page.php - Enhanced null safety in model file handling
+* admin/pages/dashboard-page.php - Added defaults to get_post_meta calls
+* admin/pages/browse-models-page.php - Added defaults to get_post_meta calls  
+* admin/templates/edit-model/viewer-controls-card.php - Fixed legacy compatibility null issue
+* includes/utils/form-helpers.php - NEW: PHP 8.1+ safe wrapper functions
+
+**TESTING:**
+* ✅ Tested with WP_DEBUG enabled - No errors
+* ✅ Tested with PHP 8.1 and PHP 8.2
+* ✅ All admin pages load without warnings
+* ✅ Model creation and editing work correctly
 
 = 1.0.5 =
 **WORDPRESS.ORG PLUGIN REVIEW COMPLIANCE FIXES - October 2025**

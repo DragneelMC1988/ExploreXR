@@ -169,7 +169,12 @@ function ExploreXR_edit_model_page() {
     $uploaded_files = explorexr_get_model_files_from_directory();
     $existing_models = array();
     foreach ($uploaded_files as $file) {
-        $existing_models[$file['url']] = $file['name'];
+        // Ensure URL and name are strings, never null
+        $file_url = isset($file['url']) ? (string) $file['url'] : '';
+        $file_name = isset($file['name']) ? (string) $file['name'] : '';
+        if (!empty($file_url) && !empty($file_name)) {
+            $existing_models[$file_url] = $file_name;
+        }
     }
     
     // Handle form submission
@@ -384,9 +389,9 @@ function ExploreXR_edit_model_page() {
             $model = get_post($model_id);
             $model_title = $model ? $model->post_title : '';
             $model_description = $model ? $model->post_content : '';
-            $model_file = get_post_meta($model_id, '_explorexr_model_file', true);
-            $model_name = get_post_meta($model_id, '_explorexr_model_name', true);
-            $model_alt_text = get_post_meta($model_id, '_explorexr_model_alt_text', true);
+            $model_file = get_post_meta($model_id, '_explorexr_model_file', true) ?: '';
+            $model_name = get_post_meta($model_id, '_explorexr_model_name', true) ?: '';
+            $model_alt_text = get_post_meta($model_id, '_explorexr_model_alt_text', true) ?: '';
             $viewer_size = get_post_meta($model_id, '_explorexr_viewer_size', true) ?: 'custom';
             $viewer_width = get_post_meta($model_id, '_explorexr_viewer_width', true) ?: '100%';
             $viewer_height = get_post_meta($model_id, '_explorexr_viewer_height', true) ?: '500px';

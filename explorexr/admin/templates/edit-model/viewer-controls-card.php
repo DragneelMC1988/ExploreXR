@@ -31,7 +31,7 @@ if (!isset($enable_interactions)) {
     if ($enable_interactions_meta === '') {
         // For backward compatibility, if enable_interactions is not set, check legacy fields
         $interactions_disabled = get_post_meta($model_id, '_explorexr_disable_interactions', true) === 'on';
-        $camera_controls_legacy = get_post_meta($model_id, '_explorexr_camera_controls', true);
+        $camera_controls_legacy = get_post_meta($model_id, '_explorexr_camera_controls', true) ?: '';
         
         if ($interactions_disabled) {
             $enable_interactions = false;
