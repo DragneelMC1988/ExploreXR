@@ -273,50 +273,50 @@ function explorexr_handle_usdz_upload($file, $model_id = null) {
  */
 function explorexr_get_model_data($post_id) {
     $model_data = array(
-        'model_file' => get_post_meta($post_id, '_explorexr_model_file', true),
-        'model_name' => get_post_meta($post_id, '_explorexr_model_name', true),
-        'model_alt_text' => get_post_meta($post_id, '_explorexr_model_alt_text', true),
-        'poster' => get_post_meta($post_id, '_explorexr_model_poster', true),
-        'poster_id' => get_post_meta($post_id, '_explorexr_model_poster_id', true),
+        'model_file' => get_post_meta($post_id, '_explorexr_model_file', true) ?: '',
+        'model_name' => get_post_meta($post_id, '_explorexr_model_name', true) ?: '',
+        'model_alt_text' => get_post_meta($post_id, '_explorexr_model_alt_text', true) ?: '',
+        'poster' => get_post_meta($post_id, '_explorexr_model_poster', true) ?: '',
+        'poster_id' => get_post_meta($post_id, '_explorexr_model_poster_id', true) ?: '',
         
         // Viewer size settings
-        'viewer_size' => get_post_meta($post_id, '_explorexr_viewer_size', true),
-        'viewer_width' => get_post_meta($post_id, '_explorexr_viewer_width', true),
-        'viewer_height' => get_post_meta($post_id, '_explorexr_viewer_height', true),
-        'tablet_viewer_width' => get_post_meta($post_id, '_explorexr_tablet_viewer_width', true),
-        'tablet_viewer_height' => get_post_meta($post_id, '_explorexr_tablet_viewer_height', true),
-        'mobile_viewer_width' => get_post_meta($post_id, '_explorexr_mobile_viewer_width', true),
-        'mobile_viewer_height' => get_post_meta($post_id, '_explorexr_mobile_viewer_height', true),
+        'viewer_size' => get_post_meta($post_id, '_explorexr_viewer_size', true) ?: '',
+        'viewer_width' => get_post_meta($post_id, '_explorexr_viewer_width', true) ?: '',
+        'viewer_height' => get_post_meta($post_id, '_explorexr_viewer_height', true) ?: '',
+        'tablet_viewer_width' => get_post_meta($post_id, '_explorexr_tablet_viewer_width', true) ?: '',
+        'tablet_viewer_height' => get_post_meta($post_id, '_explorexr_tablet_viewer_height', true) ?: '',
+        'mobile_viewer_width' => get_post_meta($post_id, '_explorexr_mobile_viewer_width', true) ?: '',
+        'mobile_viewer_height' => get_post_meta($post_id, '_explorexr_mobile_viewer_height', true) ?: '',
         
         // Camera settings
-        'camera_controls' => get_post_meta($post_id, '_explorexr_camera_controls', true),
-        'disable_pan' => get_post_meta($post_id, '_explorexr_disable_pan', true),
-        'disable_tap' => get_post_meta($post_id, '_explorexr_disable_tap', true),
-        'disable_zoom' => get_post_meta($post_id, '_explorexr_disable_zoom', true),
-        'touch_action' => get_post_meta($post_id, '_explorexr_touch_action', true),
-        'orbit_sensitivity' => get_post_meta($post_id, '_explorexr_orbit_sensitivity', true),
-        'zoom_sensitivity' => get_post_meta($post_id, '_explorexr_zoom_sensitivity', true),
-        'pan_sensitivity' => get_post_meta($post_id, '_explorexr_pan_sensitivity', true),
+        'camera_controls' => get_post_meta($post_id, '_explorexr_camera_controls', true) ?: '',
+        'disable_pan' => get_post_meta($post_id, '_explorexr_disable_pan', true) ?: '',
+        'disable_tap' => get_post_meta($post_id, '_explorexr_disable_tap', true) ?: '',
+        'disable_zoom' => get_post_meta($post_id, '_explorexr_disable_zoom', true) ?: '',
+        'touch_action' => get_post_meta($post_id, '_explorexr_touch_action', true) ?: '',
+        'orbit_sensitivity' => get_post_meta($post_id, '_explorexr_orbit_sensitivity', true) ?: '',
+        'zoom_sensitivity' => get_post_meta($post_id, '_explorexr_zoom_sensitivity', true) ?: '',
+        'pan_sensitivity' => get_post_meta($post_id, '_explorexr_pan_sensitivity', true) ?: '',
         
         // Auto-rotate settings
-        'auto_rotate' => get_post_meta($post_id, '_explorexr_auto_rotate', true),
-        'auto_rotate_delay' => get_post_meta($post_id, '_explorexr_auto_rotate_delay', true),
-        'rotation_per_second' => get_post_meta($post_id, '_explorexr_rotation_per_second', true),
+        'auto_rotate' => get_post_meta($post_id, '_explorexr_auto_rotate', true) ?: '',
+        'auto_rotate_delay' => get_post_meta($post_id, '_explorexr_auto_rotate_delay', true) ?: '',
+        'rotation_per_second' => get_post_meta($post_id, '_explorexr_rotation_per_second', true) ?: '',
         
         // Interaction prompt settings
-        'interaction_prompt' => get_post_meta($post_id, '_explorexr_interaction_prompt', true),
-        'interaction_prompt_style' => get_post_meta($post_id, '_explorexr_interaction_prompt_style', true),
-        'interaction_prompt_threshold' => get_post_meta($post_id, '_explorexr_interaction_prompt_threshold', true),
+        'interaction_prompt' => get_post_meta($post_id, '_explorexr_interaction_prompt', true) ?: '',
+        'interaction_prompt_style' => get_post_meta($post_id, '_explorexr_interaction_prompt_style', true) ?: '',
+        'interaction_prompt_threshold' => get_post_meta($post_id, '_explorexr_interaction_prompt_threshold', true) ?: '',
         
         // Basic camera settings (advanced camera controls are not available in free version)
-        'camera_orbit' => get_post_meta($post_id, '_explorexr_camera_orbit', true),
-        'camera_target' => get_post_meta($post_id, '_explorexr_camera_target', true),
-        'field_of_view' => get_post_meta($post_id, '_explorexr_field_of_view', true),
-        'max_camera_orbit' => get_post_meta($post_id, '_explorexr_max_camera_orbit', true),
-        'min_camera_orbit' => get_post_meta($post_id, '_explorexr_min_camera_orbit', true),
-        'max_field_of_view' => get_post_meta($post_id, '_explorexr_max_field_of_view', true),
-        'min_field_of_view' => get_post_meta($post_id, '_explorexr_min_field_of_view', true),
-        'interpolation_decay' => get_post_meta($post_id, '_explorexr_interpolation_decay', true),
+        'camera_orbit' => get_post_meta($post_id, '_explorexr_camera_orbit', true) ?: '',
+        'camera_target' => get_post_meta($post_id, '_explorexr_camera_target', true) ?: '',
+        'field_of_view' => get_post_meta($post_id, '_explorexr_field_of_view', true) ?: '',
+        'max_camera_orbit' => get_post_meta($post_id, '_explorexr_max_camera_orbit', true) ?: '',
+        'min_camera_orbit' => get_post_meta($post_id, '_explorexr_min_camera_orbit', true) ?: '',
+        'max_field_of_view' => get_post_meta($post_id, '_explorexr_max_field_of_view', true) ?: '',
+        'min_field_of_view' => get_post_meta($post_id, '_explorexr_min_field_of_view', true) ?: '',
+        'interpolation_decay' => get_post_meta($post_id, '_explorexr_interpolation_decay', true) ?: '',
         
         // Animation settings are not available in the Free version
         // This feature is available in the Pro version only

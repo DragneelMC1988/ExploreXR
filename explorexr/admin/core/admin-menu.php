@@ -52,8 +52,9 @@ function explorexr_register_admin_menu() {
     add_submenu_page('explorexr', 'Go Premium', 'Go Premium', 'manage_options', 'explorexr-premium', 'explorexr_premium_upgrade_page');
     
     // Hidden submenu for editing models (not shown in menu but accessible via URL)
+    // Use empty string instead of null to avoid PHP 8.1+ deprecation warnings
     if (function_exists('explorexr_edit_model_page')) {
-        add_submenu_page(null, 'Edit 3D Model', 'Edit 3D Model', 'manage_options', 'explorexr-edit-model', 'explorexr_edit_model_page');
+        add_submenu_page('', 'Edit 3D Model', 'Edit 3D Model', 'manage_options', 'explorexr-edit-model', 'explorexr_edit_model_page');
     }
 }
 add_action('admin_menu', 'explorexr_register_admin_menu');

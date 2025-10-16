@@ -57,7 +57,7 @@ function explorexr_sanitize_model_upload($file) {
  * @return mixed Meta value or default
  */
 function explorexr_get_model_meta($post_id, $key, $default = '') {
-    $value = get_post_meta($post_id, $key, true);
+    $value = get_post_meta($post_id, $key, true) ?: '';
     return !empty($value) ? $value : $default;
 }
 

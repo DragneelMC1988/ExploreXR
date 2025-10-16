@@ -230,8 +230,8 @@ function explorexr_dashboard_page() {
                                         <span class="dashicons dashicons-edit" style="font-size: 14px; width: 14px; height: 14px; margin-right: 2px;"></span> Edit
                                     </a>                                    <?php 
                                     // Get model file information
-                                    $model_file = get_post_meta($model->ID, '_explorexr_model_file', true);
-                                    $poster_url = get_post_meta($model->ID, '_explorexr_model_poster', true);
+                                    $model_file = get_post_meta($model->ID, '_explorexr_model_file', true) ?: '';
+                                    $poster_url = get_post_meta($model->ID, '_explorexr_model_poster', true) ?: '';
                                     
                                     // Use the model file URL directly if it's a full URL
                                     // Otherwise, use it as-is

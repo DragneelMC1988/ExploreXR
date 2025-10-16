@@ -12,13 +12,29 @@ function explorexr_files_page() {
         if (!isset($_POST['_wpnonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_wpnonce'])), 'explorexr_upload_file')) {
             echo '<div class="notice notice-error"><p>Security check failed. Please try again.</p></div>';
         } else {
-            // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- File upload array is handled by explorexr_handle_model_upload()
-            $upload_result = explorexr_handle_model_upload($_FILES['model_file_upload']);
+            // Manually sanitize $_FILES data to avoid nonce verification warnings
+            $file_upload = array(
+                'name' => isset($_FILES['model_file_upload']['name']) ? sanitize_file_name(wp_unslash($_FILES['model_file_upload']['name'])) : '',
+                'type' => isset($_FILES['model_file_upload']['type']) ? sanitize_mime_type(wp_unslash($_FILES['model_file_upload']['type'])) : '',
+                'tmp_name' => isset($_FILES['model_file_upload']['tmp_name']) ? sanitize_text_field(wp_unslash($_FILES['model_file_upload']['tmp_name'])) : '',
+                'error' => isset($_FILES['model_file_upload']['error']) ? absint($_FILES['model_file_upload']['error']) : UPLOAD_ERR_NO_FILE,
+                'size' => isset($_FILES['model_file_upload']['size']) ? absint($_FILES['model_file_upload']['size']) : 0,
+            );
             
-            if ($upload_result) {
-                echo '<div class="notice notice-success"><p>File uploaded successfully! Refresh the page to see it in the list.</p></div>';
+            // Validate the sanitized file data
+            $sanitized_file = explorexr_validate_model_file_upload($file_upload);
+            
+            if (is_wp_error($sanitized_file)) {
+                echo '<div class="notice notice-error"><p>' . esc_html($sanitized_file->get_error_message()) . '</p></div>';
             } else {
-                echo '<div class="notice notice-error"><p>Failed to upload file.</p></div>';
+                // Pass sanitized file to upload handler
+                $upload_result = explorexr_handle_model_upload($sanitized_file);
+            
+                if ($upload_result) {
+                    echo '<div class="notice notice-success"><p>File uploaded successfully! Refresh the page to see it in the list.</p></div>';
+                } else {
+                    echo '<div class="notice notice-error"><p>Failed to upload file.</p></div>';
+                }
             }
         }
     }
@@ -31,7 +47,10 @@ function explorexr_files_page() {
             $file_path = EXPLOREXR_MODELS_DIR . $file_name;
             
             // Check if the file exists and is within our models directory to prevent path traversal
-            if (file_exists($file_path) && strpos(realpath($file_path), realpath(EXPLOREXR_MODELS_DIR)) === 0) {
+            $real_file_path = realpath($file_path);
+            $real_models_dir = realpath(EXPLOREXR_MODELS_DIR);
+            
+            if ($real_file_path && $real_models_dir && file_exists($file_path) && strpos($real_file_path, $real_models_dir) === 0) {
                 // Check if the file is being used by any models using WP_Query
                 $file_url = EXPLOREXR_MODELS_URL . $file_name;
                 
@@ -73,7 +92,7 @@ function explorexr_files_page() {
                     if ($model_query->have_posts()) {
                         while ($model_query->have_posts()) {
                             $model_query->the_post();
-                            $model_names[] = '<a href="' . esc_url(get_edit_post_link(get_the_ID())) . '">' . esc_html(get_the_title()) . '</a>';
+                            $model_names[] = '<a href="' . esc_url(get_edit_post_link(get_the_ID())) . '">' . esc_html(get_the_title() ?: '') . '</a>';
                         }
                     }
                     wp_reset_postdata();

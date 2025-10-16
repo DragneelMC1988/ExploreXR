@@ -50,7 +50,6 @@ function explorexr_get_loading_options() {
         'show_progress_bar' => true,
         'show_percentage' => true,
         'version' => EXPLOREXR_VERSION,
-        'debug_mode' => explorexr_is_debug_enabled(),
         'timestamp' => time() // Add timestamp for cache busting
     );
     
@@ -64,111 +63,7 @@ function explorexr_get_loading_options() {
     return $options;
 }
 
-/**
- * Add the loading options to the page admin (legacy, not used)
- */
-function explorexr_add_loading_options_page_legacy() {
-    add_submenu_page(
-        'explorexr-dashboard',
-        __('Loading Options', 'explorexr'),
-        __('Loading Options', 'explorexr'),
-        'manage_options',
-        'explorexr-loading-options-legacy',
-        'explorexr_render_loading_options_page_legacy'
-    );
-}
-// Don't add this legacy menu
-// add_action('admin_menu', 'explorexr_add_loading_options_page_legacy', 30);
 
-/**
- * Render loading options admin page (legacy, not used)
- */
-function explorexr_render_loading_options_page_legacy() {
-    // Check user capabilities
-    if (!current_user_can('manage_options')) {
-        return;
-    }
-    
-    // Get current options (use same option names as admin page)
-    $loading_type = get_option('explorexr_loading_display', 'bar');
-    
-    // Save settings if form is submitted
-    if (isset($_POST['explorexr_save_loading_options']) && check_admin_referer('explorexr_loading_options_nonce')) {
-        $loading_type = isset($_POST['explorexr_loading_type']) ? sanitize_text_field(wp_unslash($_POST['explorexr_loading_type'])) : 'bar';
-        
-        // Save options (use same option names as admin page)
-        update_option('explorexr_loading_display', $loading_type);
-        
-        // Show success message
-        echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Loading options saved.', 'explorexr') . '</p></div>';
-    }
-    
-    // Enqueue scripts and styles
-    wp_enqueue_style('explorexr-admin-styles', EXPLOREXR_PLUGIN_URL . 'admin/css/loading-options.css', array(), EXPLOREXR_VERSION);
-    wp_enqueue_script('explorexr-loading-options', EXPLOREXR_PLUGIN_URL . 'admin/js/loading-options.js', array('jquery'), EXPLOREXR_VERSION, true);
-    
-    ?>
-    <div class="wrap explorexr-loading-options-page">
-        <h1><?php esc_html_e('3D Model Loading Options', 'explorexr'); ?></h1>
-        
-        <div class="explorexr-loading-preview-container">
-            <h2><?php esc_html_e('Preview', 'explorexr'); ?></h2>
-            <div class="explorexr-loading-preview" data-loading-type="<?php echo esc_attr($loading_type); ?>">
-                <div class="explorexr-loading-progress-bar">
-                    <div class="explorexr-loading-progress" style="width: 75%;"></div>
-                </div>
-                <div class="explorexr-loading-percentage">75%</div>
-            </div>
-        </div>
-        
-        <form method="post" action="">
-            <?php wp_nonce_field('explorexr_loading_options_nonce'); ?>
-            
-            <table class="form-table">
-                <tr>
-                    <th scope="row"><?php esc_html_e('Loading Type', 'explorexr'); ?></th>
-                    <td>
-                        <fieldset>
-                            <legend class="screen-reader-text"><?php esc_html_e('Loading Type', 'explorexr'); ?></legend>
-                            <p>
-                                <label>
-                                    <input type="radio" name="explorexr_loading_type" value="bar" <?php checked($loading_type, 'bar'); ?>>
-                                    <?php esc_html_e('Progress Bar Only', 'explorexr'); ?>
-                                </label>
-                            </p>
-                            <p>
-                                <label>
-                                    <input type="radio" name="explorexr_loading_type" value="percentage" <?php checked($loading_type, 'percentage'); ?>>
-                                    <?php esc_html_e('Percentage Only', 'explorexr'); ?>
-                                </label>
-                            </p>
-                            <p>
-                                <label>
-                                    <input type="radio" name="explorexr_loading_type" value="both" <?php checked($loading_type, 'both'); ?>>
-                                    <?php esc_html_e('Both Progress Bar and Percentage', 'explorexr'); ?>
-                                </label>
-                            </p>
-                        </fieldset>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row"><?php esc_html_e('Loading Color', 'explorexr'); ?></th>
-                    <td>
-                        <p class="explorexr-version-notice">
-                            <?php esc_html_e('Custom loading colors are available in the premium version.', 'explorexr'); ?>
-                            <span class="explorexr-loading-color-preview" style="background-color: #1e88e5;"></span>
-                        </p>
-                    </td>
-                </tr>
-            </table>
-            
-            <p class="submit">
-                <input type="submit" name="explorexr_save_loading_options" class="button button-primary" value="<?php esc_attr_e('Save Options', 'explorexr'); ?>">
-            </p>
-        </form>
-    </div>
-    <?php
-}
 
 /**
  * Add loading options to model-viewer element

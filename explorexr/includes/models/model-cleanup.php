@@ -24,8 +24,8 @@ function explorexr_model_file_exists($model_file_url) {
     
     // Check if it's a local file in our models directory
     if (defined('EXPLOREXR_MODELS_URL') && defined('EXPLOREXR_MODELS_DIR') && 
-        strpos($model_file_url, EXPLOREXR_MODELS_URL) === 0) {
-        $file_path = str_replace(EXPLOREXR_MODELS_URL, EXPLOREXR_MODELS_DIR, $model_file_url);
+        !empty($model_file_url) && strpos($model_file_url, EXPLOREXR_MODELS_URL) === 0) {
+        $file_path = str_replace(EXPLOREXR_MODELS_URL, EXPLOREXR_MODELS_DIR, $model_file_url ?? '');
         return file_exists($file_path);
     }
     
@@ -63,7 +63,7 @@ function explorexr_cleanup_orphaned_models() {
         $results['checked']++;
         
         // Get the model file URL
-        $model_file = get_post_meta($model_id, '_explorexr_model_file', true);
+        $model_file = get_post_meta($model_id, '_explorexr_model_file', true) ?: '';
         
         // Skip if no file is set
         if (empty($model_file)) {
@@ -76,14 +76,7 @@ function explorexr_cleanup_orphaned_models() {
             update_post_meta($model_id, '_explorexr_file_missing', '1');
             $results['orphaned']++;
             
-            // Log for debugging
-            if (explorexr_is_debug_enabled()) {
-                explorexr_log(sprintf(
-                    'ExploreXR: Model #%d has a missing file: %s',
-                    $model_id,
-                    $model_file
-                ), 'warning');
-            }
+
         } else {
             // File exists, clear any previous missing flag
             delete_post_meta($model_id, '_explorexr_file_missing');
@@ -135,7 +128,7 @@ add_action('wp_ajax_explorexr_cleanup_models', 'explorexr_ajax_cleanup_models');
 function explorexr_orphaned_models_notice() {
     // Only show on ExploreXR admin pages
     $screen = get_current_screen();
-    if (!$screen || strpos($screen->id, 'explorexr') === false) {
+    if (!$screen || empty($screen->id) || strpos($screen->id, 'explorexr') === false) {
         return;
     }
     

@@ -120,12 +120,12 @@ function explorexr_browse_models_page() {
                     </div>
                     
                     <div class="explorexr-models-grid">                        <?php foreach ($models as $model) : 
-                            $model_file = get_post_meta($model->ID, '_explorexr_model_file', true);
-                            $model_alt_file = get_post_meta($model->ID, '_explorexr_model_alt_file', true);
-                            $poster = get_post_meta($model->ID, '_explorexr_model_poster', true);
+                            $model_file = get_post_meta($model->ID, '_explorexr_model_file', true) ?: '';
+                            $model_alt_file = get_post_meta($model->ID, '_explorexr_model_alt_file', true) ?: '';
+                            $poster = get_post_meta($model->ID, '_explorexr_model_poster', true) ?: '';
                             $auto_rotate = get_post_meta($model->ID, '_explorexr_auto_rotate', true) === 'on';
                             $camera_controls = get_post_meta($model->ID, '_explorexr_camera_controls', true) === 'on';
-                            $ar_enabled = get_post_meta($model->ID, '_explorexr_model_ar', true);
+                            $ar_enabled = get_post_meta($model->ID, '_explorexr_model_ar', true) ?: '';
                             $shortcode = '[explorexr_model id="' . $model->ID . '"]';
                         ?>
                             <div class="explorexr-model-card" data-title="<?php echo esc_attr($model->post_title); ?>" data-date="<?php echo esc_attr($model->post_date); ?>">

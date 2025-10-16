@@ -41,7 +41,8 @@ if (!isset($auto_rotate)) {
 }
 
 if (!isset($camera_controls)) {
-    $camera_controls = get_post_meta($model_id, '_explorexr_camera_controls', true) === 'on';
+    $enable_interactions = get_post_meta($model_id, '_explorexr_enable_interactions', true) ?: 'on';
+    $camera_controls = ($enable_interactions === 'on');
 }
 
 // Animation settings are not available in the Free version

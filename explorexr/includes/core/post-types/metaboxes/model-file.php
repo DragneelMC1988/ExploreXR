@@ -16,9 +16,9 @@ if (!defined('ABSPATH')) {
  * @param WP_Post $post Current post object
  */
 function explorexr_model_file_meta_box($post) {
-    $model_file = get_post_meta($post->ID, '_explorexr_model_file', true);
-    $model_name = get_post_meta($post->ID, '_explorexr_model_name', true);
-    $alt_text = get_post_meta($post->ID, '_explorexr_model_alt_text', true);
+    $model_file = get_post_meta($post->ID, '_explorexr_model_file', true) ?: '';
+    $model_name = get_post_meta($post->ID, '_explorexr_model_name', true) ?: '';
+    $alt_text = get_post_meta($post->ID, '_explorexr_model_alt_text', true) ?: '';
     
     // If no model name exists yet, try to extract it from the file path
     if (empty($model_name) && !empty($model_file)) {

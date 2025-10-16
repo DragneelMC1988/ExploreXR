@@ -96,8 +96,27 @@ function explorexr_handle_model_creation() {
             exit;
         } else if ($model_source === 'upload' && isset($_FILES['model_file']) && isset($_FILES['model_file']['size']) && $_FILES['model_file']['size'] > 0) {
             if (function_exists('explorexr_handle_model_upload')) {
-                // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- File upload array is handled by explorexr_handle_model_upload()
-                $upload_result = explorexr_handle_model_upload($_FILES['model_file']);
+                // Manually sanitize $_FILES data to avoid nonce verification warnings
+                $file_upload = array(
+                    'name' => isset($_FILES['model_file']['name']) ? sanitize_file_name(wp_unslash($_FILES['model_file']['name'])) : '',
+                    'type' => isset($_FILES['model_file']['type']) ? sanitize_mime_type(wp_unslash($_FILES['model_file']['type'])) : '',
+                    'tmp_name' => isset($_FILES['model_file']['tmp_name']) ? sanitize_text_field(wp_unslash($_FILES['model_file']['tmp_name'])) : '',
+                    'error' => isset($_FILES['model_file']['error']) ? absint($_FILES['model_file']['error']) : UPLOAD_ERR_NO_FILE,
+                    'size' => isset($_FILES['model_file']['size']) ? absint($_FILES['model_file']['size']) : 0,
+                );
+                
+                // Validate the sanitized file data
+                $sanitized_file = explorexr_validate_model_file_upload($file_upload);
+                
+                if (is_wp_error($sanitized_file)) {
+                    // Handle validation error
+                    set_transient('explorexr_model_error', 'File validation failed: ' . $sanitized_file->get_error_message(), 30);
+                    wp_safe_redirect(admin_url('admin.php?page=explorexr-create-model&error=validation'));
+                    exit;
+                }
+                
+                // Pass sanitized file to upload handler
+                $upload_result = explorexr_handle_model_upload($sanitized_file);
                 
                 if ($upload_result && !is_wp_error($upload_result)) {
                     update_post_meta($post_id, '_explorexr_model_file', $upload_result['file_url']);

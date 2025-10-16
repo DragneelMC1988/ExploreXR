@@ -33,10 +33,6 @@ function explorexr_save_all_post_meta($post_id) {
     // Security check: verify nonce first before processing any POST data
     // Require nonce for ALL form submissions, not just edit mode
     if (!isset($_POST['explorexr_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['explorexr_nonce'])), 'explorexr_save_model')) {
-        if (explorexr_is_debug_enabled()) {
-            $nonce_value = isset($_POST['explorexr_nonce']) ? sanitize_text_field(wp_unslash($_POST['explorexr_nonce'])) : 'not provided';
-            explorexr_log('ExploreXR: Security check failed for post ' . $post_id . '. Nonce verification failed. Nonce: ' . $nonce_value, 'error');
-        }
         
         // Create a detailed debug log for nonce failures
         // WordPress.org compliance: Log specific sanitized keys instead of all $_POST keys
@@ -64,26 +60,10 @@ function explorexr_save_all_post_meta($post_id) {
     // Check if this is an edit mode submission (after nonce verification)
     $edit_mode = isset($_POST['explorexr_edit_mode']) ? true : false;
     
-    // Enable debug logging regardless of mode to help troubleshoot
-    $debug_log = explorexr_debug_log_post_data($post_id);
-    
-    // Add extra logging for edit mode
-    if ($edit_mode) {
-        if (explorexr_is_debug_enabled()) {
-            explorexr_log('ExploreXR: Processing edit mode submission for post ' . $post_id);
-        }
-        
-        // Save diagnostic data if provided
-        if (isset($_POST['explorexr_edit_diagnostic'])) {
-            update_post_meta($post_id, '_explorexr_last_edit_diagnostic', sanitize_text_field(wp_unslash($_POST['explorexr_edit_diagnostic'])));
-        }
-    }
+
 
     // Check user permissions
     if (!current_user_can('edit_post', $post_id)) {
-        if (explorexr_is_debug_enabled()) {
-            explorexr_log('ExploreXR: User lacks permission to edit post ' . $post_id, 'warning');
-        }
         
         // Log permission issue
         $permission_debug = array(
@@ -99,11 +79,6 @@ function explorexr_save_all_post_meta($post_id) {
       // Basic fields
     if (array_key_exists('explorexr_model_file', $_POST)) {
         update_post_meta($post_id, '_explorexr_model_file', sanitize_text_field(wp_unslash($_POST['explorexr_model_file'])));
-        if ($edit_mode) {
-            if (explorexr_is_debug_enabled()) {
-                explorexr_log('ExploreXR: Updated model file: ' . sanitize_text_field(wp_unslash($_POST['explorexr_model_file'])));
-            }
-        }
     }
     
     if (array_key_exists('explorexr_model_name', $_POST)) {
@@ -116,49 +91,58 @@ function explorexr_save_all_post_meta($post_id) {
     
     // Handle new model file upload
     if (isset($_FILES['explorexr_new_model']) && isset($_FILES['explorexr_new_model']['size']) && $_FILES['explorexr_new_model']['size'] > 0) {
-        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- File upload array is handled by explorexr_handle_model_upload()
-        $upload_result = explorexr_handle_model_upload($_FILES['explorexr_new_model']);
+        // Manually sanitize $_FILES data to avoid nonce verification warnings
+        $file_upload = array(
+            'name' => isset($_FILES['explorexr_new_model']['name']) ? sanitize_file_name(wp_unslash($_FILES['explorexr_new_model']['name'])) : '',
+            'type' => isset($_FILES['explorexr_new_model']['type']) ? sanitize_mime_type(wp_unslash($_FILES['explorexr_new_model']['type'])) : '',
+            'tmp_name' => isset($_FILES['explorexr_new_model']['tmp_name']) ? sanitize_text_field(wp_unslash($_FILES['explorexr_new_model']['tmp_name'])) : '',
+            'error' => isset($_FILES['explorexr_new_model']['error']) ? absint($_FILES['explorexr_new_model']['error']) : UPLOAD_ERR_NO_FILE,
+            'size' => isset($_FILES['explorexr_new_model']['size']) ? absint($_FILES['explorexr_new_model']['size']) : 0,
+        );
         
-        if ($upload_result && !empty($upload_result['file_url'])) {
-            update_post_meta($post_id, '_explorexr_model_file', $upload_result['file_url']);
-            
-            // If no model name exists yet, set it from the filename
-            $model_name = get_post_meta($post_id, '_explorexr_model_name', true);
-            if (empty($model_name)) {
-                $filename = basename($upload_result['file_url']);
-                $model_name = preg_replace('/\.[^.]+$/', '', $filename);
-                update_post_meta($post_id, '_explorexr_model_name', $model_name);
-            }
-            
-            if ($edit_mode) {
-                if (explorexr_is_debug_enabled()) {
-                    explorexr_log('ExploreXR: Uploaded new model file: ' . $upload_result['file_url']);
-                }
-            }
+        // Validate the sanitized file data
+        $sanitized_file = explorexr_validate_model_file_upload($file_upload);
+        
+        if (is_wp_error($sanitized_file)) {
         } else {
-            // Log upload failures
-            $upload_error = isset($upload_result['error']) ? $upload_result['error'] : 'Unknown error';
-            if (explorexr_is_debug_enabled()) {
-                explorexr_log('ExploreXR: Model upload failed: ' . $upload_error, 'error');
-            }
-            
-            // Create a debug log for the upload issue
-            if ($edit_mode) {
-                $upload_debug = array(
-                    'post_id' => $post_id,
-                    'file_info' => array(
-                        'name' => isset($_FILES['explorexr_new_model']['name']) ? sanitize_file_name($_FILES['explorexr_new_model']['name']) : '',
-                        'type' => isset($_FILES['explorexr_new_model']['type']) ? sanitize_mime_type($_FILES['explorexr_new_model']['type']) : '',
-                        'size' => isset($_FILES['explorexr_new_model']['size']) ? intval($_FILES['explorexr_new_model']['size']) : 0,
-                        'error' => isset($_FILES['explorexr_new_model']['error']) ? intval($_FILES['explorexr_new_model']['error']) : 0
-                    ),
-                    'upload_result' => $upload_result,
-                    'php_version' => phpversion(),
-                    'memory_limit' => ini_get('memory_limit'),
-                    'max_upload_size' => wp_max_upload_size(),
-                    'user_id' => get_current_user_id()
-                );
-                explorexr_create_debug_log($upload_debug, 'upload-failure-' . $post_id);
+            // Pass sanitized file to upload handler
+            $upload_result = explorexr_handle_model_upload($sanitized_file);
+        
+            if ($upload_result && !empty($upload_result['file_url'])) {
+                update_post_meta($post_id, '_explorexr_model_file', $upload_result['file_url']);
+                
+                // If no model name exists yet, set it from the filename
+                $model_name = get_post_meta($post_id, '_explorexr_model_name', true) ?: '';
+                if (empty($model_name)) {
+                    $filename = basename($upload_result['file_url']);
+                    $model_name = preg_replace('/\.[^.]+$/', '', $filename);
+                    update_post_meta($post_id, '_explorexr_model_name', $model_name);
+                }
+                
+                if ($edit_mode) {
+                }
+            } else {
+                // Log upload failures
+                $upload_error = isset($upload_result['error']) ? $upload_result['error'] : 'Unknown error';
+                
+                // Create a debug log for the upload issue
+                if ($edit_mode) {
+                    $upload_debug = array(
+                        'post_id' => $post_id,
+                        'file_info' => array(
+                            'name' => isset($_FILES['explorexr_new_model']['name']) ? sanitize_file_name($_FILES['explorexr_new_model']['name']) : '',
+                            'type' => isset($_FILES['explorexr_new_model']['type']) ? sanitize_mime_type($_FILES['explorexr_new_model']['type']) : '',
+                            'size' => isset($_FILES['explorexr_new_model']['size']) ? intval($_FILES['explorexr_new_model']['size']) : 0,
+                            'error' => isset($_FILES['explorexr_new_model']['error']) ? intval($_FILES['explorexr_new_model']['error']) : 0
+                        ),
+                        'upload_result' => $upload_result,
+                        'php_version' => phpversion(),
+                        'memory_limit' => ini_get('memory_limit'),
+                        'max_upload_size' => wp_max_upload_size(),
+                        'user_id' => get_current_user_id()
+                    );
+                    explorexr_create_debug_log($upload_debug, 'upload-failure-' . $post_id);
+                }
             }
         }
     }
@@ -173,14 +157,7 @@ function explorexr_save_all_post_meta($post_id) {
     // Camera settings - basic functionality only
     if (false) { // Premium camera features disabled in free version
         // First run debug functions if they exist
-        if (function_exists('explorexr_debug_camera_settings') && $edit_mode) {
-            // Include additional debug file
-            require_once plugin_dir_path(__FILE__) . 'debug-camera-settings.php';
-            $camera_debug = explorexr_debug_camera_settings($post_id, $edit_mode);
-            if (explorexr_is_debug_enabled()) {
-                explorexr_log('ExploreXR: Camera settings debug collected for post ' . $post_id);
-            }
-        }
+
         
         // Then run the actual camera settings save
         explorexr_save_camera_settings($post_id, $edit_mode);
@@ -196,20 +173,12 @@ function explorexr_save_all_post_meta($post_id) {
             require_once plugin_dir_path(__FILE__) . 'debug-camera-settings.php';
         }
         
-        $checkbox_report = explorexr_debug_checkbox_processing($post_id);
-        if (explorexr_is_debug_enabled()) {
-            explorexr_log('ExploreXR: Generated checkbox debug report for post ' . $post_id);
-        }
+
     }
     
     // AR functionality is not available in the Free version
     
-    // If in edit mode, log the save operation for debugging
-    if ($edit_mode) {
-        if (explorexr_is_debug_enabled()) {
-            explorexr_log('ExploreXR: Edit mode meta save completed for post ' . $post_id);
-        }
-    }
+
     
     return true;
 }
@@ -338,11 +307,7 @@ function explorexr_save_camera_settings($post_id, $edit_mode = false) {
     }
     update_post_meta($post_id, '_explorexr_camera_controls', $camera_controls);
     
-    if ($edit_mode) {
-        if (explorexr_is_debug_enabled()) {
-            explorexr_log('ExploreXR: Interactions enabled: ' . $enable_interactions . ', Camera controls setting: ' . $camera_controls);
-        }
-    }
+
     
     // Auto-rotate settings - support both checkbox and state field
     $auto_rotate = 'off';
@@ -366,11 +331,7 @@ function explorexr_save_camera_settings($post_id, $edit_mode = false) {
             update_post_meta($post_id, '_explorexr_auto_rotate_delay', '5000');
         }
         
-        if ($edit_mode) {
-            if (explorexr_is_debug_enabled()) {
-                explorexr_log('ExploreXR: Updated auto-rotate delay: ' . $delay_value);
-            }
-        }
+
     }
     
     // Handle auto-rotate speed (map from form field to database field)
@@ -379,12 +340,6 @@ function explorexr_save_camera_settings($post_id, $edit_mode = false) {
         // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in explorexr_save_all_post_meta()
         $speed_value = sanitize_text_field(wp_unslash($_POST['explorexr_auto_rotate_speed']));
         update_post_meta($post_id, '_explorexr_rotation_per_second', $speed_value);
-        
-        if ($edit_mode) {
-            if (explorexr_is_debug_enabled()) {
-                explorexr_log('ExploreXR: Updated rotation speed: ' . $speed_value);
-            }
-        }
     }
     
     // Legacy field support

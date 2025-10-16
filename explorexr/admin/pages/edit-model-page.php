@@ -23,17 +23,7 @@ function ExploreXR_safe_include_template($template_path, $fallback_path = '', $v
             }
         }
         
-        // Get variables from calling function's symbol table (only in debug mode)
-        if (explorexr_is_debug_enabled()) {
-            // Gate debug_backtrace() behind WP_DEBUG check for WordPress coding standards
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace -- Used for debugging purposes only
-                $backtrace = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 1);
-                if (isset($backtrace[0]['args'])) {
-                    // Skip this as it could be resource intensive
-                }
-            }
-        }
+
 
         // These variables are always needed
         if (!isset($vars['model_id'])) {
@@ -142,7 +132,7 @@ function ExploreXR_edit_model_page() {
     $camera_controls = get_post_meta($model_id, '_explorexr_camera_controls', true) === 'on';
     
     // Interaction controls with backward compatibility
-    $enable_interactions_meta = get_post_meta($model_id, '_explorexr_enable_interactions', true);
+    $enable_interactions_meta = get_post_meta($model_id, '_explorexr_enable_interactions', true) ?: '';
     if ($enable_interactions_meta === '') {
         // If not set, default to enabled (true) for new models
         $enable_interactions = true;
@@ -153,7 +143,7 @@ function ExploreXR_edit_model_page() {
     }
     
     // Auto-rotate controls with backward compatibility
-    $auto_rotate_meta = get_post_meta($model_id, '_explorexr_auto_rotate', true);
+    $auto_rotate_meta = get_post_meta($model_id, '_explorexr_auto_rotate', true) ?: '';
     if ($auto_rotate_meta === '') {
         // If not set, default to disabled (false) for new models
         $auto_rotate = false;
@@ -169,26 +159,18 @@ function ExploreXR_edit_model_page() {
     $uploaded_files = explorexr_get_model_files_from_directory();
     $existing_models = array();
     foreach ($uploaded_files as $file) {
-        $existing_models[$file['url']] = $file['name'];
+        // Ensure URL and name are strings, never null
+        $file_url = isset($file['url']) ? (string) $file['url'] : '';
+        $file_name = isset($file['name']) ? (string) $file['name'] : '';
+        if (!empty($file_url) && !empty($file_name)) {
+            $existing_models[$file_url] = $file_name;
+        }
     }
     
     // Handle form submission
     if (isset($_POST['ExploreXR_edit_model_submit']) && check_admin_referer('explorexr_edit_model', 'explorexr_edit_nonce')) {
         
-        // Debug: Log all POST data if debug mode is enabled
-        if (explorexr_is_debug_enabled()) {
-            if (function_exists('explorexr_log')) {
-                // WordPress.org compliance: Log specific sanitized fields instead of entire $_POST
-                $sanitized_post_data = array();
-                $important_fields = array('post_title', 'explorexr_model_file', 'explorexr_model_name', 'viewer_size');
-                foreach ($important_fields as $field) {
-                    if (isset($_POST[$field])) {
-                        $sanitized_post_data[$field] = sanitize_text_field(wp_unslash($_POST[$field]));
-                    }
-                }
-                explorexr_log('ExploreXR Edit Model Form Submission - Sanitized Data: ' . wp_json_encode($sanitized_post_data));
-            }
-        }
+
         
         // Update post title and content
         $updated_post = array(
@@ -203,21 +185,37 @@ function ExploreXR_edit_model_page() {
             // Process model file changes
             if (isset($_POST['model_source']) && $_POST['model_source'] === 'upload') {
                 if (isset($_FILES['model_file']) && isset($_FILES['model_file']['size']) && $_FILES['model_file']['size'] > 0) {
-                    // Handle file upload
-                    // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- File upload array is handled by explorexr_handle_model_upload()
-                    $upload_result = explorexr_handle_model_upload($_FILES['model_file']);
+                    // Manually sanitize $_FILES data to avoid nonce verification warnings
+                    $file_upload = array(
+                        'name' => isset($_FILES['model_file']['name']) ? sanitize_file_name(wp_unslash($_FILES['model_file']['name'])) : '',
+                        'type' => isset($_FILES['model_file']['type']) ? sanitize_mime_type(wp_unslash($_FILES['model_file']['type'])) : '',
+                        'tmp_name' => isset($_FILES['model_file']['tmp_name']) ? sanitize_text_field(wp_unslash($_FILES['model_file']['tmp_name'])) : '',
+                        'error' => isset($_FILES['model_file']['error']) ? absint($_FILES['model_file']['error']) : UPLOAD_ERR_NO_FILE,
+                        'size' => isset($_FILES['model_file']['size']) ? absint($_FILES['model_file']['size']) : 0,
+                    );
                     
-                    if ($upload_result && !is_wp_error($upload_result)) {
-                        update_post_meta($model_id, '_explorexr_model_file', $upload_result['file_url']);
-                        
-                        // If model name is empty, set it from the filename
-                        if (empty($_POST['model_name'])) {
-                            $filename = basename($upload_result['file_url']);
-                            $model_name = preg_replace('/\.[^.]+$/', '', $filename);
-                            update_post_meta($model_id, '_explorexr_model_name', $model_name);
-                        }
+                    // Validate the sanitized file data
+                    $sanitized_file = explorexr_validate_model_file_upload($file_upload);
+                    
+                    if (is_wp_error($sanitized_file)) {
+                        // Handle validation error
+                        $error_message = 'File validation failed: ' . $sanitized_file->get_error_message();
                     } else {
-                        $error_message = 'Unable to upload model file: ' . ($upload_result['error'] ?? 'Unknown error');
+                        // Handle file upload with sanitized file
+                        $upload_result = explorexr_handle_model_upload($sanitized_file);
+                    
+                        if ($upload_result && !is_wp_error($upload_result)) {
+                            update_post_meta($model_id, '_explorexr_model_file', $upload_result['file_url']);
+                            
+                            // If model name is empty, set it from the filename
+                            if (empty($_POST['model_name'])) {
+                                $filename = basename($upload_result['file_url']);
+                                $model_name = preg_replace('/\.[^.]+$/', '', $filename);
+                                update_post_meta($model_id, '_explorexr_model_name', $model_name);
+                            }
+                        } else {
+                            $error_message = 'Unable to upload model file: ' . ($upload_result['error'] ?? 'Unknown error');
+                        }
                     }
                 }
             } else if (isset($_POST['model_source']) && $_POST['model_source'] === 'existing' && !empty($_POST['existing_model'])) {
@@ -304,12 +302,7 @@ function ExploreXR_edit_model_page() {
             $enable_interactions_value = isset($_POST['explorexr_enable_interactions']) ? 'on' : 'off';
             update_post_meta($model_id, '_explorexr_enable_interactions', $enable_interactions_value);
             
-            // Debug logging if enabled
-            if (explorexr_is_debug_enabled()) {
-                if (function_exists('explorexr_log')) {
-                    explorexr_log('ExploreXR: Saving enable_interactions: ' . $enable_interactions_value . ' (checkbox was ' . (isset($_POST['explorexr_enable_interactions']) ? 'checked' : 'unchecked') . ')');
-                }
-            }
+
             
             // Also update the disable_interactions field for backward compatibility
             $disable_interactions = ($enable_interactions_value === 'off') ? 'on' : 'off';
@@ -319,32 +312,17 @@ function ExploreXR_edit_model_page() {
             $auto_rotate_value = isset($_POST['explorexr_auto_rotate']) ? 'on' : 'off';
             update_post_meta($model_id, '_explorexr_auto_rotate', $auto_rotate_value);
             
-            // Debug logging if enabled
-            if (explorexr_is_debug_enabled()) {
-                if (function_exists('explorexr_log')) {
-                    explorexr_log('ExploreXR: Saving auto_rotate: ' . $auto_rotate_value . ' (checkbox was ' . (isset($_POST['explorexr_auto_rotate']) ? 'checked' : 'unchecked') . ')');
-                }
-            }
+
             
             // Handle auto-rotate delay and speed
             if (isset($_POST['explorexr_auto_rotate_delay'])) {
                 $auto_rotate_delay = sanitize_text_field(wp_unslash($_POST['explorexr_auto_rotate_delay']));
                 update_post_meta($model_id, '_explorexr_auto_rotate_delay', $auto_rotate_delay);
-                if (explorexr_is_debug_enabled()) {
-                    if (function_exists('explorexr_log')) {
-                        explorexr_log('ExploreXR: Explicitly saved auto-rotate delay: ' . $auto_rotate_delay);
-                    }
-                }
             }
             
             if (isset($_POST['explorexr_auto_rotate_speed'])) {
                 $auto_rotate_speed = sanitize_text_field(wp_unslash($_POST['explorexr_auto_rotate_speed']));
                 update_post_meta($model_id, '_explorexr_rotation_per_second', $auto_rotate_speed);
-                if (explorexr_is_debug_enabled()) {
-                    if (function_exists('explorexr_log')) {
-                        explorexr_log('ExploreXR: Explicitly saved rotation speed: ' . $auto_rotate_speed);
-                    }
-                }
             }
             
             // Animation settings are not available in the Free version
@@ -368,16 +346,16 @@ function ExploreXR_edit_model_page() {
             $model = get_post($model_id);
             $model_title = $model ? $model->post_title : '';
             $model_description = $model ? $model->post_content : '';
-            $model_file = get_post_meta($model_id, '_explorexr_model_file', true);
-            $model_name = get_post_meta($model_id, '_explorexr_model_name', true);
-            $model_alt_text = get_post_meta($model_id, '_explorexr_model_alt_text', true);
+            $model_file = get_post_meta($model_id, '_explorexr_model_file', true) ?: '';
+            $model_name = get_post_meta($model_id, '_explorexr_model_name', true) ?: '';
+            $model_alt_text = get_post_meta($model_id, '_explorexr_model_alt_text', true) ?: '';
             $viewer_size = get_post_meta($model_id, '_explorexr_viewer_size', true) ?: 'custom';
             $viewer_width = get_post_meta($model_id, '_explorexr_viewer_width', true) ?: '100%';
             $viewer_height = get_post_meta($model_id, '_explorexr_viewer_height', true) ?: '500px';
             $camera_controls = get_post_meta($model_id, '_explorexr_camera_controls', true) === 'on';
             
             // Refresh interaction controls with the same backward compatibility logic
-            $enable_interactions_meta = get_post_meta($model_id, '_explorexr_enable_interactions', true);
+            $enable_interactions_meta = get_post_meta($model_id, '_explorexr_enable_interactions', true) ?: '';
             if ($enable_interactions_meta === '') {
                 $enable_interactions = true; // Default to enabled for new models
                 update_post_meta($model_id, '_explorexr_enable_interactions', 'on');
@@ -385,7 +363,7 @@ function ExploreXR_edit_model_page() {
                 $enable_interactions = ($enable_interactions_meta === 'on');
             }
             
-            $auto_rotate_meta = get_post_meta($model_id, '_explorexr_auto_rotate', true);
+            $auto_rotate_meta = get_post_meta($model_id, '_explorexr_auto_rotate', true) ?: '';
             if ($auto_rotate_meta === '') {
                 $auto_rotate = false; // Default to disabled for new models
                 update_post_meta($model_id, '_explorexr_auto_rotate', 'off');

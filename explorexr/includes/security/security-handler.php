@@ -146,7 +146,7 @@ function ExploreXR_validate_model_input($data, $allowed_fields = array()) {
             $sanitized[$key] = sanitize_text_field($value);
             
         } elseif (in_array($key, $sanitization_rules['url_fields'])) {
-            $sanitized[$key] = esc_url_raw($value);
+            $sanitized[$key] = !empty($value) ? esc_url_raw($value) : '';
             
         } elseif (in_array($key, $sanitization_rules['numeric_fields'])) {
             $sanitized[$key] = is_numeric($value) ? floatval($value) : 0;
@@ -293,7 +293,7 @@ function ExploreXR_get_client_ip() {
     foreach ($ip_keys as $key) {
         if (array_key_exists($key, $_SERVER) === true) {
             $ip = sanitize_text_field(wp_unslash($_SERVER[$key]));
-            if (strpos($ip, ',') !== false) {
+            if (!empty($ip) && strpos($ip, ',') !== false) {
                 $ip = explode(',', $ip)[0];
             }
             $ip = trim($ip);
@@ -306,41 +306,7 @@ function ExploreXR_get_client_ip() {
     return isset($_SERVER['REMOTE_ADDR']) ? sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'])) : '0.0.0.0';
 }
 
-/**
- * Log security events for monitoring
- * 
- * @param string $event_type Type of security event
- * @param string|array $message Event message or data
- * @param array $context Additional context data
- */
-function explorexr_log_security_event($event_type, $message, $context = array()) {
-    if (!explorexr_is_debug_enabled()) {
-        return; // Only log when debug mode is enabled
-    }
-    
-    // Handle case where message is an array (backward compatibility)
-    if (is_array($message)) {
-        $context = array_merge($message, $context);
-        $message = 'Event: ' . $event_type; // Use event type as default message
-    }
-    
-    // Ensure message is a string
-    $message = is_string($message) ? $message : 'Security event logged'; 
-    
-    $log_entry = array(
-        'timestamp' => current_time('mysql'),
-        'event_type' => $event_type,
-        'message' => $message,
-        'user_id' => get_current_user_id(),
-        'ip_address' => ExploreXR_get_client_ip(),
-        'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'])) : '',
-        'context' => $context
-    );
-    
-    if (explorexr_is_debug_enabled()) {
-        explorexr_log('ExploreXR Security Event: ' . $log_entry, 'warning');
-    }
-}
+
 
 /**
  * Initialize security features
@@ -349,12 +315,6 @@ function ExploreXR_init_security() {
     // Add security headers for admin pages
     if (is_admin()) {
         add_action('send_headers', 'ExploreXR_add_security_headers');
-    }
-    
-    // Initialize security logging
-    if (explorexr_is_debug_enabled()) {
-        add_action('wp_login_failed', 'explorexr_log_failed_login');
-        add_action('wp_login', 'explorexr_log_successful_login');
     }
 }
 
@@ -378,29 +338,7 @@ function ExploreXR_add_security_headers() {
     }
 }
 
-/**
- * Log failed login attempts
- */
-function explorexr_log_failed_login($username) {
-    explorexr_log_security_event(
-        'login_failed',
-        'Failed login attempt for username: ' . $username,
-        array('username' => $username)
-    );
-}
 
-/**
- * Log successful logins
- */
-function explorexr_log_successful_login($user_login, $user = null) {
-    if ($user) {
-        explorexr_log_security_event(
-            'login_success',
-            'Successful login for user: ' . $user_login,
-            array('user_id' => $user->ID, 'username' => $user_login)
-        );
-    }
-}
 
 // Initialize security features
 add_action('init', 'ExploreXR_init_security');
