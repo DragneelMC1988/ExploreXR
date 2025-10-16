@@ -82,11 +82,6 @@ function explorexr_model_file_meta_box($post) {
         $('#explorexr_change_model_btn').on('click', function() {
             $('#explorexr_model_upload').toggle();
         });
-        
-        // Make sure the enhanced uploader JS is loaded
-        if (typeof setupCheckboxTracking !== 'function') {
-            console.log('Enhanced model uploader not detected, loading it manually');
-        }
     });
     ";
     

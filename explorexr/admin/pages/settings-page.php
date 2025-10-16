@@ -204,10 +204,6 @@ function explorexr_settings_page() {
                     <td><?php echo esc_html($system_info['model_viewer_source']); ?></td>
                 </tr>
                 <tr>
-                    <th>Debug Mode</th>
-                    <td><?php echo wp_kses_post((isset($system_info['debug_mode']) && $system_info['debug_mode']) ? '<span class="explorexr-badge">Enabled</span>' : '<span class="explorexr-badge ar">Disabled</span>'); ?></td>
-                </tr>
-                <tr>
                     <th>Active Theme</th>
                     <td><?php echo esc_html($system_info['theme_name']); ?> v<?php echo esc_html($system_info['theme_version']); ?></td>
                 </tr>

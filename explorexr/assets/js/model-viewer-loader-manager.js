@@ -9,7 +9,6 @@
     function explorexrDebugLog(message, ...args) {
         // Check if loading options are available and debug mode is enabled
         if (typeof explorexrLoadingOptions !== 'undefined' && explorexrLoadingOptions.debug_mode) {
-            console.log(message, ...args);
         }
     }
 
@@ -167,7 +166,6 @@
                 if (this.scriptType === 'module') {
                     script.type = 'module';
                 }                script.onload = () => {
-                    console.log('ExploreXR ModelViewerLoader: Script loaded from', this.scriptUrl);
                     
                     // Check if model-viewer is now available
                     if (window.customElements && window.customElements.get('model-viewer')) {

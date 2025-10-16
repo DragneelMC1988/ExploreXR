@@ -201,7 +201,6 @@ $ar_fix_js = "
         // Function to handle AR session events globally
         function handleARSessions() {
             document.addEventListener('explorexr-ar-session-started', function(event) {
-                console.log('AR session started for model:', event.detail.instanceId);
                 document.body.classList.add('explorexr-ar-session-active');
                 
                 // Add visibility fix for iOS devices
@@ -219,7 +218,6 @@ $ar_fix_js = "
             });
             
             document.addEventListener('explorexr-ar-session-ended', function(event) {
-                console.log('AR session ended for model:', event.detail.instanceId);
                 document.body.classList.remove('explorexr-ar-session-active');
                 
                 // Restore model visibility after AR session ends
@@ -420,7 +418,6 @@ if (!function_exists('explorexr_add_ondemand_script_loader')) {
                 script.onload = function() {
                     scriptLoaded = true;
                     scriptIsLoading = false;
-                    console.log("Model Viewer script loaded on demand");
                     
                     // Call all queued callbacks
                     if (window.ExploreXROnScriptLoad && window.ExploreXROnScriptLoad.length) {

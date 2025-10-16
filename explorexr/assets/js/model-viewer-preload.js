@@ -22,7 +22,6 @@
      * Initialize the preloader for all model viewers
      */
     function initPreloader() {
-        console.log('ModelViewerPreloader: Initializing');
         
         // Find all model viewers
         const modelViewers = document.querySelectorAll('model-viewer');
@@ -33,7 +32,6 @@
         // Store for later use
         state.modelViewerContainers = modelViewerContainers;
         
-        console.log('ModelViewerPreloader: Found ' + modelViewerContainers.length + ' model viewers');
         
         // Use the centralized loader manager
         if (!window.ExploreXRModelViewerLoader || !window.ExploreXRModelViewerLoader.isLoaded()) {
@@ -53,7 +51,6 @@
                 loadModelViewerScript();
             }
         } else {
-            console.log('ModelViewerPreloader: model-viewer already loaded');
             state.scriptLoaded = true;
         }
         
@@ -74,7 +71,6 @@
     function loadModelViewerScript() {
         const attempts = window.modelViewerLoadAttempts || 0;
         window.modelViewerLoadAttempts = attempts + 1;
-          console.log('ModelViewerPreloader: Loading model-viewer (attempt ' + window.modelViewerLoadAttempts + ')');
         
         // WordPress.org compliance: Always use local model-viewer file, no CDN fallback
         const scriptConfig = window.explorexrScriptConfig || {};
@@ -136,7 +132,6 @@
         // Event handlers for script element
         script.onload = function() {
             const loadTime = ((performance.now() - startTime) / 1000).toFixed(2);
-            console.log('ModelViewerPreloader: Loaded in ' + loadTime + 's');
             
             // Dispatch event that script is loaded
             document.dispatchEvent(new CustomEvent('explorexr-script-loaded', {
@@ -149,7 +144,6 @@
             
             // If we have a fallback URL and haven't tried too many times
             if (window.modelViewerFallbackUrl && window.modelViewerLoadAttempts < 3) {
-                console.log('ModelViewerPreloader: Trying fallback URL');
                 window.modelViewerScriptUrl = window.modelViewerFallbackUrl;
                 loadModelViewerScript();
             } else {
@@ -174,7 +168,6 @@
      * Handle the model-viewer script loaded event
      */
     function handleScriptLoaded() {
-        console.log('ModelViewerPreloader: Script loaded successfully');
         
         // Prevent duplicate handling
         if (state.scriptLoaded) return;

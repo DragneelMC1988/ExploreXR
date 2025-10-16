@@ -44,16 +44,6 @@ function explorexr_save_all_post_meta($post_id) {
             }
         }
         
-        $nonce_debug = array(
-            'post_id' => $post_id,
-            'nonce_value' => isset($_POST['explorexr_nonce']) ? sanitize_text_field(wp_unslash($_POST['explorexr_nonce'])) : 'not provided',
-            'nonce_action' => 'explorexr_save_model',
-            'verification_result' => false,
-            'user_id' => get_current_user_id(),
-            'post_data' => $sanitized_post_keys
-        );
-        explorexr_create_debug_log($nonce_debug, 'nonce-failure-' . $post_id);
-        
         return false;
     }
     
@@ -64,16 +54,6 @@ function explorexr_save_all_post_meta($post_id) {
 
     // Check user permissions
     if (!current_user_can('edit_post', $post_id)) {
-        
-        // Log permission issue
-        $permission_debug = array(
-            'post_id' => $post_id,
-            'user_id' => get_current_user_id(),
-            'user_caps' => get_userdata(get_current_user_id())->allcaps,
-            'post_author' => get_post_field('post_author', $post_id)
-        );
-        explorexr_create_debug_log($permission_debug, 'permission-denied-' . $post_id);
-        
         return false;
     }
       // Basic fields
@@ -122,26 +102,9 @@ function explorexr_save_all_post_meta($post_id) {
                 if ($edit_mode) {
                 }
             } else {
-                // Log upload failures
-                $upload_error = isset($upload_result['error']) ? $upload_result['error'] : 'Unknown error';
-                
-                // Create a debug log for the upload issue
+                // Upload failed
                 if ($edit_mode) {
-                    $upload_debug = array(
-                        'post_id' => $post_id,
-                        'file_info' => array(
-                            'name' => isset($_FILES['explorexr_new_model']['name']) ? sanitize_file_name($_FILES['explorexr_new_model']['name']) : '',
-                            'type' => isset($_FILES['explorexr_new_model']['type']) ? sanitize_mime_type($_FILES['explorexr_new_model']['type']) : '',
-                            'size' => isset($_FILES['explorexr_new_model']['size']) ? intval($_FILES['explorexr_new_model']['size']) : 0,
-                            'error' => isset($_FILES['explorexr_new_model']['error']) ? intval($_FILES['explorexr_new_model']['error']) : 0
-                        ),
-                        'upload_result' => $upload_result,
-                        'php_version' => phpversion(),
-                        'memory_limit' => ini_get('memory_limit'),
-                        'max_upload_size' => wp_max_upload_size(),
-                        'user_id' => get_current_user_id()
-                    );
-                    explorexr_create_debug_log($upload_debug, 'upload-failure-' . $post_id);
+                    // Log upload failure for debugging
                 }
             }
         }
@@ -165,16 +128,6 @@ function explorexr_save_all_post_meta($post_id) {
     
     // Annotations and Animation functionality are not available in the Free version
     // These features are available in the Pro version only
-    
-    // Create a comprehensive checkbox debug report if in edit mode
-    if ($edit_mode && function_exists('explorexr_debug_checkbox_processing')) {
-        // Include debug file if not already included
-        if (!function_exists('explorexr_debug_checkbox_processing')) {
-            require_once plugin_dir_path(__FILE__) . 'debug-camera-settings.php';
-        }
-        
-
-    }
     
     // AR functionality is not available in the Free version
     

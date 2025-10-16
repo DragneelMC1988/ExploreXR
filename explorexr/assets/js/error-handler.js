@@ -16,7 +16,6 @@
     }
     
     // Log that we're initializing
-    console.log('ExploreXR: Global error handler initialized');
     
     // Set up global error capture
     window.addEventListener('error', function(event) {

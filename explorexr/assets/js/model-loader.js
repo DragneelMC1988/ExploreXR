@@ -61,7 +61,6 @@
         
         // Only log if debug mode is enabled
         if (window.exploreXRDebug && window.exploreXRDebug.enabled) {
-            console.log('Model loaded:', modelUrl);
         }
         
         // Check if this model has available animations
@@ -206,7 +205,6 @@
         if (modelViewer.availableAnimations && modelViewer.availableAnimations.length > 0) {
             // Log animation availability for debugging (only if debug mode is enabled)
             if (window.exploreXRDebug && window.exploreXRDebug.enabled) {
-                console.log('Model has animations:', modelViewer.availableAnimations);
             }
             
             // Note: Animation controls are available in ExploreXR Premium
