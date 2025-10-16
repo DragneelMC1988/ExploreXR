@@ -47,12 +47,12 @@ function EXPLOREXR_build_model_attributes($model_id, $model_file, $alt_text, $wi
     
     // Basic interaction controls (free version)
     // Check enable_interactions setting with backward compatibility
-    $enable_interactions = get_post_meta($model_id, '_explorexr_enable_interactions', true);
+    $enable_interactions = get_post_meta($model_id, '_explorexr_enable_interactions', true) ?: '';
     
     // If the enable_interactions field is empty (not set), check for legacy values
     if ($enable_interactions === '') {
         // Check legacy camera_controls setting
-        $legacy_camera_controls = get_post_meta($model_id, '_explorexr_camera_controls', true);
+        $legacy_camera_controls = get_post_meta($model_id, '_explorexr_camera_controls', true) ?: '';
         
         // If legacy setting exists, use it; otherwise default to enabled (true)
         if ($legacy_camera_controls !== '') {
@@ -75,13 +75,13 @@ function EXPLOREXR_build_model_attributes($model_id, $model_file, $alt_text, $wi
     }
     
     // Add touch-action
-    $touch_action = get_post_meta($model_id, '_explorexr_touch_action', true);
+    $touch_action = get_post_meta($model_id, '_explorexr_touch_action', true) ?: '';
     if (!empty($touch_action)) {
         $attributes['touch-action'] = $touch_action;
     }
     
     // Add orbit sensitivity
-    $orbit_sensitivity = get_post_meta($model_id, '_explorexr_orbit_sensitivity', true);
+    $orbit_sensitivity = get_post_meta($model_id, '_explorexr_orbit_sensitivity', true) ?: '';
     if (!empty($orbit_sensitivity)) {
         $attributes['orbit-sensitivity'] = $orbit_sensitivity;
     }
@@ -92,14 +92,14 @@ function EXPLOREXR_build_model_attributes($model_id, $model_file, $alt_text, $wi
         $attributes['auto-rotate'] = '';
         
         // Add auto-rotate delay (default to 5000ms if not set)
-        $auto_rotate_delay = get_post_meta($model_id, '_explorexr_auto_rotate_delay', true);
+        $auto_rotate_delay = get_post_meta($model_id, '_explorexr_auto_rotate_delay', true) ?: '';
         if (empty($auto_rotate_delay) || !is_numeric($auto_rotate_delay)) {
             $auto_rotate_delay = '5000';
         }
         $attributes['auto-rotate-delay'] = $auto_rotate_delay;
         
         // Add rotation speed (default to 30deg if not set)
-        $rotation_per_second = get_post_meta($model_id, '_explorexr_rotation_per_second', true);
+        $rotation_per_second = get_post_meta($model_id, '_explorexr_rotation_per_second', true) ?: '';
         if (empty($rotation_per_second)) {
             $rotation_per_second = '30deg';
         }
@@ -116,53 +116,53 @@ function EXPLOREXR_build_model_attributes($model_id, $model_file, $alt_text, $wi
     }
     
     // Add interaction prompt settings
-    $interaction_prompt = get_post_meta($model_id, '_explorexr_interaction_prompt', true);
+    $interaction_prompt = get_post_meta($model_id, '_explorexr_interaction_prompt', true) ?: '';
     if (!empty($interaction_prompt)) {
         $attributes['interaction-prompt'] = $interaction_prompt;
     }
     
-    $interaction_prompt_style = get_post_meta($model_id, '_explorexr_interaction_prompt_style', true);
+    $interaction_prompt_style = get_post_meta($model_id, '_explorexr_interaction_prompt_style', true) ?: '';
     if (!empty($interaction_prompt_style)) {
         $attributes['interaction-prompt-style'] = $interaction_prompt_style;
     }
     
-    $interaction_prompt_threshold = get_post_meta($model_id, '_explorexr_interaction_prompt_threshold', true);
+    $interaction_prompt_threshold = get_post_meta($model_id, '_explorexr_interaction_prompt_threshold', true) ?: '';
     if (!empty($interaction_prompt_threshold)) {
         $attributes['interaction-prompt-threshold'] = $interaction_prompt_threshold;
     }
     
     // Basic camera settings (advanced camera controls are not available in free version)
-    $camera_orbit = get_post_meta($model_id, '_explorexr_camera_orbit', true);
+    $camera_orbit = get_post_meta($model_id, '_explorexr_camera_orbit', true) ?: '';
     if (!empty($camera_orbit)) {
         $attributes['camera-orbit'] = $camera_orbit;
     }
     
-    $camera_target = get_post_meta($model_id, '_explorexr_camera_target', true);
+    $camera_target = get_post_meta($model_id, '_explorexr_camera_target', true) ?: '';
     if (!empty($camera_target)) {
         $attributes['camera-target'] = $camera_target;
     }
     
-    $field_of_view = get_post_meta($model_id, '_explorexr_field_of_view', true);
+    $field_of_view = get_post_meta($model_id, '_explorexr_field_of_view', true) ?: '';
     if (!empty($field_of_view)) {
         $attributes['field-of-view'] = $field_of_view;
     }
     
-    $max_camera_orbit = get_post_meta($model_id, '_explorexr_max_camera_orbit', true);
+    $max_camera_orbit = get_post_meta($model_id, '_explorexr_max_camera_orbit', true) ?: '';
     if (!empty($max_camera_orbit)) {
         $attributes['max-camera-orbit'] = $max_camera_orbit;
     }
     
-    $min_camera_orbit = get_post_meta($model_id, '_explorexr_min_camera_orbit', true);
+    $min_camera_orbit = get_post_meta($model_id, '_explorexr_min_camera_orbit', true) ?: '';
     if (!empty($min_camera_orbit)) {
         $attributes['min-camera-orbit'] = $min_camera_orbit;
     }
     
-    $max_field_of_view = get_post_meta($model_id, '_explorexr_max_field_of_view', true);
+    $max_field_of_view = get_post_meta($model_id, '_explorexr_max_field_of_view', true) ?: '';
     if (!empty($max_field_of_view)) {
         $attributes['max-field-of-view'] = $max_field_of_view;
     }
     
-    $min_field_of_view = get_post_meta($model_id, '_explorexr_min_field_of_view', true);
+    $min_field_of_view = get_post_meta($model_id, '_explorexr_min_field_of_view', true) ?: '';
     if (!empty($min_field_of_view)) {
         $attributes['min-field-of-view'] = $min_field_of_view;
     }
@@ -219,23 +219,23 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
         return 'Invalid model ID.';
     }
 
-    $model_file = get_post_meta($model_id, '_explorexr_model_file', true);
+    $model_file = get_post_meta($model_id, '_explorexr_model_file', true) ?: '';
     if (!$model_file) {
         return ' ExploreXR Alert: Model not found. Possibly abducted by polygons from another dimension.';
     }
     
     // Get alt text for accessibility
-    $alt_text = get_post_meta($model_id, '_explorexr_model_alt_text', true);
+    $alt_text = get_post_meta($model_id, '_explorexr_model_alt_text', true) ?: '';
     if (empty($alt_text)) {
         $alt_text = get_the_title($model_id) . ' 3D Model';
     }
     
     // Get poster image if available
-    $model_poster = get_post_meta($model_id, '_explorexr_model_poster', true);
-    $model_poster_id = get_post_meta($model_id, '_explorexr_model_poster_id', true);
+    $model_poster = get_post_meta($model_id, '_explorexr_model_poster', true) ?: '';
+    $model_poster_id = get_post_meta($model_id, '_explorexr_model_poster_id', true) ?: '';
 
     // Get size settings
-    $viewer_size = get_post_meta($model_id, '_explorexr_viewer_size', true);
+    $viewer_size = get_post_meta($model_id, '_explorexr_viewer_size', true) ?: '';
     $width = '100%';
     $height = '500px';
     
@@ -254,8 +254,8 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
         $height = '98vh';
     } else {
         // Custom size
-        $custom_width = get_post_meta($model_id, '_explorexr_viewer_width', true);
-        $custom_height = get_post_meta($model_id, '_explorexr_viewer_height', true);
+        $custom_width = get_post_meta($model_id, '_explorexr_viewer_width', true) ?: '';
+        $custom_height = get_post_meta($model_id, '_explorexr_viewer_height', true) ?: '';
         
         if (!empty($custom_width)) {
             $width = $custom_width;
@@ -267,10 +267,10 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
     }
     
     // Get responsive sizes for tablet and mobile
-    $tablet_width = get_post_meta($model_id, '_explorexr_tablet_viewer_width', true);
-    $tablet_height = get_post_meta($model_id, '_explorexr_tablet_viewer_height', true);
-    $mobile_width = get_post_meta($model_id, '_explorexr_mobile_viewer_width', true);
-    $mobile_height = get_post_meta($model_id, '_explorexr_mobile_viewer_height', true);
+    $tablet_width = get_post_meta($model_id, '_explorexr_tablet_viewer_width', true) ?: '';
+    $tablet_height = get_post_meta($model_id, '_explorexr_tablet_viewer_height', true) ?: '';
+    $mobile_width = get_post_meta($model_id, '_explorexr_mobile_viewer_width', true) ?: '';
+    $mobile_height = get_post_meta($model_id, '_explorexr_mobile_viewer_height', true) ?: '';
     
     // Generate unique CSS ID for this model instance
     $model_css_id = 'explorexr-model-' . $model_id . '-' . uniqid();

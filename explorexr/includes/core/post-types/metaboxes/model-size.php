@@ -19,11 +19,11 @@ require_once dirname(__FILE__) . '/model-size-enqueue.php';
  * @param WP_Post $post Current post object
  */
 function explorexr_edit_model_size_box($post) {
-    $viewer_size = get_post_meta($post->ID, '_explorexr_viewer_size', true);
+    $viewer_size = get_post_meta($post->ID, '_explorexr_viewer_size', true) ?: '';
     $viewer_width = get_post_meta($post->ID, '_explorexr_viewer_width', true) ?: '100%';
     $viewer_height = get_post_meta($post->ID, '_explorexr_viewer_height', true) ?: '500px';
-    $poster_url = get_post_meta($post->ID, '_explorexr_model_poster', true);
-    $poster_id = get_post_meta($post->ID, '_explorexr_model_poster_id', true);
+    $poster_url = get_post_meta($post->ID, '_explorexr_model_poster', true) ?: '';
+    $poster_id = get_post_meta($post->ID, '_explorexr_model_poster_id', true) ?: '';
     
     // Get tablet and mobile specific sizes if they exist
     $tablet_viewer_width = get_post_meta($post->ID, '_explorexr_tablet_viewer_width', true) ?: '';

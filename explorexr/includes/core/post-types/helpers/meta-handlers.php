@@ -141,7 +141,7 @@ function explorexr_save_all_post_meta($post_id) {
                 update_post_meta($post_id, '_explorexr_model_file', $upload_result['file_url']);
                 
                 // If no model name exists yet, set it from the filename
-                $model_name = get_post_meta($post_id, '_explorexr_model_name', true);
+                $model_name = get_post_meta($post_id, '_explorexr_model_name', true) ?: '';
                 if (empty($model_name)) {
                     $filename = basename($upload_result['file_url']);
                     $model_name = preg_replace('/\.[^.]+$/', '', $filename);

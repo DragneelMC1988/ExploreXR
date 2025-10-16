@@ -41,7 +41,7 @@ function explorexr_validate_model_environment($model_id) {
     }
     
     // Check model file
-    $model_file = get_post_meta($model_id, '_explorexr_model_file', true);
+    $model_file = get_post_meta($model_id, '_explorexr_model_file', true) ?: '';
     if (empty($model_file)) {
         $validation_result['valid'] = false;
         $validation_result['errors'][] = 'No 3D model file has been uploaded for this model. Please add a model file.';
@@ -275,10 +275,10 @@ function explorexr_process_validated_model($model_id, $validation) {
     
     // Call the original shortcode logic from shortcodes.php
     // We'll create a wrapper that handles the validation results
-    $model_file = get_post_meta($model_id, '_explorexr_model_file', true);
+    $model_file = get_post_meta($model_id, '_explorexr_model_file', true) ?: '';
     
     // Get alt text for accessibility
-    $alt_text = get_post_meta($model_id, '_explorexr_model_alt_text', true);
+    $alt_text = get_post_meta($model_id, '_explorexr_model_alt_text', true) ?: '';
     if (empty($alt_text)) {
         $alt_text = get_the_title($model_id) . ' 3D Model';
     }
@@ -299,12 +299,12 @@ function explorexr_process_validated_model($model_id, $validation) {
     );
     
     // Only add features that don't require addons or are safely fallback
-    $camera_controls = get_post_meta($model_id, '_explorexr_camera_controls', true);
+    $camera_controls = get_post_meta($model_id, '_explorexr_camera_controls', true) ?: '';
     if ($camera_controls === 'on') {
         $attributes['camera-controls'] = '';
     }
     
-    $auto_rotate = get_post_meta($model_id, '_explorexr_auto_rotate', true);
+    $auto_rotate = get_post_meta($model_id, '_explorexr_auto_rotate', true) ?: '';
     if ($auto_rotate === 'on') {
         $attributes['auto-rotate'] = '';
     }

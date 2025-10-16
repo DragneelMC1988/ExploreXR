@@ -63,7 +63,7 @@ function explorexr_cleanup_orphaned_models() {
         $results['checked']++;
         
         // Get the model file URL
-        $model_file = get_post_meta($model_id, '_explorexr_model_file', true);
+        $model_file = get_post_meta($model_id, '_explorexr_model_file', true) ?: '';
         
         // Skip if no file is set
         if (empty($model_file)) {

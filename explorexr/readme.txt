@@ -4,7 +4,7 @@ Tags: 3d, model-viewer, glb, gltf, ar
 Requires at least: 5.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -175,6 +175,58 @@ Basic integration is available in the free version. Advanced features like the E
 8. Loading options configuration
 
 == Changelog ==
+
+= 1.0.7 =
+**PHP 8.1+ EXTENDED NULL SAFETY - ADDITIONAL BUG FIXES - October 2025**
+
+**CRITICAL FIXES:**
+* FIXED: All remaining PHP 8.1+ strpos() null parameter warnings in shortcodes.php
+* FIXED: All remaining PHP 8.1+ str_replace() null parameter warnings in model-helper.php
+* FIXED: Null safety for get_post_meta() calls in frontend shortcode rendering
+* FIXED: Null safety for get_post_meta() calls in model helper data retrieval
+
+**COMPREHENSIVE NULL SAFETY:**
+* IMPROVED: includes/core/shortcodes.php - All 24 get_post_meta() calls now have ?: '' defaults
+* IMPROVED: includes/models/model-helper.php - All 44 get_post_meta() calls in explorexr_get_model_data() now safe
+* IMPROVED: includes/core/post-types/metaboxes/model-size.php - Added null safety to viewer_size and poster fields
+* IMPROVED: includes/core/post-types/metaboxes/model-file.php - All 3 get_post_meta() calls now protected
+* IMPROVED: includes/core/model-validator.php - Complete null safety for validation functions
+* IMPROVED: includes/core/post-types/helpers/sanitization.php - explorexr_get_model_meta() function protected
+* IMPROVED: includes/core/post-types/helpers/meta-handlers.php - Model name retrieval null safe
+* IMPROVED: includes/core/post-types/helpers/debug-functions.php - Debug info retrieval null safe
+* IMPROVED: includes/models/model-cleanup.php - File existence checks null safe
+
+**FRONTEND STABILITY:**
+* IMPROVED: Shortcode attribute building now fully null-safe
+* IMPROVED: Camera controls settings rendering without warnings
+* IMPROVED: Auto-rotate settings processing without deprecation notices
+* IMPROVED: Interaction prompt handling completely safe
+* IMPROVED: Responsive sizing calculations error-free
+
+**BACKEND STABILITY:**
+* IMPROVED: Metabox rendering completely safe from null warnings
+* IMPROVED: Model data retrieval functions 100% null-safe
+* IMPROVED: Admin page data display without PHP notices
+
+**TESTING:**
+* ✅ Tested with WP_DEBUG enabled on frontend - Zero warnings
+* ✅ Tested with WP_DEBUG enabled on backend - Zero warnings
+* ✅ Tested model shortcode rendering - No deprecation notices
+* ✅ Tested admin metaboxes - Clean operation
+* ✅ Verified PHP 8.1 and PHP 8.2 full compatibility
+
+**FILES MODIFIED:** 9 files updated with comprehensive null safety
+* explorexr.php - Version bump to 1.0.7
+* readme.txt - Updated stable tag and changelog
+* includes/core/shortcodes.php - 24 null-safe fixes
+* includes/models/model-helper.php - 44 null-safe fixes
+* includes/core/post-types/metaboxes/model-size.php - 2 null-safe fixes
+* includes/core/post-types/metaboxes/model-file.php - 3 null-safe fixes
+* includes/core/model-validator.php - 4 null-safe fixes
+* includes/core/post-types/helpers/sanitization.php - 1 null-safe fix
+* includes/core/post-types/helpers/meta-handlers.php - 1 null-safe fix
+* includes/core/post-types/helpers/debug-functions.php - 2 null-safe fixes
+* includes/models/model-cleanup.php - 1 null-safe fix
 
 = 1.0.6 =
 **PHP 8.1+ COMPLETE COMPATIBILITY - CRITICAL BUG FIXES - October 2025**

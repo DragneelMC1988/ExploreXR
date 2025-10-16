@@ -116,8 +116,8 @@ function explorexr_debug_log_post_data($post_id) {
  * @return array|false Debug information or false if none found
  */
 function explorexr_get_debug_info($post_id) {
-    $debug_info = get_post_meta($post_id, '_explorexr_last_edit_debug', true);
-    $debug_time = get_post_meta($post_id, '_explorexr_last_edit_time', true);
+    $debug_info = get_post_meta($post_id, '_explorexr_last_edit_debug', true) ?: '';
+    $debug_time = get_post_meta($post_id, '_explorexr_last_edit_time', true) ?: '';
     
     if (empty($debug_info)) {
         return false;
