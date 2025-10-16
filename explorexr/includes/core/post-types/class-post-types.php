@@ -115,7 +115,6 @@ class ExploreXR_Post_Types {
         // Include helper files
         require_once plugin_dir_path(__FILE__) . 'helpers/meta-handlers.php';
         require_once plugin_dir_path(__FILE__) . 'helpers/sanitization.php';
-        require_once plugin_dir_path(__FILE__) . 'helpers/debug-functions.php';
     }
       /**
      * Save post meta when the post is saved
@@ -143,15 +142,7 @@ class ExploreXR_Post_Types {
         // and will be called from there after these basic checks
         if (function_exists('explorexr_save_all_post_meta')) {
             $result = explorexr_save_all_post_meta($post_id);
-            
-            // Log the result for debugging
-            if (explorexr_is_debug_enabled()) {
-                explorexr_log('ExploreXR: Meta save result for post ' . $post_id . ': ' . ($result ? 'Success' : 'Failed'));
-            }
         } else {
-            if (explorexr_is_debug_enabled()) {
-                explorexr_log('ExploreXR: explorexr_save_all_post_meta function not found', 'error');
-            }
         }
     }
 
@@ -213,12 +204,7 @@ class ExploreXR_Post_Types {
             wp_enqueue_script('explorexr-model-viewer-wrapper', EXPLOREXR_PLUGIN_URL . 'assets/js/model-viewer-wrapper.js', array('jquery', 'explorexr-model-viewer'), EXPLOREXR_VERSION, true);
               // IMPORTANT: Enqueue edit mode fix script FIRST to establish field tracking framework
             wp_enqueue_script('explorexr-edit-mode-fix', EXPLOREXR_PLUGIN_URL . 'includes/post-types/assets/js/edit-mode-fix.js', array('jquery'), '1.0.4', true);
-              // Pass debug settings to edit mode fix script
-            $debug_mode = explorexr_is_debug_enabled();
-            wp_localize_script('explorexr-edit-mode-fix', 'exploreXRDebugMode', array(
-                'debug' => $debug_mode,
-                'enabled' => (bool) $debug_mode
-            ));
+  
             
             // Now enqueue model uploader script (after the fix script)
             wp_enqueue_script('explorexr-model-uploader', EXPLOREXR_PLUGIN_URL . 'includes/post-types/assets/js/model-uploader.js', array('jquery', 'explorexr-edit-mode-fix'), '1.0.4', true);

@@ -206,7 +206,7 @@ function explorexr_sanitize_file_upload($file, $args = array()) {
     }
     
     // Check for PHP tags (basic security measure)
-    if (strpos($file_contents, '<?php') !== false || strpos($file_contents, '<?') !== false) {
+    if (!empty($file_contents) && (strpos($file_contents, '<?php') !== false || strpos($file_contents, '<?') !== false)) {
         return new WP_Error(
             'potential_malicious_file',
             __('File appears to contain executable code and has been rejected.', 'explorexr')

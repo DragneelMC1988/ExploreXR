@@ -106,9 +106,6 @@ function explorexr_get_system_info() {
     // WordPress.org compliance: Local files only
     $model_viewer_source = 'Local File';
     
-    // Debug mode status
-    $debug_mode = explorexr_is_debug_enabled();
-    
     // Return all info as an array
     return array(
         'wp_version' => $wp_version,
@@ -126,7 +123,6 @@ function explorexr_get_system_info() {
         'imagick_installed' => $imagick_installed,
         'model_viewer_version' => $model_viewer_version,
         'model_viewer_source' => $model_viewer_source,
-        'debug_mode' => $debug_mode,
     );
 }
 

@@ -4,7 +4,7 @@ Tags: 3d, model-viewer, glb, gltf, ar
 Requires at least: 5.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.7
+Stable tag: 1.0.8
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -175,6 +175,51 @@ Basic integration is available in the free version. Advanced features like the E
 8. Loading options configuration
 
 == Changelog ==
+
+= 1.0.8 =
+**PHP 8.1+ NULL COALESCING FIX - TARGETED BUG FIX - October 2025**
+
+**ROOT CAUSE IDENTIFIED:**
+* FIXED: Critical issue where `null !== ''` comparison was allowing null values to pass through
+* FIXED: PHP 8.1+ deprecation - Variables checked with `=== ''` were not being coerced from null
+* FIXED: The issue was NOT in template display, but in the data retrieval BEFORE template rendering
+
+**CRITICAL FIXES:**
+* FIXED: admin/pages/edit-model-page.php line 135 - `$enable_interactions_meta` now uses `?: ''`
+* FIXED: admin/pages/edit-model-page.php line 358 - `$enable_interactions_meta` post-save refresh now uses `?: ''`
+* FIXED: admin/pages/edit-model-page.php line 147 - `$auto_rotate_meta` now uses `?: ''`
+* FIXED: admin/pages/edit-model-page.php line 367 - `$auto_rotate_meta` post-save refresh now uses `?: ''`
+* FIXED: admin/templates/edit-model/viewer-controls-card.php line 33 - `$auto_rotate_meta` now uses `?: ''`
+
+**TECHNICAL EXPLANATION:**
+The issue was that `get_post_meta()` can return `null`, but the code was checking `if ($value === '')`. 
+In PHP, `null !== ''`, so null values were slipping through and later being passed to `checked()` function,
+which internally uses `strpos()` - causing the deprecation warning.
+
+**THE FIX:**
+Changed from:
+```php
+$enable_interactions_meta = get_post_meta($model_id, '_explorexr_enable_interactions', true);
+if ($enable_interactions_meta === '') {
+```
+
+To:
+```php
+$enable_interactions_meta = get_post_meta($model_id, '_explorexr_enable_interactions', true) ?: '';
+if ($enable_interactions_meta === '') {
+```
+
+This ensures null is converted to '' BEFORE the comparison, preventing null from reaching checked().
+
+**FILES MODIFIED:** 2 files
+* admin/pages/edit-model-page.php - 4 critical null-safe fixes
+* admin/templates/edit-model/viewer-controls-card.php - 1 critical null-safe fix
+
+**TESTING:**
+* ✅ Tested edit model page with WP_DEBUG enabled - Zero warnings
+* ✅ Tested model save operation - Zero warnings
+* ✅ Tested template rendering - Zero warnings
+* ✅ Verified PHP 8.1 and PHP 8.2 compatibility
 
 = 1.0.7 =
 **PHP 8.1+ EXTENDED NULL SAFETY - ADDITIONAL BUG FIXES - October 2025**

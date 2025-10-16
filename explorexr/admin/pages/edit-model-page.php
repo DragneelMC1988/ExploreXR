@@ -23,17 +23,7 @@ function ExploreXR_safe_include_template($template_path, $fallback_path = '', $v
             }
         }
         
-        // Get variables from calling function's symbol table (only in debug mode)
-        if (explorexr_is_debug_enabled()) {
-            // Gate debug_backtrace() behind WP_DEBUG check for WordPress coding standards
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace -- Used for debugging purposes only
-                $backtrace = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 1);
-                if (isset($backtrace[0]['args'])) {
-                    // Skip this as it could be resource intensive
-                }
-            }
-        }
+
 
         // These variables are always needed
         if (!isset($vars['model_id'])) {
@@ -142,7 +132,7 @@ function ExploreXR_edit_model_page() {
     $camera_controls = get_post_meta($model_id, '_explorexr_camera_controls', true) === 'on';
     
     // Interaction controls with backward compatibility
-    $enable_interactions_meta = get_post_meta($model_id, '_explorexr_enable_interactions', true);
+    $enable_interactions_meta = get_post_meta($model_id, '_explorexr_enable_interactions', true) ?: '';
     if ($enable_interactions_meta === '') {
         // If not set, default to enabled (true) for new models
         $enable_interactions = true;
@@ -153,7 +143,7 @@ function ExploreXR_edit_model_page() {
     }
     
     // Auto-rotate controls with backward compatibility
-    $auto_rotate_meta = get_post_meta($model_id, '_explorexr_auto_rotate', true);
+    $auto_rotate_meta = get_post_meta($model_id, '_explorexr_auto_rotate', true) ?: '';
     if ($auto_rotate_meta === '') {
         // If not set, default to disabled (false) for new models
         $auto_rotate = false;
@@ -180,20 +170,7 @@ function ExploreXR_edit_model_page() {
     // Handle form submission
     if (isset($_POST['ExploreXR_edit_model_submit']) && check_admin_referer('explorexr_edit_model', 'explorexr_edit_nonce')) {
         
-        // Debug: Log all POST data if debug mode is enabled
-        if (explorexr_is_debug_enabled()) {
-            if (function_exists('explorexr_log')) {
-                // WordPress.org compliance: Log specific sanitized fields instead of entire $_POST
-                $sanitized_post_data = array();
-                $important_fields = array('post_title', 'explorexr_model_file', 'explorexr_model_name', 'viewer_size');
-                foreach ($important_fields as $field) {
-                    if (isset($_POST[$field])) {
-                        $sanitized_post_data[$field] = sanitize_text_field(wp_unslash($_POST[$field]));
-                    }
-                }
-                explorexr_log('ExploreXR Edit Model Form Submission - Sanitized Data: ' . wp_json_encode($sanitized_post_data));
-            }
-        }
+
         
         // Update post title and content
         $updated_post = array(
@@ -325,12 +302,7 @@ function ExploreXR_edit_model_page() {
             $enable_interactions_value = isset($_POST['explorexr_enable_interactions']) ? 'on' : 'off';
             update_post_meta($model_id, '_explorexr_enable_interactions', $enable_interactions_value);
             
-            // Debug logging if enabled
-            if (explorexr_is_debug_enabled()) {
-                if (function_exists('explorexr_log')) {
-                    explorexr_log('ExploreXR: Saving enable_interactions: ' . $enable_interactions_value . ' (checkbox was ' . (isset($_POST['explorexr_enable_interactions']) ? 'checked' : 'unchecked') . ')');
-                }
-            }
+
             
             // Also update the disable_interactions field for backward compatibility
             $disable_interactions = ($enable_interactions_value === 'off') ? 'on' : 'off';
@@ -340,32 +312,17 @@ function ExploreXR_edit_model_page() {
             $auto_rotate_value = isset($_POST['explorexr_auto_rotate']) ? 'on' : 'off';
             update_post_meta($model_id, '_explorexr_auto_rotate', $auto_rotate_value);
             
-            // Debug logging if enabled
-            if (explorexr_is_debug_enabled()) {
-                if (function_exists('explorexr_log')) {
-                    explorexr_log('ExploreXR: Saving auto_rotate: ' . $auto_rotate_value . ' (checkbox was ' . (isset($_POST['explorexr_auto_rotate']) ? 'checked' : 'unchecked') . ')');
-                }
-            }
+
             
             // Handle auto-rotate delay and speed
             if (isset($_POST['explorexr_auto_rotate_delay'])) {
                 $auto_rotate_delay = sanitize_text_field(wp_unslash($_POST['explorexr_auto_rotate_delay']));
                 update_post_meta($model_id, '_explorexr_auto_rotate_delay', $auto_rotate_delay);
-                if (explorexr_is_debug_enabled()) {
-                    if (function_exists('explorexr_log')) {
-                        explorexr_log('ExploreXR: Explicitly saved auto-rotate delay: ' . $auto_rotate_delay);
-                    }
-                }
             }
             
             if (isset($_POST['explorexr_auto_rotate_speed'])) {
                 $auto_rotate_speed = sanitize_text_field(wp_unslash($_POST['explorexr_auto_rotate_speed']));
                 update_post_meta($model_id, '_explorexr_rotation_per_second', $auto_rotate_speed);
-                if (explorexr_is_debug_enabled()) {
-                    if (function_exists('explorexr_log')) {
-                        explorexr_log('ExploreXR: Explicitly saved rotation speed: ' . $auto_rotate_speed);
-                    }
-                }
             }
             
             // Animation settings are not available in the Free version
@@ -398,7 +355,7 @@ function ExploreXR_edit_model_page() {
             $camera_controls = get_post_meta($model_id, '_explorexr_camera_controls', true) === 'on';
             
             // Refresh interaction controls with the same backward compatibility logic
-            $enable_interactions_meta = get_post_meta($model_id, '_explorexr_enable_interactions', true);
+            $enable_interactions_meta = get_post_meta($model_id, '_explorexr_enable_interactions', true) ?: '';
             if ($enable_interactions_meta === '') {
                 $enable_interactions = true; // Default to enabled for new models
                 update_post_meta($model_id, '_explorexr_enable_interactions', 'on');
@@ -406,7 +363,7 @@ function ExploreXR_edit_model_page() {
                 $enable_interactions = ($enable_interactions_meta === 'on');
             }
             
-            $auto_rotate_meta = get_post_meta($model_id, '_explorexr_auto_rotate', true);
+            $auto_rotate_meta = get_post_meta($model_id, '_explorexr_auto_rotate', true) ?: '';
             if ($auto_rotate_meta === '') {
                 $auto_rotate = false; // Default to disabled for new models
                 update_post_meta($model_id, '_explorexr_auto_rotate', 'off');

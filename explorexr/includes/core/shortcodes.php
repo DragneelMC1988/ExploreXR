@@ -20,15 +20,6 @@ if (!defined('ABSPATH')) {
 // Enqueue model loader script when needed
 function EXPLOREXR_enqueue_model_loader() {
     wp_enqueue_script('explorexr-model-loader', EXPLOREXR_PLUGIN_URL . 'assets/js/model-loader.js', array(), '1.0', true);
-    
-    // Pass debug settings to model-loader script
-    $debug_mode = explorexr_is_debug_enabled();
-    if ($debug_mode) {
-        wp_localize_script('explorexr-model-loader', 'exploreXRDebug', array(
-            'enabled' => true,
-            'version' => EXPLOREXR_VERSION
-        ));
-    }
 }
 
 // Helper function to build model-viewer attributes
@@ -46,32 +37,11 @@ function EXPLOREXR_build_model_attributes($model_id, $model_file, $alt_text, $wi
     }
     
     // Basic interaction controls (free version)
-    // Check enable_interactions setting with backward compatibility
-    $enable_interactions = get_post_meta($model_id, '_explorexr_enable_interactions', true) ?: '';
-    
-    // If the enable_interactions field is empty (not set), check for legacy values
-    if ($enable_interactions === '') {
-        // Check legacy camera_controls setting
-        $legacy_camera_controls = get_post_meta($model_id, '_explorexr_camera_controls', true) ?: '';
-        
-        // If legacy setting exists, use it; otherwise default to enabled (true)
-        if ($legacy_camera_controls !== '') {
-            $enable_interactions = ($legacy_camera_controls === 'on') ? 'on' : 'off';
-        } else {
-            // Default for new models is interactions enabled
-            $enable_interactions = 'on';
-        }
-        
-        // Save the migrated value for future use
-        update_post_meta($model_id, '_explorexr_enable_interactions', $enable_interactions);
-    }
+    $enable_interactions = get_post_meta($model_id, '_explorexr_enable_interactions', true) ?: 'on';
     
     // Add camera-controls if interactions are enabled
     if ($enable_interactions === 'on') {
         $attributes['camera-controls'] = '';
-    } else {
-        // Add a flag to indicate camera-controls should not be added automatically
-        $attributes['no-camera-controls'] = 'true';
     }
     
     // Add touch-action
@@ -332,14 +302,14 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
     $file_path = '';
       // Only run str_replace if $model_file is a string and constants are defined
     if (is_string($model_file) && defined('EXPLOREXR_MODELS_URL') && defined('EXPLOREXR_MODELS_DIR')) {
-        $file_path = str_replace(EXPLOREXR_MODELS_URL, EXPLOREXR_MODELS_DIR, $model_file);
+        $file_path = str_replace(EXPLOREXR_MODELS_URL, EXPLOREXR_MODELS_DIR, $model_file ?? '');
         
         if (file_exists($file_path)) {
             $file_size_mb = filesize($file_path) / (1024 * 1024); // Convert to MB
             if ($file_size_mb >= $large_model_size_threshold) {
                 $is_large_model = true;
             }
-        } elseif (!empty($model_file) && strpos($model_file, 'http') === 0) {
+        } elseif (!empty($model_file) && is_string($model_file) && strpos($model_file, 'http') === 0) {
             // For external files, try to get the size with a HEAD request
             $request = wp_remote_head($model_file);
             if (!is_wp_error($request) && isset($request['headers']['content-length'])) {
@@ -378,10 +348,6 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
         
         // Check for JSON encoding errors
         if ($model_attributes_json === false) {
-            // Log error and fall back to empty object
-            if (explorexr_is_debug_enabled()) {
-                explorexr_log('ExploreXR: JSON encoding error in model attributes for model ID: ' . $model_id, 'error');
-            }
             $model_attributes_json = '{}';
         }
         

@@ -139,38 +139,6 @@ function explorexr_settings_page() {
         include EXPLOREXR_PLUGIN_DIR . 'admin/templates/card.php';
         ?>
         
-        <!-- WordPress Debugging Information -->
-        <?php
-        $card_title = 'Debugging Information';
-        $card_icon = 'admin-tools';
-        ob_start();
-        ?>
-        <p><strong>ExploreXR uses WordPress standard debugging</strong></p>
-        <p>To enable debugging for troubleshooting purposes, add the following lines to your <code>wp-config.php</code> file:</p>
-        <pre style="background: #f0f0f1; padding: 10px; border-radius: 4px; overflow-x: auto;">
-define('WP_DEBUG', true);
-define('WP_DEBUG_LOG', true);
-define('WP_DEBUG_DISPLAY', false);</pre>
-        <p class="description">
-            <strong>WP_DEBUG:</strong> Enables WordPress debugging mode<br>
-            <strong>WP_DEBUG_LOG:</strong> Saves debug information to a log file<br>
-            <strong>WP_DEBUG_DISPLAY:</strong> Set to false to prevent errors from displaying on your site
-        </p>
-        <p>When WordPress debugging is enabled, ExploreXR will automatically log debugging information to help with troubleshooting.</p>
-        <?php if (explorexr_is_debug_enabled()): ?>
-            <div style="background: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 10px; border-radius: 4px; margin: 10px 0;">
-                <strong>✓ WordPress debugging is currently enabled</strong> - ExploreXR debug logging is active.
-            </div>
-        <?php else: ?>
-            <div style="background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 10px; border-radius: 4px; margin: 10px 0;">
-                <strong>⚠ WordPress debugging is currently disabled</strong> - Enable WP_DEBUG and WP_DEBUG_LOG in wp-config.php to activate debug logging.
-            </div>
-        <?php endif; ?>
-        <?php
-        $card_content = ob_get_clean();
-        include EXPLOREXR_PLUGIN_DIR . 'admin/templates/card.php';
-        ?>
-        
         <!-- System Information -->
         <?php
         $card_title = 'System Information';
@@ -237,7 +205,7 @@ define('WP_DEBUG_DISPLAY', false);</pre>
                 </tr>
                 <tr>
                     <th>Debug Mode</th>
-                    <td><?php echo wp_kses_post($system_info['debug_mode'] ? '<span class="explorexr-badge">Enabled</span>' : '<span class="explorexr-badge ar">Disabled</span>'); ?></td>
+                    <td><?php echo wp_kses_post((isset($system_info['debug_mode']) && $system_info['debug_mode']) ? '<span class="explorexr-badge">Enabled</span>' : '<span class="explorexr-badge ar">Disabled</span>'); ?></td>
                 </tr>
                 <tr>
                     <th>Active Theme</th>

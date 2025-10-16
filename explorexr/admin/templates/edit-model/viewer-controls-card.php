@@ -25,31 +25,12 @@ if (!isset($model_id) || empty($model_id)) {
 
 // Ensure interactions and auto_rotate variables are defined with proper defaults
 if (!isset($enable_interactions)) {
-    // Get the current value and apply backward compatibility
-    $enable_interactions_meta = get_post_meta($model_id, '_explorexr_enable_interactions', true);
-    
-    if ($enable_interactions_meta === '') {
-        // For backward compatibility, if enable_interactions is not set, check legacy fields
-        $interactions_disabled = get_post_meta($model_id, '_explorexr_disable_interactions', true) === 'on';
-        $camera_controls_legacy = get_post_meta($model_id, '_explorexr_camera_controls', true) ?: '';
-        
-        if ($interactions_disabled) {
-            $enable_interactions = false;
-        } else if ($camera_controls_legacy === 'off') {
-            $enable_interactions = false;
-        } else {
-            $enable_interactions = true; // Default is enabled
-        }
-        
-        // Save the migrated value for future use
-        update_post_meta($model_id, '_explorexr_enable_interactions', $enable_interactions ? 'on' : 'off');
-    } else {
-        $enable_interactions = ($enable_interactions_meta === 'on');
-    }
+    $enable_interactions_meta = get_post_meta($model_id, '_explorexr_enable_interactions', true) ?: 'on';
+    $enable_interactions = ($enable_interactions_meta === 'on');
 }
 
 if (!isset($auto_rotate)) {
-    $auto_rotate_meta = get_post_meta($model_id, '_explorexr_auto_rotate', true);
+    $auto_rotate_meta = get_post_meta($model_id, '_explorexr_auto_rotate', true) ?: '';
     if ($auto_rotate_meta === '') {
         $auto_rotate = false; // Default to disabled
         update_post_meta($model_id, '_explorexr_auto_rotate', 'off');

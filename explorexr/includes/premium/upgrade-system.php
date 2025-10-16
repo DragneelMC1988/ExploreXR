@@ -193,7 +193,7 @@ function explorexr_show_premium_upgrade_notice() {
     
     // Only show on ExploreXR admin pages
     $screen = get_current_screen();
-    if (!$screen || strpos($screen->id, 'explorexr') === false) {
+    if (!$screen || empty($screen->id) || strpos($screen->id, 'explorexr') === false) {
         return;
     }
     
