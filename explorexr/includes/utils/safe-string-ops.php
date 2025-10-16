@@ -30,7 +30,7 @@ function explorexr_safe_sanitize_text($string) {
  * @return string Escaped string
  */
 function explorexr_safe_escape_html($string) {
-    return esc_html($string);
+    return esc_html($string ?? '');
 }
 
 /**
@@ -40,7 +40,7 @@ function explorexr_safe_escape_html($string) {
  * @return string Escaped string
  */
 function explorexr_safe_escape_attr($string) {
-    return esc_attr($string);
+    return esc_attr($string ?? '');
 }
 
 /**
@@ -50,7 +50,7 @@ function explorexr_safe_escape_attr($string) {
  * @return string Escaped URL
  */
 function explorexr_safe_escape_url($url) {
-    return esc_url($url);
+    return esc_url($url ?? '');
 }
 
 /**

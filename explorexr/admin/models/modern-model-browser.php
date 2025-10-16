@@ -142,11 +142,11 @@ function explorexr_modern_model_browser_page() {
             ?>
             <div class="explorexr-dashboard-grid">
                 <?php while ($models->have_posts()) : $models->the_post(); 
-                      $model_file = get_post_meta(get_the_ID(), '_explorexr_model_file', true);
-                      $poster_url = get_post_meta(get_the_ID(), '_explorexr_model_poster', true);
-                      $poster_id = get_post_meta(get_the_ID(), '_explorexr_model_poster_id', true);
-                      $viewer_width = get_post_meta(get_the_ID(), '_explorexr_viewer_width', true);
-                      $viewer_height = get_post_meta(get_the_ID(), '_explorexr_viewer_height', true);
+                      $model_file = get_post_meta(get_the_ID(), '_explorexr_model_file', true) ?: '';
+                      $poster_url = get_post_meta(get_the_ID(), '_explorexr_model_poster', true) ?: '';
+                      $poster_id = get_post_meta(get_the_ID(), '_explorexr_model_poster_id', true) ?: '';
+                      $viewer_width = get_post_meta(get_the_ID(), '_explorexr_viewer_width', true) ?: '';
+                      $viewer_height = get_post_meta(get_the_ID(), '_explorexr_viewer_height', true) ?: '';
                       $shortcode = '[explorexr_model id="' . get_the_ID() . '"]';
                       
                       // Delete URL with nonce for security
@@ -167,13 +167,13 @@ function explorexr_modern_model_browser_page() {
                             <?php if ($poster_url) : ?>
                                 <?php
                                 if (!empty($poster_id)) {
-                                    echo wp_get_attachment_image($poster_id, 'medium', false, array('alt' => esc_attr(get_the_title())));
+                                    echo wp_get_attachment_image($poster_id, 'medium', false, array('alt' => esc_attr(get_the_title() ?: '')));
                                 } else {
                                     // Fallback for cases where we have URL but no attachment ID
                                     // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage -- Fallback for external URLs
                                     printf('<img src="%s" alt="%s" loading="lazy">', 
                                         esc_url($poster_url), 
-                                        esc_attr(get_the_title())
+                                        esc_attr(get_the_title() ?: '')
                                     );
                                 }
                                 ?>
@@ -196,7 +196,7 @@ function explorexr_modern_model_browser_page() {
                                 ?>
                                 <button class="view-3d-model" 
                                    data-model-url="<?php echo esc_url($file_url); ?>"
-                                   data-model-name="<?php echo esc_attr(get_the_title()); ?>"
+                                   data-model-name="<?php echo esc_attr(get_the_title() ?: ''); ?>"
                                    data-poster-url="<?php echo esc_url($poster_url); ?>"
                                    title="View Model">
                                     <span class="dashicons dashicons-visibility"></span>
@@ -204,7 +204,7 @@ function explorexr_modern_model_browser_page() {
                                 <?php endif; ?>                                <button class="delete-model" 
                                    data-delete-url="<?php echo esc_url($delete_url); ?>"
                                    data-model-id="<?php echo esc_attr(get_the_ID()); ?>"
-                                   data-model-name="<?php echo esc_attr(get_the_title()); ?>" title="Delete Model">
+                                   data-model-name="<?php echo esc_attr(get_the_title() ?: ''); ?>" title="Delete Model">
                                     <span class="dashicons dashicons-trash"></span>
                                 </button>
                             </div>

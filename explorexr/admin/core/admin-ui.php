@@ -198,7 +198,7 @@ function EXPLOREXR_custom_ui_page() {
                         while ($recent_models->have_posts()) {
                             $recent_models->the_post();
                             echo '<li style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f1;">';
-                            echo '<span>' . esc_html(get_the_title()) . '</span>';
+                            echo '<span>' . esc_html(get_the_title() ?: '') . '</span>';
                             echo '<span style="color: #646970;">' . esc_html(get_the_date('M j, Y')) . '</span>';
                             echo '</li>';
                         }
@@ -301,8 +301,8 @@ function EXPLOREXR_custom_ui_page() {
             
             <div class="explorexr-dashboard-grid">
                 <?php while ($featured_models->have_posts()) : $featured_models->the_post(); 
-                      $model_file = get_post_meta(get_the_ID(), '_EXPLOREXR_model_file', true);
-                      $poster_url = get_post_meta(get_the_ID(), '_EXPLOREXR_model_poster', true);
+                      $model_file = get_post_meta(get_the_ID(), '_EXPLOREXR_model_file', true) ?: '';
+                      $poster_url = get_post_meta(get_the_ID(), '_EXPLOREXR_model_poster', true) ?: '';
                       $shortcode = '[EXPLOREXR_model id="' . get_the_ID() . '"]';
                 ?>
                     <div class="explorexr-card explorexr-model-card">
@@ -312,13 +312,13 @@ function EXPLOREXR_custom_ui_page() {
                                 // Try to get attachment ID if it's a WordPress attachment
                                 $attachment_id = attachment_url_to_postid($poster_url);
                                 if ($attachment_id) {
-                                    echo wp_get_attachment_image($attachment_id, 'medium', false, ['alt' => esc_attr(get_the_title())]);
+                                    echo wp_get_attachment_image($attachment_id, 'medium', false, ['alt' => esc_attr(get_the_title() ?: '')]);
                                 } else {
                                     // Fallback for external URLs or non-WordPress images
                                     // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage -- Fallback for external URLs
                                     printf('<img src="%s" alt="%s" loading="lazy">', 
                                         esc_url($poster_url), 
-                                        esc_attr(get_the_title())
+                                        esc_attr(get_the_title() ?: '')
                                     );
                                 }
                                 ?>
@@ -336,7 +336,7 @@ function EXPLOREXR_custom_ui_page() {
                                 <?php if ($model_file) : ?>
                                 <button class="view-3d-model" 
                                    data-model-url="<?php echo esc_url($model_file); ?>"
-                                   data-model-name="<?php echo esc_attr(get_the_title()); ?>"
+                                   data-model-name="<?php echo esc_attr(get_the_title() ?: ''); ?>"
                                    data-poster-url="<?php echo esc_url($poster_url); ?>"
                                    title="View Model">
                                     <span class="dashicons dashicons-visibility"></span>

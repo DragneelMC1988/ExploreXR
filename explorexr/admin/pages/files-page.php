@@ -92,7 +92,7 @@ function explorexr_files_page() {
                     if ($model_query->have_posts()) {
                         while ($model_query->have_posts()) {
                             $model_query->the_post();
-                            $model_names[] = '<a href="' . esc_url(get_edit_post_link(get_the_ID())) . '">' . esc_html(get_the_title()) . '</a>';
+                            $model_names[] = '<a href="' . esc_url(get_edit_post_link(get_the_ID())) . '">' . esc_html(get_the_title() ?: '') . '</a>';
                         }
                     }
                     wp_reset_postdata();
