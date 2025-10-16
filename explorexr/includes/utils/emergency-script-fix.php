@@ -81,6 +81,10 @@ function ExploreXR_complete_script_disable() {
  * Block ExploreXR plugin scripts
  */
 function ExploreXR_block_plugin_scripts($src, $handle) {
+    // Add null checks to prevent PHP 8.1+ deprecation warnings
+    $src = (string) $src;
+    $handle = (string) $handle;
+    
     if (strpos($src, 'explorexr') !== false || strpos($handle, 'explorexr') !== false) {
         return false; // Block ExploreXR scripts
     }
@@ -104,6 +108,10 @@ function ExploreXR_gradual_script_enable() {
     );
     
     add_filter('script_loader_src', function($src, $handle) use ($safe_scripts) {
+        // Add null checks to prevent PHP 8.1+ deprecation warnings
+        $src = (string) $src;
+        $handle = (string) $handle;
+        
         if (strpos($src, 'explorexr') !== false || strpos($handle, 'explorexr') !== false) {
             if (!in_array($handle, $safe_scripts)) {
                 return false; // Still block most ExploreXR scripts

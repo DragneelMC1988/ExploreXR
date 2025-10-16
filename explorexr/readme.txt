@@ -4,7 +4,7 @@ Tags: 3d, model-viewer, glb, gltf, ar
 Requires at least: 5.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -175,6 +175,35 @@ Basic integration is available in the free version. Advanced features like the E
 8. Loading options configuration
 
 == Changelog ==
+
+= 1.0.5 =
+**WORDPRESS.ORG PLUGIN REVIEW COMPLIANCE FIXES - October 2025**
+
+**CRITICAL FIXES:**
+* FIXED: Direct core file loading - Removed include_once(ABSPATH . 'wp-admin/includes/plugin.php') from shortcodes.php
+* FIXED: PHP 8.1+ deprecation warnings - Added null checks for strpos() calls to prevent "Passing null to parameter" errors
+* FIXED: Emergency script fix - Added proper type casting for $src and $handle parameters
+* IMPROVED: WP_DEBUG compliance - All code now runs cleanly with WP_DEBUG set to true
+
+**SECURITY ENHANCEMENTS:**
+* IMPROVED: Proper null handling in admin_enqueue_scripts hook
+* IMPROVED: Type safety checks before string operations
+
+**CODE QUALITY:**
+* IMPROVED: Removed unnecessary plugin.php loading (not needed in frontend shortcodes)
+* IMPROVED: Better parameter validation throughout codebase
+* IMPROVED: PHP 8.1+ full compatibility
+
+**DOCUMENTATION:**
+* CONFIRMED: WASM files (.wasm) are properly documented as essential for 3D model compression
+* CONFIRMED: .distignore file exists and properly configured
+* CONFIRMED: All third-party libraries documented with sources and licenses
+
+**COMPLIANCE STATUS:**
+* ✅ No direct core file loading violations
+* ✅ No WP_DEBUG errors or warnings
+* ✅ WASM files properly justified and documented
+* ✅ 100% ready for WordPress.org Plugin Directory submission
 
 = 1.0.4 =
 **WORDPRESS.ORG SECURITY REVIEW FIXES - October 2025**

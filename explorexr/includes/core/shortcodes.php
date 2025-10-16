@@ -13,10 +13,9 @@ if (!defined('ABSPATH')) {
 // Include helper functions only when needed (moved from top level to prevent circular dependencies)
 // require_once EXPLOREXR_PLUGIN_DIR . 'includes/models/model-helper.php';
 
-// Make sure we have access to plugin functions
-if (!function_exists('is_plugin_active')) {
-    include_once(ABSPATH . 'wp-admin/includes/plugin.php');
-}
+// Note: The is_plugin_active() function is only available in admin context
+// We don't need it in shortcodes since they run on frontend
+// If needed in admin, WordPress automatically loads plugin.php
 
 // Enqueue model loader script when needed
 function EXPLOREXR_enqueue_model_loader() {
@@ -437,7 +436,8 @@ add_shortcode('explorexr_model', function ($atts) {
 
 // Enqueue admin scripts
 add_action('admin_enqueue_scripts', function ($hook) {
-    if (strpos($hook, 'explorexr') !== false) {
+    // Add null check to prevent deprecated warning in PHP 8.1+
+    if (!empty($hook) && is_string($hook) && strpos($hook, 'explorexr') !== false) {
         // Add the script directly in admin
         wp_enqueue_script('explorexr-model-loader', EXPLOREXR_PLUGIN_URL . 'assets/js/model-loader.js', array('jquery'), EXPLOREXR_VERSION, true);
     }
