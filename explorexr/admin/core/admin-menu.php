@@ -77,6 +77,50 @@ function explorexr_fix_admin_menu_highlighting($parent_file) {
 add_filter('parent_file', 'explorexr_fix_admin_menu_highlighting');
 
 /**
+ * Fix admin title to remove unwanted ‹ character
+ * WordPress adds "‹" (lsaquo) separator in admin titles, we need to remove it for ExploreXR pages
+ * This is especially important for hidden submenu pages like Edit Model
+ */
+function explorexr_fix_admin_title($admin_title, $title) {
+    global $pagenow;
+    
+    // Check if we're on an ExploreXR admin page (including hidden edit page)
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used for display purposes only
+    if ($pagenow === 'admin.php' && isset($_GET['page']) && strpos(sanitize_text_field(wp_unslash($_GET['page'])), 'explorexr') === 0) {
+        // Remove the ‹ character and extra spaces
+        $admin_title = str_replace(' ‹ ', ' ', $admin_title);
+        $admin_title = str_replace('‹ ', '', $admin_title);
+        $admin_title = str_replace(' ‹', '', $admin_title);
+        $admin_title = str_replace('‹', '', $admin_title);
+        // Also clean up any double spaces that might remain
+        $admin_title = preg_replace('/\s+/', ' ', $admin_title);
+        $admin_title = trim($admin_title);
+    }
+    
+    return $admin_title;
+}
+add_filter('admin_title', 'explorexr_fix_admin_title', 10, 2);
+
+/**
+ * Additional fix for edit model page title using JavaScript
+ * This catches the title after WordPress has fully rendered it
+ */
+function explorexr_fix_edit_model_title_script() {
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used for display purposes only
+    if (isset($_GET['page']) && sanitize_text_field(wp_unslash($_GET['page'])) === 'explorexr-edit-model') {
+        ?>
+        <script type="text/javascript">
+        (function() {
+            // Fix the page title by removing the ‹ character
+            document.title = document.title.replace(/‹\s*/g, '').replace(/\s*‹/g, '').replace(/\s+/g, ' ').trim();
+        })();
+        </script>
+        <?php
+    }
+}
+add_action('admin_head', 'explorexr_fix_edit_model_title_script');
+
+/**
  * Enqueue admin scripts and styles
  */
 function explorexr_admin_enqueue_scripts($hook) {

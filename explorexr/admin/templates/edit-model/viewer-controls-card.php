@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
 
 // Check if model_id is defined, if not try to get it from $_GET
 if (!isset($model_id) || empty($model_id)) {
-    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used for template display only
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for display
     $model_id = isset($_GET['model_id']) ? intval($_GET['model_id']) : 0;
     // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used for template display only
     if (!$model_id) {
@@ -24,17 +24,24 @@ if (!isset($model_id) || empty($model_id)) {
 }
 
 // Ensure interactions and auto_rotate variables are defined with proper defaults
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
 if (!isset($enable_interactions)) {
+    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
     $enable_interactions_meta = get_post_meta($model_id, '_explorexr_enable_interactions', true) ?: 'on';
+    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
     $enable_interactions = ($enable_interactions_meta === 'on');
 }
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
 if (!isset($auto_rotate)) {
+    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
     $auto_rotate_meta = get_post_meta($model_id, '_explorexr_auto_rotate', true) ?: '';
     if ($auto_rotate_meta === '') {
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
         $auto_rotate = false; // Default to disabled
         update_post_meta($model_id, '_explorexr_auto_rotate', 'off');
     } else {
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
         $auto_rotate = ($auto_rotate_meta === 'on');
     }
 }
@@ -70,16 +77,7 @@ if (!isset($auto_rotate)) {
             <div id="auto-rotate-settings" <?php if (!$auto_rotate) echo 'style="display: none;"'; ?>>
                 <?php 
                 // Get auto-rotate delay with default value if not set
-                $auto_rotate_delay = get_post_meta($model_id, '_explorexr_auto_rotate_delay', true);
-                if (empty($auto_rotate_delay)) {
-                    $auto_rotate_delay = '5000';
-                }
-                
-                // Get rotation speed with default value if not set
-                $auto_rotate_speed = get_post_meta($model_id, '_explorexr_rotation_per_second', true);
-                if (empty($auto_rotate_speed)) {
-                    $auto_rotate_speed = '30deg';
-                }
+                // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include\n                $auto_rotate_delay = get_post_meta($model_id, '_explorexr_auto_rotate_delay', true);\n                if (empty($auto_rotate_delay)) {\n                    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include\n                    $auto_rotate_delay = '5000';\n                }\n                \n                // Get rotation speed with default value if not set\n                // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include\n                $auto_rotate_speed = get_post_meta($model_id, '_explorexr_rotation_per_second', true);\n                if (empty($auto_rotate_speed)) {\n                    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include\n                    $auto_rotate_speed = '30deg';\n                }
                 ?>
                 <div class="explorexr-form-group" style="margin-top: 15px; margin-left: 20px;">
                     <label for="explorexr_auto_rotate_delay">Auto-rotate Delay</label>
@@ -99,6 +97,7 @@ if (!isset($auto_rotate)) {
 
 <?php
 // WordPress.org compliance: Convert inline script to wp_add_inline_script
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for inline script
 $viewer_controls_script = '
 jQuery(document).ready(function($) {
     // Update state field when enable interactions checkbox changes

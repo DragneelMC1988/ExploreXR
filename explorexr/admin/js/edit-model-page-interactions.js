@@ -159,6 +159,9 @@ jQuery(document).ready(function($) {
             
             const previewElement = $('#explorexr-poster-preview');
             previewElement.show().find('img').attr('src', attachment.url);
+            
+            // Bug Fix #4: Hide upload section after poster is selected
+            $('#upload-poster').hide();
         });
         
         mediaUploader.open();
@@ -179,8 +182,8 @@ jQuery(document).ready(function($) {
         const selectedPredefinedSize = $('input[name="viewer_size"]:checked').val();
         
         if (activeTab === 'predefined-sizes' && selectedPredefinedSize && selectedPredefinedSize !== 'custom') {
-            // If a predefined size is selected, disable the custom size field and update width/height
-            $('#custom_size_field').prop('disabled', true);
+            // If a predefined size is selected, update width/height but keep field enabled for form submission
+            // Note: We don't disable custom_size_field to ensure all device size inputs are submitted
             
             let width, height;
             switch(selectedPredefinedSize) {
@@ -206,10 +209,8 @@ jQuery(document).ready(function($) {
                 $('#viewer_width').val(width);
                 $('#viewer_height').val(height);
             }
-        } else {
-            // Custom size is active, enable the custom size field
-            $('#custom_size_field').prop('disabled', false);
         }
+        // Custom size field is always enabled to ensure all device sizes are submitted with the form
     }
     
     // Initialize on page load

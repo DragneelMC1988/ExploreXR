@@ -16,6 +16,7 @@ if (!defined('ABSPATH')) {
 if (function_exists('explorexr_is_premium_available') && explorexr_is_premium_available()):
 
 // Get loading settings
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variables for loading settings
 $loading_bar_color = get_post_meta($model_id, '_explorexr_loading_bar_color', true) ?: '#4285f4';
 $loading_bar_height = get_post_meta($model_id, '_explorexr_loading_bar_height', true) ?: '4px';
 $loading_bar_position = get_post_meta($model_id, '_explorexr_loading_bar_position', true) ?: 'bottom';
@@ -31,6 +32,7 @@ $overlay_color = get_post_meta($model_id, '_explorexr_overlay_color', true) ?: '
 $overlay_blur = get_post_meta($model_id, '_explorexr_overlay_blur', true) === 'on';
 $lazy_load_model = get_post_meta($model_id, '_explorexr_lazy_load_model', true) === 'on';
 $script_location = get_post_meta($model_id, '_explorexr_script_location', true) ?: 'header';
+// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 ?>
 
 <div class="explorexr-card">

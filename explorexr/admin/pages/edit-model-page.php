@@ -79,7 +79,7 @@ function ExploreXR_edit_model_page() {
             'type' => 'error',
             'message' => 'The requested model could not be found. Please check the model ID and try again.'
         ));
-        wp_redirect(admin_url('admin.php?page=explorexr'));
+        wp_safe_redirect(admin_url('admin.php?page=explorexr'));
         exit;
     }
     
@@ -91,7 +91,7 @@ function ExploreXR_edit_model_page() {
             'type' => 'error',
             'message' => 'The requested model no longer exists. It may have been deleted.'
         ));
-        wp_redirect(admin_url('admin.php?page=explorexr'));
+        wp_safe_redirect(admin_url('admin.php?page=explorexr'));
         exit;
     }
     
@@ -405,7 +405,7 @@ function ExploreXR_edit_model_page() {
         ?>
         
         <?php if (!empty($success_message)) : ?>
-        <div class="ExploreXR-alert success">
+        <div class="explorexr-alert success">
             <span class="dashicons dashicons-yes"></span>
             <div>
                 <p><?php echo esc_html($success_message); ?></p>
@@ -415,7 +415,7 @@ function ExploreXR_edit_model_page() {
         <?php endif; ?>
         
         <?php if (!empty($error_message)) : ?>
-        <div class="ExploreXR-alert error">
+        <div class="explorexr-alert error">
             <span class="dashicons dashicons-warning"></span>
             <div>
                 <p><?php echo esc_html($error_message); ?></p>

@@ -28,7 +28,7 @@ if (isset($_GET['explorexr-settings-updated']) && sanitize_text_field(wp_unslash
 // Check for ExploreXR error messages
 // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only display of URL parameters
 if (isset($_GET['explorexr-error']) && !empty($_GET['explorexr-error'])) {
-    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only display of URL parameters
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for URL parameter
     $error_message = sanitize_text_field(wp_unslash($_GET['explorexr-error']));
     add_action('admin_notices', function() use ($error_message) {
         echo '<div class="notice notice-error is-dismissible">
@@ -40,7 +40,7 @@ if (isset($_GET['explorexr-error']) && !empty($_GET['explorexr-error'])) {
 // Check for ExploreXR success messages
 // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only display of URL parameters
 if (isset($_GET['explorexr-success']) && !empty($_GET['explorexr-success'])) {
-    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only display of URL parameters
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for URL parameter
     $success_message = sanitize_text_field(wp_unslash($_GET['explorexr-success']));
     add_action('admin_notices', function() use ($success_message) {
         echo '<div class="notice notice-success is-dismissible">
