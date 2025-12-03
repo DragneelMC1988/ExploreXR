@@ -16,12 +16,14 @@ require_once EXPLOREXR_PLUGIN_DIR . 'admin/pages/loading-options-page.php';
 require_once EXPLOREXR_PLUGIN_DIR . 'admin/pages/settings-page.php';
 
 // Include edit model page if exists
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template file path variable
 $edit_model_page = EXPLOREXR_PLUGIN_DIR . 'admin/pages/edit-model-page.php';
 if (file_exists($edit_model_page)) {
     require_once $edit_model_page;
 }
 
 // Include import/export functionality (if exists)
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template file path variable
 $import_export_file = EXPLOREXR_PLUGIN_DIR . 'admin/settings/import-export.php';
 if (file_exists($import_export_file)) {
     require_once $import_export_file;

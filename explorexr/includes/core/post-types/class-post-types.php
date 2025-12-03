@@ -219,11 +219,6 @@ class ExploreXR_Post_Types {
             
             // Enqueue core metabox scripts AFTER the model uploader and fix script
             wp_enqueue_script('explorexr-model-file-handler', EXPLOREXR_PLUGIN_URL . 'includes/post-types/assets/js/model-file-handler.js', array('jquery', 'explorexr-model-uploader', 'explorexr-edit-mode-fix'), '1.0.1', true);
-            
-            // Add debug output when in SCRIPT_DEBUG mode
-            if (defined('SCRIPT_DEBUG') && SCRIPT_DEBUG) {
-                wp_add_inline_script('explorexr-model-uploader', 'console.log("ExploreXR Model Uploader v1.0.1 loaded");');
-            }
         }
     }
 }

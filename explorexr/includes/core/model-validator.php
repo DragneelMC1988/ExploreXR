@@ -54,16 +54,6 @@ function explorexr_validate_model_environment($model_id) {
         $validation_result['valid'] = false;
         $validation_result['errors'][] = 'The 3D model file is currently unavailable. Please try refreshing the page or contact support if this continues.';
         
-        // Add debugging information if available
-        if (function_exists('explorexr_debug_add')) {
-            explorexr_debug_add('model_validation', 'File Access Error', array(
-                'model_id' => $model_id,
-                'model_file' => $model_file,
-                'error' => $file_check['error'],
-                'attempted_path' => $file_check['attempted_path'] ?? 'unknown'
-            ), 'error');
-        }
-        
         return $validation_result;
     }
     
@@ -243,15 +233,6 @@ function explorexr_safe_model_shortcode($atts) {
     // If validation fails, return error message
     if (!$validation['valid']) {
         return explorexr_generate_model_error_message($validation);
-    }
-    
-    // Log warnings if debugging is enabled
-    if (!empty($validation['warnings']) && function_exists('explorexr_debug_add')) {
-        explorexr_debug_add('model_loading', 'Model Validation Warnings', array(
-            'model_id' => $model_id,
-            'warnings' => $validation['warnings'],
-            'fallbacks_applied' => $validation['fallbacks_applied']
-        ), 'warning');
     }
     
     // If we get here, the model should load safely

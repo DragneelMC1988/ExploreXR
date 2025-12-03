@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
 
 // Check if model_id is defined, if not try to get it from $_GET
 if (!isset($model_id) || empty($model_id)) {
-    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used for template display only
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for display
     $model_id = isset($_GET['model_id']) ? intval($_GET['model_id']) : 0;
     // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used for template display only
     if (!$model_id) {
@@ -25,30 +25,37 @@ if (!isset($model_id) || empty($model_id)) {
 
 // Ensure required variables are defined
 if (!isset($viewer_size)) {
+    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
     $viewer_size = get_post_meta($model_id, '_explorexr_viewer_size', true) ?: 'custom';
 }
 
 if (!isset($viewer_width)) {
+    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
     $viewer_width = get_post_meta($model_id, '_explorexr_viewer_width', true) ?: '100%';
 }
 
 if (!isset($viewer_height)) {
+    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
     $viewer_height = get_post_meta($model_id, '_explorexr_viewer_height', true) ?: '500px';
 }
 
 if (!isset($tablet_viewer_width)) {
+    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
     $tablet_viewer_width = get_post_meta($model_id, '_explorexr_tablet_viewer_width', true) ?: '';
 }
 
 if (!isset($tablet_viewer_height)) {
+    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
     $tablet_viewer_height = get_post_meta($model_id, '_explorexr_tablet_viewer_height', true) ?: '';
 }
 
 if (!isset($mobile_viewer_width)) {
+    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
     $mobile_viewer_width = get_post_meta($model_id, '_explorexr_mobile_viewer_width', true) ?: '';
 }
 
 if (!isset($mobile_viewer_height)) {
+    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
     $mobile_viewer_height = get_post_meta($model_id, '_explorexr_mobile_viewer_height', true) ?: '';
 }
 ?>
@@ -71,6 +78,7 @@ if (!isset($mobile_viewer_height)) {
                     <div class="explorexr-size-preview">
                         <div class="explorexr-size-box explorexr-size-box-small"></div>
                         <span>Small (300x300px)</span>
+                        <p class="description">Automatically responsive on all devices</p>
                     </div>
                 </label>
                 
@@ -79,6 +87,7 @@ if (!isset($mobile_viewer_height)) {
                     <div class="explorexr-size-preview">
                         <div class="explorexr-size-box explorexr-size-box-medium"></div>
                         <span>Medium (500x500px)</span>
+                        <p class="description">Automatically responsive on all devices</p>
                     </div>
                 </label>
                 
@@ -87,6 +96,7 @@ if (!isset($mobile_viewer_height)) {
                     <div class="explorexr-size-preview">
                         <div class="explorexr-size-box explorexr-size-box-large"></div>
                         <span>Large (800x600px)</span>
+                        <p class="description">Automatically responsive on all devices</p>
                     </div>
                 </label>
             </div>

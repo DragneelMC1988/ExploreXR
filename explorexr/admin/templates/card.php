@@ -19,7 +19,9 @@ if (!defined('ABSPATH')) {
     <div class="explorexr-card-content">
         <?php 
         // Admin content - allow form elements and other HTML
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Local variable for wp_kses configuration
         $allowed_html = wp_kses_allowed_html('post');
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Local variable for wp_kses configuration
         $allowed_html['form'] = array(
             'action' => array(),
             'method' => array(),
@@ -28,6 +30,7 @@ if (!defined('ABSPATH')) {
             'enctype' => array(),
             'onsubmit' => array(),
         );
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Local variable for wp_kses configuration
         $allowed_html['input'] = array(
             'type' => array(),
             'name' => array(),
@@ -42,15 +45,18 @@ if (!defined('ABSPATH')) {
             'required' => array(),
             'accept' => array(),
         );
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Local variable for wp_kses configuration
         $allowed_html['select'] = array(
             'name' => array(),
             'id' => array(),
             'class' => array(),
         );
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Local variable for wp_kses configuration
         $allowed_html['option'] = array(
             'value' => array(),
             'selected' => array(),
         );
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Local variable for wp_kses configuration
         $allowed_html['textarea'] = array(
             'name' => array(),
             'id' => array(),
@@ -58,12 +64,15 @@ if (!defined('ABSPATH')) {
             'rows' => array(),
             'cols' => array(),
         );
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Local variable for wp_kses configuration
         $allowed_html['fieldset'] = array(
             'class' => array(),
         );
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Local variable for wp_kses configuration
         $allowed_html['legend'] = array(
             'class' => array(),
         );
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Local variable for wp_kses configuration
         $allowed_html['button'] = array(
             'type' => array(),
             'class' => array(),

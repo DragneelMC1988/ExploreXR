@@ -17,7 +17,6 @@
     
     // Check if model-viewer is already registered
     if (window.customElements && window.customElements.get('model-viewer')) {
-        console.log('[ExploreXR Guard] model-viewer already registered, preventing duplicate load');
         
         // Update our tracking object
         window.explorexr_mODEL_VIEWER_LOADED.registered = true;
@@ -52,7 +51,6 @@
                     window.explorexr_mODEL_VIEWER_LOADED.source = document.currentScript ? document.currentScript.src : 'unknown';
                     
                     try {
-                        console.log('[ExploreXR Guard] Registering model-viewer for the first time');
                         return originalDefine.call(this, name, constructor, options);
                     } catch (e) {
                         console.error('[ExploreXR Guard] Error during model-viewer registration:', e);
@@ -90,7 +88,6 @@
             
             // Check if model-viewer is actually available and log status
             const isAvailable = !!(window.customElements && window.customElements.get('model-viewer'));
-            console.log(`[ExploreXR Guard] model-viewer availability: ${isAvailable ? 'YES' : 'NO'}`);
             
             // Prevent the error from propagating
             return true;

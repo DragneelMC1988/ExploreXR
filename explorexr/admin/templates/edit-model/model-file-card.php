@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
 
 // Check if model_id is defined, if not try to get it from $_GET
 if (!isset($model_id) || empty($model_id)) {
-    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used for template display only
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for display
     $model_id = isset($_GET['model_id']) ? intval($_GET['model_id']) : 0;
     // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used for template display only
     if (!$model_id) {
@@ -25,24 +25,31 @@ if (!isset($model_id) || empty($model_id)) {
 
 // Ensure required variables are defined
 if (!isset($model_file)) {
+    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
     $model_file = get_post_meta($model_id, '_explorexr_model_file', true) ?: '';
 }
 
 if (!isset($existing_models)) {
+    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
     $existing_models = array();
     if (function_exists('explorexr_get_model_files_from_directory')) {
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for file list
         $uploaded_files = explorexr_get_model_files_from_directory();
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Loop variable in template
         foreach ($uploaded_files as $file) {
+            // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template array assignment
             $existing_models[$file['url']] = $file['name'];
         }
     }
 }
 
 if (!isset($poster_url)) {
+    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
     $poster_url = get_post_meta($model_id, '_explorexr_model_poster', true) ?: '';
 }
 
 if (!isset($poster_id)) {
+    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
     $poster_id = get_post_meta($model_id, '_explorexr_model_poster_id', true) ?: '';
 }
 ?>
@@ -89,7 +96,10 @@ if (!isset($poster_id)) {
             <div class="explorexr-form-group">
                 <label for="existing_model">Select Existing Model</label>
                 <select name="existing_model" id="existing_model" class="regular-text">
-                    <?php foreach ($existing_models as $file_url => $file_name) : ?>
+                    <?php 
+                    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Loop variables in template context
+                    foreach ($existing_models as $file_url => $file_name) : 
+                    ?>
                         <option value="<?php echo esc_attr($file_url); ?>" <?php selected($model_file, $file_url); ?>><?php echo esc_html($file_name); ?></option>
                     <?php endforeach; ?>
                 </select>

@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const postForm = document.getElementById('post');
     if (postForm) {
         postForm.addEventListener('submit', function(e) {
-            console.log('Form submission detected - adding edit mode marker');
             
             // Add a hidden field to signal this is coming from the edit form
             let editModeField = document.getElementById('explorexr_edit_mode_field');
@@ -48,7 +47,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 nonceField.value = nonceValue;
                 postForm.appendChild(nonceField);
                 
-                console.log('ExploreXR: Added backup nonce field with value: ' + (nonceValue ? 'present' : 'empty'));
             }
             
             // Create hidden fields for all checkboxes to ensure their state is saved
@@ -64,13 +62,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     postForm.appendChild(hiddenField);
                 }
                 hiddenField.value = cb.checked ? '1' : '0';
-                console.log('Setting checkbox state for ' + cb.name + ' to ' + (cb.checked ? 'checked' : 'unchecked'));
             });
             
             // Ensure all model settings are properly passed
             captureFormChanges();
             
-            console.log('Form submission prepared - edit mode enabled');
         });
     }
     
@@ -84,7 +80,6 @@ document.addEventListener('DOMContentLoaded', function() {
     initExistingPreviews();
     
     // Add a debug notice to indicate the enhanced JS is loaded
-    console.log('ExploreXR Edit Mode enhanced v1.0.3 - Model uploader loaded');
 });
 
 /**
@@ -93,7 +88,6 @@ document.addEventListener('DOMContentLoaded', function() {
  */
 function setupCheckboxTracking() {
     const checkboxes = document.querySelectorAll('.postbox input[type="checkbox"]');
-    console.log('Setting up checkbox tracking for ' + checkboxes.length + ' checkboxes');
     
     checkboxes.forEach(function(checkbox) {
         // Create a hidden field to ensure the checkbox state is always submitted
@@ -105,7 +99,6 @@ function setupCheckboxTracking() {
             hiddenField.value = checkbox.checked ? '1' : '0';
             hiddenField.id = checkbox.id + '_state';
             checkbox.parentNode.appendChild(hiddenField);
-            console.log('Created tracking field for checkbox: ' + checkbox.name);
         }
         
         // Update the hidden field when checkbox changes
@@ -113,7 +106,6 @@ function setupCheckboxTracking() {
             const stateField = document.getElementById(checkbox.id + '_state');
             if (stateField) {
                 stateField.value = checkbox.checked ? '1' : '0';
-                console.log('Checkbox ' + checkbox.name + ' changed to ' + (checkbox.checked ? 'checked' : 'unchecked'));
             }
         });
     });

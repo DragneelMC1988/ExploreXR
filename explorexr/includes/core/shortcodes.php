@@ -245,7 +245,14 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
     // Generate unique CSS ID for this model instance
     $model_css_id = 'explorexr-model-' . $model_id . '-' . uniqid();
     
+    // Annotations are not available in the free version
+    $annotations = null;
+    
+    // Enqueue required scripts and styles (MUST be done before wp_add_inline_style)
+    wp_enqueue_style('explorexr-model-viewer', EXPLOREXR_PLUGIN_URL . 'assets/css/model-viewer.css', array(), EXPLOREXR_VERSION);
+    
     // Generate responsive CSS if tablet or mobile sizes are set (WordPress.org compliance)
+    // NOTE: wp_add_inline_style must be called AFTER wp_enqueue_style
     if (!empty($tablet_width) || !empty($tablet_height) || !empty($mobile_width) || !empty($mobile_height)) {
         $responsive_css = '';
         
@@ -283,12 +290,6 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
     
     // Set responsive_css to empty since we're using wp_add_inline_style
     $responsive_css = '';
-    
-    // Annotations are not available in the free version
-    $annotations = null;
-    
-    // Enqueue required scripts and styles
-    wp_enqueue_style('explorexr-model-viewer', EXPLOREXR_PLUGIN_URL . 'assets/css/model-viewer.css', array(), EXPLOREXR_VERSION);
     
     // Make sure the script is loaded when shortcode is used
     ob_start();

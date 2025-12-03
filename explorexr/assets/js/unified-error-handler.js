@@ -330,9 +330,7 @@
          * Log message (only in debug mode)
          */
         log: function(message) {
-            if (this.debugMode) {
-                console.log(`[ExploreXR] ${message}`);
-            }
+            // Debug logging removed for production
         }
     };
     

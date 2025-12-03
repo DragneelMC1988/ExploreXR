@@ -16,6 +16,7 @@ if (!defined('ABSPATH')) {
 
 <?php
 // WordPress.org compliance: Convert inline script to wp_add_inline_script
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for inline script
 $modal_script = '
 // Only load model-viewer when the modal is actually opened
 document.addEventListener("DOMContentLoaded", function() {

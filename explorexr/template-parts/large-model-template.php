@@ -53,6 +53,7 @@ if (!defined('ABSPATH')) {
         
         <?php
         // WordPress.org compliance: Convert inline script to wp_add_inline_script
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for inline script
         $large_model_script = '
         document.addEventListener("DOMContentLoaded", function() {
             // Get the button element
@@ -81,6 +82,7 @@ if (!defined('ABSPATH')) {
     <?php if (isset($model_attributes['ar']) && !empty($model_attributes['ar'])) : ?>
     <?php
     // WordPress.org compliance: Convert inline script to wp_add_inline_script
+    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for inline script
     $ar_customization_script = '
     // Add AR button customization after model is loaded
     document.addEventListener("ExploreXRModelLoaded", function(event) {
@@ -89,6 +91,7 @@ if (!defined('ABSPATH')) {
             if (modelViewer) {';
     
     if (isset($model_attributes['ar-button-image']) && !empty($model_attributes['ar-button-image'])) {
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable concatenation
         $ar_customization_script .= '
                 // Add custom AR button with image
                 const arButton = document.createElement("button");
@@ -102,6 +105,7 @@ if (!defined('ABSPATH')) {
                 arButton.appendChild(arButtonImg);
                 modelViewer.appendChild(arButton);';
     } elseif (isset($model_attributes['ar-button-text']) && !empty($model_attributes['ar-button-text'])) {
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable concatenation
         $ar_customization_script .= '
                 // Add custom AR button with text
                 const arButton = document.createElement("button");
@@ -112,6 +116,7 @@ if (!defined('ABSPATH')) {
                 modelViewer.appendChild(arButton);';
     }
     
+    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable concatenation
     $ar_customization_script .= '
             }
         }

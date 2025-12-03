@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
 
 // Check if model_id is defined, if not try to get it from $_GET
 if (!isset($model_id) || empty($model_id)) {
-    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used for template display only
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for display
     $model_id = isset($_GET['model_id']) ? intval($_GET['model_id']) : 0;
     // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used for template display only
     if (!$model_id) {
@@ -24,11 +24,15 @@ if (!isset($model_id) || empty($model_id)) {
 }
 
 // Ensure required variables are defined
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
 if (!isset($poster_url)) {
+    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
     $poster_url = get_post_meta($model_id, '_explorexr_model_poster', true) ?: '';
 }
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
 if (!isset($poster_id)) {
+    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
     $poster_id = get_post_meta($model_id, '_explorexr_model_poster_id', true) ?: '';
 }
 ?>
@@ -52,6 +56,25 @@ if (!isset($poster_id)) {
                 <label for="model_poster">Select Image File</label>
                 <input name="model_poster" type="file" id="model_poster" accept="image/*" />
                 <p class="description">Accepted formats: JPG, PNG, GIF</p>
+                
+                <!-- Poster Preview for Upload Tab -->
+                <?php if (!empty($poster_url)) : ?>
+                <div class="explorexr-poster-preview" style="margin-top: 15px;">
+                    <h4>Current Poster:</h4>
+                    <?php 
+                    if (!empty($poster_id)) {
+                        echo wp_get_attachment_image($poster_id, 'medium', false, array('alt' => esc_attr__('Poster preview', 'explorexr')));
+                    } else {
+                        // Fallback for cases where we have URL but no attachment ID
+                        // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage -- Fallback for external URL posters
+                        printf('<img src="%s" alt="%s" loading="lazy" style="max-width: 100%%; height: auto;">', 
+                            esc_url($poster_url), 
+                            esc_attr__('Poster preview', 'explorexr')
+                        );
+                    }
+                    ?>
+                </div>
+                <?php endif; ?>
             </div>
         </div>
         

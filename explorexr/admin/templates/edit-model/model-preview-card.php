@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
 
 // Check if model_id is defined, if not try to get it from $_GET
 if (!isset($model_id) || empty($model_id)) {
-    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used for template display only
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for display
     $model_id = isset($_GET['model_id']) ? intval($_GET['model_id']) : 0;
     // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used for template display only
     if (!$model_id) {
@@ -24,24 +24,35 @@ if (!isset($model_id) || empty($model_id)) {
 }
 
 // Ensure required variables are defined
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
 if (!isset($shortcode)) {
+    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
     $shortcode = '[explorexr_model id="' . $model_id . '"]';
 }
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
 if (!isset($model_file)) {
+    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
     $model_file = get_post_meta($model_id, '_explorexr_model_file', true) ?: '';
 }
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
 if (!isset($poster_url)) {
+    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
     $poster_url = get_post_meta($model_id, '_explorexr_model_poster', true) ?: '';
 }
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
 if (!isset($auto_rotate)) {
+    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
     $auto_rotate = get_post_meta($model_id, '_explorexr_auto_rotate', true) === 'on';
 }
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
 if (!isset($camera_controls)) {
+    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
     $enable_interactions = get_post_meta($model_id, '_explorexr_enable_interactions', true) ?: 'on';
+    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
     $camera_controls = ($enable_interactions === 'on');
 }
 

@@ -102,6 +102,7 @@ if (isset($_SERVER['PHP_SELF']) && basename(sanitize_text_field(wp_unslash($_SER
         <title>WordPress Core Verification</title>
         <?php
         // WordPress.org compliance: Use wp_add_inline_style instead of inline style
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for inline styles
         $verification_styles = '
             body { font-family: Arial, sans-serif; margin: 20px; }
             table { border-collapse: collapse; width: 100%; }

@@ -13,7 +13,6 @@
 // Helper function to check if debug logging is enabled
 function ExploreXRDebugLog(message, ...args) {
     if (typeof ExploreXRLoadingOptions !== 'undefined' && ExploreXRLoadingOptions.debug_mode) {
-        console.log(message, ...args);
     }
 }
 
@@ -677,7 +676,6 @@ function loadExploreXRModel(modelInstanceId, modelFileUrl, modelAttributes) {
                     
                     // Log for debugging
                     if (window.explorexrDebug) {
-                        console.log(`[ExploreXR Debug] Model ${modelInstanceId} dynamically loaded:`, modelViewer);
                     }
                 }, 100);
             }, 300);        } else {
@@ -694,7 +692,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const scriptConfig = window.ExploreXRScriptConfig || {};
         window.loadModelViewer(scriptConfig)
             .then(function() {
-                console.log('ExploreXR: Model viewer loaded via centralized manager');
                 initExploreXRModelViewers();
             })
             .catch(function(error) {
@@ -710,7 +707,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Also listen for the model-viewer script loaded event from preloader
 document.addEventListener('ExploreXR-model-viewer-ready', function(event) {
-    console.log('ExploreXR: Model viewer ready event received at ' + new Date(event.detail.timestamp).toISOString());
     
     // Re-initialize to ensure any delayed content is processed
     setTimeout(function() {

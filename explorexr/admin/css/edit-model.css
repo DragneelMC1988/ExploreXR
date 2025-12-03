@@ -583,7 +583,7 @@ span.optional {
 
 .explorexr-poster-preview img {
     max-width: 200px; 
-    max-height: 200px; 
+    height: auto;
     border: 1px solid #ddd; 
     border-radius: 0;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -701,4 +701,20 @@ span.optional {
         width: 100%;
         justify-content: center;
     }
+}
+
+/* Bug Fix #3: Hide upload sections initially until user clicks the tab */
+#upload-model:not(.active),
+#existing-model:not(.active),
+#upload-poster:not(.active) {
+    display: none;
+}
+
+/* Ensure mobile device content is visible when active */
+.explorexr-device-content {
+    display: none;
+}
+
+.explorexr-device-content.active {
+    display: block;
 }

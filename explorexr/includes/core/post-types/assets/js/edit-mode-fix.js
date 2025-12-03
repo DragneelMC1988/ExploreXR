@@ -10,7 +10,6 @@ const EXPLOREXR_DEBUG = (typeof exploreXRDebugMode !== 'undefined' && exploreXRD
 // Debug logging function
 function explorexrDebugLog(message) {
     if (EXPLOREXR_DEBUG) {
-        console.log('ExploreXR Fix: ' + message);
     }
 }
 
