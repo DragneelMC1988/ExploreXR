@@ -77,7 +77,20 @@ if (!isset($auto_rotate)) {
             <div id="auto-rotate-settings" <?php if (!$auto_rotate) echo 'style="display: none;"'; ?>>
                 <?php 
                 // Get auto-rotate delay with default value if not set
-                // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include\n                $auto_rotate_delay = get_post_meta($model_id, '_explorexr_auto_rotate_delay', true);\n                if (empty($auto_rotate_delay)) {\n                    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include\n                    $auto_rotate_delay = '5000';\n                }\n                \n                // Get rotation speed with default value if not set\n                // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include\n                $auto_rotate_speed = get_post_meta($model_id, '_explorexr_rotation_per_second', true);\n                if (empty($auto_rotate_speed)) {\n                    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include\n                    $auto_rotate_speed = '30deg';\n                }
+                // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
+                $auto_rotate_delay = get_post_meta($model_id, '_explorexr_auto_rotate_delay', true);
+                if (empty($auto_rotate_delay)) {
+                    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
+                    $auto_rotate_delay = '5000';
+                }
+                
+                // Get rotation speed with default value if not set
+                // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
+                $auto_rotate_speed = get_post_meta($model_id, '_explorexr_rotation_per_second', true);
+                if (empty($auto_rotate_speed)) {
+                    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
+                    $auto_rotate_speed = '30deg';
+                }
                 ?>
                 <div class="explorexr-form-group" style="margin-top: 15px; margin-left: 20px;">
                     <label for="explorexr_auto_rotate_delay">Auto-rotate Delay</label>
