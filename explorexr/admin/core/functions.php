@@ -23,20 +23,20 @@ function explorexr_enqueue_edit_model_styles() {
         EXPLOREXR_VERSION
     );
     
-    // Then enqueue the Edit Model specific styles - using higher priority to override WordPress defaults
+    // Enqueue shared UI components
+    wp_enqueue_style(
+        'explorexr-components',
+        EXPLOREXR_PLUGIN_URL . 'admin/css/components.css',
+        array('explorexr-admin-common'),
+        EXPLOREXR_VERSION
+    );
+    
+    // Then enqueue the Edit Model specific styles
     wp_enqueue_style(
         'explorexr-edit-model-css',
         EXPLOREXR_PLUGIN_URL . 'admin/css/edit-model.css', 
-        array('explorexr-admin-common'), 
+        array('explorexr-components'), 
         EXPLOREXR_VERSION . '.' . time() // Add timestamp to force cache refresh during development
-    );
-    
-    // Also load the create-model.css for consistent styling between create and edit pages
-    wp_enqueue_style(
-        'explorexr-create-model-css',
-        EXPLOREXR_PLUGIN_URL . 'admin/css/create-model.css',
-        array('explorexr-admin-common'),
-        EXPLOREXR_VERSION
     );
     
     // Enqueue premium upgrade styles for free version

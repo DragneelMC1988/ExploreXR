@@ -59,7 +59,7 @@ if (!isset($poster_id)) {
                 
                 <!-- Poster Preview for Upload Tab -->
                 <?php if (!empty($poster_url)) : ?>
-                <div class="explorexr-poster-preview" style="margin-top: 15px;">
+                <div class="explorexr-poster-preview">
                     <h4>Current Poster:</h4>
                     <?php 
                     if (!empty($poster_id)) {
@@ -67,7 +67,7 @@ if (!isset($poster_id)) {
                     } else {
                         // Fallback for cases where we have URL but no attachment ID
                         // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage -- Fallback for external URL posters
-                        printf('<img src="%s" alt="%s" loading="lazy" style="max-width: 100%%; height: auto;">', 
+                        printf('<img src="%s" alt="%s" loading="lazy">', 
                             esc_url($poster_url), 
                             esc_attr__('Poster preview', 'explorexr')
                         );
@@ -86,7 +86,7 @@ if (!isset($poster_id)) {
                     <button type="button" class="button" id="explorexr-select-poster">
                         <span class="dashicons dashicons-admin-media"></span> Select Image
                     </button>
-                </div>                              <div id="explorexr-poster-preview" class="explorexr-poster-preview" <?php echo empty($poster_url) ? 'style="display: none;"' : ''; ?>>
+                </div>                              <div id="explorexr-poster-preview" class="explorexr-poster-preview<?php echo empty($poster_url) ? ' explorexr-hidden' : ''; ?>">
                     <?php 
                     if (!empty($poster_id)) {
                         echo wp_get_attachment_image($poster_id, 'medium', false, array('alt' => esc_attr__('Poster preview', 'explorexr')));

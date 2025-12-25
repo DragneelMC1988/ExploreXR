@@ -1,0 +1,306 @@
+/**
+ * Responsive Sizing Styles
+ * Enhanced UI for ExploreXR responsive sizing display
+ */
+
+/* Responsive info in predefined sizes */
+.explorexr-responsive-info {
+    display: block;
+    color: #666;
+    margin-top: 4px;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+/* Breakpoint hints */
+.explorexr-breakpoint-hint {
+    color: #999;
+    font-weight: normal;
+    font-size: 13px;
+}
+
+/* Form description */
+.explorexr-form-description {
+    margin-top: 5px;
+    margin-bottom: 15px;
+}
+
+/* Info box styling */
+.explorexr-info-box {
+    margin-bottom: 20px;
+    padding: 12px 15px;
+    background: #e7f3ff;
+    border-left: 4px solid #2271b1;
+    font-size: 13px;
+    color: #555;
+}
+
+.explorexr-info-box p {
+    margin: 0;
+}
+
+.explorexr-info-box .dashicons {
+    color: #2271b1;
+    margin-right: 5px;
+}
+
+/* Legacy - Remove these old summary grid styles (kept for backwards compatibility during transition) */
+.explorexr-size-summary-grid {
+    display: none;
+}
+
+/* Additional helper classes for inline style removal */
+.explorexr-hidden {
+    display: none;
+}
+
+.explorexr-poster-preview {
+    margin-top: 15px;
+}
+
+.explorexr-poster-preview img {
+    max-width: 100%;
+    height: auto;
+}
+
+.explorexr-poster-preview-create {
+    margin-top: 15px;
+}
+
+.explorexr-poster-preview-create img {
+    max-width: 200px;
+    max-height: 200px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.explorexr-auto-rotate-settings {
+    margin-top: 15px;
+}
+
+.explorexr-form-group-indented {
+    margin-left: 20px;
+}
+
+.explorexr-form-group-indented-top {
+    margin-top: 15px;
+    margin-left: 20px;
+}
+
+.explorexr-full-width {
+    grid-column: 1 / -1;
+}
+
+.explorexr-icon-spacing {
+    margin-right: 5px;
+}
+
+.explorexr-size-summary-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.explorexr-size-summary-card:hover {
+    background: #fff;
+    border-color: #2271b1;
+    box-shadow: 0 2px 8px rgba(34, 113, 177, 0.1);
+}
+
+.explorexr-size-summary-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+}
+
+.explorexr-size-summary-info strong {
+    font-size: 13px;
+    color: #1d2327;
+    font-weight: 600;
+}
+
+.explorexr-size-value {
+    font-size: 14px;
+    color: #2c3338;
+    font-weight: 500;
+    font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+}
+
+.explorexr-responsive-summary {
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+/* Info Box Styling */
+.explorexr-info-box {
+    border-radius: 4px;
+    line-height: 1.6;
+}
+
+.explorexr-info-box p {
+    line-height: 1.6;
+}
+
+.explorexr-info-box .dashicons {
+    vertical-align: middle;
+    margin-top: -2px;
+}
+
+/* Device Size Input Fields */
+.explorexr-device-content h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 15px;
+    color: #1d2327;
+}
+
+.explorexr-device-content .description {
+    color: #646970;
+    font-size: 12px;
+    font-style: italic;
+}
+
+.explorexr-form-row {
+    margin-bottom: 15px;
+}
+
+.explorexr-form-row label {
+    display: inline-block;
+    min-width: 80px;
+    font-weight: 600;
+    color: #1d2327;
+}
+
+.explorexr-form-row input[type="text"].small-text {
+    width: 120px;
+    margin-right: 10px;
+}
+
+.explorexr-form-row input[type="text"]::placeholder {
+    color: #a0a5aa;
+    font-style: italic;
+}
+
+/* Responsive breakpoints info */
+.optional {
+    color: #999;
+    font-weight: normal;
+    font-size: 12px;
+}
+
+/* Mobile responsiveness for summary cards */
+@media (max-width: 782px) {
+    .explorexr-size-summary-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .explorexr-size-summary-card {
+        padding: 12px;
+    }
+    
+    .explorexr-responsive-summary {
+        padding: 15px;
+    }
+}
+
+/* Size option cards */
+.explorexr-size-option {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.explorexr-size-option:hover .explorexr-size-preview {
+    background: #f0f6fc;
+    border-color: #2271b1;
+}
+
+.explorexr-size-preview {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.explorexr-size-preview span {
+    display: block;
+    margin-top: 10px;
+    font-weight: 600;
+    color: #1d2327;
+}
+
+.explorexr-size-preview .description {
+    display: block;
+    margin-top: 5px;
+    font-size: 11px;
+    color: #646970;
+}
+
+/* Device tabs styling */
+.explorexr-device-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 0;
+}
+
+.explorexr-device-tab {
+    padding: 10px 15px;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #646970;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.explorexr-device-tab:hover {
+    color: #2271b1;
+    background: #f0f6fc;
+}
+
+.explorexr-device-tab.active {
+    color: #2271b1;
+    border-bottom-color: #2271b1;
+    font-weight: 600;
+}
+
+.explorexr-device-tab .dashicons {
+    font-size: 18px;
+}
+
+/* Device content sections */
+.explorexr-device-content {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.explorexr-device-content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

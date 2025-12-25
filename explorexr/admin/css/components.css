@@ -1,0 +1,505 @@
+/**
+ * ExploreXR Shared UI Components
+ * 
+ * Reusable components used across multiple admin pages
+ * Loaded globally on all ExploreXR admin pages to ensure consistency
+ * 
+ * @package ExploreXR
+ * @since 1.0.8
+ */
+
+/* ============================================
+   TABS SYSTEM
+   Used in: Create Model, Edit Model, Model Size Metabox
+   ============================================ */
+
+.explorexr-tabs {
+    display: flex;
+    border-bottom: 1px solid #c3c4c7;
+    margin-bottom: 20px;
+}
+
+.explorexr-tab {
+    padding: 10px 15px;
+    cursor: pointer;
+    margin-bottom: -1px;
+    border: 1px solid transparent;
+    border-bottom: none;
+    background: #f6f7f7;
+    color: #2c3338;
+    font-weight: 500;
+    border-radius: 4px 4px 0 0;
+    transition: all 0.2s ease;
+    font-size: 14px;
+}
+
+.explorexr-tab:hover {
+    background: #0D152C;
+    color: #ffffff;
+}
+
+.explorexr-tab.active {
+    background: white;
+    border-color: #c3c4c7;
+    border-bottom: 1px solid white;
+    color: #2271b1;
+}
+
+.explorexr-tab-content {
+    display: none;
+}
+
+.explorexr-tab-content.active {
+    display: block;
+}
+
+/* ============================================
+   SIZE OPTIONS GRID
+   Used in: Create Model, Edit Model, Model Size Metabox
+   ============================================ */
+
+.explorexr-size-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.explorexr-size-option {
+    cursor: pointer;
+    padding: 15px;
+    border: 2px solid #e2e4e7;
+    border-radius: 5px;
+    background: #f6f7f7;
+    transition: all 0.3s ease;
+}
+
+.explorexr-size-option:hover {
+    background: #0D152C;
+    border-color: #0D152C;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+}
+
+.explorexr-size-option input[type="radio"] {
+    display: none;
+}
+
+.explorexr-size-option input:checked + .explorexr-size-preview {
+    color: #2271b1;
+}
+
+.explorexr-size-option input:checked + .explorexr-size-preview .explorexr-size-box {
+    border-color: #2271b1;
+    background-color: rgba(34, 113, 177, 0.1);
+}
+
+.explorexr-size-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+}
+
+.explorexr-size-box {
+    background-color: #f0f0f0;
+    border: 2px solid #c8c8c8;
+    border-radius: 4px;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Size box variants */
+.explorexr-size-box-small {
+    width: 60px;
+    height: 60px;
+}
+
+.explorexr-size-box-medium {
+    width: 80px;
+    height: 80px;
+}
+
+.explorexr-size-box-large {
+    width: 100px;
+    height: 80px;
+}
+
+.explorexr-size-box-xlarge {
+    width: 120px;
+    height: 90px;
+}
+
+/* ============================================
+   DEVICE TABS (Responsive Sizing)
+   Used in: Create Model, Edit Model, Model Size Metabox
+   ============================================ */
+
+.explorexr-device-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    background: #f6f7f7;
+    border-radius: 4px;
+    padding: 5px;
+}
+
+.explorexr-device-tab {
+    cursor: pointer;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    background-color: transparent;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #646970;
+    font-weight: 500;
+}
+
+.explorexr-device-tab .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+.explorexr-device-tab:hover {
+    color: #2271b1;
+}
+
+.explorexr-device-tab.active {
+    background-color: #fff;
+    color: #2271b1;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.explorexr-device-content {
+    display: none;
+}
+
+.explorexr-device-content.active {
+    display: block;
+}
+
+/* ============================================
+   FORM ELEMENTS
+   Used in: Create Model, Edit Model, Model Size Metabox
+   ============================================ */
+
+.explorexr-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-top: 10px;
+}
+
+.explorexr-form-group {
+    margin-bottom: 0;
+}
+
+.explorexr-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #1d2327;
+    font-size: 14px;
+}
+
+.explorexr-device-content .explorexr-form-row input {
+    max-width: 100px;
+}
+
+.explorexr-form-group input[type="text"],
+.explorexr-form-group input[type="email"],
+.explorexr-form-group input[type="url"],
+.explorexr-form-group textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #dcdcde;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #2c3338;
+    font-size: 14px;
+    line-height: 1.5;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.explorexr-form-group input[type="text"]:focus,
+.explorexr-form-group input[type="email"]:focus,
+.explorexr-form-group input[type="url"]:focus,
+.explorexr-form-group textarea:focus {
+    border-color: #2271b1;
+    box-shadow: 0 0 0 1px #2271b1;
+    outline: none;
+}
+
+.explorexr-form-group input[type="text"]::placeholder,
+.explorexr-form-group input[type="email"]::placeholder,
+.explorexr-form-group input[type="url"]::placeholder,
+.explorexr-form-group textarea::placeholder {
+    color: #949494;
+    opacity: 1;
+}
+
+.explorexr-form-group textarea {
+    min-height: 100px;
+    resize: vertical;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+.explorexr-form-group .description {
+    display: block;
+    color: #646970;
+    font-size: 13px;
+    margin-top: 5px;
+    font-style: italic;
+}
+
+/* Full width form groups span both columns */
+.explorexr-full-width {
+    grid-column: 1 / -1;
+}
+
+.explorexr-form-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.explorexr-form-row label {
+    margin-bottom: 0;
+    min-width: 80px;
+    font-weight: 500;
+}
+
+.explorexr-form-row .description {
+    margin-top: 0;
+    margin-left: 10px;
+}
+
+/* ============================================
+   INPUT GROUPS
+   Used in: Create Model, Edit Model, Model Size Metabox
+   ============================================ */
+
+.explorexr-input-group {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.explorexr-input-group input {
+    flex: 1;
+}
+
+.explorexr-input-group .button {
+    flex-shrink: 0;
+}
+
+/* ============================================
+   CHECKBOX & RADIO GROUPS
+   Used in: Create Model, Edit Model
+   ============================================ */
+
+.explorexr-checkbox-group,
+.explorexr-radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.explorexr-checkbox-label,
+.explorexr-radio-group label {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+    font-weight: normal;
+}
+
+.explorexr-checkbox-label:hover,
+.explorexr-radio-group label:hover {
+    background-color: #f6f7f7;
+}
+
+.explorexr-checkbox-label span,
+.explorexr-radio-group label span {
+    line-height: 20px;
+}
+
+.explorexr-checkbox-group input[type="checkbox"],
+.explorexr-radio-group input[type="radio"] {
+    margin-right: 8px;
+}
+
+/* ============================================
+   FILE INPUT STYLING
+   Used in: Create Model, Edit Model
+   ============================================ */
+
+.explorexr-file-input-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.explorexr-file-input-wrapper input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.explorexr-file-input-decoration {
+    border: 2px dashed #c3c4c7;
+    border-radius: 4px;
+    padding: 30px;
+    text-align: center;
+    color: #646970;
+    transition: all 0.3s ease;
+    background: #f6f7f7;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 80px;
+}
+
+.explorexr-file-input-wrapper:hover .explorexr-file-input-decoration {
+    border-color: #2271b1;
+    background: #f0f7fc;
+}
+
+.explorexr-file-input-decoration .dashicons {
+    display: block;
+    margin: 0 auto 10px;
+    font-size: 36px;
+    width: 36px;
+    height: 36px;
+    color: #2271b1;
+}
+
+.explorexr-file-input-text {
+    font-size: 14px;
+    color: #646970;
+}
+
+.explorexr-file-input-wrapper.file-selected .explorexr-file-input-decoration {
+    border-color: #2271b1;
+    background-color: rgba(34, 113, 177, 0.05);
+}
+
+.explorexr-file-input-wrapper.file-selected .explorexr-file-input-text {
+    color: #2271b1;
+    font-weight: 500;
+}
+
+/* ============================================
+   POSTER PREVIEW STYLES
+   Used in: Edit Model, Model Size Metabox
+   ============================================ */
+
+.explorexr-poster-preview {
+    margin-top: 15px;
+}
+
+.explorexr-poster-preview img {
+    max-width: 200px;
+    max-height: 200px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.explorexr-poster-thumbnail {
+    max-width: 150px;
+    max-height: 150px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.explorexr-poster-thumbnail:hover {
+    transform: scale(1.05);
+}
+
+.explorexr-current-poster {
+    margin-bottom: 20px;
+}
+
+.explorexr-current-poster h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #1d2327;
+    font-weight: 600;
+}
+
+.explorexr-current-poster div {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+
+span.optional {
+    font-size: 12px;
+    font-weight: normal;
+    color: #646970;
+    margin-left: 5px;
+}
+
+span.required {
+    color: #d63638;
+}
+
+/* ============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================ */
+
+@media screen and (max-width: 782px) {
+    /* Stack form grid to single column on mobile */
+    .explorexr-form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .explorexr-form-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .explorexr-form-row label {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+    
+    .explorexr-form-row .description {
+        margin-left: 0;
+        margin-top: 5px;
+    }
+    
+    .explorexr-device-tabs {
+        flex-wrap: wrap;
+    }
+    
+    .explorexr-size-options {
+        justify-content: center;
+    }
+}

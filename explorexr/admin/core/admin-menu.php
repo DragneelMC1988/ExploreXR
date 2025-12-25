@@ -176,7 +176,8 @@ function explorexr_admin_enqueue_scripts($hook) {
         }
         
         if (strpos($hook ?? '', 'explorexr-create-model') !== false) {
-            wp_enqueue_style('explorexr-create-model-css', EXPLOREXR_PLUGIN_URL . 'admin/css/create-model.css', array(), EXPLOREXR_VERSION);
+            wp_enqueue_style('explorexr-components', EXPLOREXR_PLUGIN_URL . 'admin/css/components.css', array(), EXPLOREXR_VERSION);
+            wp_enqueue_style('explorexr-create-model-css', EXPLOREXR_PLUGIN_URL . 'admin/css/create-model.css', array('explorexr-components'), EXPLOREXR_VERSION);
             wp_enqueue_script('explorexr-create-model-js', EXPLOREXR_PLUGIN_URL . 'admin/js/create-model.js', array('jquery'), EXPLOREXR_VERSION, true);
             
             // Localize script with nonce
@@ -219,7 +220,8 @@ function explorexr_admin_enqueue_scripts($hook) {
         
         // Edit model page specific
         if (strpos($hook ?? '', 'explorexr-edit-model') !== false) {
-            wp_enqueue_style('explorexr-edit-model-css', EXPLOREXR_PLUGIN_URL . 'admin/css/edit-model.css', array(), EXPLOREXR_VERSION);
+            wp_enqueue_style('explorexr-components', EXPLOREXR_PLUGIN_URL . 'admin/css/components.css', array(), EXPLOREXR_VERSION);
+            wp_enqueue_style('explorexr-edit-model-css', EXPLOREXR_PLUGIN_URL . 'admin/css/edit-model.css', array('explorexr-components'), EXPLOREXR_VERSION);
             wp_enqueue_script('explorexr-edit-model-js', EXPLOREXR_PLUGIN_URL . 'admin/js/edit-model.js', array('jquery'), EXPLOREXR_VERSION, true);
             
             // Include WordPress media uploader

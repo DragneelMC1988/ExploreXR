@@ -74,7 +74,7 @@ if (!isset($auto_rotate)) {
             <p class="description">Automatically rotate the model when the page loads.</p>
             
             <!-- Basic Auto-rotate Settings (shown when auto-rotate is enabled) -->
-            <div id="auto-rotate-settings" <?php if (!$auto_rotate) echo 'style="display: none;"'; ?>>
+            <div id="auto-rotate-settings" class="explorexr-auto-rotate-settings<?php if (!$auto_rotate) echo ' explorexr-hidden'; ?>">
                 <?php 
                 // Get auto-rotate delay with default value if not set
                 // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable passed via safe include
@@ -92,13 +92,13 @@ if (!isset($auto_rotate)) {
                     $auto_rotate_speed = '30deg';
                 }
                 ?>
-                <div class="explorexr-form-group" style="margin-top: 15px; margin-left: 20px;">
+                <div class="explorexr-form-group explorexr-form-group-indented-top">
                     <label for="explorexr_auto_rotate_delay">Auto-rotate Delay</label>
                     <input type="text" name="explorexr_auto_rotate_delay" id="explorexr_auto_rotate_delay" value="<?php echo esc_attr($auto_rotate_delay); ?>" class="small-text">
                     <p class="description">Delay before auto-rotate starts (milliseconds)</p>
                 </div>
                 
-                <div class="explorexr-form-group" style="margin-left: 20px;">
+                <div class="explorexr-form-group explorexr-form-group-indented">
                     <label for="explorexr_auto_rotate_speed">Auto-rotate Speed</label>
                     <input type="text" name="explorexr_auto_rotate_speed" id="explorexr_auto_rotate_speed" value="<?php echo esc_attr($auto_rotate_speed); ?>" class="small-text">
                     <p class="description">Speed of auto-rotation (e.g., 30deg, 45deg, 60deg)</p>

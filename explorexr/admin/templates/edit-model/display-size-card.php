@@ -65,20 +65,28 @@ if (!isset($mobile_viewer_height)) {
     <div class="explorexr-card-header">
         <h2><span class="dashicons dashicons-editor-distractionfree"></span> Display Size</h2>
     </div>
-    <div class="explorexr-card-content">
+    <div class="explorexr-card-content">        
         <div class="explorexr-tabs">
             <button type="button" class="explorexr-tab <?php echo ($viewer_size !== 'custom') ? 'active' : ''; ?>" data-tab="predefined-sizes">Predefined Sizes</button>
             <button type="button" class="explorexr-tab <?php echo ($viewer_size === 'custom') ? 'active' : ''; ?>" data-tab="custom-sizes">Custom Sizes</button>
         </div>
         
         <div class="explorexr-tab-content <?php echo ($viewer_size !== 'custom') ? 'active' : ''; ?>" id="predefined-sizes">
+            <p class="description" style="margin-bottom: 15px;">
+                <span class="dashicons dashicons-info"></span> 
+                Predefined sizes automatically adapt for tablet and smartphone devices.
+            </p>
             <div class="explorexr-size-options">
                 <label class="explorexr-size-option">
                     <input type="radio" name="viewer_size" value="small" <?php checked($viewer_size, 'small'); ?>>
                     <div class="explorexr-size-preview">
                         <div class="explorexr-size-box explorexr-size-box-small"></div>
-                        <span>Small (300x300px)</span>
-                        <p class="description">Automatically responsive on all devices</p>
+                        <span>Small</span>
+                        <small class="explorexr-responsive-info">
+                            Desktop: 300×300px<br>
+                            Tablet: 280×280px<br>
+                            Mobile: 100%×280px
+                        </small>
                     </div>
                 </label>
                 
@@ -86,8 +94,12 @@ if (!isset($mobile_viewer_height)) {
                     <input type="radio" name="viewer_size" value="medium" <?php checked($viewer_size, 'medium'); ?>>
                     <div class="explorexr-size-preview">
                         <div class="explorexr-size-box explorexr-size-box-medium"></div>
-                        <span>Medium (500x500px)</span>
-                        <p class="description">Automatically responsive on all devices</p>
+                        <span>Medium</span>
+                        <small class="explorexr-responsive-info">
+                            Desktop: 500×500px<br>
+                            Tablet: 450×450px<br>
+                            Mobile: 100%×400px
+                        </small>
                     </div>
                 </label>
                 
@@ -95,8 +107,12 @@ if (!isset($mobile_viewer_height)) {
                     <input type="radio" name="viewer_size" value="large" <?php checked($viewer_size, 'large'); ?>>
                     <div class="explorexr-size-preview">
                         <div class="explorexr-size-box explorexr-size-box-large"></div>
-                        <span>Large (800x600px)</span>
-                        <p class="description">Automatically responsive on all devices</p>
+                        <span>Large</span>
+                        <small class="explorexr-responsive-info">
+                            Desktop: 800×600px<br>
+                            Tablet: 600×450px<br>
+                            Mobile: 100%×400px
+                        </small>
                     </div>
                 </label>
             </div>
@@ -111,7 +127,7 @@ if (!isset($mobile_viewer_height)) {
                     <span class="dashicons dashicons-tablet"></span> Tablet
                 </button>
                 <button type="button" class="explorexr-device-tab" data-device="mobile">
-                    <span class="dashicons dashicons-smartphone"></span> Mobile
+                    <span class="dashicons dashicons-smartphone"></span> Smartphone
                 </button>
             </div>
             
@@ -134,34 +150,36 @@ if (!isset($mobile_viewer_height)) {
             
             <div class="explorexr-device-content" id="tablet-size">
                 <div class="explorexr-form-group">
-                    <h3>Tablet Size</h3>
+                    <h3>Tablet Size <span class="explorexr-breakpoint-hint">(768px - 1024px)</span></h3>
+                    <p class="description explorexr-form-description"><?php esc_html_e('Leave empty to use desktop size on tablets. Accepts CSS units: px, %, vw, vh, em, rem.', 'explorexr'); ?></p>
                     <div class="explorexr-form-row">
                         <label for="tablet_viewer_width">Width:</label>
-                        <input type="text" name="tablet_viewer_width" id="tablet_viewer_width" value="<?php echo esc_attr($tablet_viewer_width); ?>" class="small-text">
-                        <span class="description">(e.g., 500px, 100%, etc.)</span>
+                        <input type="text" name="tablet_viewer_width" id="tablet_viewer_width" value="<?php echo esc_attr($tablet_viewer_width); ?>" class="small-text" placeholder="<?php echo esc_attr($viewer_width); ?>">
+                        <span class="description">(e.g., 600px, 90%, etc.)</span>
                     </div>
                     
                     <div class="explorexr-form-row">
                         <label for="tablet_viewer_height">Height:</label>
-                        <input type="text" name="tablet_viewer_height" id="tablet_viewer_height" value="<?php echo esc_attr($tablet_viewer_height); ?>" class="small-text">
-                        <span class="description">(e.g., 400px, 350px, etc.)</span>
+                        <input type="text" name="tablet_viewer_height" id="tablet_viewer_height" value="<?php echo esc_attr($tablet_viewer_height); ?>" class="small-text" placeholder="<?php echo esc_attr($viewer_height); ?>">
+                        <span class="description">(e.g., 450px, 80vh, etc.)</span>
                     </div>
                 </div>
             </div>
             
             <div class="explorexr-device-content" id="mobile-size">
                 <div class="explorexr-form-group">
-                    <h3>Mobile Size</h3>
+                    <h3>Smartphone Size <span class="explorexr-breakpoint-hint">(up to 767px)</span></h3>
+                    <p class="description explorexr-form-description"><?php esc_html_e('Leave empty to use desktop size on smartphones. Accepts CSS units: px, %, vw, vh, em, rem.', 'explorexr'); ?></p>
                     <div class="explorexr-form-row">
                         <label for="mobile_viewer_width">Width:</label>
-                        <input type="text" name="mobile_viewer_width" id="mobile_viewer_width" value="<?php echo esc_attr($mobile_viewer_width); ?>" class="small-text">
-                        <span class="description">(e.g., 300px, 100%, etc.)</span>
+                        <input type="text" name="mobile_viewer_width" id="mobile_viewer_width" value="<?php echo esc_attr($mobile_viewer_width); ?>" class="small-text" placeholder="<?php echo esc_attr($viewer_width); ?>">
+                        <span class="description">(e.g., 100%, 390px, etc.)</span>
                     </div>
                     
                     <div class="explorexr-form-row">
                         <label for="mobile_viewer_height">Height:</label>
-                        <input type="text" name="mobile_viewer_height" id="mobile_viewer_height" value="<?php echo esc_attr($mobile_viewer_height); ?>" class="small-text">
-                        <span class="description">(e.g., 300px, 400px, etc.)</span>
+                        <input type="text" name="mobile_viewer_height" id="mobile_viewer_height" value="<?php echo esc_attr($mobile_viewer_height); ?>" class="small-text" placeholder="<?php echo esc_attr($viewer_height); ?>">
+                        <span class="description">(e.g., 350px, 60vh, etc.)</span>
                     </div>
                 </div>
             </div>

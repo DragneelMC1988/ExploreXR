@@ -20,11 +20,19 @@ function explorexr_model_size_metabox_enqueue_scripts($hook) {
         return;
     }
     
-    // Enqueue CSS
+    // Enqueue shared components CSS first
+    wp_enqueue_style(
+        'explorexr-components',
+        EXPLOREXR_PLUGIN_URL . 'admin/css/components.css',
+        array(),
+        EXPLOREXR_VERSION
+    );
+    
+    // Enqueue metabox-specific CSS
     wp_enqueue_style(
         'explorexr-model-size',
         EXPLOREXR_PLUGIN_URL . 'assets/css/model-size.css',
-        array(),
+        array('explorexr-components'),
         EXPLOREXR_VERSION
     );
     

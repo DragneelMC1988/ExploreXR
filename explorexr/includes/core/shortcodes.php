@@ -253,40 +253,49 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
     
     // Generate responsive CSS if tablet or mobile sizes are set (WordPress.org compliance)
     // NOTE: wp_add_inline_style must be called AFTER wp_enqueue_style
-    if (!empty($tablet_width) || !empty($tablet_height) || !empty($mobile_width) || !empty($mobile_height)) {
-        $responsive_css = '';
-        
-        // Tablet styles (768px to 1024px)
-        if (!empty($tablet_width) || !empty($tablet_height)) {
-            $responsive_css .= '@media (min-width: 768px) and (max-width: 1024px) {';
-            $responsive_css .= '#' . $model_css_id . ' {';
-            if (!empty($tablet_width)) {
-                $responsive_css .= 'width: ' . esc_attr($tablet_width) . ' !important;';
-            }
-            if (!empty($tablet_height)) {
-                $responsive_css .= 'height: ' . esc_attr($tablet_height) . ' !important;';
-            }
-            $responsive_css .= '}';
-            $responsive_css .= '}';
+    $responsive_css = '';
+    
+    // Base container styles to prevent layout shift
+    $responsive_css .= '#' . $model_css_id . ' {';
+    $responsive_css .= 'width: ' . esc_attr($width) . ';';
+    $responsive_css .= 'height: ' . esc_attr($height) . ';';
+    $responsive_css .= 'min-height: ' . esc_attr($height) . ';'; // Prevent collapse
+    $responsive_css .= 'display: block;';
+    $responsive_css .= 'margin: 0 auto;'; // Center by default
+    $responsive_css .= '}';
+    
+    // Tablet styles (768px to 1024px)
+    if (!empty($tablet_width) || !empty($tablet_height)) {
+        $responsive_css .= '@media (min-width: 768px) and (max-width: 1024px) {';
+        $responsive_css .= '#' . $model_css_id . ' {';
+        if (!empty($tablet_width)) {
+            $responsive_css .= 'width: ' . esc_attr($tablet_width) . ' !important;';
         }
-        
-        // Mobile styles (up to 767px)
-        if (!empty($mobile_width) || !empty($mobile_height)) {
-            $responsive_css .= '@media (max-width: 767px) {';
-            $responsive_css .= '#' . $model_css_id . ' {';
-            if (!empty($mobile_width)) {
-                $responsive_css .= 'width: ' . esc_attr($mobile_width) . ' !important;';
-            }
-            if (!empty($mobile_height)) {
-                $responsive_css .= 'height: ' . esc_attr($mobile_height) . ' !important;';
-            }
-            $responsive_css .= '}';
-            $responsive_css .= '}';
+        if (!empty($tablet_height)) {
+            $responsive_css .= 'height: ' . esc_attr($tablet_height) . ' !important;';
+            $responsive_css .= 'min-height: ' . esc_attr($tablet_height) . ' !important;';
         }
-        
-        // WordPress.org compliance: Use wp_add_inline_style instead of inline <style>
-        wp_add_inline_style('explorexr-model-viewer', $responsive_css);
+        $responsive_css .= '}';
+        $responsive_css .= '}';
     }
+    
+    // Mobile styles (up to 767px)
+    if (!empty($mobile_width) || !empty($mobile_height)) {
+        $responsive_css .= '@media (max-width: 767px) {';
+        $responsive_css .= '#' . $model_css_id . ' {';
+        if (!empty($mobile_width)) {
+            $responsive_css .= 'width: ' . esc_attr($mobile_width) . ' !important;';
+        }
+        if (!empty($mobile_height)) {
+            $responsive_css .= 'height: ' . esc_attr($mobile_height) . ' !important;';
+            $responsive_css .= 'min-height: ' . esc_attr($mobile_height) . ' !important;';
+        }
+        $responsive_css .= '}';
+        $responsive_css .= '}';
+    }
+    
+    // WordPress.org compliance: Use wp_add_inline_style instead of inline <style>
+    wp_add_inline_style('explorexr-model-viewer', $responsive_css);
     
     // Set responsive_css to empty since we're using wp_add_inline_style
     $responsive_css = '';
