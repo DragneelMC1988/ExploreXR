@@ -40,13 +40,16 @@ function explorexr_settings_page() {
     }
       // Process cache clearing
     if (isset($_POST['explorexr_clear_cache']) && isset($_POST['explorexr_clear_cache_nonce']) && wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['explorexr_clear_cache_nonce'])), 'explorexr_clear_cache')) {
-        // Clear any transients or stored cache
-        delete_transient('explorexr_viewer_version_check');
-        delete_option('explorexr_last_cdn_check');
-        
-        // Add more cache clearing as needed
-        
-        echo '<div class="notice notice-success is-dismissible"><p>Model viewer cache has been cleared successfully!</p></div>';
+        // Clear all ExploreXR caches using the cache manager
+        if (function_exists('explorexr_clear_all_cache')) {
+            $cleared_count = explorexr_clear_all_cache();
+            echo '<div class="notice notice-success is-dismissible"><p>Successfully cleared ' . esc_html($cleared_count) . ' cache entries!</p></div>';
+        } else {
+            // Fallback if cache manager not loaded
+            delete_transient('explorexr_viewer_version_check');
+            delete_option('explorexr_last_cdn_check');
+            echo '<div class="notice notice-success is-dismissible"><p>Model viewer cache has been cleared successfully!</p></div>';
+        }
     }
     
     // Process general settings form submission
@@ -251,16 +254,32 @@ function explorexr_settings_page() {
         ?>
           <!-- Cache Management -->
         <?php
-        $card_title = 'Model Viewer Cache';
+        $card_title = 'Cache Management';
         $card_icon = 'update-alt';
         ob_start();
         ?>
-        <p>In some cases, clearing the model viewer cache can help resolve display issues with 3D models.</p>
-        <form method="post" onsubmit="return confirm('Are you sure you want to clear the model viewer cache? This will not affect your saved settings.'));\">
+        <p>ExploreXR caches model output and settings to improve performance. Clear the cache if you notice display issues after making changes.</p>
+        
+        <?php
+        // Show cache statistics if available
+        if (function_exists('explorexr_get_cache_stats')) {
+            $cache_stats = explorexr_get_cache_stats();
+            echo '<div class="explorexr-cache-stats" style="margin: 15px 0; padding: 15px; background: #f5f5f5; border-radius: 4px;">';
+            echo '<p><strong>Current Cache Status:</strong></p>';
+            echo '<ul style="margin: 5px 0 0 20px;">';
+            echo '<li>Cached entries: <strong>' . esc_html($cache_stats['count']) . '</strong></li>';
+            echo '<li>Total size: <strong>' . esc_html($cache_stats['size_kb']) . ' KB</strong></li>';
+            echo '</ul>';
+            echo '</div>';
+        }
+        ?>
+        
+        <form method="post" onsubmit="return confirm('Are you sure you want to clear all ExploreXR caches? This will not affect your saved settings or models.');">
             <?php wp_nonce_field('explorexr_clear_cache', 'explorexr_clear_cache_nonce'); ?>
             <p class="submit">
-                <input type="submit" name="explorexr_clear_cache" class="button button-secondary" value="Clear Cache">
-            </p>        </form>
+                <input type="submit" name="explorexr_clear_cache" class="button button-secondary" value="Clear All Cache">
+            </p>
+        </form>
         <?php
         $card_content = ob_get_clean();
         include EXPLOREXR_PLUGIN_DIR . 'admin/templates/card.php';

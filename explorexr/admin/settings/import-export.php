@@ -464,6 +464,16 @@ function explorexr_handle_settings_import() {
             );
         }
     }
+    
+    // Clear all caches after successful import
+    if (function_exists('explorexr_clear_all_cache')) {
+        $cache_cleared = explorexr_clear_all_cache();
+    } else {
+        // Fallback cache clearing
+        delete_transient('explorexr_viewer_version_check');
+        delete_transient('explorexr_model_cache');
+        $cache_cleared = true;
+    }
 
     // Display success message
     $message = sprintf(
@@ -475,6 +485,11 @@ function explorexr_handle_settings_import() {
     );
     
     $message .= $category_message;
+    
+    // Add cache cleared message
+    if (isset($cache_cleared) && $cache_cleared) {
+        $message .= ' ' . esc_html__('All caches have been cleared to reflect the new settings.', 'explorexr');
+    }
     
     if (isset($import_data['_export_info'])) {
         $message .= '<br>';

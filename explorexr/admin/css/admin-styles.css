@@ -1377,3 +1377,224 @@
     opacity: 0.9;
     line-height: 1.5;
 }
+
+/* ============================================
+   UTILITY CLASSES - No Inline Styles Policy
+   ============================================ */
+
+/* Visibility & Display */
+.explorexr-hidden {
+    display: none !important;
+}
+
+/* Spacing - Margin */
+.explorexr-margin-0 {
+    margin: 0 !important;
+}
+
+.explorexr-margin-right-5 {
+    margin-right: 5px !important;
+}
+
+.explorexr-margin-right-8 {
+    margin-right: 8px !important;
+}
+
+.explorexr-margin-left-5 {
+    margin-left: 5px !important;
+}
+
+.explorexr-margin-left-10 {
+    margin-left: 10px !important;
+}
+
+.explorexr-margin-left-20 {
+    margin-left: 20px !important;
+}
+
+.explorexr-margin-top-5 {
+    margin-top: 5px !important;
+}
+
+.explorexr-margin-top-10 {
+    margin-top: 10px !important;
+}
+
+.explorexr-margin-top-15 {
+    margin-top: 15px !important;
+}
+
+.explorexr-margin-bottom-8 {
+    margin-bottom: 8px !important;
+}
+
+.explorexr-margin-bottom-10 {
+    margin-bottom: 10px !important;
+}
+
+.explorexr-margin-bottom-20 {
+    margin-bottom: 20px !important;
+}
+
+/* Spacing - Padding */
+.explorexr-padding-10-20 {
+    padding: 10px 20px !important;
+}
+
+.explorexr-padding-15 {
+    padding: 15px !important;
+}
+
+.explorexr-padding-left-20 {
+    padding-left: 20px !important;
+}
+
+.explorexr-padding-top-0 {
+    padding-top: 0 !important;
+}
+
+/* Colors */
+.explorexr-color-success {
+    color: #46b450 !important;
+}
+
+.explorexr-color-error {
+    color: #dc3232 !important;
+}
+
+.explorexr-color-warning {
+    color: #ffb900 !important;
+}
+
+.explorexr-color-gray {
+    color: #646970 !important;
+}
+
+.explorexr-color-white {
+    color: white !important;
+}
+
+.explorexr-bg-primary {
+    background-color: #2271b1 !important;
+}
+
+.explorexr-bg-gray-light {
+    background-color: #f5f5f5 !important;
+}
+
+/* Typography */
+.explorexr-font-size-12 {
+    font-size: 12px !important;
+}
+
+.explorexr-font-size-14 {
+    font-size: 14px !important;
+}
+
+.explorexr-font-size-48 {
+    font-size: 48px !important;
+}
+
+/* Positioning */
+.explorexr-fixed-notification {
+    position: fixed !important;
+    bottom: 20px !important;
+    right: 20px !important;
+    background-color: #2271b1 !important;
+    color: white !important;
+    padding: 10px 20px !important;
+    border-radius: 4px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+    z-index: 9999 !important;
+}
+
+/* Flexbox Utilities */
+.explorexr-flex {
+    display: flex !important;
+}
+
+.explorexr-flex-gap-20 {
+    display: flex !important;
+    gap: 20px !important;
+}
+
+.explorexr-flex-justify-between {
+    display: flex !important;
+    justify-content: space-between !important;
+}
+
+.explorexr-flex-wrap {
+    flex-wrap: wrap !important;
+}
+
+.explorexr-align-items-end {
+    align-items: flex-end !important;
+}
+
+.explorexr-flex-1 {
+    flex: 1 !important;
+}
+
+.explorexr-align-self-end {
+    align-self: flex-end !important;
+}
+
+/* Width */
+.explorexr-width-100 {
+    width: 100% !important;
+}
+
+.explorexr-width-150 {
+    width: 150px !important;
+}
+
+.explorexr-min-width-200 {
+    min-width: 200px !important;
+}
+
+/* Height */
+.explorexr-height-400 {
+    height: 400px !important;
+}
+
+/* Borders */
+.explorexr-border-top-none {
+    border-top: none !important;
+}
+
+.explorexr-border-radius-4 {
+    border-radius: 4px !important;
+}
+
+/* Dashicons Sizing */
+.explorexr-dashicon-14 {
+    font-size: 14px !important;
+    width: 14px !important;
+    height: 14px !important;
+}
+
+.explorexr-dashicon-margin-right-2 {
+    margin-right: 2px !important;
+}
+
+/* Opacity */
+.explorexr-opacity-30 {
+    opacity: 0.3 !important;
+}
+
+/* Grid */
+.explorexr-grid-col-full {
+    grid-column: 1 / -1 !important;
+}
+
+/* Stats & Cache */
+.explorexr-cache-stats {
+    margin: 15px 0 !important;
+    padding: 15px !important;
+    background: #f5f5f5 !important;
+    border-radius: 4px !important;
+}
+
+.explorexr-cache-stats ul {
+    margin: 5px 0 0 20px !important;
+}

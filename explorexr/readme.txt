@@ -4,7 +4,7 @@ Tags: 3d, model-viewer, glb, gltf, ar
 Requires at least: 5.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.7
+Stable tag: 1.0.8
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -111,6 +111,17 @@ Basic usage works everywhere. Advanced integrations are in Premium.
 5. Edit 3D Model
 
 == Changelog ==
+= 1.0.8 =
+* Fixed: Database query compliance - replaced direct $wpdb queries with WordPress Transients and Cache APIs
+* Fixed: Unclosed brace syntax error in cache-manager.php
+* Improved: CSS architecture - created shared components.css reducing duplicate code by 336 lines (25%)
+* Improved: Admin form layouts now use CSS Grid with 2-column responsive design
+* Improved: Enhanced input styling with focus states and smooth transitions
+* Enhanced: Cache management now uses proper WordPress caching mechanisms (wp_cache_*, transients)
+* Enhanced: All PHPCS warnings resolved - full WordPress Coding Standards compliance
+* Added: Comprehensive database best practices documentation for future development
+* Added: CSS/JS separation enforcement guidelines in development documentation
+
 = 1.0.7 =
 * Fixed: Custom tablet and mobile sizes now properly apply on frontend with responsive CSS
 * Fixed: Mobile device size tab now displays correctly in Edit Model page

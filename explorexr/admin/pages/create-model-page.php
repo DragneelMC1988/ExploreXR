@@ -203,7 +203,7 @@ function explorexr_create_model_page() {
         <?php 
         $page_title = 'Create New 3D Model';
         $header_actions = '<a href="' . esc_url(admin_url('admin.php?page=explorexr-browse-models')) . '" class="button">
-            <span class="dashicons dashicons-format-gallery" style="margin-right: 5px;"></span> Browse Models
+            <span class="dashicons dashicons-format-gallery explorexr-icon-spacing"></span> Browse Models
         </a>';
         include EXPLOREXR_PLUGIN_DIR . 'admin/templates/admin-header.php'; 
         
@@ -234,7 +234,7 @@ function explorexr_create_model_page() {
                             <input name="model_title" type="text" id="model_title" class="regular-text" required placeholder="Enter a descriptive title" />
                         </div>
                         
-                        <div class="explorexr-form-group" style="grid-column: 1 / -1;">
+                        <div class="explorexr-form-group explorexr-full-width">
                             <label for="model_description">Description</label>
                             <textarea name="model_description" id="model_description" rows="3" placeholder="Add a description for this 3D model (optional)"></textarea>
                         </div>
@@ -248,6 +248,8 @@ function explorexr_create_model_page() {
                 <span class="dashicons dashicons-editor-distractionfree"></span>
             </div>
             <div class="explorexr-card-content">
+                
+               
                 <div class="explorexr-tabs">
                     <button type="button" class="explorexr-tab active" data-tab="predefined-sizes">Predefined Sizes</button>
                     <button type="button" class="explorexr-tab" data-tab="custom-sizes">Custom Sizes</button>
@@ -258,24 +260,39 @@ function explorexr_create_model_page() {
                         <label class="explorexr-size-option">
                             <input type="radio" name="viewer_size" value="small">
                             <div class="explorexr-size-preview">
-                                <div class="explorexr-size-box" style="width: 60px; height: 60px;"></div>
-                                <span>Small (300x300px)</span>
+                                <div class="explorexr-size-box explorexr-size-box-small"></div>
+                                <span>Small</span>
+                                <small class="explorexr-responsive-info">
+                                    Desktop: 300×300px<br>
+                                    Tablet: 280×280px<br>
+                                    Mobile: 100%×280px
+                                </small>
                             </div>
                         </label>
                         
                         <label class="explorexr-size-option">
                             <input type="radio" name="viewer_size" value="medium" checked>
                             <div class="explorexr-size-preview">
-                                <div class="explorexr-size-box" style="width: 80px; height: 80px;"></div>
-                                <span>Medium (500x500px)</span>
+                                <div class="explorexr-size-box explorexr-size-box-medium"></div>
+                                <span>Medium</span>
+                                <small class="explorexr-responsive-info">
+                                    Desktop: 500×500px<br>
+                                    Tablet: 450×450px<br>
+                                    Mobile: 100%×400px
+                                </small>
                             </div>
                         </label>
                         
                         <label class="explorexr-size-option">
                             <input type="radio" name="viewer_size" value="large">
                             <div class="explorexr-size-preview">
-                                <div class="explorexr-size-box" style="width: 100px; height: 80px;"></div>
-                                <span>Large (800x600px)</span>
+                                <div class="explorexr-size-box explorexr-size-box-large"></div>
+                                <span>Large</span>
+                                <small class="explorexr-responsive-info">
+                                    Desktop: 800×600px<br>
+                                    Tablet: 600×450px<br>
+                                    Mobile: 100%×400px
+                                </small>
                             </div>
                         </label>
                     </div>
@@ -290,7 +307,7 @@ function explorexr_create_model_page() {
                             <span class="dashicons dashicons-tablet"></span> Tablet
                         </button>
                         <button type="button" class="explorexr-device-tab" data-device="mobile">
-                            <span class="dashicons dashicons-smartphone"></span> Mobile
+                            <span class="dashicons dashicons-smartphone"></span> Smartphone
                         </button>
                     </div>
                     
@@ -314,16 +331,16 @@ function explorexr_create_model_page() {
                     <div class="explorexr-device-content" id="tablet-size">
                         <div class="explorexr-form-group">
                             <h3>Tablet Size <span class="optional">(optional)</span></h3>
-                            <p class="description">If left empty, desktop size will be used for tablet devices.</p>
+                            <p class="description">If left empty, desktop size will be used for tablet devices (768px-1024px width).</p>
                             <div class="explorexr-form-row">
                                 <label for="tablet_viewer_width">Width:</label>
-                                <input type="text" name="tablet_viewer_width" id="tablet_viewer_width" value="" class="small-text">
+                                <input type="text" name="tablet_viewer_width" id="tablet_viewer_width" value="" class="small-text" placeholder="e.g., 600px, 90%">
                                 <span class="description">(e.g., 500px, 100%, etc.)</span>
                             </div>
                             
                             <div class="explorexr-form-row">
                                 <label for="tablet_viewer_height">Height:</label>
-                                <input type="text" name="tablet_viewer_height" id="tablet_viewer_height" value="" class="small-text">
+                                <input type="text" name="tablet_viewer_height" id="tablet_viewer_height" value="" class="small-text" placeholder="e.g., 450px">
                                 <span class="description">(e.g., 400px, 500px, etc.)</span>
                             </div>
                         </div>
@@ -332,16 +349,16 @@ function explorexr_create_model_page() {
                     <div class="explorexr-device-content" id="mobile-size">
                         <div class="explorexr-form-group">
                             <h3>Mobile Size <span class="optional">(optional)</span></h3>
-                            <p class="description">If left empty, desktop size will be used for mobile devices.</p>
+                            <p class="description">If left empty, desktop size will be used for mobile devices (up to 767px width).</p>
                             <div class="explorexr-form-row">
                                 <label for="mobile_viewer_width">Width:</label>
-                                <input type="text" name="mobile_viewer_width" id="mobile_viewer_width" value="" class="small-text">
+                                <input type="text" name="mobile_viewer_width" id="mobile_viewer_width" value="" class="small-text" placeholder="e.g., 100%, 320px">
                                 <span class="description">(e.g., 100%, 300px, etc.)</span>
                             </div>
                             
                             <div class="explorexr-form-row">
                                 <label for="mobile_viewer_height">Height:</label>
-                                <input type="text" name="mobile_viewer_height" id="mobile_viewer_height" value="" class="small-text">
+                                <input type="text" name="mobile_viewer_height" id="mobile_viewer_height" value="" class="small-text" placeholder="e.g., 350px">
                                 <span class="description">(e.g., 300px, 400px, etc.)</span>
                             </div>
                         </div>
@@ -423,10 +440,10 @@ function explorexr_create_model_page() {
                                 <span class="dashicons dashicons-admin-media"></span> Select Image
                             </button>
                         </div>
-                        <div id="explorexr-poster-preview" style="margin-top: 15px; display: none;">
+                        <div id="explorexr-poster-preview" class="explorexr-poster-preview-create explorexr-hidden">
                             <?php 
                             // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage -- Dynamic preview image for upload interface, no attachment ID available
-                            printf('<img src="" alt="%s" style="max-width: 200px; max-height: 200px; border: 1px solid #ddd; border-radius: 4px;" loading="lazy">', 
+                            printf('<img src="" alt="%s" loading="lazy">', 
                                 esc_attr__('Poster preview', 'explorexr')
                             );
                             ?>

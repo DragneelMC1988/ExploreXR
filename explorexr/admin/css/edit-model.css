@@ -1,8 +1,11 @@
 /**
  * Edit Model Page CSS
  * 
- * Styles for the Edit Model admin page
- * Aligned with ExploreXR's admin style guidelines
+ * Page-specific styles for the Edit Model admin page
+ * Shared components are in components.css
+ * 
+ * @package ExploreXR
+ * @since 1.0.8
  */
 
 /* WordPress admin compatibility fixes - Only apply minimal necessary changes */
@@ -74,40 +77,7 @@ body.wp-admin {
     margin-bottom: 20px;
 }
 
-.explorexr-form-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
-}
-
-.explorexr-form-group {
-    margin-bottom: 20px;
-}
-
-.explorexr-form-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 500;
-}
-
-.explorexr-form-group .description {
-    display: block;
-    color: #646970;
-    font-size: 13px;
-    margin-top: 5px;
-}
-
-.explorexr-form-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 12px;
-}
-
-.explorexr-form-row label {
-    margin-bottom: 0;
-    min-width: 60px;
-}
+/* Form grid and groups - shared styles moved to components.css */
 
 .explorexr-empty-preview {
     height: 300px;
@@ -128,156 +98,7 @@ body.wp-admin {
     opacity: 0.5;
 }
 
-.explorexr-tabs {
-    display: flex;
-    border-bottom: 1px solid #c3c4c7;
-    margin-bottom: 20px;
-}
-
-.explorexr-tab {
-    padding: 8px 15px;
-    cursor: pointer;
-    border: none;
-    background: none;
-    font-size: 14px;
-    color: #646970;
-    border-bottom: 3px solid transparent;
-    margin-bottom: -1px;
-}
-
-.explorexr-tab:hover {
-    color: #2271b1;
-}
-
-.explorexr-tab.active {
-    color: #2271b1;
-    border-bottom-color: #2271b1;
-}
-
-.explorexr-tab-content {
-    display: none;
-}
-
-.explorexr-tab-content.active {
-    display: block;
-}
-
-.explorexr-device-tabs {
-    display: flex;
-    margin-bottom: 15px;
-    background: #f6f7f7;
-    border-radius: 0;
-    padding: 5px;
-}
-
-.explorexr-device-tab {
-    background: transparent;
-    border: none;
-    border-radius: 4px;
-    padding: 8px 12px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    color: #646970;
-    transition: all 0.2s ease;
-}
-
-.explorexr-device-tab.active {
-    background: #fff;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-    color: #2271b1;
-}
-
-.explorexr-device-content {
-    display: none;
-}
-
-.explorexr-device-content.active {
-    display: block;
-}
-
-.explorexr-size-options {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
-}
-
-.explorexr-size-option {
-    display: flex;
-    cursor: pointer;
-    border: 1px solid #c3c4c7;
-    border-radius: 0;
-    padding: 15px;
-    background: #f6f7f7;
-    transition: all 0.2s ease;
-}
-
-.explorexr-size-option:hover {
-    background: #0D152C;
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
-}
-
-.explorexr-size-option input[type="radio"] {
-    margin-right: 10px;
-}
-
-.explorexr-size-preview {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 10px;
-}
-
-.explorexr-size-box {
-    background: #ddd;
-    border-radius: 4px;
-    position: relative;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.explorexr-file-input-wrapper {
-    position: relative;
-    margin-bottom: 15px;
-}
-
-.explorexr-file-input-wrapper input[type="file"] {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    cursor: pointer;
-    z-index: 2;
-}
-
-.explorexr-file-input-decoration {
-    border: 2px dashed #c3c4c7;
-    border-radius: 0;
-    padding: 30px;
-    text-align: center;
-    color: #646970;
-    transition: all 0.3s ease;
-    background: #f6f7f7;
-}
-
-.explorexr-file-input-wrapper:hover .explorexr-file-input-decoration {
-    border-color: #2AACE2;
-    background: #f0f7fc;
-}
-
-.explorexr-file-input-decoration .dashicons {
-    display: block;
-    margin: 0 auto 10px;
-    font-size: 36px;
-    width: 36px;
-    height: 36px;
-    color: #2AACE2;
-}
+/* Tabs, device tabs, and size options - shared styles moved to components.css */
 
 .explorexr-current-model {
     margin-bottom: 20px;
@@ -329,39 +150,7 @@ body.wp-admin {
     margin-top: 10px;
 }
 
-.explorexr-input-group {
-    display: flex;
-    gap: 5px;
-}
-
-.explorexr-input-group input {
-    flex-grow: 1;
-}
-
-.explorexr-checkbox-group {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: 8px;
-}
-
-.explorexr-checkbox-label {
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
-    cursor: pointer;
-    padding: 6px 8px;
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
-}
-
-.explorexr-checkbox-label:hover {
-    background-color: #f6f7f7;
-}
-
-.explorexr-checkbox-label span {
-    line-height: 20px;
-}
+/* Input groups and checkbox groups - shared styles moved to components.css */
 
 .explorexr-form-actions {
     margin-top: 30px;
@@ -417,11 +206,7 @@ span.required {
     color: #d63638;
 }
 
-span.optional {
-    font-size: 12px;
-    color: #646970;
-    font-weight: normal;
-}
+/* Optional span and poster styles - shared styles moved to components.css */
 
 /* Alert styles aligned with admin-style.css */
 .explorexr-alert {
@@ -538,56 +323,7 @@ span.optional {
     grid-column: 1 / -1;
 }
 
-/* Size box demo elements */
-.explorexr-size-box-small {
-    width: 60px; 
-    height: 60px;
-    background-color: #e2e4e7;
-}
-
-.explorexr-size-box-medium {
-    width: 80px; 
-    height: 80px;
-    background-color: #e2e4e7;
-}
-
-.explorexr-size-box-large {
-    width: 100px; 
-    height: 80px;
-    background-color: #e2e4e7;
-}
-
-.explorexr-size-box-xlarge {
-    width: 120px; 
-    height: 90px;
-    background-color: #e2e4e7;
-}
-
-/* Poster preview styling */
-.explorexr-poster-thumbnail {
-    max-width: 150px; 
-    max-height: 150px; 
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease;
-}
-
-.explorexr-poster-thumbnail:hover {
-    transform: scale(1.05);
-}
-
-.explorexr-poster-preview {
-    margin-top: 15px;
-}
-
-.explorexr-poster-preview img {
-    max-width: 200px; 
-    height: auto;
-    border: 1px solid #ddd; 
-    border-radius: 0;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
+/* Poster preview and thumbnail styles - shared styles moved to components.css */
 
 /* Edit Model Notifications */
 .explorexr-edit-notification {
@@ -710,11 +446,4 @@ span.optional {
     display: none;
 }
 
-/* Ensure mobile device content is visible when active */
-.explorexr-device-content {
-    display: none;
-}
-
-.explorexr-device-content.active {
-    display: block;
-}
+/* Device content visibility - shared styles in components.css */
