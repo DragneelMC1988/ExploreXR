@@ -1,7 +1,9 @@
 /**
  * ExploreXR Model Size Handler
  *
- * Handles the model size options and poster selection in the model size metabox
+ * Handles the model size options and poster selection in the model size metabox.
+ * Note: This legacy file is kept for backward compatibility with older metabox flows.
+ * The active sizing logic is centralized in assets/js/model-size.js.
  */
 
 (function($) {

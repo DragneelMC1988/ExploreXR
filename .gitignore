@@ -1,7 +1,6 @@
 .qodo
 .vscode/
 sftp.json
-explorexr/models/
 /index.php
 docs/quick_commands.md
 # Ignore all model file types regardless of location
@@ -19,6 +18,6 @@ akismet/
 /hello.php
 /quick_commands.md
 /summieries
-/explorexr-premium
-/explorexr-old
 .claude/
+akismet/
+.devops/

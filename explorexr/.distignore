@@ -1,0 +1,67 @@
+# ExploreXR Distribution Ignore File
+# Files and directories listed here will be excluded from the distribution archive
+
+# Development files
+.git
+.gitignore
+.gitattributes
+.github
+.vscode
+.idea
+
+# Documentation
+README.md
+CONTRIBUTING.md
+CHANGELOG.md
+
+# Build and development tools
+node_modules
+package.json
+package-lock.json
+webpack.config.js
+gulpfile.js
+Gruntfile.js
+composer.json
+composer.lock
+phpunit.xml
+phpcs.xml
+.phpcs.xml.dist
+
+# Testing
+tests
+test
+.phpunit.result.cache
+
+# Development assets (uncompiled)
+src
+scss
+sass
+less
+
+# Logs and databases
+*.log
+*.sql
+*.sqlite
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Editor files
+*.swp
+*.swo
+*~
+*.bak
+*.tmp
+
+# Note: WASM files are NOT excluded
+# The following files are REQUIRED for 3D model functionality:
+# - assets/vendor/draco/draco_decoder.wasm (Draco geometry compression)
+# - assets/vendor/basis-universal/basis_transcoder.wasm (Basis Universal texture compression)
+# These are necessary for efficient 3D model loading and rendering.

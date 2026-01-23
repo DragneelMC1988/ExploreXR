@@ -13,6 +13,9 @@ if (!defined('ABSPATH')) {
 // Include the CSS and JS enqueue functions
 require_once dirname(__FILE__) . '/model-size-enqueue.php';
 
+// Canonical size presets for consistent admin display
+$explorexr_size_presets = explorexr_get_viewer_size_presets();
+
 /**
  * Render the model size metabox
  *
@@ -31,6 +34,24 @@ function explorexr_edit_model_size_box($post) {
     $mobile_viewer_width = get_post_meta($post->ID, '_explorexr_mobile_viewer_width', true) ?: '';
     $mobile_viewer_height = get_post_meta($post->ID, '_explorexr_mobile_viewer_height', true) ?: '';
     
+    // Normalize sizes so the UI shows canonical values
+    $normalized_sizes = explorexr_normalize_viewer_sizes($viewer_size, array(
+        'width'         => $viewer_width,
+        'height'        => $viewer_height,
+        'tablet_width'  => $tablet_viewer_width,
+        'tablet_height' => $tablet_viewer_height,
+        'mobile_width'  => $mobile_viewer_width,
+        'mobile_height' => $mobile_viewer_height,
+    ));
+    
+    $viewer_size = $normalized_sizes['viewer_size'];
+    $viewer_width = $normalized_sizes['width'];
+    $viewer_height = $normalized_sizes['height'];
+    $tablet_viewer_width = $normalized_sizes['tablet_width'];
+    $tablet_viewer_height = $normalized_sizes['tablet_height'];
+    $mobile_viewer_width = $normalized_sizes['mobile_width'];
+    $mobile_viewer_height = $normalized_sizes['mobile_height'];
+    
     $size_is_custom = empty($viewer_size) || $viewer_size === 'custom';
     ?>
     <div>
@@ -46,7 +67,7 @@ function explorexr_edit_model_size_box($post) {
                         <input type="radio" name="viewer_size" value="small" <?php checked($viewer_size, 'small'); ?>>
                         <div class="explorexr-size-preview">
                             <div class="explorexr-size-box" style="width: 60px; height: 60px;"></div>
-                            <span>Small (300x300px)</span>
+                            <span>Small (<?php echo esc_html($explorexr_size_presets['small']['desktop']['width']); ?> × <?php echo esc_html($explorexr_size_presets['small']['desktop']['height']); ?>)</span>
                         </div>
                     </label>
                     
@@ -54,7 +75,7 @@ function explorexr_edit_model_size_box($post) {
                         <input type="radio" name="viewer_size" value="medium" <?php checked($viewer_size, 'medium'); ?>>
                         <div class="explorexr-size-preview">
                             <div class="explorexr-size-box" style="width: 80px; height: 80px;"></div>
-                            <span>Medium (500x500px)</span>
+                            <span>Medium (<?php echo esc_html($explorexr_size_presets['medium']['desktop']['width']); ?> × <?php echo esc_html($explorexr_size_presets['medium']['desktop']['height']); ?>)</span>
                         </div>
                     </label>
                     
@@ -62,7 +83,7 @@ function explorexr_edit_model_size_box($post) {
                         <input type="radio" name="viewer_size" value="large" <?php checked($viewer_size, 'large'); ?>>
                         <div class="explorexr-size-preview">
                             <div class="explorexr-size-box" style="width: 100px; height: 80px;"></div>
-                            <span>Large (800x600px)</span>
+                            <span>Large (<?php echo esc_html($explorexr_size_presets['large']['desktop']['width']); ?> × <?php echo esc_html($explorexr_size_presets['large']['desktop']['height']); ?>)</span>
                         </div>
                     </label>
                     
@@ -70,7 +91,7 @@ function explorexr_edit_model_size_box($post) {
                         <input type="radio" name="viewer_size" value="full" <?php checked($viewer_size, 'full'); ?>>
                         <div class="explorexr-size-preview">
                             <div class="explorexr-size-box" style="width: 120px; height: 90px;"></div>
-                            <span>Full Screen (100vw × 100vh)</span>
+                            <span>Full Screen (<?php echo esc_html($explorexr_size_presets['full']['desktop']['width']); ?> × <?php echo esc_html($explorexr_size_presets['full']['desktop']['height']); ?>)</span>
                         </div>
                     </label>
                 </div>

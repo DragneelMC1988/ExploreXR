@@ -1,10 +1,10 @@
 === ExploreXR ===
 Contributors: expoxr
-Tags: 3d, model-viewer, glb, gltf, ar
+Tags: 3d, model-viewer, glb, gltf
 Requires at least: 5.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.8
+Stable tag: 1.0.9
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -30,6 +30,8 @@ Showcasing products, architecture, museum collections, educational content, engi
 Premium version includes AR support, WooCommerce integration, Elementor widget, annotations, material variants, animations, and priority support.
 
 Learn more: https://expoxr.com/explorexr/premium/
+Demo (Premium): https://expoxr.com/explorexr/demo-premium/
+Demo (Free): https://expoxr.com/explorexr/demo-free/
 
 == Key Features ==
 * GLB, GLTF, and USDZ file support
@@ -111,6 +113,13 @@ Basic usage works everywhere. Advanced integrations are in Premium.
 5. Edit 3D Model
 
 == Changelog ==
+= 1.0.9 =
+* New: Unified size presets (Small/Medium/Large/Full) applied to desktop/tablet/mobile meta
+* New: Server + admin validation prevents width/height both using % (invisible viewer guard)
+* Fixed: Loading option attributes now pass through the correct filter to JS loaders
+* Fixed: Admin slug/meta casing and premium URL wrapper; corrected existing model file constant
+* UI: Early-adopter discount banner added to Dashboard and Go Premium screens
+
 = 1.0.8 =
 * Fixed: Database query compliance - replaced direct $wpdb queries with WordPress Transients and Cache APIs
 * Fixed: Unclosed brace syntax error in cache-manager.php

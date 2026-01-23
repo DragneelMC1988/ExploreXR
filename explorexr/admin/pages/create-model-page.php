@@ -43,37 +43,24 @@ function explorexr_handle_model_creation() {
     if ($post_id && !is_wp_error($post_id)) {
         $model_source = isset($_POST['model_source']) ? sanitize_text_field(wp_unslash($_POST['model_source'])) : 'upload';
         
-        // Save model viewer size settings
-        if (isset($_POST['viewer_width']) && !empty($_POST['viewer_width'])) {
-            update_post_meta($post_id, '_explorexr_viewer_width', sanitize_text_field(wp_unslash($_POST['viewer_width'])));
-        }
+        // Normalize and save viewer sizes (applies presets + device fallbacks)
+        $raw_viewer_size = isset($_POST['viewer_size']) ? sanitize_text_field(wp_unslash($_POST['viewer_size'])) : 'custom';
+        $normalized_sizes = explorexr_normalize_viewer_sizes($raw_viewer_size, array(
+            'width'         => isset($_POST['viewer_width']) ? sanitize_text_field(wp_unslash($_POST['viewer_width'])) : '',
+            'height'        => isset($_POST['viewer_height']) ? sanitize_text_field(wp_unslash($_POST['viewer_height'])) : '',
+            'tablet_width'  => isset($_POST['tablet_viewer_width']) ? sanitize_text_field(wp_unslash($_POST['tablet_viewer_width'])) : '',
+            'tablet_height' => isset($_POST['tablet_viewer_height']) ? sanitize_text_field(wp_unslash($_POST['tablet_viewer_height'])) : '',
+            'mobile_width'  => isset($_POST['mobile_viewer_width']) ? sanitize_text_field(wp_unslash($_POST['mobile_viewer_width'])) : '',
+            'mobile_height' => isset($_POST['mobile_viewer_height']) ? sanitize_text_field(wp_unslash($_POST['mobile_viewer_height'])) : '',
+        ));
         
-        if (isset($_POST['viewer_height']) && !empty($_POST['viewer_height'])) {
-            update_post_meta($post_id, '_explorexr_viewer_height', sanitize_text_field(wp_unslash($_POST['viewer_height'])));
-        }
-        
-        // Save tablet size settings
-        if (isset($_POST['tablet_viewer_width']) && !empty($_POST['tablet_viewer_width'])) {
-            update_post_meta($post_id, '_explorexr_tablet_viewer_width', sanitize_text_field(wp_unslash($_POST['tablet_viewer_width'])));
-        }
-        
-        if (isset($_POST['tablet_viewer_height']) && !empty($_POST['tablet_viewer_height'])) {
-            update_post_meta($post_id, '_explorexr_tablet_viewer_height', sanitize_text_field(wp_unslash($_POST['tablet_viewer_height'])));
-        }
-        
-        // Save mobile size settings
-        if (isset($_POST['mobile_viewer_width']) && !empty($_POST['mobile_viewer_width'])) {
-            update_post_meta($post_id, '_explorexr_mobile_viewer_width', sanitize_text_field(wp_unslash($_POST['mobile_viewer_width'])));
-        }
-        
-        if (isset($_POST['mobile_viewer_height']) && !empty($_POST['mobile_viewer_height'])) {
-            update_post_meta($post_id, '_explorexr_mobile_viewer_height', sanitize_text_field(wp_unslash($_POST['mobile_viewer_height'])));
-        }
-        
-        // Save predefined size if selected
-        if (isset($_POST['viewer_size']) && !empty($_POST['viewer_size'])) {
-            update_post_meta($post_id, '_explorexr_viewer_size', sanitize_text_field(wp_unslash($_POST['viewer_size'])));
-        }
+        update_post_meta($post_id, '_explorexr_viewer_size', $normalized_sizes['viewer_size']);
+        update_post_meta($post_id, '_explorexr_viewer_width', $normalized_sizes['width']);
+        update_post_meta($post_id, '_explorexr_viewer_height', $normalized_sizes['height']);
+        update_post_meta($post_id, '_explorexr_tablet_viewer_width', $normalized_sizes['tablet_width']);
+        update_post_meta($post_id, '_explorexr_tablet_viewer_height', $normalized_sizes['tablet_height']);
+        update_post_meta($post_id, '_explorexr_mobile_viewer_width', $normalized_sizes['mobile_width']);
+        update_post_meta($post_id, '_explorexr_mobile_viewer_height', $normalized_sizes['mobile_height']);
         
         // Handle poster image upload if available
         if (isset($_POST['poster_method']) && $_POST['poster_method'] === 'upload' && isset($_FILES['model_poster']) && isset($_FILES['model_poster']['size']) && $_FILES['model_poster']['size'] > 0) {
@@ -89,7 +76,7 @@ function explorexr_handle_model_creation() {
         
         // Handle model file assignment
         if ($model_source === 'existing' && !empty($_POST['existing_model'])) {
-            $model_file_url = explorexr_mODELS_URL . sanitize_text_field(wp_unslash($_POST['existing_model']));
+            $model_file_url = EXPLOREXR_MODELS_URL . sanitize_text_field(wp_unslash($_POST['existing_model']));
             update_post_meta($post_id, '_explorexr_model_file', $model_file_url);
             set_transient('explorexr_model_created', array('type' => 'success', 'message' => 'Model created successfully with existing file.'), 30);
             wp_safe_redirect(admin_url('admin.php?page=explorexr-browse-models&created=true'));
@@ -157,6 +144,7 @@ function explorexr_create_model_page() {
     // Initialize variables for error handling
     $error_message = '';
     $success_message = '';
+    $size_presets = explorexr_get_viewer_size_presets();
     
     // Check for error messages from redirects
     // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used for display purposes only
@@ -263,9 +251,9 @@ function explorexr_create_model_page() {
                                 <div class="explorexr-size-box explorexr-size-box-small"></div>
                                 <span>Small</span>
                                 <small class="explorexr-responsive-info">
-                                    Desktop: 300×300px<br>
-                                    Tablet: 280×280px<br>
-                                    Mobile: 100%×280px
+                                    Desktop: <?php echo esc_html($size_presets['small']['desktop']['width']); ?>×<?php echo esc_html($size_presets['small']['desktop']['height']); ?><br>
+                                    Tablet: <?php echo esc_html($size_presets['small']['tablet']['width']); ?>×<?php echo esc_html($size_presets['small']['tablet']['height']); ?><br>
+                                    Mobile: <?php echo esc_html($size_presets['small']['mobile']['width']); ?>×<?php echo esc_html($size_presets['small']['mobile']['height']); ?>
                                 </small>
                             </div>
                         </label>
@@ -276,9 +264,9 @@ function explorexr_create_model_page() {
                                 <div class="explorexr-size-box explorexr-size-box-medium"></div>
                                 <span>Medium</span>
                                 <small class="explorexr-responsive-info">
-                                    Desktop: 500×500px<br>
-                                    Tablet: 450×450px<br>
-                                    Mobile: 100%×400px
+                                    Desktop: <?php echo esc_html($size_presets['medium']['desktop']['width']); ?>×<?php echo esc_html($size_presets['medium']['desktop']['height']); ?><br>
+                                    Tablet: <?php echo esc_html($size_presets['medium']['tablet']['width']); ?>×<?php echo esc_html($size_presets['medium']['tablet']['height']); ?><br>
+                                    Mobile: <?php echo esc_html($size_presets['medium']['mobile']['width']); ?>×<?php echo esc_html($size_presets['medium']['mobile']['height']); ?>
                                 </small>
                             </div>
                         </label>
@@ -289,9 +277,9 @@ function explorexr_create_model_page() {
                                 <div class="explorexr-size-box explorexr-size-box-large"></div>
                                 <span>Large</span>
                                 <small class="explorexr-responsive-info">
-                                    Desktop: 800×600px<br>
-                                    Tablet: 600×450px<br>
-                                    Mobile: 100%×400px
+                                    Desktop: <?php echo esc_html($size_presets['large']['desktop']['width']); ?>×<?php echo esc_html($size_presets['large']['desktop']['height']); ?><br>
+                                    Tablet: <?php echo esc_html($size_presets['large']['tablet']['width']); ?>×<?php echo esc_html($size_presets['large']['tablet']['height']); ?><br>
+                                    Mobile: <?php echo esc_html($size_presets['large']['mobile']['width']); ?>×<?php echo esc_html($size_presets['large']['mobile']['height']); ?>
                                 </small>
                             </div>
                         </label>
@@ -316,13 +304,13 @@ function explorexr_create_model_page() {
                             <h3>Desktop Size</h3>
                             <div class="explorexr-form-row">
                                 <label for="viewer_width">Width:</label>
-                                <input type="text" name="viewer_width" id="viewer_width" value="100%" class="small-text">
+                                <input type="text" name="viewer_width" id="viewer_width" value="<?php echo esc_attr($size_presets['medium']['desktop']['width']); ?>" class="small-text">
                                 <span class="description">(e.g., 500px, 100%, etc.)</span>
                             </div>
                             
                             <div class="explorexr-form-row">
                                 <label for="viewer_height">Height:</label>
-                                <input type="text" name="viewer_height" id="viewer_height" value="500px" class="small-text">
+                                <input type="text" name="viewer_height" id="viewer_height" value="<?php echo esc_attr($size_presets['medium']['desktop']['height']); ?>" class="small-text">
                                 <span class="description">(e.g., 400px, 600px, etc.)</span>
                             </div>
                         </div>

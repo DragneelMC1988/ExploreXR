@@ -6,6 +6,8 @@
 jQuery(document).ready(function($) {
     'use strict';
     
+    const percentRuleError = 'Width and height cannot both be percentages. Please use px, vw, or vh for one dimension.';
+    
     // WordPress admin menu compatibility - avoid interfering with WordPress menu functionality
     function fixAdminMenuScroll() {
         try {
@@ -204,6 +206,35 @@ jQuery(document).ready(function($) {
         } else {
             autoRotateSettings.slideUp();
         }
+    });
+    
+    /**
+     * Prevent saving when width/height are both percentages for any breakpoint.
+     */
+    function violatesPercentRule(width, height) {
+        const isPercent = (value) => typeof value === 'string' && value.trim().endsWith('%');
+        return isPercent(width) && isPercent(height);
+    }
+    
+    $('form').on('submit', function(e) {
+        const desktopWidth = $('#viewer_width').val();
+        const desktopHeight = $('#viewer_height').val();
+        const tabletWidth = $('#tablet_viewer_width').val();
+        const tabletHeight = $('#tablet_viewer_height').val();
+        const mobileWidth = $('#mobile_viewer_width').val();
+        const mobileHeight = $('#mobile_viewer_height').val();
+        
+        if (
+            violatesPercentRule(desktopWidth, desktopHeight) ||
+            violatesPercentRule(tabletWidth, tabletHeight) ||
+            violatesPercentRule(mobileWidth, mobileHeight)
+        ) {
+            e.preventDefault();
+            alert(percentRuleError);
+            return false;
+        }
+        
+        return true;
     });
     
     function isValidURL(string) {

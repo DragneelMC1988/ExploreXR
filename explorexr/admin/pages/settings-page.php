@@ -329,7 +329,7 @@ function explorexr_settings_page() {
             </div>
         </div>
         <p>For documentation, support, and more information, please visit our website:</p>
-        <p><a href="https://expoxr.com" class="button" target="_blank">Visit ExploreXR Website</a></p>
+        <p><a href="https://expoxr.com/explorexr/" class="button" target="_blank">Visit ExploreXR Website</a></p>
         <?php
         $card_content = ob_get_clean();
         include EXPLOREXR_PLUGIN_DIR . 'admin/templates/card.php';

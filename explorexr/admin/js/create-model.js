@@ -3,6 +3,8 @@
  * Handles tab functionality and media uploader for model creation
  */
 jQuery(document).ready(function($) {
+    const percentRuleError = 'Width and height cannot both be percentages. Please use px, vw, or vh for one dimension.';
+    
     // Tab functionality
     $('.explorexr-tab').on('click', function() {
         const tabId = $(this).data('tab');
@@ -143,5 +145,34 @@ jQuery(document).ready(function($) {
         
         // Open the uploader dialog
         mediaUploader.open();
+    });
+    
+    /**
+     * Block submission when any breakpoint uses %/% which would hide the model.
+     */
+    function violatesPercentRule(width, height) {
+        const isPercent = (value) => typeof value === 'string' && value.trim().endsWith('%');
+        return isPercent(width) && isPercent(height);
+    }
+    
+    $('form').on('submit', function(e) {
+        const desktopWidth = $('#viewer_width').val();
+        const desktopHeight = $('#viewer_height').val();
+        const tabletWidth = $('#tablet_viewer_width').val();
+        const tabletHeight = $('#tablet_viewer_height').val();
+        const mobileWidth = $('#mobile_viewer_width').val();
+        const mobileHeight = $('#mobile_viewer_height').val();
+        
+        if (
+            violatesPercentRule(desktopWidth, desktopHeight) ||
+            violatesPercentRule(tabletWidth, tabletHeight) ||
+            violatesPercentRule(mobileWidth, mobileHeight)
+        ) {
+            e.preventDefault();
+            alert(percentRuleError);
+            return false;
+        }
+        
+        return true;
     });
 });
