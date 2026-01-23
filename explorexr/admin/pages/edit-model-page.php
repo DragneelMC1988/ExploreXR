@@ -115,7 +115,7 @@ function ExploreXR_edit_model_page() {
     $model_name = get_post_meta($model_id, '_explorexr_model_name', true) ?: '';
     $model_alt_text = get_post_meta($model_id, '_explorexr_model_alt_text', true) ?: '';
     
-    // Get size settings
+    // Get size settings (normalized for display so admins see canonical values)
     $viewer_size = get_post_meta($model_id, '_explorexr_viewer_size', true) ?: 'custom';
     $viewer_width = get_post_meta($model_id, '_explorexr_viewer_width', true) ?: '100%';
     $viewer_height = get_post_meta($model_id, '_explorexr_viewer_height', true) ?: '500px';
@@ -123,6 +123,21 @@ function ExploreXR_edit_model_page() {
     $tablet_viewer_height = get_post_meta($model_id, '_explorexr_tablet_viewer_height', true) ?: '';
     $mobile_viewer_width = get_post_meta($model_id, '_explorexr_mobile_viewer_width', true) ?: '';
     $mobile_viewer_height = get_post_meta($model_id, '_explorexr_mobile_viewer_height', true) ?: '';
+    $display_sizes = explorexr_normalize_viewer_sizes($viewer_size, array(
+        'width'         => $viewer_width,
+        'height'        => $viewer_height,
+        'tablet_width'  => $tablet_viewer_width,
+        'tablet_height' => $tablet_viewer_height,
+        'mobile_width'  => $mobile_viewer_width,
+        'mobile_height' => $mobile_viewer_height,
+    ));
+    $viewer_size = $display_sizes['viewer_size'];
+    $viewer_width = $display_sizes['width'];
+    $viewer_height = $display_sizes['height'];
+    $tablet_viewer_width = $display_sizes['tablet_width'];
+    $tablet_viewer_height = $display_sizes['tablet_height'];
+    $mobile_viewer_width = $display_sizes['mobile_width'];
+    $mobile_viewer_height = $display_sizes['mobile_height'];
     
     // Get poster information
     $poster_url = get_post_meta($model_id, '_explorexr_model_poster', true) ?: '';
@@ -232,34 +247,24 @@ function ExploreXR_edit_model_page() {
                 update_post_meta($model_id, '_explorexr_model_alt_text', sanitize_text_field(wp_unslash($_POST['model_alt_text'])));
             }
             
-            // Process size settings
-            if (isset($_POST['viewer_size'])) {
-                update_post_meta($model_id, '_explorexr_viewer_size', sanitize_text_field(wp_unslash($_POST['viewer_size'])));
-            }
+            // Process size settings using canonical presets + safety validation
+            $raw_viewer_size = isset($_POST['viewer_size']) ? sanitize_text_field(wp_unslash($_POST['viewer_size'])) : 'custom';
+            $normalized_sizes = explorexr_normalize_viewer_sizes($raw_viewer_size, array(
+                'width'         => isset($_POST['viewer_width']) ? sanitize_text_field(wp_unslash($_POST['viewer_width'])) : '',
+                'height'        => isset($_POST['viewer_height']) ? sanitize_text_field(wp_unslash($_POST['viewer_height'])) : '',
+                'tablet_width'  => isset($_POST['tablet_viewer_width']) ? sanitize_text_field(wp_unslash($_POST['tablet_viewer_width'])) : '',
+                'tablet_height' => isset($_POST['tablet_viewer_height']) ? sanitize_text_field(wp_unslash($_POST['tablet_viewer_height'])) : '',
+                'mobile_width'  => isset($_POST['mobile_viewer_width']) ? sanitize_text_field(wp_unslash($_POST['mobile_viewer_width'])) : '',
+                'mobile_height' => isset($_POST['mobile_viewer_height']) ? sanitize_text_field(wp_unslash($_POST['mobile_viewer_height'])) : '',
+            ));
             
-            if (isset($_POST['viewer_width'])) {
-                update_post_meta($model_id, '_explorexr_viewer_width', sanitize_text_field(wp_unslash($_POST['viewer_width'])));
-            }
-            
-            if (isset($_POST['viewer_height'])) {
-                update_post_meta($model_id, '_explorexr_viewer_height', sanitize_text_field(wp_unslash($_POST['viewer_height'])));
-            }
-            
-            if (isset($_POST['tablet_viewer_width'])) {
-                update_post_meta($model_id, '_explorexr_tablet_viewer_width', sanitize_text_field(wp_unslash($_POST['tablet_viewer_width'])));
-            }
-            
-            if (isset($_POST['tablet_viewer_height'])) {
-                update_post_meta($model_id, '_explorexr_tablet_viewer_height', sanitize_text_field(wp_unslash($_POST['tablet_viewer_height'])));
-            }
-            
-            if (isset($_POST['mobile_viewer_width'])) {
-                update_post_meta($model_id, '_explorexr_mobile_viewer_width', sanitize_text_field(wp_unslash($_POST['mobile_viewer_width'])));
-            }
-            
-            if (isset($_POST['mobile_viewer_height'])) {
-                update_post_meta($model_id, '_explorexr_mobile_viewer_height', sanitize_text_field(wp_unslash($_POST['mobile_viewer_height'])));
-            }
+            update_post_meta($model_id, '_explorexr_viewer_size', $normalized_sizes['viewer_size']);
+            update_post_meta($model_id, '_explorexr_viewer_width', $normalized_sizes['width']);
+            update_post_meta($model_id, '_explorexr_viewer_height', $normalized_sizes['height']);
+            update_post_meta($model_id, '_explorexr_tablet_viewer_width', $normalized_sizes['tablet_width']);
+            update_post_meta($model_id, '_explorexr_tablet_viewer_height', $normalized_sizes['tablet_height']);
+            update_post_meta($model_id, '_explorexr_mobile_viewer_width', $normalized_sizes['mobile_width']);
+            update_post_meta($model_id, '_explorexr_mobile_viewer_height', $normalized_sizes['mobile_height']);
             
             // Process poster image
             if (isset($_POST['poster_method']) && $_POST['poster_method'] === 'upload') {

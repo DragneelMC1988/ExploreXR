@@ -12,6 +12,8 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+$explorexr_size_presets = explorexr_get_viewer_size_presets(); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- template-scoped helper cache
+
 // Check if model_id is defined, if not try to get it from $_GET
 if (!isset($model_id) || empty($model_id)) {
     // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for display
@@ -83,9 +85,9 @@ if (!isset($mobile_viewer_height)) {
                         <div class="explorexr-size-box explorexr-size-box-small"></div>
                         <span>Small</span>
                         <small class="explorexr-responsive-info">
-                            Desktop: 300×300px<br>
-                            Tablet: 280×280px<br>
-                            Mobile: 100%×280px
+                            Desktop: <?php echo esc_html($explorexr_size_presets['small']['desktop']['width']); ?>×<?php echo esc_html($explorexr_size_presets['small']['desktop']['height']); ?><br>
+                            Tablet: <?php echo esc_html($explorexr_size_presets['small']['tablet']['width']); ?>×<?php echo esc_html($explorexr_size_presets['small']['tablet']['height']); ?><br>
+                            Mobile: <?php echo esc_html($explorexr_size_presets['small']['mobile']['width']); ?>×<?php echo esc_html($explorexr_size_presets['small']['mobile']['height']); ?>
                         </small>
                     </div>
                 </label>
@@ -96,9 +98,9 @@ if (!isset($mobile_viewer_height)) {
                         <div class="explorexr-size-box explorexr-size-box-medium"></div>
                         <span>Medium</span>
                         <small class="explorexr-responsive-info">
-                            Desktop: 500×500px<br>
-                            Tablet: 450×450px<br>
-                            Mobile: 100%×400px
+                            Desktop: <?php echo esc_html($explorexr_size_presets['medium']['desktop']['width']); ?>×<?php echo esc_html($explorexr_size_presets['medium']['desktop']['height']); ?><br>
+                            Tablet: <?php echo esc_html($explorexr_size_presets['medium']['tablet']['width']); ?>×<?php echo esc_html($explorexr_size_presets['medium']['tablet']['height']); ?><br>
+                            Mobile: <?php echo esc_html($explorexr_size_presets['medium']['mobile']['width']); ?>×<?php echo esc_html($explorexr_size_presets['medium']['mobile']['height']); ?>
                         </small>
                     </div>
                 </label>
@@ -109,9 +111,22 @@ if (!isset($mobile_viewer_height)) {
                         <div class="explorexr-size-box explorexr-size-box-large"></div>
                         <span>Large</span>
                         <small class="explorexr-responsive-info">
-                            Desktop: 800×600px<br>
-                            Tablet: 600×450px<br>
-                            Mobile: 100%×400px
+                            Desktop: <?php echo esc_html($explorexr_size_presets['large']['desktop']['width']); ?>×<?php echo esc_html($explorexr_size_presets['large']['desktop']['height']); ?><br>
+                            Tablet: <?php echo esc_html($explorexr_size_presets['large']['tablet']['width']); ?>×<?php echo esc_html($explorexr_size_presets['large']['tablet']['height']); ?><br>
+                            Mobile: <?php echo esc_html($explorexr_size_presets['large']['mobile']['width']); ?>×<?php echo esc_html($explorexr_size_presets['large']['mobile']['height']); ?>
+                        </small>
+                    </div>
+                </label>
+                
+                <label class="explorexr-size-option">
+                    <input type="radio" name="viewer_size" value="full" <?php checked($viewer_size, 'full'); ?>>
+                    <div class="explorexr-size-preview">
+                        <div class="explorexr-size-box explorexr-size-box-large"></div>
+                        <span>Full</span>
+                        <small class="explorexr-responsive-info">
+                            Desktop: <?php echo esc_html($explorexr_size_presets['full']['desktop']['width']); ?>×<?php echo esc_html($explorexr_size_presets['full']['desktop']['height']); ?><br>
+                            Tablet: <?php echo esc_html($explorexr_size_presets['full']['tablet']['width']); ?>×<?php echo esc_html($explorexr_size_presets['full']['tablet']['height']); ?><br>
+                            Mobile: <?php echo esc_html($explorexr_size_presets['full']['mobile']['width']); ?>×<?php echo esc_html($explorexr_size_presets['full']['mobile']['height']); ?>
                         </small>
                     </div>
                 </label>
@@ -189,7 +204,4 @@ if (!isset($mobile_viewer_height)) {
     </div>
 </div>
 
-
-
-
-
+<?php // phpcs:enable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound ?>

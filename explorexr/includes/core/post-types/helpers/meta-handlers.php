@@ -142,47 +142,26 @@ function explorexr_save_all_post_meta($post_id) {
  * @param int $post_id The post ID
  */
 function explorexr_save_size_settings($post_id) {
-    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in explorexr_save_all_post_meta()
-    if (array_key_exists('viewer_size', $_POST)) {
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in explorexr_save_all_post_meta()
-        update_post_meta($post_id, '_explorexr_viewer_size', sanitize_text_field(wp_unslash($_POST['viewer_size'])));
-    }
+    // phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in explorexr_save_all_post_meta()
+    // Normalize sizes using canonical presets and safety rules
+    $raw_viewer_size = array_key_exists('viewer_size', $_POST) ? sanitize_text_field(wp_unslash($_POST['viewer_size'])) : 'custom';
+    $normalized_sizes = explorexr_normalize_viewer_sizes($raw_viewer_size, array(
+        'width'         => array_key_exists('viewer_width', $_POST) ? sanitize_text_field(wp_unslash($_POST['viewer_width'])) : '',
+        'height'        => array_key_exists('viewer_height', $_POST) ? sanitize_text_field(wp_unslash($_POST['viewer_height'])) : '',
+        'tablet_width'  => array_key_exists('tablet_viewer_width', $_POST) ? sanitize_text_field(wp_unslash($_POST['tablet_viewer_width'])) : '',
+        'tablet_height' => array_key_exists('tablet_viewer_height', $_POST) ? sanitize_text_field(wp_unslash($_POST['tablet_viewer_height'])) : '',
+        'mobile_width'  => array_key_exists('mobile_viewer_width', $_POST) ? sanitize_text_field(wp_unslash($_POST['mobile_viewer_width'])) : '',
+        'mobile_height' => array_key_exists('mobile_viewer_height', $_POST) ? sanitize_text_field(wp_unslash($_POST['mobile_viewer_height'])) : '',
+    ));
     
-    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in explorexr_save_all_post_meta()
-    if (array_key_exists('viewer_width', $_POST)) {
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in explorexr_save_all_post_meta()
-        update_post_meta($post_id, '_explorexr_viewer_width', sanitize_text_field(wp_unslash($_POST['viewer_width'])));
-    }
-    
-    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in explorexr_save_all_post_meta()
-    if (array_key_exists('viewer_height', $_POST)) {
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in explorexr_save_all_post_meta()
-        update_post_meta($post_id, '_explorexr_viewer_height', sanitize_text_field(wp_unslash($_POST['viewer_height'])));
-    }
-    
-    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in explorexr_save_all_post_meta()
-    if (array_key_exists('tablet_viewer_width', $_POST)) {
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in explorexr_save_all_post_meta()
-        update_post_meta($post_id, '_explorexr_tablet_viewer_width', sanitize_text_field(wp_unslash($_POST['tablet_viewer_width'])));
-    }
-    
-    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in explorexr_save_all_post_meta()
-    if (array_key_exists('tablet_viewer_height', $_POST)) {
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in explorexr_save_all_post_meta()
-        update_post_meta($post_id, '_explorexr_tablet_viewer_height', sanitize_text_field(wp_unslash($_POST['tablet_viewer_height'])));
-    }
-    
-    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in explorexr_save_all_post_meta()
-    if (array_key_exists('mobile_viewer_width', $_POST)) {
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in explorexr_save_all_post_meta()
-        update_post_meta($post_id, '_explorexr_mobile_viewer_width', sanitize_text_field(wp_unslash($_POST['mobile_viewer_width'])));
-    }
-    
-    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in explorexr_save_all_post_meta()
-    if (array_key_exists('mobile_viewer_height', $_POST)) {
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled in explorexr_save_all_post_meta()
-        update_post_meta($post_id, '_explorexr_mobile_viewer_height', sanitize_text_field(wp_unslash($_POST['mobile_viewer_height'])));
-    }
+    update_post_meta($post_id, '_explorexr_viewer_size', $normalized_sizes['viewer_size']);
+    update_post_meta($post_id, '_explorexr_viewer_width', $normalized_sizes['width']);
+    update_post_meta($post_id, '_explorexr_viewer_height', $normalized_sizes['height']);
+    update_post_meta($post_id, '_explorexr_tablet_viewer_width', $normalized_sizes['tablet_width']);
+    update_post_meta($post_id, '_explorexr_tablet_viewer_height', $normalized_sizes['tablet_height']);
+    update_post_meta($post_id, '_explorexr_mobile_viewer_width', $normalized_sizes['mobile_width']);
+    update_post_meta($post_id, '_explorexr_mobile_viewer_height', $normalized_sizes['mobile_height']);
+    // phpcs:enable WordPress.Security.NonceVerification.Missing
 }
 
 /**
@@ -320,7 +299,6 @@ function explorexr_is_premium_feature_available_with_license($feature_slug, $lic
     // Premium features are not available in the Free version
     return false;
 }
-
 
 
 

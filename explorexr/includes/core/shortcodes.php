@@ -144,7 +144,8 @@ function EXPLOREXR_build_model_attributes($model_id, $model_file, $alt_text, $wi
     // Free version does not include AR support
     
     // Add any additional data attributes from plugin settings
-    $attributes = apply_filters('EXPLOREXR_model_viewer_attributes', $attributes, $model_id);
+    // Standardized filter name for addon compatibility
+    $attributes = apply_filters('explorexr_model_viewer_attributes', $attributes, $model_id);
     
     return $attributes;
 }
@@ -204,43 +205,24 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
     $model_poster = get_post_meta($model_id, '_explorexr_model_poster', true) ?: '';
     $model_poster_id = get_post_meta($model_id, '_explorexr_model_poster_id', true) ?: '';
 
-    // Get size settings
+    // Get size settings and normalize across presets/devices
     $viewer_size = get_post_meta($model_id, '_explorexr_viewer_size', true) ?: '';
-    $width = '100%';
-    $height = '500px';
+    $normalized_sizes = explorexr_normalize_viewer_sizes($viewer_size, array(
+        'width'         => get_post_meta($model_id, '_explorexr_viewer_width', true) ?: '',
+        'height'        => get_post_meta($model_id, '_explorexr_viewer_height', true) ?: '',
+        'tablet_width'  => get_post_meta($model_id, '_explorexr_tablet_viewer_width', true) ?: '',
+        'tablet_height' => get_post_meta($model_id, '_explorexr_tablet_viewer_height', true) ?: '',
+        'mobile_width'  => get_post_meta($model_id, '_explorexr_mobile_viewer_width', true) ?: '',
+        'mobile_height' => get_post_meta($model_id, '_explorexr_mobile_viewer_height', true) ?: '',
+    ));
     
-    // Apply preset sizes or custom dimensions
-    if ($viewer_size === 'small') {
-        $width = '300px';
-        $height = '300px';
-    } elseif ($viewer_size === 'medium') {
-        $width = '500px';
-        $height = '500px';
-    } elseif ($viewer_size === 'large') {
-        $width = '800px';
-        $height = '600px';
-    } elseif ($viewer_size === 'full') {
-        $width = '98vw';
-        $height = '98vh';
-    } else {
-        // Custom size
-        $custom_width = get_post_meta($model_id, '_explorexr_viewer_width', true) ?: '';
-        $custom_height = get_post_meta($model_id, '_explorexr_viewer_height', true) ?: '';
-        
-        if (!empty($custom_width)) {
-            $width = $custom_width;
-        }
-        
-        if (!empty($custom_height)) {
-            $height = $custom_height;
-        }
-    }
-    
-    // Get responsive sizes for tablet and mobile
-    $tablet_width = get_post_meta($model_id, '_explorexr_tablet_viewer_width', true) ?: '';
-    $tablet_height = get_post_meta($model_id, '_explorexr_tablet_viewer_height', true) ?: '';
-    $mobile_width = get_post_meta($model_id, '_explorexr_mobile_viewer_width', true) ?: '';
-    $mobile_height = get_post_meta($model_id, '_explorexr_mobile_viewer_height', true) ?: '';
+    // Defensive safeguard: ensure sizes are deterministic even if meta was legacy/invalid
+    $width = $normalized_sizes['width'];
+    $height = $normalized_sizes['height'];
+    $tablet_width = $normalized_sizes['tablet_width'];
+    $tablet_height = $normalized_sizes['tablet_height'];
+    $mobile_width = $normalized_sizes['mobile_width'];
+    $mobile_height = $normalized_sizes['mobile_height'];
     
     // Generate unique CSS ID for this model instance
     $model_css_id = 'explorexr-model-' . $model_id . '-' . uniqid();

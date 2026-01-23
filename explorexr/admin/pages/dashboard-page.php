@@ -94,6 +94,10 @@ function explorexr_dashboard_page() {
         
         <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/notifications-area.php'; ?>
         
+        <div class="notice notice-success is-dismissible explorexr-discount-banner">
+            <p><strong>ExploreXR Premium - 50% off for early adopters</strong> — Use code <code>XRPREMIUM50</code> at checkout to upgrade to Premium.</p>
+        </div>
+        
         <!-- Moving Gradient Banner -->
         <div class="explorexr-gradient-banner">
             <div class="explorexr-gradient-banner-content">

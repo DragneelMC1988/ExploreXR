@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
  */
 function EXPLOREXR_custom_ui_page() {
     // Get model stats
-    $total_models = wp_count_posts('EXPLOREXR_model')->publish;
+    $total_models = wp_count_posts('explorexr_model')->publish;
     
     // Count model files
     $models_dir = EXPLOREXR_MODELS_DIR;
@@ -144,7 +144,7 @@ function EXPLOREXR_custom_ui_page() {
                     $max_upload_status = $max_upload >= 20;
                     
                     // Check model viewer version
-                    $model_viewer_version = get_option('EXPLOREXR_model_viewer_version', '3.3.0');
+    $model_viewer_version = get_option('explorexr_model_viewer_version', '3.3.0');
                     ?>
                     <div>
                         <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
@@ -187,7 +187,7 @@ function EXPLOREXR_custom_ui_page() {
                 <div class="explorexr-card-content">
                     <?php
                     $recent_models = new WP_Query([
-                        'post_type' => 'EXPLOREXR_model',
+                        'post_type' => 'explorexr_model',
                         'posts_per_page' => 5,
                         'order' => 'DESC',
                         'orderby' => 'date'
@@ -264,8 +264,8 @@ function EXPLOREXR_custom_ui_page() {
         
         if (false === $featured_models_ids) {
             // Use WP_Query with meta_query for WordPress standards compliance
-            $featured_query = new WP_Query([
-                'post_type' => 'EXPLOREXR_model',
+        $featured_query = new WP_Query([
+            'post_type' => 'explorexr_model',
                 'post_status' => 'publish',
                 'posts_per_page' => 3,
                 'orderby' => 'date',
@@ -273,7 +273,7 @@ function EXPLOREXR_custom_ui_page() {
                 // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Required for filtering 3D models with files
                 'meta_query' => [
                     [
-                        'key' => '_EXPLOREXR_model_file',
+                        'key' => '_explorexr_model_file',
                         'compare' => 'EXISTS'
                     ]
                 ],
@@ -285,7 +285,7 @@ function EXPLOREXR_custom_ui_page() {
         }
         
         $featured_models = new WP_Query([
-            'post_type' => 'EXPLOREXR_model',
+            'post_type' => 'explorexr_model',
             'post__in' => $featured_models_ids ? $featured_models_ids : [0], // Use 0 if empty to avoid issues
             'orderby' => 'post__in',
             'posts_per_page' => 3,
@@ -301,8 +301,8 @@ function EXPLOREXR_custom_ui_page() {
             
             <div class="explorexr-dashboard-grid">
                 <?php while ($featured_models->have_posts()) : $featured_models->the_post(); 
-                      $model_file = get_post_meta(get_the_ID(), '_EXPLOREXR_model_file', true) ?: '';
-                      $poster_url = get_post_meta(get_the_ID(), '_EXPLOREXR_model_poster', true) ?: '';
+                      $model_file = get_post_meta(get_the_ID(), '_explorexr_model_file', true) ?: '';
+                      $poster_url = get_post_meta(get_the_ID(), '_explorexr_model_poster', true) ?: '';
                       $shortcode = '[EXPLOREXR_model id="' . get_the_ID() . '"]';
                 ?>
                     <div class="explorexr-card explorexr-model-card">

@@ -29,6 +29,10 @@ function explorexr_premium_upgrade_page() {
         <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/notifications-area.php'; ?>
         <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/admin-header.php'; ?>
         
+        <div class="notice notice-success is-dismissible explorexr-discount-banner">
+            <p><strong>ExploreXR Premium - 50% off for early adopters</strong> — Apply code <code>XRPREMIUM50</code> to unlock the discount.</p>
+        </div>
+        
         <div class="explorexr-premium-content">
             <section class="premium-summary">
                 <h2>Premium Feature Experience</h2>
@@ -270,7 +274,7 @@ function explorexr_premium_upgrade_page() {
                         <a href="<?php echo esc_url(explorexr_get_premium_upgrade_url()); ?>" class="button button-primary button-hero" target="_blank">
                             Get Premium Now
                         </a>
-                        <a href="<?php echo esc_url(explorexr_get_premium_upgrade_url()); ?>demo" class="button button-secondary" target="_blank">
+                        <a href="https://expoxr.com/explorexr/demo-premium/" class="button button-secondary" target="_blank">
                             View Live Demo
                         </a>
                     </div>

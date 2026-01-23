@@ -7,6 +7,8 @@
 jQuery(document).ready(function($) {
     'use strict';
     
+    const percentRuleError = 'Width and height cannot both be percentages. Please use px, vw, or vh for one dimension.';
+    
     // Tab functionality
     $('.explorexr-tab').on('click', function() {
         const tabId = $(this).data('tab');
@@ -150,4 +152,32 @@ jQuery(document).ready(function($) {
     
     // Initialize on page load
     initializeDisplaySizeState();
+    
+    /**
+     * Prevent saving when width/height are both percentages for any breakpoint.
+     */
+    function violatesPercentRule(width, height) {
+        const isPercent = (value) => typeof value === 'string' && value.trim().endsWith('%');
+        return isPercent(width) && isPercent(height);
+    }
+    
+    $('#post').on('submit', function(e) {
+        const desktopWidth = $('#viewer_width').val();
+        const desktopHeight = $('#viewer_height').val();
+        const tabletWidth = $('#tablet_viewer_width').val();
+        const tabletHeight = $('#tablet_viewer_height').val();
+        const mobileWidth = $('#mobile_viewer_width').val();
+        const mobileHeight = $('#mobile_viewer_height').val();
+        
+        if (
+            violatesPercentRule(desktopWidth, desktopHeight) ||
+            violatesPercentRule(tabletWidth, tabletHeight) ||
+            violatesPercentRule(mobileWidth, mobileHeight)
+        ) {
+            e.preventDefault();
+            alert(percentRuleError);
+            return false;
+        }
+        return true;
+    });
 });

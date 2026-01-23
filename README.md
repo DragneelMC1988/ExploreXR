@@ -3,7 +3,7 @@
 [![WordPress Compatible](https://img.shields.io/badge/WordPress-5.0%2B-0073aa.svg)](https://wordpress.org/)
 [![PHP Version](https://img.shields.io/badge/PHP-7.4%2B-8892bf.svg)](https://php.net/)
 [![License](https://img.shields.io/badge/License-GPL%20v2-007ec6.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
-[![Version](https://img.shields.io/badge/Version-1.0.2-brightgreen.svg)](https://github.com/DragneelMC1988/explorexr/releases)
+[![Version](https://img.shields.io/badge/Version-1.0.9-brightgreen.svg)](https://github.com/DragneelMC1988/explorexr/releases)
 
 ## 🌐 Transform Your WordPress Site with Interactive 3D Content
 
@@ -11,7 +11,7 @@ ExploreXR brings the power of interactive 3D models to your WordPress website wi
 
 **Perfect for:** E-commerce stores, product showcases, portfolios, museums, educational sites, real estate listings, architectural firms, and any website looking to engage users with immersive 3D experiences.
 
-## ✨ Features That Make ExploreXR Special
+## ✨ Features That Make ExploreXR Special (Free Edition)
 
 <table>
   <tr>
@@ -27,25 +27,25 @@ ExploreXR brings the power of interactive 3D models to your WordPress website wi
       </ul>
     </td>
     <td width="33%">
-      <h3>� Seamless Integrations</h3>
+      <h3>🧭 Seamless Admin Flow</h3>
       <ul>
-        <li><b>Elementor Widget</b> - Visual drag-and-drop placement</li>
-        <li><b>WooCommerce Support</b> - 3D product visualization</li>
-        <li><b>Augmented Reality</b> - View models in your space</li>
-        <li><b>Universal Theme Support</b> - Works everywhere</li>
-        <li><b>Accessibility Ready</b> - Inclusive design principles</li>
-        <li><b>GDPR Compliant</b> - Privacy-focused implementation</li>
+        <li><b>Custom Editor</b> - Guided create/edit pages for models</li>
+        <li><b>Responsive Presets</b> - One-click Small/Medium/Large/Full with device breakpoints</li>
+        <li><b>Device Overrides</b> - Tablet and mobile size meta saved explicitly</li>
+        <li><b>Secure Uploads</b> - Sanitized GLB/GLTF/USDZ handling into uploads/explorexr_models</li>
+        <li><b>Accessibility Ready</b> - Alt text, interaction prompts</li>
+        <li><b>Admin Notices</b> - Error/validation feedback built-in</li>
       </ul>
     </td>
     <td width="33%">
       <h3>⚙️ Advanced Controls</h3>
       <ul>
-        <li><b>Custom Loading Experience</b> - Branded loading screens</li>
-        <li><b>Device-specific Settings</b> - Optimize for any screen</li>
+        <li><b>Loading Attributes</b> - Localized data-attrs for the JS loader</li>
+        <li><b>Safe Dimensions</b> - Percent/percent combos auto-corrected to visible sizes</li>
         <li><b>Clean Data Management</b> - Import/export and uninstall options</li>
-        <li><b>Performance Tools</b> - Optimization for fast loading</li>
-        <li><b>Developer Friendly</b> - Extensive hooks and filters</li>
-        <li><b>Robust Security</b> - Enterprise-grade protection</li>
+        <li><b>Performance Tools</b> - Progressive loading + lazy posters</li>
+        <li><b>Developer Friendly</b> - Shortcode hooks, model-viewer filters</li>
+        <li><b>Robust Security</b> - Nonces, capability checks, file scanners</li>
       </ul>
     </td>
   </tr>
@@ -61,7 +61,7 @@ ExploreXR handles the technical complexities so you can focus on showcasing your
 - **Interactive Controls** - Zoom, rotate, pan with intuitive controls
 - **Cross-browser Support** - Consistent experience across all major browsers
 
-## � See It In Action
+## 🎥 See It In Action
 
 <p align="center">
   <img src="https://github.com/DragneelMC1988/explorexr/raw/main/assets/img/screenshots/demo-showcase.gif" alt="ExploreXR Demo" width="700"/>
@@ -139,7 +139,7 @@ ExploreXR handles the technical complexities so you can focus on showcasing your
   </tr>
 </table>
 
-## � Plugin Structure
+## 🧱 Plugin Structure
 
 ```
 explorexr/
@@ -162,7 +162,7 @@ explorexr/
 ├── 📂 includes/               # Core plugin functionality
 │   ├── 📄 shortcodes.php      # Shortcode implementation
 │   ├── 📂 core/               # Core functions
-│   ├── 📂 integrations/       # Third-party integrations
+│   ├── 📂 integrations/       # Third-party integrations (premium only)
 │   ├── 📂 models/             # Model handling
 │   ├── 📂 premium/            # Premium features
 │   ├── 📂 security/           # Security functions
@@ -212,7 +212,7 @@ Configure different display options for:
 - 📱 **Tablet** (768px - 1023px)  
 - 📱 **Mobile** (< 768px)
 
-## � Performance Optimization
+## 🚦 Performance Optimization
 
 ExploreXR includes multiple features to ensure optimal performance:
 
@@ -236,16 +236,9 @@ ExploreXR is built with security as a top priority:
 - **GDPR Compliance** - No personal data collection
 - **Clean Code** - Following WordPress security best practices
 
-## 🚀 Premium Features
+## 🚀 Premium Add-ons
 
-ExploreXR Premium unlocks powerful features for advanced 3D model experiences:
-
-- **🎥 Camera Controls** - Advanced camera presets and controls
-- **📍 Annotations** - Interactive hotspots and information panels  
-- **🎨 Materials Editing** - Material variant switching and customization
-- **🎬 Animations** - Advanced animation controls and sequencing
-- **🛒 E-commerce Integration** - Enhanced WooCommerce integration
-- **📊 Analytics** - Detailed engagement tracking and insights
+Upgrade for AR, Elementor/WooCommerce integrations, annotations, advanced camera paths, animations, material variants, and priority support. Details at [expoxr.com/explorexr/premium](https://expoxr.com/explorexr/premium/).
 
 ## 🤝 Contributing
 
@@ -257,36 +250,27 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📋 Changelog
+## 📋 Changelog (Highlights)
 
-### Version 1.0.2 (Latest)
-* **MAJOR**: Model storage relocated to WordPress uploads directory (wp-content/uploads/explorexr_models/)
-* **SECURITY**: Fixed all external CDN dependencies - now uses local files only
-* **SECURITY**: Added comprehensive ABSPATH protection to all PHP files
-* **SECURITY**: Enhanced .htaccess protection for models directory
-* **FIXED**: PHP syntax error in uninstall.php that prevented proper cleanup
-* **FIXED**: Function prefixing - renamed sanitize_hex_color to ExploreXR_sanitize_hex_color
-* **FIXED**: Removed all inline CSS/JS from upgrade system for WordPress compliance
-* **IMPROVED**: Streamlined uninstall process - preserves user settings and models
-* **IMPROVED**: Enhanced script/style enqueueing with proper dependencies
-* **IMPROVED**: All vendor dependencies now included locally (Draco, Basis Universal, Three.js)
-* **COMPLIANCE**: Full WordPress.org Plugin Directory guidelines compliance
-* **GPL**: Verified all dependencies are GPL-compatible
+### 1.0.9
+* New: Canonical display size presets (Small/Medium/Large/Full) applied across create/edit/shortcode
+* New: Tablet and mobile size meta now populated for presets (no silent fallbacks)
+* New: %/% dimension guard in admin + backend + shortcode to prevent invisible viewers
+* Fixed: Loading attribute filter alignment so data-* reach the JS loader
+* Fixed: Admin CPT slug/meta casing, premium URL wrapper, and existing file constant
+* UI: Added early-adopter 50% banner on Dashboard and Go Premium pages
 
-### Version 1.0.1
-* Fixed: Premium feature references removed from free version
-* Fixed: 3D model delete functionality - added missing AJAX handler
-* Fixed: Modal viewer now displays models at full container size
-* Fixed: Removed addon integration from free version interface
-* Improved: Enhanced security validation for model deletion
-* Improved: Better error handling for AJAX operations
+### 1.0.8
+* Database query compliance and cache-manager brace fix
+* Shared admin components CSS, grid-based layouts, and PHPCS cleanup
+* Cache management now uses WP cache APIs; improved styling and focus states
 
-### Version 1.0.0
-* Initial stable release with complete feature set
-* Modern admin interface with comprehensive model management
-* Progressive loading system with customizable indicators
-* Security framework with input validation and access controls
-* Responsive design with device-specific configurations
+### 1.0.7
+* Responsive device sizes honored on frontend; admin title fixes and nonce/sanitization improvements
+* Poster previews and upload tab UX refinements
+
+### 1.0.6
+* Initial public release: core 3D viewer, shortcode, admin UI, progressive loading, security framework
 
 ## 📝 License
 
