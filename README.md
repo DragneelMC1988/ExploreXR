@@ -279,7 +279,7 @@ This project is licensed under the GPL v2 or later - see the [LICENSE](LICENSE) 
 ## 🔗 Links
 
 - **🌐 Official Website**: [expoxr.com](https://expoxr.com)
-- **📚 Documentation**: [docs.expoxr.com](https://docs.expoxr.com)
+- **📚 Documentation**: [expoxr.com/explorexr/dpcumentation]([https://docs.expoxr.com](https://expoxr.com/explorexr/documentation/))
 - **🐛 Issue Tracker**: [GitHub Issues](../../issues)
 - **💬 Support Forum**: [WordPress.org Support](https://wordpress.org/support/plugin/explorexr/)
 
