@@ -338,13 +338,7 @@ function ExploreXR_add_security_headers() {
     }
 }
 
-
-
 // Initialize security features
 add_action('init', 'ExploreXR_init_security');
-
-
-
-
 
 
