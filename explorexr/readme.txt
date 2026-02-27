@@ -4,7 +4,7 @@ Tags: 3d, model-viewer, glb, gltf
 Requires at least: 5.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.9
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -113,6 +113,19 @@ Basic usage works everywhere. Advanced integrations are in Premium.
 5. Edit 3D Model
 
 == Changelog ==
+= 1.1.0 =
+* New: 14-day free trial — try ExploreXR Premium with 4 addons of your choice, no credit card required
+* New: Completely redesigned Go Premium page showcasing all 12 premium addons with full descriptions
+* New: Trial notice directing users to ExpoXR website for the 14-day premium trial
+* Updated: Dashboard "Upgrade to Premium" section now shows all 12 addons and trial CTA
+* Updated: Premium features metabox on model edit pages lists all available addons
+* Updated: Feature comparison table expanded with all premium capabilities
+* Updated: Recommended addon combinations section for common use cases
+* Removed: "50% off early adopters" discount banner replaced with free trial offer
+* Fixed: Version constant mismatch (header vs constant now both 1.1.0)
+* Improved: Premium feature list expanded from 2 to 13 entries
+* Improved: License stub now returns trial status when trial is active
+
 = 1.0.9 =
 * New: Unified size presets (Small/Medium/Large/Full) applied to desktop/tablet/mobile meta
 * New: Server + admin validation prevents width/height both using % (invisible viewer guard)
