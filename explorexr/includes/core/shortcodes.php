@@ -80,9 +80,6 @@ function EXPLOREXR_build_model_attributes($model_id, $model_file, $alt_text, $wi
         }
         
         $attributes['rotation-per-second'] = $rotation_per_second;
-    } else {
-        // Add a flag to indicate auto-rotate should not be added automatically
-        $attributes['no-auto-rotate'] = 'true';
     }
     
     // Add interaction prompt settings
@@ -153,26 +150,16 @@ function EXPLOREXR_build_model_attributes($model_id, $model_file, $alt_text, $wi
 // Convert attributes array to HTML attributes string
 function EXPLOREXR_generate_attributes_html($attributes) {
     $html = '';
-    
+
     foreach ($attributes as $key => $value) {
-        // Annotations are not available in the Free version
-        if ($key === 'annotations') {
-            continue;
-        }
-        
-        // Skip internal flags that shouldn't appear in the HTML
-        if ($key === 'no-camera-controls' || $key === 'no-auto-rotate') {
-            continue;
-        }
-        
         if ($value === '') {
-            // For boolean attributes
+            // Boolean attributes (e.g., camera-controls, auto-rotate)
             $html .= ' ' . esc_attr($key);
         } else {
             $html .= ' ' . esc_attr($key) . '="' . esc_attr($value) . '"';
         }
     }
-    
+
     return $html;
 }
 
@@ -226,9 +213,6 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
     
     // Generate unique CSS ID for this model instance
     $model_css_id = 'explorexr-model-' . $model_id . '-' . uniqid();
-    
-    // Annotations are not available in the free version
-    $annotations = null;
     
     // Enqueue required scripts and styles (MUST be done before wp_add_inline_style)
     wp_enqueue_style('explorexr-model-viewer', EXPLOREXR_PLUGIN_URL . 'assets/css/model-viewer.css', array(), EXPLOREXR_VERSION);
@@ -292,16 +276,17 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
     // Check file size if the file exists locally
     $is_large_model = false;
     $file_path = '';
-      // Only run str_replace if $model_file is a string and constants are defined
-    if (is_string($model_file) && defined('EXPLOREXR_MODELS_URL') && defined('EXPLOREXR_MODELS_DIR')) {
-        $file_path = str_replace(EXPLOREXR_MODELS_URL, EXPLOREXR_MODELS_DIR, $model_file ?? '');
-        
+
+    // Check file size for large model handling
+    if (defined('EXPLOREXR_MODELS_URL') && defined('EXPLOREXR_MODELS_DIR')) {
+        $file_path = str_replace(EXPLOREXR_MODELS_URL, EXPLOREXR_MODELS_DIR, $model_file);
+
         if (file_exists($file_path)) {
-            $file_size_mb = filesize($file_path) / (1024 * 1024); // Convert to MB
+            $file_size_mb = filesize($file_path) / (1024 * 1024);
             if ($file_size_mb >= $large_model_size_threshold) {
                 $is_large_model = true;
             }
-        } elseif (!empty($model_file) && is_string($model_file) && strpos($model_file, 'http') === 0) {
+        } elseif (strpos($model_file, 'http') === 0) {
             // For external files, try to get the size with a HEAD request
             $request = wp_remote_head($model_file);
             if (!is_wp_error($request) && isset($request['headers']['content-length'])) {
@@ -332,11 +317,8 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
             return is_string($key) && !is_numeric($key);
         }, ARRAY_FILTER_USE_KEY);
         
-        // Annotations are not available in the Free version
-        // This feature is available in the Pro version only
-        
         // Pass the model-viewer attributes to the JavaScript
-        $model_attributes_json = json_encode($model_attributes);
+        $model_attributes_json = wp_json_encode($model_attributes);
         
         // Check for JSON encoding errors
         if ($model_attributes_json === false) {
@@ -369,10 +351,7 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
         
         // Convert attributes to HTML string
         $attributes_html = EXPLOREXR_generate_attributes_html($model_attributes);
-        
-        // Annotations are not available in the Free version
-        $annotations_html = '';
-        
+
         // Load the standard model template
         ob_start();
         include EXPLOREXR_PLUGIN_DIR . 'template-parts/standard-model-template.php';
@@ -385,24 +364,20 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
 
 // Add user-friendly shortcode aliases
 add_shortcode('explorexr', function ($atts) {
-    return do_shortcode('[EXPLOREXR_model id="' . (isset($atts['id']) ? $atts['id'] : '') . '"]');
+    $atts = shortcode_atts(['id' => ''], $atts, 'explorexr');
+    return do_shortcode('[EXPLOREXR_model id="' . intval($atts['id']) . '"]');
 });
 
 add_shortcode('explorexr_model', function ($atts) {
-    return do_shortcode('[EXPLOREXR_model id="' . (isset($atts['id']) ? $atts['id'] : '') . '"]');
+    $atts = shortcode_atts(['id' => ''], $atts, 'explorexr_model');
+    return do_shortcode('[EXPLOREXR_model id="' . intval($atts['id']) . '"]');
 });
 
 // Enqueue admin scripts
 add_action('admin_enqueue_scripts', function ($hook) {
-    // Add null check to prevent deprecated warning in PHP 8.1+
     if (!empty($hook) && is_string($hook) && strpos($hook, 'explorexr') !== false) {
-        // Add the script directly in admin
         wp_enqueue_script('explorexr-model-loader', EXPLOREXR_PLUGIN_URL . 'assets/js/model-loader.js', array('jquery'), EXPLOREXR_VERSION, true);
     }
 });
-
-
-
-
 
 

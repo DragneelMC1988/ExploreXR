@@ -23,9 +23,9 @@ function explorexr_model_file_exists($model_file_url) {
     }
     
     // Check if it's a local file in our models directory
-    if (defined('EXPLOREXR_MODELS_URL') && defined('EXPLOREXR_MODELS_DIR') && 
-        !empty($model_file_url) && strpos($model_file_url, EXPLOREXR_MODELS_URL) === 0) {
-        $file_path = str_replace(EXPLOREXR_MODELS_URL, EXPLOREXR_MODELS_DIR, $model_file_url ?? '');
+    if (defined('EXPLOREXR_MODELS_URL') && defined('EXPLOREXR_MODELS_DIR') &&
+        strpos($model_file_url, EXPLOREXR_MODELS_URL) === 0) {
+        $file_path = str_replace(EXPLOREXR_MODELS_URL, EXPLOREXR_MODELS_DIR, $model_file_url);
         return file_exists($file_path);
     }
     
@@ -269,7 +269,7 @@ function explorexr_orphaned_models_widget_callback() {
                 type: "POST",
                 data: {
                     action: "explorexr_cleanup_models",
-                    _wpnonce: "' . esc_js(wp_create_nonce('explorexr_cleanup_models')) . '"
+                    nonce: "' . esc_js(wp_create_nonce('explorexr_admin_nonce')) . '"
                 },
                 success: function(response) {
                     if (response.success) {
@@ -322,9 +322,5 @@ function explorexr_orphaned_models_widget_callback() {
 
 // Register the dashboard widget
 add_action('wp_dashboard_setup', 'explorexr_register_orphaned_models_widget');
-
-
-
-
 
 

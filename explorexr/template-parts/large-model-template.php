@@ -78,56 +78,5 @@ if (!defined('ABSPATH')) {
     <div id="<?php echo esc_attr($model_instance_id); ?>-viewer" style="width: 100%; height: 100%; display: none;">
         <!-- Model viewer will be inserted here via JavaScript -->
     </div>
-    
-    <?php if (isset($model_attributes['ar']) && !empty($model_attributes['ar'])) : ?>
-    <?php
-    // WordPress.org compliance: Convert inline script to wp_add_inline_script
-    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for inline script
-    $ar_customization_script = '
-    // Add AR button customization after model is loaded
-    document.addEventListener("ExploreXRModelLoaded", function(event) {
-        if (event.detail.instanceId === "' . esc_js($model_instance_id) . '") {
-            const modelViewer = document.querySelector("#' . esc_js($model_instance_id) . '-viewer model-viewer");
-            if (modelViewer) {';
-    
-    if (isset($model_attributes['ar-button-image']) && !empty($model_attributes['ar-button-image'])) {
-        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable concatenation
-        $ar_customization_script .= '
-                // Add custom AR button with image
-                const arButton = document.createElement("button");
-                arButton.setAttribute("slot", "ar-button");
-                arButton.className = "ExploreXR-ar-button";
-                
-                const arButtonImg = document.createElement("img");
-                arButtonImg.src = "' . esc_js($model_attributes['ar-button-image']) . '";
-                arButtonImg.alt = "' . (isset($model_attributes['ar-button-text']) ? esc_js($model_attributes['ar-button-text']) : 'View in AR') . '";
-                
-                arButton.appendChild(arButtonImg);
-                modelViewer.appendChild(arButton);';
-    } elseif (isset($model_attributes['ar-button-text']) && !empty($model_attributes['ar-button-text'])) {
-        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable concatenation
-        $ar_customization_script .= '
-                // Add custom AR button with text
-                const arButton = document.createElement("button");
-                arButton.setAttribute("slot", "ar-button");
-                arButton.className = "ExploreXR-ar-button";
-                arButton.textContent = "' . esc_js($model_attributes['ar-button-text']) . '";
-                
-                modelViewer.appendChild(arButton);';
-    }
-    
-    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable concatenation
-    $ar_customization_script .= '
-            }
-        }
-    });
-    ';
-    wp_add_inline_script('explorexr-model-loader', $ar_customization_script);
-    ?>
-    <?php endif; ?>
 </div>
-
-
-
-
 

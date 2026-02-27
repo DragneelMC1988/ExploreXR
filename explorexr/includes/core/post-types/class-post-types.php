@@ -141,8 +141,7 @@ class ExploreXR_Post_Types {
         // The main save_post_meta function is in meta-handlers.php
         // and will be called from there after these basic checks
         if (function_exists('explorexr_save_all_post_meta')) {
-            $result = explorexr_save_all_post_meta($post_id);
-        } else {
+            explorexr_save_all_post_meta($post_id);
         }
     }
 
@@ -191,32 +190,27 @@ class ExploreXR_Post_Types {
         global $post;
         
         // Only load on post edit screens for our custom post type
-        if (($hook == 'post.php' || $hook == 'post-new.php') && 
+        if (($hook == 'post.php' || $hook == 'post-new.php') &&
             isset($post) && $post->post_type == 'explorexr_model') {
-              // First load the guard script
-            wp_enqueue_script('explorexr-model-viewer-guard');
-            
-            // Use the centralized model-viewer script with guard as dependency
-            wp_enqueue_script('explorexr-model-viewer');
-            
-            // Enqueue custom styles and scripts
+            // Enqueue custom styles
             wp_enqueue_style('explorexr-model-viewer', EXPLOREXR_PLUGIN_URL . 'assets/css/model-viewer.css', array(), EXPLOREXR_VERSION);
-            wp_enqueue_script('explorexr-model-viewer-wrapper', EXPLOREXR_PLUGIN_URL . 'assets/js/model-viewer-wrapper.js', array('jquery', 'explorexr-model-viewer'), EXPLOREXR_VERSION, true);
-              // IMPORTANT: Enqueue edit mode fix script FIRST to establish field tracking framework
+            wp_enqueue_script('explorexr-model-viewer-wrapper', EXPLOREXR_PLUGIN_URL . 'assets/js/model-viewer-wrapper.js', array('jquery'), EXPLOREXR_VERSION, true);
+
+            // Enqueue edit mode fix script to establish field tracking framework
             wp_enqueue_script('explorexr-edit-mode-fix', EXPLOREXR_PLUGIN_URL . 'includes/post-types/assets/js/edit-mode-fix.js', array('jquery'), '1.0.4', true);
-  
-            
-            // Now enqueue model uploader script (after the fix script)
+
+            // Enqueue model uploader script (after the fix script)
             wp_enqueue_script('explorexr-model-uploader', EXPLOREXR_PLUGIN_URL . 'includes/post-types/assets/js/model-uploader.js', array('jquery', 'explorexr-edit-mode-fix'), '1.0.4', true);
-            
+
             // Enqueue admin notifications script for save confirmations
             wp_enqueue_script('explorexr-admin-notifications', EXPLOREXR_PLUGIN_URL . 'includes/post-types/assets/js/admin-notifications.js', array('jquery'), '1.0.0', true);
-            
+
             // Enqueue save notification styles
             wp_enqueue_style('explorexr-save-notification', EXPLOREXR_PLUGIN_URL . 'includes/post-types/assets/css/save-notification.css', array(), '1.0.0');
-              // Enqueue custom metabox styles
+
+            // Enqueue custom metabox styles
             wp_enqueue_style('explorexr-metabox-styles', EXPLOREXR_PLUGIN_URL . 'includes/post-types/assets/css/metabox-styles.css', array(), EXPLOREXR_VERSION);
-            
+
             // Enqueue core metabox scripts AFTER the model uploader and fix script
             wp_enqueue_script('explorexr-model-file-handler', EXPLOREXR_PLUGIN_URL . 'includes/post-types/assets/js/model-file-handler.js', array('jquery', 'explorexr-model-uploader', 'explorexr-edit-mode-fix'), '1.0.1', true);
         }

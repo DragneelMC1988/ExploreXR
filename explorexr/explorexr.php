@@ -40,11 +40,6 @@ if (defined('EXPLOREXR_VERSION') || class_exists('ExploreXR_License_Handler')) {
 define('EXPLOREXR_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('EXPLOREXR_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('EXPLOREXR_VERSION', '1.0.9');
-
-// Development mode constant (set to false for production)
-define('EXPLOREXR_DEV_MODE', false);
-
-// Mark this as the free version
 define('EXPLOREXR_IS_FREE', true);
 
 // Define models directory constants after WordPress is loaded
@@ -76,17 +71,9 @@ add_action('plugins_loaded', function () {
 }, 10); // After constants are defined
 
 function explorexr_free_load_includes() {
-    // Load emergency script fix first to prevent WordPress corruption
-    if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/utils/emergency-script-fix.php')) {
-        require_once EXPLOREXR_PLUGIN_DIR . 'includes/utils/emergency-script-fix.php';
-    }
-
     // Core functionality
     if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/core/post-types/class-post-types.php')) {
         require_once EXPLOREXR_PLUGIN_DIR . 'includes/core/post-types/class-post-types.php';
-    }
-    if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/core/post-types.php')) {
-        require_once EXPLOREXR_PLUGIN_DIR . 'includes/core/post-types.php';
     }
     if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/core/shortcodes.php')) {
         require_once EXPLOREXR_PLUGIN_DIR . 'includes/core/shortcodes.php';
@@ -153,8 +140,6 @@ function explorexr_free_load_includes() {
     if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/utils/cache-manager.php')) {
         require_once EXPLOREXR_PLUGIN_DIR . 'includes/utils/cache-manager.php';
     }
-
-
 
     if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/utils/strip-tags-fix.php')) {
         require_once EXPLOREXR_PLUGIN_DIR . 'includes/utils/strip-tags-fix.php';
@@ -228,15 +213,3 @@ function explorexr_is_premium_available() {
 function explorexr_get_premium_upgrade_url() {
     return 'https://expoxr.com/explorexr/premium/';
 }
-
-// Backward-compatible wrapper for legacy calls
-if (!function_exists('EXPLOREXR_get_premium_upgrade_url')) {
-    function EXPLOREXR_get_premium_upgrade_url() {
-        return explorexr_get_premium_upgrade_url();
-    }
-}
-
-
-
-
-
