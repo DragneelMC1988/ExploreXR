@@ -58,7 +58,7 @@ function explorexr_dashboard_page() {
     $formatted_size = $size_format($total_size);
       // Check if Model Viewer is fully operational
     $cdn_source = get_option('explorexr_cdn_source', 'local');
-    $model_viewer_version = get_option('explorexr_model_viewer_version', '3.3.0');
+    $model_viewer_version = get_option('explorexr_model_viewer_version', '4.1.0');
     // WordPress.org compliance: Always use local files, no CDN
     $model_viewer_url = EXPLOREXR_PLUGIN_URL . 'assets/js/model-viewer.min.js';
     

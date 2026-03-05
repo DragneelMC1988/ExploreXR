@@ -144,7 +144,7 @@ function EXPLOREXR_custom_ui_page() {
                     $max_upload_status = $max_upload >= 20;
                     
                     // Check model viewer version
-    $model_viewer_version = get_option('explorexr_model_viewer_version', '3.3.0');
+    $model_viewer_version = get_option('explorexr_model_viewer_version', '4.1.0');
                     ?>
                     <div>
                         <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
