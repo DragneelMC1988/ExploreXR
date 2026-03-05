@@ -39,7 +39,7 @@ if ($cdn_source === 'cdn') {
     // Update the option to prevent future issues
     update_option('explorexr_cdn_source', 'local');
 }
-$model_viewer_version = get_option('explorexr_model_viewer_version', '3.3.0');
+$model_viewer_version = get_option('explorexr_model_viewer_version', '4.1.0');
 
 // Get the new loading options
 $script_location = get_option('explorexr_script_location', 'footer');
@@ -197,7 +197,7 @@ if (!function_exists('explorexr_add_ondemand_script_loader')) {
      * This function loads the model-viewer script only when needed
      */
     function explorexr_add_ondemand_script_loader() {
-        $model_viewer_version = get_option('explorexr_model_viewer_version', '3.3.0');
+        $model_viewer_version = get_option('explorexr_model_viewer_version', '4.1.0');
         $script_url = EXPLOREXR_PLUGIN_URL . 'assets/js/model-viewer-umd.js';
         
         // Check if local storage is preferred
