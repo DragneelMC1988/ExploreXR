@@ -115,9 +115,11 @@ function explorexr_free_load_includes() {
         require_once EXPLOREXR_PLUGIN_DIR . 'admin/ajax/ajax-handlers.php';
     }
 
-    // Integrations removed from Free version
-    // Free version only supports shortcode usage
-    // For WooCommerce and Elementor integration, upgrade to Premium
+    // Page-builder integrations (Elementor, Divi, Avada Fusion Builder).
+    // Each integration file checks for the corresponding builder before loading.
+    if ( file_exists( EXPLOREXR_PLUGIN_DIR . 'includes/integrations/index.php' ) ) {
+        require_once EXPLOREXR_PLUGIN_DIR . 'includes/integrations/index.php';
+    }
 
     // Security (basic level for free version)
     if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/security/file-upload-sanitizer.php')) {
