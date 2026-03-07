@@ -105,7 +105,7 @@ function explorexr_browse_models_page() {
                 <?php else : ?>
                     <div class="explorexr-filter-bar">
                         <div class="explorexr-search-box">
-                            <input type="text" id="model-search" placeholder="Search models...">
+                            <input type="text" id="model-search" placeholder="Search by title or ID...">
                             <button type="button" class="button"><span class="dashicons dashicons-search"></span></button>
                         </div>
                         <div class="explorexr-sort-options">
@@ -128,7 +128,7 @@ function explorexr_browse_models_page() {
                             $ar_enabled = get_post_meta($model->ID, '_explorexr_model_ar', true) ?: '';
                             $shortcode = '[explorexr_model id="' . $model->ID . '"]';
                         ?>
-                            <div class="explorexr-model-card" data-title="<?php echo esc_attr($model->post_title); ?>" data-date="<?php echo esc_attr($model->post_date); ?>">
+                            <div class="explorexr-model-card" data-title="<?php echo esc_attr($model->post_title); ?>" data-date="<?php echo esc_attr($model->post_date); ?>" data-id="<?php echo esc_attr($model->ID); ?>">
                                 <div class="explorexr-model-preview">
                                     <?php if (!empty($model_file)) : ?>                                        <model-viewer src="<?php echo esc_url($model_file); ?>"
                                             <?php if (!empty($poster)) : ?>poster="<?php echo esc_url($poster); ?>"<?php endif; ?>
