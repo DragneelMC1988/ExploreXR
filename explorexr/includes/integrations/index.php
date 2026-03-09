@@ -22,17 +22,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Load only when Elementor is active; the file itself hooks to
 // 'elementor/widgets/register' so there is no risk of early class loading.
 if ( did_action( 'elementor/loaded' ) || function_exists( 'elementor_load_plugin_textdomain' ) ) {
-    $elementor_widget = EXPLOREXR_PLUGIN_DIR . 'includes/integrations/elementor/class-elementor-widget.php';
-    if ( file_exists( $elementor_widget ) ) {
-        require_once $elementor_widget;
+    $explorexr_elementor_widget = EXPLOREXR_PLUGIN_DIR . 'includes/integrations/elementor/class-elementor-widget.php';
+    if ( file_exists( $explorexr_elementor_widget ) ) {
+        require_once $explorexr_elementor_widget;
     }
 } else {
     // Defer until plugins_loaded in case Elementor loads after us.
     add_action( 'plugins_loaded', function () {
         if ( did_action( 'elementor/loaded' ) || function_exists( 'elementor_load_plugin_textdomain' ) ) {
-            $elementor_widget = EXPLOREXR_PLUGIN_DIR . 'includes/integrations/elementor/class-elementor-widget.php';
-            if ( file_exists( $elementor_widget ) ) {
-                require_once $elementor_widget;
+            $explorexr_elementor_widget = EXPLOREXR_PLUGIN_DIR . 'includes/integrations/elementor/class-elementor-widget.php';
+            if ( file_exists( $explorexr_elementor_widget ) ) {
+                require_once $explorexr_elementor_widget;
             }
         }
     }, 20 );

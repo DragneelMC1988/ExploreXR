@@ -1,8 +1,8 @@
-=== ExploreXR – Interactive 3D Model Viewer for WordPress ===
+=== ExploreXR ===
 Contributors: expoxr
 Tags: 3d viewer, 3d model, glb, woocommerce, elementor
 Requires at least: 5.0
-Tested up to: 6.7
+Tested up to: 6.9
 Requires PHP: 7.4
 Stable tag: 1.1.0
 License: GPLv2 or later
