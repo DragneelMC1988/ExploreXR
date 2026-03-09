@@ -183,12 +183,12 @@ wp_enqueue_script('explorexr-model-handler', EXPLOREXR_PLUGIN_URL . 'assets/js/m
 wp_enqueue_style('explorexr-model-viewer', EXPLOREXR_PLUGIN_URL . 'assets/css/model-viewer.css', array(), EXPLOREXR_VERSION);
 
 // Base model-viewer inline styles
-$base_css = "
+$explorexr_base_css = "
     model-viewer {
         --poster-color: transparent;
     }
 ";
-wp_add_inline_style('explorexr-model-viewer', $base_css);
+wp_add_inline_style('explorexr-model-viewer', $explorexr_base_css);
 
 // Add the on-demand script loader function
 if (!function_exists('explorexr_add_ondemand_script_loader')) {
