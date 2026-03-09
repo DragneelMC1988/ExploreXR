@@ -147,7 +147,7 @@
             }
 
             // Fallback to local UMD version (WordPress.org compliance)
-            const version = '3.3.0';
+            const version = '4.1.0';
             this.scriptType = 'umd';
             return (window.explorexrScriptConfig && window.explorexrScriptConfig.pluginUrl) 
                 ? window.explorexrScriptConfig.pluginUrl + 'assets/js/model-viewer-umd.js'

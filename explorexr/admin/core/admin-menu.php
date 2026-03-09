@@ -124,14 +124,6 @@ add_action('admin_head', 'explorexr_fix_edit_model_title_script');
  * Enqueue admin scripts and styles
  */
 function explorexr_admin_enqueue_scripts($hook) {
-    // Get current screen to determine which page we're on
-    $screen = get_current_screen();
-    
-    // Add viewport meta tag for admin pages that use model-viewer
-    if ($screen && strpos($screen->id, 'explorexr') !== false) {
-        add_action('admin_head', 'explorexr_add_admin_viewport_meta');
-    }
-    
     // Common CSS for all admin pages
     wp_enqueue_style('explorexr-admin-styles', EXPLOREXR_PLUGIN_URL . 'admin/css/admin-styles.css', array(), EXPLOREXR_VERSION);
     wp_enqueue_style('explorexr-button-system', EXPLOREXR_PLUGIN_URL . 'admin/css/button-system.css', array(), EXPLOREXR_VERSION);
@@ -237,7 +229,7 @@ function explorexr_admin_enqueue_scripts($hook) {
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'plugin_url' => EXPLOREXR_PLUGIN_URL,
                 'is_premium' => false,
-                'premium_upgrade_url' => EXPLOREXR_get_premium_upgrade_url()
+                'premium_upgrade_url' => explorexr_get_premium_upgrade_url()
             ));
         }
     }
@@ -383,6 +375,6 @@ function EXPLOREXR_ajax_get_premium_info() {
                 'features' => array('All Premium Features', 'VIP Support', 'White-label Options', 'Custom Development')
             )
         ),
-        'upgrade_url' => EXPLOREXR_get_premium_upgrade_url()
+        'upgrade_url' => explorexr_get_premium_upgrade_url()
     ));
 }

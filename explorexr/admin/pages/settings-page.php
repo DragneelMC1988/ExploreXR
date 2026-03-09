@@ -27,7 +27,7 @@ function explorexr_settings_page() {
             'explorexr_large_model_size_threshold' => 16,
             'explorexr_overlay_bg_color' => '#FFFFFF',
             'explorexr_overlay_bg_opacity' => 70,
-            'explorexr_model_viewer_version' => '3.3.0',
+            'explorexr_model_viewer_version' => '4.1.0',
             'explorexr_max_upload_size' => 50
         );
         
@@ -100,7 +100,7 @@ function explorexr_settings_page() {
             
             <!-- Get current option values -->
             <?php
-            $model_viewer_version = get_option('explorexr_model_viewer_version', '3.3.0');
+            $model_viewer_version = get_option('explorexr_model_viewer_version', '4.1.0');
             $max_upload_size = get_option('explorexr_max_upload_size', 50);
             $server_max = function_exists('explorexr_get_server_max_upload') ? explorexr_get_server_max_upload() : 50;
             ?>
@@ -112,7 +112,8 @@ function explorexr_settings_page() {
                     </th>
                     <td>
                         <select name="explorexr_model_viewer_version" id="explorexr_model_viewer_version">
-                            <option value="3.3.0" <?php selected($model_viewer_version, '3.3.0'); ?>>v3.3.0 (Latest stable)</option>
+                            <option value="4.1.0" <?php selected($model_viewer_version, '4.1.0'); ?>>v4.1.0 (Latest stable)</option>
+                            <option value="3.3.0" <?php selected($model_viewer_version, '3.3.0'); ?>>v3.3.0</option>
                             <option value="3.2.0" <?php selected($model_viewer_version, '3.2.0'); ?>>v3.2.0</option>
                             <option value="3.1.1" <?php selected($model_viewer_version, '3.1.1'); ?>>v3.1.1</option>
                             <option value="3.0.0" <?php selected($model_viewer_version, '3.0.0'); ?>>v3.0.0</option>

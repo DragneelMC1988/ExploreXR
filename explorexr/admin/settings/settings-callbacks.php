@@ -20,9 +20,10 @@ function explorexr_general_settings_callback() {
  * Model Viewer version field callback
  */
 function explorexr_model_viewer_version_callback() {
-    $model_viewer_version = get_option('explorexr_model_viewer_version', '3.3.0');
+    $model_viewer_version = get_option('explorexr_model_viewer_version', '4.1.0');
     $versions = [
-        '3.3.0' => 'v3.3.0 (Latest stable)',
+        '4.1.0' => 'v4.1.0 (Latest stable)',
+        '3.3.0' => 'v3.3.0',
         '3.2.0' => 'v3.2.0',
         '3.1.0' => 'v3.1.0',
         '3.0.0' => 'v3.0.0',
@@ -102,7 +103,7 @@ function explorexr_get_system_info() {
     $imagick_installed = extension_loaded('imagick') && class_exists('Imagick');
     
     // Plugin-specific info
-    $model_viewer_version = get_option('explorexr_model_viewer_version', '3.3.0');
+    $model_viewer_version = get_option('explorexr_model_viewer_version', '4.1.0');
     // WordPress.org compliance: Local files only
     $model_viewer_source = 'Local File';
     

@@ -119,7 +119,3 @@ function explorexr_add_loading_options_to_model_viewer($attributes, $model_id = 
 add_filter('explorexr_model_viewer_attributes', 'explorexr_add_loading_options_to_model_viewer', 10, 2);
 
 
-
-
-
-

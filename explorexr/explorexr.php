@@ -3,7 +3,7 @@
  * Plugin Name: ExploreXR
  * Plugin URI: https://expoxr.com/explorexr/
  * Description: Bring your website to life with interactive 3D models. ExploreXR lets you showcase GLB, GLTF, and USDZ files with ease — no coding required. Start free, upgrade anytime.
- * Version: 1.0.9
+ * Version: 1.1.0
  * Requires at least: 5.0
  * Requires PHP: 7.4
  * Author: Ayal Othman
@@ -39,12 +39,7 @@ if (defined('EXPLOREXR_VERSION') || class_exists('ExploreXR_License_Handler')) {
 // Define plugin constants
 define('EXPLOREXR_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('EXPLOREXR_PLUGIN_URL', plugin_dir_url(__FILE__));
-define('EXPLOREXR_VERSION', '1.0.9');
-
-// Development mode constant (set to false for production)
-define('EXPLOREXR_DEV_MODE', false);
-
-// Mark this as the free version
+define('EXPLOREXR_VERSION', '1.1.0');
 define('EXPLOREXR_IS_FREE', true);
 
 // Define models directory constants after WordPress is loaded
@@ -76,17 +71,9 @@ add_action('plugins_loaded', function () {
 }, 10); // After constants are defined
 
 function explorexr_free_load_includes() {
-    // Load emergency script fix first to prevent WordPress corruption
-    if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/utils/emergency-script-fix.php')) {
-        require_once EXPLOREXR_PLUGIN_DIR . 'includes/utils/emergency-script-fix.php';
-    }
-
     // Core functionality
     if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/core/post-types/class-post-types.php')) {
         require_once EXPLOREXR_PLUGIN_DIR . 'includes/core/post-types/class-post-types.php';
-    }
-    if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/core/post-types.php')) {
-        require_once EXPLOREXR_PLUGIN_DIR . 'includes/core/post-types.php';
     }
     if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/core/shortcodes.php')) {
         require_once EXPLOREXR_PLUGIN_DIR . 'includes/core/shortcodes.php';
@@ -128,9 +115,11 @@ function explorexr_free_load_includes() {
         require_once EXPLOREXR_PLUGIN_DIR . 'admin/ajax/ajax-handlers.php';
     }
 
-    // Integrations removed from Free version
-    // Free version only supports shortcode usage
-    // For WooCommerce and Elementor integration, upgrade to Premium
+    // Page-builder integrations (Elementor, Divi, Avada Fusion Builder).
+    // Each integration file checks for the corresponding builder before loading.
+    if ( file_exists( EXPLOREXR_PLUGIN_DIR . 'includes/integrations/index.php' ) ) {
+        require_once EXPLOREXR_PLUGIN_DIR . 'includes/integrations/index.php';
+    }
 
     // Security (basic level for free version)
     if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/security/file-upload-sanitizer.php')) {
@@ -154,8 +143,6 @@ function explorexr_free_load_includes() {
         require_once EXPLOREXR_PLUGIN_DIR . 'includes/utils/cache-manager.php';
     }
 
-
-
     if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/utils/strip-tags-fix.php')) {
         require_once EXPLOREXR_PLUGIN_DIR . 'includes/utils/strip-tags-fix.php';
     }
@@ -163,6 +150,11 @@ function explorexr_free_load_includes() {
     // Premium upgrade system for free version
     if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/premium/upgrade-system.php')) {
         require_once EXPLOREXR_PLUGIN_DIR . 'includes/premium/upgrade-system.php';
+    }
+
+    // Premium trial system
+    if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/premium/trial-system.php')) {
+        require_once EXPLOREXR_PLUGIN_DIR . 'includes/premium/trial-system.php';
     }
 }
 
@@ -228,15 +220,3 @@ function explorexr_is_premium_available() {
 function explorexr_get_premium_upgrade_url() {
     return 'https://expoxr.com/explorexr/premium/';
 }
-
-// Backward-compatible wrapper for legacy calls
-if (!function_exists('EXPLOREXR_get_premium_upgrade_url')) {
-    function EXPLOREXR_get_premium_upgrade_url() {
-        return explorexr_get_premium_upgrade_url();
-    }
-}
-
-
-
-
-

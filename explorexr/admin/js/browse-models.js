@@ -109,16 +109,19 @@ jQuery(document).ready(function($) {
             });
         }
     });
-    // Model search functionality
+    // Model search functionality — supports title text and exact/partial model ID
     $('#model-search').on('input', function() {
-        const searchTerm = $(this).val().toLowerCase();
-        
+        const searchTerm = $(this).val().toLowerCase().trim();
+
         // Search through all model cards
         $('.explorexr-model-card').each(function() {
-            const modelTitle = $(this).data('title').toLowerCase();
-            
-            // Show/hide based on search match
-            if (modelTitle.includes(searchTerm)) {
+            const modelTitle = String($(this).data('title') || '').toLowerCase();
+            const modelId    = String($(this).data('id')    || '');
+
+            // Match by title substring OR by model ID (partial match allowed)
+            const matches = modelTitle.includes(searchTerm) || modelId.includes(searchTerm);
+
+            if (matches) {
                 $(this).show();
             } else {
                 $(this).hide();

@@ -17,11 +17,9 @@ if (!isset($model_id) && isset($_GET['model_id'])) {
     $model_id = intval($_GET['model_id']);
 }
 
-// Include loading options 
+// Include loading options
 if (!function_exists('explorexr_get_loading_options')) {
-    if (file_exists(EXPLOREXR_PLUGIN_DIR . 'admin/loading-options.php')) {
-        require_once EXPLOREXR_PLUGIN_DIR . 'admin/loading-options.php';
-    } elseif (file_exists(EXPLOREXR_PLUGIN_DIR . 'admin/settings/loading-options.php')) {
+    if (file_exists(EXPLOREXR_PLUGIN_DIR . 'admin/settings/loading-options.php')) {
         require_once EXPLOREXR_PLUGIN_DIR . 'admin/settings/loading-options.php';
     }
 }
@@ -41,7 +39,7 @@ if ($cdn_source === 'cdn') {
     // Update the option to prevent future issues
     update_option('explorexr_cdn_source', 'local');
 }
-$model_viewer_version = get_option('explorexr_model_viewer_version', '3.3.0');
+$model_viewer_version = get_option('explorexr_model_viewer_version', '4.1.0');
 
 // Get the new loading options
 $script_location = get_option('explorexr_script_location', 'footer');
@@ -184,192 +182,13 @@ wp_enqueue_script('explorexr-model-handler', EXPLOREXR_PLUGIN_URL . 'assets/js/m
 // Enqueue custom CSS
 wp_enqueue_style('explorexr-model-viewer', EXPLOREXR_PLUGIN_URL . 'assets/css/model-viewer.css', array(), EXPLOREXR_VERSION);
 
-// Add AR session CSS fixes
-// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for inline CSS
-$ar_fix_css = "
-    /* ExploreXR AR mode fixes */
+// Base model-viewer inline styles
+$base_css = "
     model-viewer {
         --poster-color: transparent;
     }
-    
-    /* Ensure model remains visible during AR session */
-    .explorexr-ar-session-active model-viewer {
-        visibility: visible !important;
-        opacity: 1 !important;
-        display: block !important;
-    }
-    
-    /* iOS AR mode specific fixes */
-    @supports (-webkit-touch-callout: none) {
-        model-viewer::part(default-ar-button) {
-            transform: scale(1.5);
-        }
-        
-        .explorexr-ar-session-active {
-            height: 100vh !important;
-            overflow: hidden !important;
-        }
-    }
 ";
-wp_add_inline_style('explorexr-model-viewer', $ar_fix_css);
-
-// Add AR session handling JavaScript
-// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for inline JavaScript
-$ar_fix_js = "
-    // AR session event handling
-    document.addEventListener('DOMContentLoaded', function() {
-        // Function to handle AR session events globally
-        function handleARSessions() {
-            document.addEventListener('explorexr-ar-session-started', function(event) {
-                document.body.classList.add('explorexr-ar-session-active');
-                
-                // Add visibility fix for iOS devices
-                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-                if (isIOS) {
-                    // Force visibility in iOS AR mode
-                    const modelId = event.detail.instanceId;
-                    const modelEl = document.querySelector('#' + modelId + '-viewer model-viewer');
-                    if (modelEl) {
-                        modelEl.style.visibility = 'visible';
-                        modelEl.style.opacity = '1';
-                        modelEl.style.transform = 'translateZ(0)';
-                    }
-                }
-            });
-            
-            document.addEventListener('explorexr-ar-session-ended', function(event) {
-                document.body.classList.remove('explorexr-ar-session-active');
-                
-                // Restore model visibility after AR session ends
-                setTimeout(function() {
-                    const modelId = event.detail.instanceId;
-                    const modelEl = document.querySelector('#' + modelId + '-viewer model-viewer');
-                    if (modelEl) {
-                        modelEl.style.visibility = 'visible';
-                        modelEl.style.opacity = '1';
-                    }
-                }, 300);
-            });
-        }
-        
-        // Initialize AR session handling
-        handleARSessions();
-        
-        // Polyfill for quick-look AR session detection on iOS
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        if (isIOS) {
-            // Monitor for Quick Look session
-            document.body.addEventListener('click', function(event) {                if (event.target && (
-                    (event.target.closest && event.target.closest('model-viewer[ar]')) || 
-                    (event.target.closest && event.target.closest('button[slot=\"ar-button\"]')) || 
-                    (event.target.closest && event.target.closest('.explorexr-ar-button'))
-                )) {
-                    // Mark potential AR session start
-                    setTimeout(function() {
-                        if (!document.body.classList.contains('explorexr-ar-session-active')) {
-                            document.body.classList.add('explorexr-ar-session-active');
-                            
-                            // Trigger custom event
-                            const modelEl = event.target.closest('model-viewer');
-                            if (modelEl) {
-                                const modelId = modelEl.id || 'unknown';
-                                const arStartEvent = new CustomEvent('explorexr-ar-session-started', {
-                                    detail: { 
-                                        instanceId: modelId,
-                                        modelUrl: modelEl.src || 'unknown'
-                                    }
-                                });
-                                document.dispatchEvent(arStartEvent);
-                            }
-                        }
-                    }, 100);
-                }
-            });
-        }
-    });
-";
-wp_add_inline_script('explorexr-model-viewer-wrapper', $ar_fix_js, 'after');
-
-// Only add this filter once
-// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for filter control
-static $filter_added = false;
-if (!$filter_added) {
-    add_filter('explorexr_model_viewer_attributes', 'explorexr_add_model_viewer_attributes', 10, 2);
-    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for filter control
-    $filter_added = true;
-}
-
-// Define the function only if it doesn't exist
-if (!function_exists('explorexr_add_model_viewer_attributes')) {    /**
-     * Add data attributes to the model viewer based on plugin settings
-     * 
-     * @param array $attributes Existing model viewer attributes
-     * @param int $model_id Model ID (optional, for compatibility)
-     * @return array Updated attributes
-     */
-    function explorexr_add_model_viewer_attributes($attributes, $model_id = null) {
-        // Get settings from options
-        $loading_display = get_option('explorexr_loading_display', 'bar');
-        $loading_bar_color = get_option('explorexr_loading_bar_color', '#1e88e5');
-        $loading_bar_size = get_option('explorexr_loading_bar_size', 'medium');
-        $loading_bar_position = get_option('explorexr_loading_bar_position', 'middle');
-        $percentage_font_size = get_option('explorexr_percentage_font_size', 24);
-        $percentage_font_family = get_option('explorexr_percentage_font_family', 'Arial, sans-serif');
-        $percentage_font_color = get_option('explorexr_percentage_font_color', '#333333');
-        $percentage_position = get_option('explorexr_percentage_position', 'center-center');
-        
-        // Get custom loading text settings
-        $loading_text = get_option('explorexr_loading_text', 'Loading 3D Model...');
-        $loading_text_position = get_option('explorexr_loading_text_position', 'top-center');
-        $loading_text_font_size = get_option('explorexr_loading_text_font_size', 16);
-        $loading_text_font_family = get_option('explorexr_loading_text_font_family', 'Arial, sans-serif');
-        $loading_text_font_color = get_option('explorexr_loading_text_font_color', '#333333');
-        
-        // Get overlay color and opacity settings
-        $overlay_bg_color = get_option('explorexr_overlay_bg_color', '#FFFFFF');
-        $overlay_bg_opacity = get_option('explorexr_overlay_bg_opacity', 70) / 100;
-        
-        // Get lazy loading settings
-        $lazy_load_poster = get_option('explorexr_lazy_load_poster', false);
-        $lazy_load_model = get_option('explorexr_lazy_load_model', false);
-        
-        // Add data attributes for JS to use
-        $attributes['data-loading-display'] = $loading_display;
-        $attributes['data-loading-bar-color'] = $loading_bar_color;
-        $attributes['data-loading-bar-size'] = $loading_bar_size;
-        $attributes['data-loading-bar-position'] = $loading_bar_position;
-        $attributes['data-percentage-font-size'] = $percentage_font_size;
-        $attributes['data-percentage-font-family'] = $percentage_font_family;
-        $attributes['data-percentage-font-color'] = $percentage_font_color;
-        $attributes['data-percentage-position'] = $percentage_position;
-        
-        // Add new custom loading text attributes
-        $attributes['data-loading-text'] = $loading_text;
-        $attributes['data-loading-text-position'] = $loading_text_position;
-        $attributes['data-loading-text-font-size'] = $loading_text_font_size;
-        $attributes['data-loading-text-font-family'] = $loading_text_font_family;
-        $attributes['data-loading-text-font-color'] = $loading_text_font_color;
-        
-        // Add new overlay attributes
-        $attributes['data-overlay-color'] = $overlay_bg_color;
-        $attributes['data-overlay-opacity'] = $overlay_bg_opacity;
-        
-        // Add lazy loading attributes
-        if ($lazy_load_poster) {
-            $attributes['data-lazy-load-poster'] = 'true';
-            $attributes['loading'] = 'lazy'; // Add native lazy loading attribute
-        }
-        
-        if ($lazy_load_model) {
-            $attributes['data-lazy-load-model'] = 'true';
-        }
-        
-        // AR support is not available in the Free version
-        // Premium AR features are available in the Pro version only
-        
-        return $attributes;
-    }
-}
+wp_add_inline_style('explorexr-model-viewer', $base_css);
 
 // Add the on-demand script loader function
 if (!function_exists('explorexr_add_ondemand_script_loader')) {
@@ -378,7 +197,7 @@ if (!function_exists('explorexr_add_ondemand_script_loader')) {
      * This function loads the model-viewer script only when needed
      */
     function explorexr_add_ondemand_script_loader() {
-        $model_viewer_version = get_option('explorexr_model_viewer_version', '3.3.0');
+        $model_viewer_version = get_option('explorexr_model_viewer_version', '4.1.0');
         $script_url = EXPLOREXR_PLUGIN_URL . 'assets/js/model-viewer-umd.js';
         
         // Check if local storage is preferred
@@ -565,9 +384,4 @@ if (!function_exists('explorexr_add_ondemand_script_loader')) {
         wp_add_inline_script('explorexr-model-viewer-wrapper', $script_loader_js);
     }
 }
-?>
-
-
-
-
 

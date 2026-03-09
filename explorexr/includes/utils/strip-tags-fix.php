@@ -1,8 +1,11 @@
 <?php
 /**
- * Strip Tags Fix
- * 
- * This file adds a filter to prevent null values from being passed to strip_tags() function in WordPress admin.
+ * PHP 8.1+ Null Safety Fix
+ *
+ * Prevents null values from being passed to string functions
+ * in WordPress admin title handling.
+ *
+ * @package ExploreXR
  */
 
 // Exit if accessed directly
@@ -11,33 +14,20 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Filter admin title to ensure it's never null
+ * Filter admin title to ensure it's never null (PHP 8.1+ compatibility)
  */
 function explorexr_filter_admin_title($admin_title, $title) {
-    // Make sure neither value is null
     if ($admin_title === null) {
         $admin_title = '';
     }
-    
-    if ($title === null) {
-        $title = '';
-    }
-    
     return $admin_title;
 }
 add_filter('admin_title', 'explorexr_filter_admin_title', 5, 2);
 
 /**
- * Filter page title in admin to ensure it's never null
+ * Filter document title parts to ensure none are null (PHP 8.1+ compatibility)
  */
-function explorexr_ensure_page_title($title) {
-    if ($title === null) {
-        return '';
-    }
-    return $title;
-}
-add_filter('the_title', 'explorexr_ensure_page_title', 5);
-add_filter('document_title_parts', function($title_parts) {
+add_filter('document_title_parts', function ($title_parts) {
     foreach ($title_parts as $key => $part) {
         if ($part === null) {
             $title_parts[$key] = '';
@@ -45,19 +35,3 @@ add_filter('document_title_parts', function($title_parts) {
     }
     return $title_parts;
 }, 5);
-
-/**
- * Alternative fix for PHP 8.1+ deprecation warning by filtering pre_strip_tags
- */
-function explorexr_pre_strip_tags($string) {
-    if ($string === null) {
-        return '';
-    }
-    return $string;
-}
-add_filter('pre_strip_tags', 'explorexr_pre_strip_tags', 5);
-
-
-
-
-
