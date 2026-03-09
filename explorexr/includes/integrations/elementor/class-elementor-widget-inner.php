@@ -5,12 +5,12 @@
  * @package ExploreXR
  */
 
+namespace ExploreXR\Integrations\Elementor;
+
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
-
-namespace ExploreXR\Integrations\Elementor;
 
 use Elementor\Controls_Manager;
 use Elementor\Widget_Base;
