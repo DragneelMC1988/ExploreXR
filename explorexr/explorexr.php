@@ -1,10 +1,11 @@
 <?php
 /**
- * Plugin Name: ExploreXR
+ * Plugin Name: ExploreXR – Interactive 3D Model Viewer
  * Plugin URI: https://expoxr.com/explorexr/
- * Description: Bring your website to life with interactive 3D models. ExploreXR lets you showcase GLB, GLTF, and USDZ files with ease — no coding required. Start free, upgrade anytime.
+ * Description: The #1 interactive 3D model viewer for WordPress. Embed GLB, GLTF, and USDZ files via shortcode or page builder — no coding required. Works with Elementor, Divi, Avada, and Gutenberg.
  * Version: 1.1.0
  * Requires at least: 5.0
+ * Tested up to: 7.0
  * Requires PHP: 7.4
  * Author: Ayal Othman
  * Author URI: https://expoxr.com
