@@ -8,57 +8,47 @@ Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-The #1 interactive 3D model viewer for WordPress. Embed GLB, GLTF, and USDZ files via shortcode or page builder — no coding required.
+The easiest way to add interactive 3D models to WordPress. Embed GLB, GLTF, and USDZ files with a shortcode — no coding required. Upgrade to Premium for AR, animations, and the full add-on suite.
 
 == Description ==
 
-**The Best 3D Model Viewer Plugin for WordPress — Free to Start, Built to Scale.**
+**Add Beautiful, Interactive 3D Models to WordPress — No Coding Required.**
 
-ExploreXR is the most complete interactive 3D viewer plugin for WordPress. Upload GLB, GLTF, or USDZ files, embed them anywhere on your site with a single shortcode, and give your visitors a fully interactive, hardware-accelerated 3D experience — right inside the browser.
+ExploreXR is a fast, easy-to-use 3D viewer plugin for WordPress. Upload a GLB, GLTF, or USDZ file, copy a shortcode, and your visitors get a fully interactive, hardware-accelerated 3D model right inside the browser. No 3D experience needed. No developer required.
 
-Works with Elementor, Divi, Avada, the Block Editor (Gutenberg), and the Classic Editor. No coding required. No external dependencies. Your 3D content lives inside WordPress.
+Need AR, animations, material switching, or WooCommerce integration? Upgrade to **ExploreXR Premium** — a structured add-on platform built for teams that want full control over 3D on the web.
 
-[View Pricing](https://expoxr.com/explorexr/preise/) | [Watch The Demo](https://expoxr.com/explorexr/demo/) | [Documentation](https://expoxr.com/explorexr/documentation/) | [Free 14-Day Trial](https://expoxr.com/explorexr/trial-request/)
+[View Pricing](https://expoxr.com/explorexr/preise/) | [Live Demo](https://expoxr.com/explorexr/demo/) | [Documentation](https://expoxr.com/explorexr/documentation/) | [Free 14-Day Trial](https://expoxr.com/explorexr/trial-request/)
 
 ---
 
 **Watch: How to Create an Interactive 3D Design in WordPress**
 
-See ExploreXR in action — step-by-step walkthrough on building cool interactive 3D experiences on your WordPress site:
+Step-by-step walkthrough on building interactive 3D experiences on your WordPress site:
 [https://youtu.be/RTTJ6lX6uXw?si=KeMRrSABHfcf1vmr](https://youtu.be/RTTJ6lX6uXw?si=KeMRrSABHfcf1vmr)
 
 ---
 
-**Why ExploreXR Is the Right 3D Viewer for WordPress**
+**Free Version — The 3D Viewer**
 
-Most 3D plugins drop a generic embed on your page and call it done. ExploreXR is built differently — as a structured, production-ready platform designed for real websites:
-
-* Viewer performance is managed, not just delivered. Loading strategies (direct, lazy, poster-driven) adapt to file size so heavy models never block your page.
-* Every feature lives inside WordPress. No external dashboards, no fragmented workflows, no vendor lock-in.
-* The architecture is modular. Activate only the capabilities you actually use — AR, annotations, material variants, WooCommerce integration — without loading a bloated core.
-* It is built to the WordPress Coding Standard and tested through every major release, including WordPress 7.
-
----
-
-**Free Version Features**
+The free version gives you a clean, capable 3D viewer you can embed anywhere on your WordPress site:
 
 * Display interactive GLB, GLTF, and USDZ 3D models in any post, page, or widget
 * Embed with shortcode: `[explorexr_model id="123"]`
-* Fully responsive viewer — scales correctly on desktop, tablet, and mobile
+* Fully responsive — scales correctly on desktop, tablet, and mobile
 * Camera controls: rotation, zoom, and pan
 * Auto-rotation with configurable speed and delay
 * Poster image support — show a preview before the model loads
 * Customizable viewer size: Small, Medium, Large, or Full Width
-* Per-breakpoint sizing: set different dimensions for desktop, tablet, and mobile
-* Progressive loading with smooth fallback display
+* Per-breakpoint sizing: different dimensions for desktop, tablet, and mobile
+* Progressive loading with smooth fallback
 * Loading bar with configurable color, size, and position
 * Drag-and-drop model upload through the WordPress admin
-* Draco geometry compression decoder (bundled locally)
-* Basis Universal texture compression decoder (bundled locally)
-* Nonce-protected admin actions and file upload sanitization
-* Debug Toolkit for diagnostics
-* Full WordPress Coding Standards compliance
-* Compatible with all properly coded themes, WordPress 5.0 through 7.x
+* Bundled Draco geometry and Basis Universal texture decoders — no CDN needed
+* Nonce-protected admin actions and strict file upload validation
+* Full WordPress Coding Standards compliance, tested on WordPress 5.0 through 7.x
+
+The free version does not include the add-on system. It is a single, focused tool — upload a model, embed it, done.
 
 ---
 
@@ -72,20 +62,20 @@ Most 3D plugins drop a generic embed on your page and call it done. ExploreXR is
 
 ---
 
-**ExploreXR Premium — Performance-Aware 3D for Serious WordPress Sites**
+**ExploreXR Premium — The Add-On Platform**
 
-ExploreXR Premium is built for teams that cannot afford to compromise on speed, compatibility, or maintainability.
+Premium is not just "more features" — it is a different architecture. Where the free version is a single viewer, Premium is a structured add-on system: a lean core with optional capability modules you activate individually. Your site only loads the code you actually use.
 
 = Performance-Aware Architecture =
-ExploreXR Premium uses conditional asset loading, multiple loading strategies (direct, lazy, or poster-driven), and built-in Draco and Basis Universal compression decoders to ensure heavy 3D assets do not kill your loading speeds. Your Google Core Web Vitals stay intact even when embedding large, production-quality models.
+Conditional asset loading, multiple loading strategies (direct, lazy, or poster-driven), and built-in Draco and Basis Universal compression decoders ensure heavy 3D assets do not slow your site down. Heavy models, clean Core Web Vitals.
 
 = Modular Add-On System =
-ExploreXR Premium features a highly lean core with optional add-ons — AR, material variants, animation controls, WooCommerce integration, and more — so you only activate the exact capabilities you need without bloating your site. Every add-on is independently toggled, meaning your site only loads code that is actually in use.
+A lean core with optional premium add-ons — AR, material variants, animation controls, WooCommerce integration, and more. Activate only the exact capabilities you need. Nothing else loads. No bloat.
 
 = Broad Ecosystem Compatibility =
-ExploreXR Premium complies strictly with WordPress coding standards and operates natively with the Block Editor, Classic Editor, and major page builders: Elementor, Divi, and Avada. It is tested against every major WordPress release including WordPress 7, and follows a structured roadmap focused on long-term platform stability — not one-off feature drops.
+Complies strictly with WordPress coding standards and works natively with the Block Editor, Classic Editor, and major page builders — Elementor, Divi, and Avada. Tested against every WordPress release including WordPress 7.
 
-**Premium Add-Ons Available:**
+**Available Add-Ons:**
 
 * **AR (Augmented Reality)** — iOS Quick Look, Android Scene Viewer, and WebXR in one add-on
 * **Animation Control** — multi-clip playback with configurable crossfade transitions
@@ -109,7 +99,7 @@ All 12 add-ons are included in [ExploreXR Premium plans](https://expoxr.com/expl
 
 **Supported Page Builders**
 
-ExploreXR works natively with:
+ExploreXR works with:
 
 * WordPress Block Editor (Gutenberg)
 * Classic Editor
@@ -124,11 +114,12 @@ ExploreXR works natively with:
 
 * [Plugin Documentation](https://expoxr.com/explorexr/documentation/)
 * [Tutorial: Build an Interactive 3D Design](https://youtu.be/RTTJ6lX6uXw?si=KeMRrSABHfcf1vmr)
+* [Live Demo](https://expoxr.com/explorexr/demo/)
 * [View All Add-Ons](https://expoxr.com/explorexr/addons/)
 * [Pricing and Plans](https://expoxr.com/explorexr/preise/)
-* [Live Demo](https://expoxr.com/explorexr/demo/)
 * [Free Trial Request](https://expoxr.com/explorexr/trial-request/)
 * [Support Forum](https://wordpress.org/support/plugin/explorexr/)
+* [Premium Support](https://expoxr.com/support/)
 
 == Installation ==
 
@@ -173,29 +164,32 @@ All libraries are GPL-compatible and bundled locally. No CDN dependency or exter
 
 == Frequently Asked Questions ==
 
+= What is the difference between the free version and Premium? =
+The free version is a 3D viewer — upload a model, embed it with a shortcode, done. ExploreXR Premium is a full add-on platform built on a modular architecture, giving you AR, animations, material variants, WooCommerce integration, native page builder widgets, and more — activated individually so your site stays lean.
+
 = Which 3D file formats does ExploreXR support? =
 GLB, GLTF, and USDZ. GLB (binary GLTF) is the recommended format — it is self-contained, loads faster, and has the broadest device support. USDZ is optimized for iOS AR workflows.
 
 = How do I embed a 3D model on a WordPress page? =
 Create a model under **ExploreXR → Create Model**, then paste the shortcode `[explorexr_model id="123"]` into any post, page, widget, or page builder block. That is all.
 
-= Does ExploreXR work with Elementor, Divi, and Avada? =
-Yes. The free version works with all three via shortcode. ExploreXR Premium adds native drag-and-drop widgets and modules for Elementor, Divi, and Avada.
-
-= Will 3D models slow down my WordPress site? =
-Not when configured correctly. ExploreXR uses conditional asset loading (scripts only load on pages with a 3D model), multiple loading strategies (direct, lazy, and poster-driven for large files), and locally bundled Draco and Basis Universal decoders — so models are compressed and loading is deferred until needed.
-
 = Does ExploreXR require coding knowledge? =
 No. The entire workflow — uploading models, configuring the viewer, embedding on pages — is handled through the WordPress admin interface. No PHP, JavaScript, or CSS knowledge is required.
 
 = Does it work on all devices and browsers? =
-Yes. ExploreXR works on all modern browsers and devices that support WebGL, including desktop (Chrome, Firefox, Safari, Edge), tablet, and mobile. USDZ models also support native AR viewing on iOS.
+Yes. ExploreXR works on all modern browsers and devices that support WebGL, including desktop (Chrome, Firefox, Safari, Edge), tablet, and mobile.
+
+= Will 3D models slow down my WordPress site? =
+Not when configured correctly. ExploreXR uses conditional asset loading (scripts only load on pages with a 3D model), multiple loading strategies (direct, lazy, and poster-driven for large files), and locally bundled decoders — so models are compressed and loading is deferred until needed.
+
+= Does ExploreXR work with Elementor, Divi, and Avada? =
+Yes. The free version works with all three via shortcode. ExploreXR Premium adds native drag-and-drop widgets and modules for Elementor, Divi, and Avada.
 
 = Is AR (Augmented Reality) included in the free version? =
-AR is available in [ExploreXR Premium](https://expoxr.com/explorexr/preise/) via the AR add-on. It supports iOS Quick Look, Android Scene Viewer, and WebXR across devices.
+AR is available in [ExploreXR Premium](https://expoxr.com/explorexr/preise/) via the AR add-on. It supports iOS Quick Look, Android Scene Viewer, and WebXR.
 
 = Is ExploreXR compatible with WooCommerce? =
-WooCommerce product page integration is available in [ExploreXR Premium](https://expoxr.com/explorexr/preise/). This allows 3D models to be attached directly to product listings.
+WooCommerce product page integration is available in [ExploreXR Premium](https://expoxr.com/explorexr/preise/).
 
 = Is there a free trial for Premium? =
 Yes. You can try all 12 premium add-ons free for 14 days — no credit card required. [Request your trial here](https://expoxr.com/explorexr/trial-request/).
@@ -204,7 +198,7 @@ Yes. You can try all 12 premium add-ons free for 14 days — no credit card requ
 Yes. ExploreXR is tested against WordPress 7.x and follows WordPress Coding Standards to ensure long-term compatibility across every major WordPress release.
 
 = What happens to my models if I deactivate the plugin? =
-Your model files and all settings are preserved. Deactivating the plugin does not delete any data. You can reactivate and everything will be exactly as you left it.
+Your model files and all settings are preserved. Deactivating the plugin does not delete any data. Reactivate and everything will be exactly as you left it.
 
 = Where can I get support? =
 Free support is available on the [WordPress.org support forum](https://wordpress.org/support/plugin/explorexr/). Premium users have access to priority support via [expoxr.com/support/](https://expoxr.com/support/).
