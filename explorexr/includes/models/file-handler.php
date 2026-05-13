@@ -12,6 +12,33 @@ add_filter('upload_mimes', function ($mimes) {
     return $mimes;
 });
 
+// Fix MIME type detection for 3D model files.
+// PHP's finfo reports GLB/GLTF/USDZ as application/octet-stream because they
+// are not in most finfo magic databases. WordPress then sees a mismatch between
+// the extension-based MIME (model/gltf-binary) and the real MIME detected by
+// finfo (application/octet-stream) and fails the check. This filter corrects
+// the result when the file extension is a known 3D model type.
+add_filter('wp_check_filetype_and_ext', function ($data, $file, $filename, $mimes) {
+    $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+
+    if ($ext === 'glb' && (empty($data['ext']) || empty($data['type']))) {
+        $data['ext']  = 'glb';
+        $data['type'] = 'model/gltf-binary';
+    }
+
+    if ($ext === 'gltf' && (empty($data['ext']) || empty($data['type']))) {
+        $data['ext']  = 'gltf';
+        $data['type'] = 'model/gltf+json';
+    }
+
+    if ($ext === 'usdz' && (empty($data['ext']) || empty($data['type']))) {
+        $data['ext']  = 'usdz';
+        $data['type'] = 'model/vnd.usdz+zip';
+    }
+
+    return $data;
+}, 10, 4);
+
 // Handle file uploads and save them in the WordPress uploads models folder
 add_action('add_attachment', function ($post_id) {
     $file = get_attached_file($post_id);
