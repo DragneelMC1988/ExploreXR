@@ -4,7 +4,7 @@ Tags: 3d model viewer, glb viewer, gltf, augmented reality, elementor 3d
 Requires at least: 5.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -213,6 +213,10 @@ Free support is available on the [WordPress.org support forum](https://wordpress
 
 == Changelog ==
 
+= 1.2.0 =
+* Fixed: GLB/GLTF/USDZ uploads failing with "Invalid file type" due to PHP finfo MIME detection mismatch
+* Fixed: Added wp_check_filetype_and_ext filter so WordPress correctly validates 3D model file types when finfo returns application/octet-stream
+
 = 1.1.0 =
 * New: 14-day free trial — try ExploreXR Premium with 4 add-ons of your choice, no credit card required
 * New: Elementor widget integration for drag-and-drop 3D viewer placement
@@ -255,6 +259,9 @@ Free support is available on the [WordPress.org support forum](https://wordpress
 * Core 3D viewer, shortcode, admin interface, and model upload system
 
 == Upgrade Notice ==
+
+= 1.2.0 =
+Fixes GLB/GLTF file upload failures caused by PHP MIME type detection. Update recommended if you experience "Invalid file type" errors when uploading 3D models.
 
 = 1.1.0 =
 Adds native Elementor, Divi, and Avada integrations plus a 14-day free trial for Premium. Update recommended.
