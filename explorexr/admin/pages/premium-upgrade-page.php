@@ -58,7 +58,7 @@ function explorexr_premium_upgrade_page() {
                         <div class="feature-count">Starter Package</div>
                         <ul>
                             <li>Core 3D Model Viewer</li>
-                            <li>Choose any <strong>2 addons</strong></li>
+                            <li>Choose any <strong>3 addons</strong></li>
                             <li>Email Support</li>
                             <li>Debug Toolkit included free</li>
                         </ul>
@@ -71,7 +71,7 @@ function explorexr_premium_upgrade_page() {
                         <div class="feature-count">Professional Package</div>
                         <ul>
                             <li>Core 3D Model Viewer</li>
-                            <li>Choose any <strong>4 addons</strong></li>
+                            <li>Choose any <strong>5 addons</strong></li>
                             <li>Priority Support</li>
                             <li>Debug Toolkit included free</li>
                         </ul>
@@ -452,7 +452,7 @@ function explorexr_premium_upgrade_page() {
                         <a href="<?php echo esc_url(explorexr_get_premium_upgrade_url()); ?>" class="button button-primary button-hero" target="_blank">
                             Get Premium Now
                         </a>
-                        <a href="https://expoxr.com/explorexr/demo-premium/" class="button button-secondary" target="_blank">
+                        <a href="https://expoxr.com/explorexr/demo/" class="button button-secondary" target="_blank">
                             View Live Demo
                         </a>
                     </div>

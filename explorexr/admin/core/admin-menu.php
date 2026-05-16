@@ -31,15 +31,15 @@ require_once EXPLOREXR_PLUGIN_DIR . 'admin/pages/premium-upgrade-page.php';
 function explorexr_register_admin_menu() {
     // Main menu page
     add_menu_page(
-        'ExploreXR', 
-        'ExploreXR', 
-        'manage_options', 
-        'explorexr', 
-        'explorexr_dashboard_page', 
-        'dashicons-admin-customizer', 
+        'ExploreXR',
+        'ExploreXR',
+        'manage_options',
+        'explorexr',
+        'explorexr_dashboard_page',
+        'dashicons-admin-customizer',
         75
     );
-    
+
     // Submenu pages - Free version has limited functionality
     add_submenu_page('explorexr', 'Dashboard', 'Dashboard', 'manage_options', 'explorexr', 'explorexr_dashboard_page');
     add_submenu_page('explorexr', 'Create 3D Model', 'Create New Model', 'manage_options', 'explorexr-create-model', 'explorexr_create_model_page');
@@ -47,10 +47,20 @@ function explorexr_register_admin_menu() {
     add_submenu_page('explorexr', '3D Model Files', '3D Files', 'manage_options', 'explorexr-files', 'explorexr_files_page');
     add_submenu_page('explorexr', 'Loading Options', 'Loading Options', 'manage_options', 'explorexr-loading-options', 'explorexr_loading_options_page');
     add_submenu_page('explorexr', 'Settings', 'Settings', 'manage_options', 'explorexr-settings', 'explorexr_settings_page');
-    
+
+    // Free Add-on page with "New" badge
+    add_submenu_page(
+        'explorexr',
+        __('Free Add-on', 'explorexr'),
+        __('Free Add-on', 'explorexr') . ' <span class="update-plugins count-1"><span class="plugin-count">New</span></span>',
+        'manage_options',
+        'explorexr-free-addons',
+        'explorexr_free_addons_page'
+    );
+
     // Premium upgrade page - promoting premium features
     add_submenu_page('explorexr', 'Go Premium', 'Go Premium', 'manage_options', 'explorexr-premium', 'explorexr_premium_upgrade_page');
-    
+
     // Hidden submenu for editing models (not shown in menu but accessible via URL)
     // Use empty string instead of null to avoid PHP 8.1+ deprecation warnings
     if (function_exists('explorexr_edit_model_page')) {
@@ -64,14 +74,14 @@ add_action('admin_menu', 'explorexr_register_admin_menu');
  */
 function explorexr_fix_admin_menu_highlighting($parent_file) {
     global $submenu_file;
-    
+
     // Check if we're on the edit model page
     // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used for display purposes only
     if (isset($_GET['page']) && sanitize_text_field(wp_unslash($_GET['page'])) === 'explorexr-edit-model') {
         $parent_file = 'explorexr'; // Set ExploreXR as the parent menu
         $submenu_file = 'explorexr-browse-models'; // Highlight Browse Models submenu
     }
-    
+
     return $parent_file;
 }
 add_filter('parent_file', 'explorexr_fix_admin_menu_highlighting');
@@ -83,7 +93,7 @@ add_filter('parent_file', 'explorexr_fix_admin_menu_highlighting');
  */
 function explorexr_fix_admin_title($admin_title, $title) {
     global $pagenow;
-    
+
     // Check if we're on an ExploreXR admin page (including hidden edit page)
     // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used for display purposes only
     if ($pagenow === 'admin.php' && isset($_GET['page']) && strpos(sanitize_text_field(wp_unslash($_GET['page'])), 'explorexr') === 0) {
@@ -96,7 +106,7 @@ function explorexr_fix_admin_title($admin_title, $title) {
         $admin_title = preg_replace('/\s+/', ' ', $admin_title);
         $admin_title = trim($admin_title);
     }
-    
+
     return $admin_title;
 }
 add_filter('admin_title', 'explorexr_fix_admin_title', 10, 2);
@@ -127,19 +137,19 @@ function explorexr_admin_enqueue_scripts($hook) {
     // Common CSS for all admin pages
     wp_enqueue_style('explorexr-admin-styles', EXPLOREXR_PLUGIN_URL . 'admin/css/admin-styles.css', array(), EXPLOREXR_VERSION);
     wp_enqueue_style('explorexr-button-system', EXPLOREXR_PLUGIN_URL . 'admin/css/button-system.css', array(), EXPLOREXR_VERSION);
-    
+
     // Premium upgrade styles
     wp_enqueue_style('explorexr-premium-upgrade', EXPLOREXR_PLUGIN_URL . 'admin/css/premium-upgrade.css', array(), EXPLOREXR_VERSION);
-    
+
     // Premium upgrade scripts (needed for notice dismissal functionality)
     wp_enqueue_script('explorexr-premium-upgrade-js', EXPLOREXR_PLUGIN_URL . 'admin/js/premium-upgrade.js', array('jquery'), EXPLOREXR_VERSION, true);
-    
+
     // Localize script for premium upgrade functionality
     wp_localize_script('explorexr-premium-upgrade-js', 'explorexr_premium', array(
         'ajax_url' => admin_url('admin-ajax.php'),
         'dismiss_nonce' => wp_create_nonce('EXPLOREXR_dismiss_notice')
     ));
-    
+
     // Page-specific styles and scripts
     if (strpos($hook ?? '', 'explorexr') !== false) {
         // Specific CSS files
@@ -147,18 +157,18 @@ function explorexr_admin_enqueue_scripts($hook) {
             wp_enqueue_style('explorexr-files-page-css', EXPLOREXR_PLUGIN_URL . 'admin/css/files-page.css', array(), EXPLOREXR_VERSION);
             wp_enqueue_script('explorexr-files-page-js', EXPLOREXR_PLUGIN_URL . 'admin/js/files-page.js', array('jquery'), EXPLOREXR_VERSION, true);
         }
-        
+
         if (strpos($hook ?? '', 'explorexr-loading-options') !== false) {
             wp_enqueue_style('explorexr-loading-options-css', EXPLOREXR_PLUGIN_URL . 'admin/css/loading-options.css', array(), EXPLOREXR_VERSION);
             wp_enqueue_script('explorexr-loading-options-js', EXPLOREXR_PLUGIN_URL . 'admin/js/loading-options.js', array('jquery'), EXPLOREXR_VERSION, true);
             wp_enqueue_style('wp-color-picker');
             wp_enqueue_script('wp-color-picker');
         }
-        
+
         if (strpos($hook ?? '', 'explorexr-browse-models') !== false) {
             wp_enqueue_style('explorexr-browse-models-css', EXPLOREXR_PLUGIN_URL . 'admin/css/browse-models.css', array(), EXPLOREXR_VERSION);
             wp_enqueue_script('explorexr-browse-models-js', EXPLOREXR_PLUGIN_URL . 'admin/js/browse-models.js', array('jquery'), EXPLOREXR_VERSION, true);
-            
+
             // Localize script with nonce and URLs
             wp_localize_script('explorexr-browse-models-js', 'explorexr_admin', array(
                 'nonce' => wp_create_nonce('explorexr_admin_nonce'),
@@ -166,35 +176,67 @@ function explorexr_admin_enqueue_scripts($hook) {
                 'ajax_url' => admin_url('admin-ajax.php')
             ));
         }
-        
+
         if (strpos($hook ?? '', 'explorexr-create-model') !== false) {
             wp_enqueue_style('explorexr-components', EXPLOREXR_PLUGIN_URL . 'admin/css/components.css', array(), EXPLOREXR_VERSION);
             wp_enqueue_style('explorexr-create-model-css', EXPLOREXR_PLUGIN_URL . 'admin/css/create-model.css', array('explorexr-components'), EXPLOREXR_VERSION);
             wp_enqueue_script('explorexr-create-model-js', EXPLOREXR_PLUGIN_URL . 'admin/js/create-model.js', array('jquery'), EXPLOREXR_VERSION, true);
-            
+
             // Localize script with nonce
             wp_localize_script('explorexr-create-model-js', 'explorexr_admin', array(
                 'nonce' => wp_create_nonce('explorexr_admin_nonce'),
                 'ajax_url' => admin_url('admin-ajax.php')
             ));
         }
-        
+
         if (strpos($hook ?? '', 'explorexr-settings') !== false) {
             wp_enqueue_style('explorexr-settings-page-css', EXPLOREXR_PLUGIN_URL . 'admin/css/settings-page.css', array(), EXPLOREXR_VERSION);
             wp_enqueue_script('explorexr-settings-page-js', EXPLOREXR_PLUGIN_URL . 'admin/js/settings-page.js', array('jquery'), EXPLOREXR_VERSION, true);
         }
-        
+
         // Dashboard page specific
         if (strpos($hook ?? '', 'toplevel_page_ExploreXR') !== false || $hook === 'toplevel_page_ExploreXR') {
             wp_enqueue_script('explorexr-dashboard-js', EXPLOREXR_PLUGIN_URL . 'admin/js/dashboard.js', array('jquery'), EXPLOREXR_VERSION, true);
-            
+
             // Localize script with dashboard data
             wp_localize_script('explorexr-dashboard-js', 'EXPLOREXR_dashboard', array(
                 'nonce' => wp_create_nonce('EXPLOREXR_dashboard_nonce'),
                 'ajax_url' => admin_url('admin-ajax.php')
             ));
         }
-        
+
+        // Free Add-on page
+        if (strpos($hook ?? '', 'explorexr-free-addons') !== false) {
+            wp_enqueue_style(
+                'explorexr-free-addons',
+                EXPLOREXR_PLUGIN_URL . 'admin/css/free-addons-page.css',
+                array(),
+                EXPLOREXR_VERSION
+            );
+            wp_enqueue_script(
+                'explorexr-free-addons',
+                EXPLOREXR_PLUGIN_URL . 'admin/js/free-addons-page.js',
+                array('jquery'),
+                EXPLOREXR_VERSION,
+                true
+            );
+            wp_add_inline_script(
+                'explorexr-free-addons',
+                'var explorexrFreeAddons = ' . wp_json_encode( array(
+                    'ajaxUrl'      => admin_url('admin-ajax.php'),
+                    'installNonce' => wp_create_nonce('explorexr_install_addon_nonce'),
+                    'selectNonce'  => wp_create_nonce('explorexr_free_select_addon_nonce'),
+                    'dismissNonce' => wp_create_nonce('explorexr_dismiss_free_addon_hint'),
+                    'strings'      => array(
+                        'installing' => __('Installing...', 'explorexr'),
+                        'installed'  => __('Installed & Selected!', 'explorexr'),
+                        'error'      => __('Installation failed. Please try again.', 'explorexr'),
+                    ),
+                ) ) . ';',
+                'before'
+            );
+        }
+
         // Common scripts for all pages
         wp_enqueue_script('explorexr-admin-ui', EXPLOREXR_PLUGIN_URL . 'admin/js/admin-ui.js', array('jquery'), EXPLOREXR_VERSION, true);
         wp_localize_script('explorexr-admin-ui', 'ExploreXRAdminUI', array(
@@ -204,25 +246,25 @@ function explorexr_admin_enqueue_scripts($hook) {
             'nonce' => wp_create_nonce('explorexr_admin_nonce'),
             'ajax_url' => admin_url('admin-ajax.php')
         ));
-        
+
         // Localize script for admin vars (required by admin-ui.js)
         wp_localize_script('explorexr-admin-ui', 'ExploreXRAdminVars', array(
             'pluginUrl' => EXPLOREXR_PLUGIN_URL
         ));
-        
+
         // Edit model page specific
         if (strpos($hook ?? '', 'explorexr-edit-model') !== false) {
             wp_enqueue_style('explorexr-components', EXPLOREXR_PLUGIN_URL . 'admin/css/components.css', array(), EXPLOREXR_VERSION);
             wp_enqueue_style('explorexr-edit-model-css', EXPLOREXR_PLUGIN_URL . 'admin/css/edit-model.css', array('explorexr-components'), EXPLOREXR_VERSION);
             wp_enqueue_script('explorexr-edit-model-js', EXPLOREXR_PLUGIN_URL . 'admin/js/edit-model.js', array('jquery'), EXPLOREXR_VERSION, true);
-            
+
             // Include WordPress media uploader
             wp_enqueue_media();
-            
+
             // Color picker for settings
             wp_enqueue_style('wp-color-picker');
             wp_enqueue_script('wp-color-picker');
-            
+
             // Localize script with data
             wp_localize_script('explorexr-edit-model-js', 'explorexr_admin', array(
                 'nonce' => wp_create_nonce('explorexr_admin_nonce'),
@@ -259,11 +301,11 @@ add_action('current_screen', 'explorexr_init_admin_viewport_meta');
  */
 function EXPLOREXR_admin_body_class($classes) {
     $screen = get_current_screen();
-    
+
     if ($screen && strpos($screen->base, 'explorexr') !== false) {
         $classes .= ' explorexr-admin-page explorexr-version';
     }
-    
+
     return $classes;
 }
 add_filter('admin_body_class', 'EXPLOREXR_admin_body_class');
@@ -281,7 +323,7 @@ add_action('admin_init', function() {
         delete_option('explorexr_debug_camera_controls');
         update_option('explorexr_debug_cleanup_done', true);
     }
-    
+
     // Register a settings section
     add_settings_section(
         'explorexr_general_settings',
@@ -289,7 +331,7 @@ add_action('admin_init', function() {
         'explorexr_general_settings_callback',
         'explorexr-settings'
     );
-    
+
     // Register Model Viewer version field
     add_settings_field(
         'explorexr_model_viewer_version',
@@ -299,7 +341,7 @@ add_action('admin_init', function() {
         'explorexr_general_settings',
         array('label_for' => 'explorexr_model_viewer_version')
     );
-    
+
     // Register Max Upload Size field
     add_settings_field(
         'explorexr_max_upload_size',
@@ -309,7 +351,7 @@ add_action('admin_init', function() {
         'explorexr_general_settings',
         array('label_for' => 'explorexr_max_upload_size')
     );
-    
+
     // Register settings with sanitization
     register_setting('explorexr_settings', 'explorexr_model_viewer_version', array(
         'sanitize_callback' => 'sanitize_text_field'
@@ -331,12 +373,12 @@ function EXPLOREXR_ajax_get_premium_info() {
     if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'explorexr_admin_nonce')) {
         wp_die('Security check failed');
     }
-    
+
     // Check user capabilities
     if (!current_user_can('manage_options')) {
         wp_send_json_error(array('message' => 'Insufficient permissions'));
     }
-    
+
     // Return premium features and pricing info
     wp_send_json_success(array(
         'premium_features' => array(
@@ -357,14 +399,14 @@ function EXPLOREXR_ajax_get_premium_info() {
                 'price' => '59',
                 'currency' => 'EUR',
                 'period' => 'year',
-                'features' => array('2 Premium Features', 'Email Support', 'Basic License Management')
+                'features' => array('3 Premium Features', 'Email Support', 'Basic License Management')
             ),
             'plus' => array(
                 'name' => 'Plus',
                 'price' => '99',
                 'currency' => 'EUR',
                 'period' => 'year',
-                'features' => array('2 Premium Features', 'Priority Support', 'License Management', 'Custom Branding'),
+                'features' => array('5 Premium Features', 'Priority Support', 'License Management', 'Custom Branding'),
                 'popular' => true
             ),
             'ultra' => array(

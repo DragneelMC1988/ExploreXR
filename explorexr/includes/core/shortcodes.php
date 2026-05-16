@@ -30,120 +30,123 @@ function EXPLOREXR_build_model_attributes($model_id, $model_file, $alt_text, $wi
         'alt' => $alt_text,
         'style' => "width: {$width}; height: {$height};"
     );
-    
+
     // Add poster if available
     if (!empty($model_poster)) {
         $attributes['poster'] = $model_poster;
     }
-    
+
     // Basic interaction controls (free version)
     $enable_interactions = get_post_meta($model_id, '_explorexr_enable_interactions', true) ?: 'on';
-    
+
     // Add camera-controls if interactions are enabled
     if ($enable_interactions === 'on') {
         $attributes['camera-controls'] = '';
     }
-    
+
     // Add touch-action
     $touch_action = get_post_meta($model_id, '_explorexr_touch_action', true) ?: '';
     if (!empty($touch_action)) {
         $attributes['touch-action'] = $touch_action;
     }
-    
+
     // Add orbit sensitivity
     $orbit_sensitivity = get_post_meta($model_id, '_explorexr_orbit_sensitivity', true) ?: '';
     if (!empty($orbit_sensitivity)) {
         $attributes['orbit-sensitivity'] = $orbit_sensitivity;
     }
-    
+
     // Add auto-rotate
     $auto_rotate = get_post_meta($model_id, '_explorexr_auto_rotate', true) === 'on';
     if ($auto_rotate) {
         $attributes['auto-rotate'] = '';
-        
+
         // Add auto-rotate delay (default to 5000ms if not set)
         $auto_rotate_delay = get_post_meta($model_id, '_explorexr_auto_rotate_delay', true) ?: '';
         if (empty($auto_rotate_delay) || !is_numeric($auto_rotate_delay)) {
             $auto_rotate_delay = '5000';
         }
         $attributes['auto-rotate-delay'] = $auto_rotate_delay;
-        
+
         // Add rotation speed (default to 30deg if not set)
         $rotation_per_second = get_post_meta($model_id, '_explorexr_rotation_per_second', true) ?: '';
         if (empty($rotation_per_second)) {
             $rotation_per_second = '30deg';
         }
-        
+
         // Ensure rotation speed has 'deg' suffix if it's just a number
         if (is_numeric($rotation_per_second)) {
             $rotation_per_second .= 'deg';
         }
-        
+
         $attributes['rotation-per-second'] = $rotation_per_second;
     }
-    
+
     // Add interaction prompt settings
     $interaction_prompt = get_post_meta($model_id, '_explorexr_interaction_prompt', true) ?: '';
     if (!empty($interaction_prompt)) {
         $attributes['interaction-prompt'] = $interaction_prompt;
     }
-    
+
     $interaction_prompt_style = get_post_meta($model_id, '_explorexr_interaction_prompt_style', true) ?: '';
     if (!empty($interaction_prompt_style)) {
         $attributes['interaction-prompt-style'] = $interaction_prompt_style;
     }
-    
+
     $interaction_prompt_threshold = get_post_meta($model_id, '_explorexr_interaction_prompt_threshold', true) ?: '';
     if (!empty($interaction_prompt_threshold)) {
         $attributes['interaction-prompt-threshold'] = $interaction_prompt_threshold;
     }
-    
+
     // Basic camera settings (advanced camera controls are not available in free version)
     $camera_orbit = get_post_meta($model_id, '_explorexr_camera_orbit', true) ?: '';
     if (!empty($camera_orbit)) {
         $attributes['camera-orbit'] = $camera_orbit;
     }
-    
+
     $camera_target = get_post_meta($model_id, '_explorexr_camera_target', true) ?: '';
     if (!empty($camera_target)) {
         $attributes['camera-target'] = $camera_target;
     }
-    
+
     $field_of_view = get_post_meta($model_id, '_explorexr_field_of_view', true) ?: '';
     if (!empty($field_of_view)) {
         $attributes['field-of-view'] = $field_of_view;
     }
-    
+
     $max_camera_orbit = get_post_meta($model_id, '_explorexr_max_camera_orbit', true) ?: '';
     if (!empty($max_camera_orbit)) {
         $attributes['max-camera-orbit'] = $max_camera_orbit;
     }
-    
+
     $min_camera_orbit = get_post_meta($model_id, '_explorexr_min_camera_orbit', true) ?: '';
     if (!empty($min_camera_orbit)) {
         $attributes['min-camera-orbit'] = $min_camera_orbit;
     }
-    
+
     $max_field_of_view = get_post_meta($model_id, '_explorexr_max_field_of_view', true) ?: '';
     if (!empty($max_field_of_view)) {
         $attributes['max-field-of-view'] = $max_field_of_view;
     }
-    
+
     $min_field_of_view = get_post_meta($model_id, '_explorexr_min_field_of_view', true) ?: '';
     if (!empty($min_field_of_view)) {
         $attributes['min-field-of-view'] = $min_field_of_view;
     }
-    
+
     // Animation features are not available in the Free version
     // This feature is available in the Pro version only
 
     // AR features are available in premium version only
     // Free version does not include AR support
-    
+
     // Add any additional data attributes from plugin settings
     // Standardized filter name for addon compatibility
     $attributes = apply_filters('explorexr_model_viewer_attributes', $attributes, $model_id);
-    
+
+    // Bridge: fire the Premium filter name so addons hooked on it also run
+    $attributes = apply_filters('explorexr_premium_model_viewer_attributes', $attributes, $model_id);
+
     return $attributes;
 }
 
@@ -169,10 +172,10 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
     if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/models/model-helper.php')) {
         require_once EXPLOREXR_PLUGIN_DIR . 'includes/models/model-helper.php';
     }
-    
+
     $atts = shortcode_atts(['id' => ''], $atts, 'EXPLOREXR_model');
     $model_id = intval($atts['id']);
-    
+
     if (!$model_id) {
         return 'Invalid model ID.';
     }
@@ -181,13 +184,13 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
     if (!$model_file) {
         return ' ExploreXR Alert: Model not found. Possibly abducted by polygons from another dimension.';
     }
-    
+
     // Get alt text for accessibility
     $alt_text = get_post_meta($model_id, '_explorexr_model_alt_text', true) ?: '';
     if (empty($alt_text)) {
         $alt_text = get_the_title($model_id) . ' 3D Model';
     }
-    
+
     // Get poster image if available
     $model_poster = get_post_meta($model_id, '_explorexr_model_poster', true) ?: '';
     $model_poster_id = get_post_meta($model_id, '_explorexr_model_poster_id', true) ?: '';
@@ -202,7 +205,7 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
         'mobile_width'  => get_post_meta($model_id, '_explorexr_mobile_viewer_width', true) ?: '',
         'mobile_height' => get_post_meta($model_id, '_explorexr_mobile_viewer_height', true) ?: '',
     ));
-    
+
     // Defensive safeguard: ensure sizes are deterministic even if meta was legacy/invalid
     $width = $normalized_sizes['width'];
     $height = $normalized_sizes['height'];
@@ -210,17 +213,17 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
     $tablet_height = $normalized_sizes['tablet_height'];
     $mobile_width = $normalized_sizes['mobile_width'];
     $mobile_height = $normalized_sizes['mobile_height'];
-    
+
     // Generate unique CSS ID for this model instance
     $model_css_id = 'explorexr-model-' . $model_id . '-' . uniqid();
-    
+
     // Enqueue required scripts and styles (MUST be done before wp_add_inline_style)
     wp_enqueue_style('explorexr-model-viewer', EXPLOREXR_PLUGIN_URL . 'assets/css/model-viewer.css', array(), EXPLOREXR_VERSION);
-    
+
     // Generate responsive CSS if tablet or mobile sizes are set (WordPress.org compliance)
     // NOTE: wp_add_inline_style must be called AFTER wp_enqueue_style
     $responsive_css = '';
-    
+
     // Base container styles to prevent layout shift
     $responsive_css .= '#' . $model_css_id . ' {';
     $responsive_css .= 'width: ' . esc_attr($width) . ';';
@@ -229,7 +232,7 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
     $responsive_css .= 'display: block;';
     $responsive_css .= 'margin: 0 auto;'; // Center by default
     $responsive_css .= '}';
-    
+
     // Tablet styles (768px to 1024px)
     if (!empty($tablet_width) || !empty($tablet_height)) {
         $responsive_css .= '@media (min-width: 768px) and (max-width: 1024px) {';
@@ -244,7 +247,7 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
         $responsive_css .= '}';
         $responsive_css .= '}';
     }
-    
+
     // Mobile styles (up to 767px)
     if (!empty($mobile_width) || !empty($mobile_height)) {
         $responsive_css .= '@media (max-width: 767px) {';
@@ -259,20 +262,20 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
         $responsive_css .= '}';
         $responsive_css .= '}';
     }
-    
+
     // WordPress.org compliance: Use wp_add_inline_style instead of inline <style>
     wp_add_inline_style('explorexr-model-viewer', $responsive_css);
-    
+
     // Set responsive_css to empty since we're using wp_add_inline_style
     $responsive_css = '';
-    
+
     // Make sure the script is loaded when shortcode is used
     ob_start();
     include EXPLOREXR_PLUGIN_DIR . 'template-parts/model-viewer-script.php';
     $script = ob_get_clean();    // Check if the model is a large file that needs special handling
     $large_model_handling = get_option('explorexr_large_model_handling', 'direct');
     $large_model_size_threshold = get_option('explorexr_large_model_size_threshold', 16);
-    
+
     // Check file size if the file exists locally
     $is_large_model = false;
     $file_path = '';
@@ -297,58 +300,58 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
             }
         }
     }
-    
+
     // Only use poster_button mode if specifically configured AND it's a large model AND we have a poster image
     if ($is_large_model && $large_model_handling === 'poster_button' && !empty($model_poster)) {
         // Generate a unique ID for this model instance
         $model_instance_id = 'explorexr-model-' . $model_id . '-' . uniqid();
-        
+
         // Enqueue the model loader script
         EXPLOREXR_enqueue_model_loader();
-        
+
         // Build model attributes using our helper function
         $model_attributes = EXPLOREXR_build_model_attributes($model_id, $model_file, $alt_text, $width, $height, $model_poster);
-        
+
         // Add unique CSS ID for responsive styling
         $model_attributes['id'] = $model_css_id;
-        
+
         // Filter out any numeric keys that might have been added by filters
         $model_attributes = array_filter($model_attributes, function($key) {
             return is_string($key) && !is_numeric($key);
         }, ARRAY_FILTER_USE_KEY);
-        
+
         // Pass the model-viewer attributes to the JavaScript
         $model_attributes_json = wp_json_encode($model_attributes);
-        
+
         // Check for JSON encoding errors
         if ($model_attributes_json === false) {
             $model_attributes_json = '{}';
         }
-        
+
         // Make sure we have valid JSON for JavaScript
         $model_attributes_json = preg_replace('/[\r\n\t]/', '', $model_attributes_json);
-        
+
         // Load the large model template
         ob_start();
         include EXPLOREXR_PLUGIN_DIR . 'template-parts/large-model-template.php';
         $model_html = ob_get_clean();
-        
+
         // Return the complete HTML with responsive CSS
         return $responsive_css . $script . $model_html;
     } else {
         // Regular loading approach for smaller models or if set to direct loading
         // Build model attributes using our helper function
         $model_attributes = EXPLOREXR_build_model_attributes($model_id, $model_file, $alt_text, $width, $height, $model_poster);
-        
+
         // Add class for our wrapper script and unique CSS ID for responsive styling
         $model_attributes['class'] = 'explorexr-model';
         $model_attributes['id'] = $model_css_id;
-        
+
         // Filter out any numeric keys that might have been added by filters
         $model_attributes = array_filter($model_attributes, function($key) {
             return is_string($key) && !is_numeric($key);
         }, ARRAY_FILTER_USE_KEY);
-        
+
         // Convert attributes to HTML string
         $attributes_html = EXPLOREXR_generate_attributes_html($model_attributes);
 
@@ -356,7 +359,7 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
         ob_start();
         include EXPLOREXR_PLUGIN_DIR . 'template-parts/standard-model-template.php';
         $model_html = ob_get_clean();
-        
+
         // Return the complete HTML with responsive CSS
         return $responsive_css . $script . $model_html;
     }
@@ -379,5 +382,3 @@ add_action('admin_enqueue_scripts', function ($hook) {
         wp_enqueue_script('explorexr-model-loader', EXPLOREXR_PLUGIN_URL . 'assets/js/model-loader.js', array('jquery'), EXPLOREXR_VERSION, true);
     }
 });
-
-

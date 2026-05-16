@@ -3,21 +3,21 @@
  * Plugin Name: ExploreXR – Interactive 3D Model Viewer
  * Plugin URI: https://expoxr.com/explorexr/
  * Description: The #1 interactive 3D model viewer for WordPress. Embed GLB, GLTF, and USDZ files via shortcode or page builder — no coding required. Works with Elementor, Divi, Avada, and Gutenberg.
- * Version: 1.2.0
+ * Version: 1.3.0
  * Requires at least: 5.0
- * Tested up to: 7.0
+ * Tested up to: 6.9
  * Requires PHP: 7.4
  * Author: Ayal Othman
  * Author URI: https://expoxr.com
  * Text Domain: explorexr
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * 
+ *
  * ExploreXR is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 2 of the License, or
  * any later version.
- * 
+ *
  * ExploreXR is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -40,8 +40,14 @@ if (defined('EXPLOREXR_VERSION') || class_exists('ExploreXR_License_Handler')) {
 // Define plugin constants
 define('EXPLOREXR_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('EXPLOREXR_PLUGIN_URL', plugin_dir_url(__FILE__));
-define('EXPLOREXR_VERSION', '1.2.0');
+define('EXPLOREXR_VERSION', '1.3.0');
 define('EXPLOREXR_IS_FREE', true);
+
+// Load compatibility bridge and addon manager at file-include time — before
+// plugins_loaded fires — so addon plugins' own plugins_loaded callbacks see
+// these functions and the ExploreXR_Addon_Manager class immediately.
+require_once EXPLOREXR_PLUGIN_DIR . 'includes/addons/compatibility-bridge.php';
+require_once EXPLOREXR_PLUGIN_DIR . 'includes/addons/class-addon-manager.php';
 
 // Define models directory constants after WordPress is loaded
 add_action('plugins_loaded', function () {
@@ -58,7 +64,7 @@ add_action('plugins_loaded', function () {
     // Ensure models directory exists
     if (!file_exists(EXPLOREXR_MODELS_DIR)) {
         wp_mkdir_p(EXPLOREXR_MODELS_DIR);
-        
+
         // Create index.php for security using WordPress filesystem
         require_once(ABSPATH . 'wp-admin/includes/file.php');
         WP_Filesystem();
@@ -66,7 +72,7 @@ add_action('plugins_loaded', function () {
         $index_content = "<?php\n// Silence is golden.\n";
         $wp_filesystem->put_contents(EXPLOREXR_MODELS_DIR . 'index.php', $index_content, FS_CHMOD_FILE);
     }
-    
+
     // Load all includes after WordPress is ready
     explorexr_free_load_includes();
 }, 10); // After constants are defined
@@ -87,11 +93,11 @@ function explorexr_free_load_includes() {
     if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/models/file-handler.php')) {
         require_once EXPLOREXR_PLUGIN_DIR . 'includes/models/file-handler.php';
     }
-    
+
     if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/models/model-helper.php')) {
         require_once EXPLOREXR_PLUGIN_DIR . 'includes/models/model-helper.php';
     }
-    
+
     if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/models/model-cleanup.php')) {
         require_once EXPLOREXR_PLUGIN_DIR . 'includes/models/model-cleanup.php';
     }
@@ -99,6 +105,11 @@ function explorexr_free_load_includes() {
     // UI components
     if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/ui/form-submission-handler.php')) {
         require_once EXPLOREXR_PLUGIN_DIR . 'includes/ui/form-submission-handler.php';
+    }
+
+    // Free addon loader helpers
+    if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/addons/free-addon-loader.php')) {
+        require_once EXPLOREXR_PLUGIN_DIR . 'includes/addons/free-addon-loader.php';
     }
 
     // Admin functionality
@@ -126,7 +137,7 @@ function explorexr_free_load_includes() {
     if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/security/file-upload-sanitizer.php')) {
         require_once EXPLOREXR_PLUGIN_DIR . 'includes/security/file-upload-sanitizer.php';
     }
-    
+
     if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/security/security-handler.php')) {
         require_once EXPLOREXR_PLUGIN_DIR . 'includes/security/security-handler.php';
     }
@@ -135,11 +146,11 @@ function explorexr_free_load_includes() {
     if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/utils/form-helpers.php')) {
         require_once EXPLOREXR_PLUGIN_DIR . 'includes/utils/form-helpers.php';
     }
-    
+
     if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/utils/safe-string-ops.php')) {
         require_once EXPLOREXR_PLUGIN_DIR . 'includes/utils/safe-string-ops.php';
     }
-    
+
     if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/utils/cache-manager.php')) {
         require_once EXPLOREXR_PLUGIN_DIR . 'includes/utils/cache-manager.php';
     }
@@ -166,24 +177,37 @@ register_activation_hook(__FILE__, 'explorexr_free_activate');
  * Plugin activation function
  */
 function explorexr_free_activate() {
+    // Block activation when ExploreXR Premium is already active
+    if (!function_exists('is_plugin_active')) {
+        require_once ABSPATH . 'wp-admin/includes/plugin.php';
+    }
+    if (is_plugin_active('explorexr-premium/ExploreXR-Premium.php')) {
+        // Translators: plugin name
+        $message = __('ExploreXR Premium is already active. Please deactivate Premium before activating the free version.', 'explorexr');
+        wp_die(
+            '<p>' . esc_html( $message ) . '</p>',
+            esc_html__('Plugin Activation Error', 'explorexr'),
+            array('back_link' => true)
+        );
+    }
     // Define models directory constants for activation (since plugins_loaded hasn't fired yet)
     if (!defined('EXPLOREXR_MODELS_DIR')) {
         $upload_dir = wp_upload_dir();
         define('EXPLOREXR_MODELS_DIR', $upload_dir['basedir'] . '/explorexr_models/');
         define('EXPLOREXR_MODELS_URL', $upload_dir['baseurl'] . '/explorexr_models/');
     }
-    
+
     // Create models directory in WordPress uploads folder
     if (!file_exists(EXPLOREXR_MODELS_DIR)) {
         wp_mkdir_p(EXPLOREXR_MODELS_DIR);
-        
+
         // Create index.php for security using WordPress filesystem
         require_once(ABSPATH . 'wp-admin/includes/file.php');
         WP_Filesystem();
         global $wp_filesystem;
         $index_content = "<?php\n// Silence is golden.\n";
         $wp_filesystem->put_contents(EXPLOREXR_MODELS_DIR . 'index.php', $index_content, FS_CHMOD_FILE);
-        
+
         // Create .htaccess for additional security using WordPress filesystem
         $htaccess_content = "# ExploreXR Models Directory Protection\n";
         $htaccess_content .= "Options -Indexes\n";
@@ -193,10 +217,10 @@ function explorexr_free_activate() {
         $htaccess_content .= "</FilesMatch>\n";
         $wp_filesystem->put_contents(EXPLOREXR_MODELS_DIR . '.htaccess', $htaccess_content, FS_CHMOD_FILE);
     }
-    
+
     // Set default options
     add_option('explorexr_free_activated', true);
-    
+
     // Flush rewrite rules
     flush_rewrite_rules();
 }

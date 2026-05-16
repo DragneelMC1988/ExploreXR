@@ -3,7 +3,7 @@
 [![WordPress Compatible](https://img.shields.io/badge/WordPress-5.0%2B-0073aa.svg)](https://wordpress.org/)
 [![PHP Version](https://img.shields.io/badge/PHP-7.4%2B-8892bf.svg)](https://php.net/)
 [![License](https://img.shields.io/badge/License-GPL%20v2-007ec6.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
-[![Version](https://img.shields.io/badge/Version-1.0.9-brightgreen.svg)](https://github.com/DragneelMC1988/explorexr/releases)
+[![Version](https://img.shields.io/badge/Version-1.3.0-brightgreen.svg)](https://github.com/ExpoXR/ExploreXR/releases)
 
 ## 🌐 Transform Your WordPress Site with Interactive 3D Content
 
@@ -35,6 +35,7 @@ ExploreXR brings the power of interactive 3D models to your WordPress website wi
         <li><b>Secure Uploads</b> - Sanitized GLB/GLTF/USDZ handling into uploads/explorexr_models</li>
         <li><b>Accessibility Ready</b> - Alt text, interaction prompts</li>
         <li><b>Admin Notices</b> - Error/validation feedback built-in</li>
+        <li><b>Page Builder Integrations</b> - Elementor, Divi, Avada, Gutenberg widgets included</li>
       </ul>
     </td>
     <td width="33%">
@@ -46,6 +47,7 @@ ExploreXR brings the power of interactive 3D models to your WordPress website wi
         <li><b>Performance Tools</b> - Progressive loading + lazy posters</li>
         <li><b>Developer Friendly</b> - Shortcode hooks, model-viewer filters</li>
         <li><b>Robust Security</b> - Nonces, capability checks, file scanners</li>
+        <li><b>Free Premium Add-on</b> - Choose one of AR, Animation, Camera Controls, or Annotations</li>
       </ul>
     </td>
   </tr>
@@ -60,24 +62,25 @@ ExploreXR handles the technical complexities so you can focus on showcasing your
 - **Multiple Display Options** - Control size, position, and behavior
 - **Interactive Controls** - Zoom, rotate, pan with intuitive controls
 - **Cross-browser Support** - Consistent experience across all major browsers
+- **AR Mode on Mobile** - USDZ for iOS, WebXR for Android (via free AR add-on)
 
 ## 🎥 See It In Action
 
 <p align="center">
-  <img src="https://github.com/DragneelMC1988/explorexr/raw/main/assets/img/screenshots/demo-showcase.gif" alt="ExploreXR Demo" width="700"/>
+  <img src="https://github.com/ExpoXR/ExploreXR/raw/main/assets/img/screenshots/demo-showcase.gif" alt="ExploreXR Demo" width="700"/>
 </p>
 
 <details>
   <summary><b>📸 View More Screenshots</b></summary>
   
   <h4>Admin Dashboard</h4>
-  <img src="https://github.com/DragneelMC1988/explorexr/raw/main/assets/img/screenshots/admin-dashboard.jpg" alt="Admin Dashboard" width="600"/>
+  <img src="https://github.com/ExpoXR/ExploreXR/raw/main/assets/img/screenshots/admin-dashboard.jpg" alt="Admin Dashboard" width="600"/>
   
   <h4>Model Management</h4>
-  <img src="https://github.com/DragneelMC1988/explorexr/raw/main/assets/img/screenshots/model-management.jpg" alt="Model Management" width="600"/>
+  <img src="https://github.com/ExpoXR/ExploreXR/raw/main/assets/img/screenshots/model-management.jpg" alt="Model Management" width="600"/>
   
   <h4>AR Mode on Mobile</h4>
-  <img src="https://github.com/DragneelMC1988/explorexr/raw/main/assets/img/screenshots/ar-mode-mobile.jpg" alt="AR Mode on Mobile" width="400"/>
+  <img src="https://github.com/ExpoXR/ExploreXR/raw/main/assets/img/screenshots/ar-mode-mobile.jpg" alt="AR Mode on Mobile" width="400"/>
 </details>
 
 ## 🚀 Quick Start Guide
@@ -236,9 +239,18 @@ ExploreXR is built with security as a top priority:
 - **GDPR Compliance** - No personal data collection
 - **Clean Code** - Following WordPress security best practices
 
-## 🚀 Premium Add-ons
+## 🚀 Free Add-on (Choose One)
 
-Upgrade for AR, Elementor/WooCommerce integrations, annotations, advanced camera paths, animations, material variants, and priority support. Details at [expoxr.com/explorexr/premium](https://expoxr.com/explorexr/premium/).
+The free version includes one premium add-on of your choice — select it from the **ExploreXR → Free Add-ons** admin page:
+
+- **AR** — Augmented reality on mobile (USDZ for iOS, WebXR for Android)
+- **Animation** — Play, pause, and loop GLTF animations
+- **Camera Controls** — Advanced orbit/zoom/pan tuning
+- **Annotations** — Interactive hotspot labels on 3D models
+
+## 🌟 Premium Add-ons
+
+Unlock all 12 add-ons plus priority support. Details at [expoxr.com/explorexr/premium](https://expoxr.com/explorexr/premium/).
 
 ## 🤝 Contributing
 
@@ -251,6 +263,21 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 5. Open a Pull Request
 
 ## 📋 Changelog (Highlights)
+
+### 1.3.0
+* Fixed: GLB/GLTF/USDZ uploads failing with "Invalid file type" due to PHP finfo MIME detection mismatch
+* Added: `upload_mimes` filter registering correct MIME types for all 3D model formats
+* Added: `wp_check_filetype_and_ext` filter handling finfo returning `application/octet-stream`
+
+### 1.2.0
+* Fixed: GLB/GLTF/USDZ upload MIME type validation now accepts all three formats reliably
+* New: Free add-on system — activate one premium add-on (AR, Animation, Camera Controls, or Annotations) at no cost
+* New: Free Add-ons admin page with one-click install and activation
+* New: Conflict prevention blocks simultaneous activation with ExploreXR Premium
+
+### 1.1.x
+* Stability and compatibility improvements
+* PHPCS escaping compliance updates
 
 ### 1.0.9
 * New: Canonical display size presets (Small/Medium/Large/Full) applied across create/edit/shortcode
@@ -279,7 +306,7 @@ This project is licensed under the GPL v2 or later - see the [LICENSE](LICENSE) 
 ## 🔗 Links
 
 - **🌐 Official Website**: [expoxr.com](https://expoxr.com)
-- **📚 Documentation**: [expoxr.com/explorexr/dpcumentation]([https://docs.expoxr.com](https://expoxr.com/explorexr/documentation/))
+- **📚 Documentation**: [expoxr.com/explorexr/documentation](https://expoxr.com/explorexr/documentation/)
 - **🐛 Issue Tracker**: [GitHub Issues](../../issues)
 - **💬 Support Forum**: [WordPress.org Support](https://wordpress.org/support/plugin/explorexr/)
 
@@ -288,7 +315,7 @@ This project is licensed under the GPL v2 or later - see the [LICENSE](LICENSE) 
 ![GitHub stars](https://img.shields.io/github/stars/DragneelMC1988/explorexr?style=social)
 ![GitHub forks](https://img.shields.io/github/forks/DragneelMC1988/explorexr?style=social)
 ![GitHub issues](https://img.shields.io/github/issues/DragneelMC1988/explorexr)
-![GitHub downloads](https://img.shields.io/github/downloads/DragneelMC1988/explorexr/total)
+![GitHub downloads](https://img.shields.io/github/downloads/ExpoXR/ExploreXR/total)
 
 ---
 

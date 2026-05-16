@@ -72,7 +72,7 @@ function explorexr_settings_page() {
     $system_info = explorexr_get_system_info();
       // Set up header variables
     $page_title = 'ExploreXR Settings';
-    $header_actions = '<a href="https://expoxr.com/explorexr/documentation/settings" target="_blank" class="button">
+    $header_actions = '<a href="https://expoxr.com/explorexr/documentation/" target="_blank" class="button">
                         <span class="dashicons dashicons-book settings-icon"></span> Documentation
                       </a>';
     ?>
@@ -330,7 +330,7 @@ function explorexr_settings_page() {
             </div>
         </div>
         <p>For documentation, support, and more information, please visit our website:</p>
-        <p><a href="https://expoxr.com/explorexr/" class="button" target="_blank">Visit ExploreXR Website</a></p>
+        <p><a href="https://expoxr.com/explorexr/home/" class="button" target="_blank">Visit ExploreXR Website</a></p>
         <?php
         $card_content = ob_get_clean();
         include EXPLOREXR_PLUGIN_DIR . 'admin/templates/card.php';

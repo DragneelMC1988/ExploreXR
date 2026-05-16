@@ -28,8 +28,8 @@ if (!defined('ABSPATH')) {
         </div>
         <div class="explorexr-footer-links">
             <a href="https://expoxr.com" target="_blank">ExpoXR</a>
-            <a href="https://expoxr.com/explorexr/documentation" target="_blank">Documentation</a>
-            <a href="https://expoxr.com/explorexr/support" target="_blank">Support</a>
+            <a href="https://expoxr.com/explorexr/documentation/" target="_blank">Documentation</a>
+            <a href="https://expoxr.com/support/" target="_blank">Support</a>
         </div>
     </div>
 </div>

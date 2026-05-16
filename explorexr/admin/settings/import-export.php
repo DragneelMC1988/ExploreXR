@@ -185,14 +185,41 @@ function explorexr_handle_settings_export() {
         }
     }
     
+    // Export 3D model posts and their meta
+    $model_posts = get_posts( array(
+        'post_type'      => 'explorexr_model',
+        'posts_per_page' => -1,
+        'post_status'    => 'any',
+    ) );
+
+    $export_data['models'] = array();
+    foreach ( $model_posts as $model ) {
+        $raw_meta   = get_post_meta( $model->ID );
+        $clean_meta = array();
+        foreach ( $raw_meta as $meta_key => $meta_values ) {
+            if ( strpos( $meta_key, '_explorexr' ) === 0 ) {
+                $clean_meta[ $meta_key ] = isset( $meta_values[0] ) ? maybe_unserialize( $meta_values[0] ) : '';
+            }
+        }
+        $export_data['models'][] = array(
+            'ID'           => $model->ID,
+            'post_title'   => $model->post_title,
+            'post_status'  => $model->post_status,
+            'post_content' => $model->post_content,
+            'meta'         => $clean_meta,
+        );
+    }
+
     // Add export metadata
     $export_data['_export_info'] = array(
-        'date' => gmdate('Y-m-d H:i:s'),
+        'date'           => gmdate('Y-m-d H:i:s'),
         'plugin_version' => EXPLOREXR_VERSION,
-        'site' => get_bloginfo('name'),
-        'url' => get_bloginfo('url'),
-        'setting_count' => $setting_count,
-        'wp_version' => get_bloginfo('version')
+        'plugin_source'  => 'free',
+        'site'           => get_bloginfo('name'),
+        'url'            => get_bloginfo('url'),
+        'setting_count'  => $setting_count,
+        'model_count'    => count( $export_data['models'] ),
+        'wp_version'     => get_bloginfo('version'),
     );
 
     // Generate filename
@@ -465,11 +492,84 @@ function explorexr_handle_settings_import() {
         }
     }
     
+    // Import 3D model posts if present in the export
+    $models_imported = 0;
+    $models_updated  = 0;
+
+    if (!empty($import_data['models']) && is_array($import_data['models'])) {
+        $source     = isset($import_data['_export_info']['plugin_source']) ? $import_data['_export_info']['plugin_source'] : '';
+        $upload_dir = wp_upload_dir();
+        $old_url    = '';
+        $new_url    = '';
+        $old_dir    = '';
+        $new_dir    = '';
+
+        if ('premium' === $source) {
+            // Importing from Premium into Free: hyphen → underscore
+            $old_url = trailingslashit($upload_dir['baseurl']) . 'explorexr-models/';
+            $new_url = trailingslashit($upload_dir['baseurl']) . 'explorexr_models/';
+            $old_dir = trailingslashit($upload_dir['basedir']) . 'explorexr-models/';
+            $new_dir = trailingslashit($upload_dir['basedir']) . 'explorexr_models/';
+        }
+
+        foreach ($import_data['models'] as $model_data) {
+            if (empty($model_data['post_title'])) {
+                continue;
+            }
+
+            $post_args = array(
+                'post_title'   => sanitize_text_field($model_data['post_title']),
+                'post_status'  => sanitize_key(!empty($model_data['post_status']) ? $model_data['post_status'] : 'publish'),
+                'post_type'    => 'explorexr_model',
+                'post_content' => wp_kses_post(!empty($model_data['post_content']) ? $model_data['post_content'] : ''),
+            );
+
+            $existing = !empty($model_data['ID']) ? get_post((int) $model_data['ID']) : null;
+
+            if ($existing && $existing->post_type === 'explorexr_model') {
+                $post_args['ID'] = (int) $model_data['ID'];
+                wp_update_post($post_args);
+                $post_id = (int) $model_data['ID'];
+                $models_updated++;
+            } else {
+                $post_id = wp_insert_post($post_args);
+                $models_imported++;
+            }
+
+            if (is_wp_error($post_id) || !$post_id) {
+                continue;
+            }
+
+            if (!empty($model_data['meta']) && is_array($model_data['meta'])) {
+                foreach ($model_data['meta'] as $meta_key => $meta_value) {
+                    if (!is_string($meta_key) || strpos($meta_key, '_explorexr') !== 0) {
+                        continue;
+                    }
+                    // Rewrite upload dir path when migrating from Premium
+                    if ('_explorexr_model_file' === $meta_key && $old_url && $new_url) {
+                        $meta_value = str_replace($old_url, $new_url, (string) $meta_value);
+                        // Copy physical file if reachable on same server
+                        $filename = basename((string) $meta_value);
+                        $src = $old_dir . $filename;
+                        $dst = $new_dir . $filename;
+                        if (file_exists($src) && !file_exists($dst)) {
+                            if (!is_dir($new_dir)) {
+                                wp_mkdir_p($new_dir);
+                            }
+                            // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+                            @copy($src, $dst);
+                        }
+                    }
+                    update_post_meta((int) $post_id, $meta_key, $meta_value);
+                }
+            }
+        }
+    }
+
     // Clear all caches after successful import
     if (function_exists('explorexr_clear_all_cache')) {
         $cache_cleared = explorexr_clear_all_cache();
     } else {
-        // Fallback cache clearing
         delete_transient('explorexr_viewer_version_check');
         delete_transient('explorexr_model_cache');
         $cache_cleared = true;
@@ -483,14 +583,22 @@ function explorexr_handle_settings_import() {
         $updated,
         $skipped
     );
-    
+
     $message .= $category_message;
-    
-    // Add cache cleared message
+
+    if ($models_imported > 0 || $models_updated > 0) {
+        $message .= ' ' . sprintf(
+            // translators: %1$d: models created, %2$d: models updated
+            esc_html__('3D models: %1$d created, %2$d updated.', 'explorexr'),
+            $models_imported,
+            $models_updated
+        );
+    }
+
     if (isset($cache_cleared) && $cache_cleared) {
         $message .= ' ' . esc_html__('All caches have been cleared to reflect the new settings.', 'explorexr');
     }
-    
+
     if (isset($import_data['_export_info'])) {
         $message .= '<br>';
         $message .= sprintf(
@@ -501,7 +609,7 @@ function explorexr_handle_settings_import() {
             esc_html($import_data['_export_info']['plugin_version'])
         );
     }
-    
+
     add_settings_error('explorexr_messages', 'explorexr_import_success', $message, 'success');
 }
 add_action('admin_init', 'explorexr_handle_settings_import');

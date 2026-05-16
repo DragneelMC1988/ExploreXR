@@ -217,7 +217,7 @@ function explorexr_loading_options_page() {
         'page_title'    => esc_html__('Loading Options', 'explorexr'),
         'plugin_name'   => esc_html__('ExploreXR', 'explorexr'),
         'plugin_version' => defined('EXPLOREXR_VERSION') ? EXPLOREXR_VERSION : '1.0.1',
-        'doc_url'       => 'https://expoxr.com/explorexr/documentation/loading-options',
+        'doc_url'       => 'https://expoxr.com/explorexr/documentation/',
         'settings_group' => 'explorexr_loading_settings',
         'settings_page' => 'explorexr-loading-settings',
         'show_submit'   => true,
@@ -247,7 +247,7 @@ function explorexr_loading_options_page() {
     // Render the loading options page
     // Set up header variables
     $page_title = 'Loading Options';
-    $header_actions = '<a href="https://expoxr.com/explorexr/documentation/loading-options" target="_blank" class="button">
+    $header_actions = '<a href="https://expoxr.com/explorexr/documentation/" target="_blank" class="button">
                         <span class="dashicons dashicons-book"></span> Documentation
                       </a>';
     ?>

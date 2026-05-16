@@ -48,7 +48,7 @@ function EXPLOREXR_custom_ui_page() {
                 <h1>ExploreXR <span class="explorexr-version"><?php echo esc_html($current_version); ?></span></h1>
             </div>
             <div class="explorexr-header-actions">
-                <a href="https://expoxr.com/explorexr/documentation" target="_blank" class="button">Documentation</a>
+                <a href="https://expoxr.com/explorexr/documentation/" target="_blank" class="button">Documentation</a>
             </div>
         </div>
           <!-- Quick Actions -->
@@ -93,7 +93,7 @@ function EXPLOREXR_custom_ui_page() {
                     </ol>
                 </div>
                 <div class="explorexr-card-footer">
-                    <a href="https://expoxr.com/explorexr/documentation" target="_blank" class="button button-small">Read Documentation</a>
+                    <a href="https://expoxr.com/explorexr/documentation/" target="_blank" class="button button-small">Read Documentation</a>
                 </div>
             </div>
             

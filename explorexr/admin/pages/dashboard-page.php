@@ -322,14 +322,14 @@ function explorexr_dashboard_page() {
                     <div class="explorexr-pricing-tier">
                         <h4>Pro</h4>
                         <div class="explorexr-price">€59/year</div>
-                        <div class="explorexr-addon-count">2 Addons</div>
-                        <p>Choose any 2 addons</p>
+                        <div class="explorexr-addon-count">3 Addons</div>
+                        <p>Choose any 3 addons</p>
                     </div>
                     <div class="explorexr-pricing-tier featured">
                         <h4>Plus</h4>
                         <div class="explorexr-price">€99/year</div>
-                        <div class="explorexr-addon-count">4 Addons</div>
-                        <p>Choose any 4 addons</p>
+                        <div class="explorexr-addon-count">5 Addons</div>
+                        <p>Choose any 5 addons</p>
                         <span class="explorexr-popular-badge">Most Popular</span>
                     </div>
                     <div class="explorexr-pricing-tier">
@@ -350,7 +350,7 @@ function explorexr_dashboard_page() {
                 <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-premium')); ?>" class="button button-large">
                     <span class="dashicons dashicons-unlock" style="margin-right: 5px;"></span> View All Addons
                 </a>
-                <a href="https://expoxr.com/explorexr/pricing" target="_blank" class="button">
+                <a href="https://expoxr.com/explorexr/pricing/" target="_blank" class="button">
                     <span class="dashicons dashicons-info" style="margin-right: 5px;"></span> Compare Plans
                 </a>
             </div>
@@ -374,7 +374,7 @@ function explorexr_dashboard_page() {
                 <li><strong>Use the Shortcode</strong> - Copy the shortcode and paste it into any post or page.</li>
             </ol>
             <div class="explorexr-actions">
-                <a href="https://expoxr.com/explorexr/documentation/quick-start" target="_blank" class="button">
+                <a href="https://expoxr.com/explorexr/documentation/" target="_blank" class="button">
                     <span class="dashicons dashicons-book" style="margin-right: 5px;"></span> Full Documentation
                 </a>
             </div>
@@ -424,3 +424,47 @@ function explorexr_dashboard_page() {
 
 
 
+
+/**
+ * Show a one-time "New: Free Add-on" notice on ExploreXR admin pages.
+ * Dismissed per-user via AJAX → explorexr_dismiss_free_addon_hint.
+ */
+function explorexr_free_addon_hint_notice(): void {
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only page check
+    $page = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : '';
+    if ( strpos( $page, 'explorexr' ) !== 0 ) {
+        return;
+    }
+    if ( $page === 'explorexr-free-addons' ) {
+        return; // Already on the add-on page — don't show a second banner
+    }
+    if ( get_user_meta( get_current_user_id(), 'explorexr_free_addon_hint_dismissed', true ) ) {
+        return;
+    }
+    $addon_page_url = admin_url( 'admin.php?page=explorexr-free-addons' );
+    ?>
+    <div class="notice notice-info is-dismissible" id="explorexr-free-addon-hint-notice">
+        <p>
+            <strong><?php esc_html_e( 'New in ExploreXR: Free Add-on!', 'explorexr' ); ?></strong>
+            <?php
+            printf(
+                /* translators: %s: link to free add-on page */
+                esc_html__( 'You can now activate one premium add-on for free — AR, Animation, Camera Controls, or Annotations. %s', 'explorexr' ),
+                '<a href="' . esc_url( $addon_page_url ) . '">' . esc_html__( 'Choose your free add-on →', 'explorexr' ) . '</a>'
+            );
+            ?>
+        </p>
+    </div>
+    <script>
+    (function($){
+        $(document).on('click', '#explorexr-free-addon-hint-notice .notice-dismiss', function(){
+            $.post(ajaxurl, {
+                action: 'explorexr_dismiss_free_addon_hint',
+                nonce:  '<?php echo esc_js( wp_create_nonce( 'explorexr_dismiss_free_addon_hint' ) ); ?>'
+            });
+        });
+    })(jQuery);
+    </script>
+    <?php
+}
+add_action( 'admin_notices', 'explorexr_free_addon_hint_notice' );

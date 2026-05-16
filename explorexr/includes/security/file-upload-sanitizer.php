@@ -320,11 +320,86 @@ function explorexr_get_file_upload_error_message($error) {
 }
 
 /**
+ * Register 3D model MIME types with WordPress.
+ *
+ * GLB, GLTF, and USDZ are not in WordPress's default allowed-MIME list.
+ * Without this filter, wp_check_filetype_and_ext() rejects them immediately
+ * before any per-upload logic can run.
+ *
+ * @param array $mimes Allowed MIME types keyed by extension regex.
+ * @return array
+ */
+function explorexr_allow_3d_model_mimes( $mimes ) {
+    $mimes['glb']  = 'model/gltf-binary';
+    $mimes['gltf'] = 'model/gltf+json';
+    $mimes['usdz'] = 'model/vnd.usdz+zip';
+    return $mimes;
+}
+add_filter( 'upload_mimes', 'explorexr_allow_3d_model_mimes' );
+
+/**
+ * Fix wp_check_filetype_and_ext for 3D model files when finfo is imprecise.
+ *
+ * PHP finfo commonly reports GLB/GLTF/USDZ as application/octet-stream or
+ * application/zip. WordPress cross-checks the finfo result against its MIME
+ * list and returns [false, false] when there is a mismatch, causing the upload
+ * to fail with "Invalid file type". When the file extension is a known 3D
+ * format and finfo returned a generic binary/zip type, we override the result
+ * with the correct MIME so WordPress accepts the file.
+ *
+ * @param array        $check     Current result: ['ext', 'type', 'proper_filename'].
+ * @param string       $file      Path to the uploaded temp file.
+ * @param string       $filename  Sanitized original filename.
+ * @param array        $mimes     Allowed MIME types passed to the checker.
+ * @param string|false $real_mime MIME type detected by finfo (WP 5.1+), or false.
+ * @return array
+ */
+function explorexr_fix_3d_model_filetype( $check, $file, $filename, $mimes, $real_mime = false ) {
+    if ( $check['ext'] && $check['type'] ) {
+        return $check; // Already resolved — leave it alone.
+    }
+
+    $ext = strtolower( pathinfo( $filename, PATHINFO_EXTENSION ) );
+
+    $type_map = array(
+        'glb'  => 'model/gltf-binary',
+        'gltf' => 'model/gltf+json',
+        'usdz' => 'model/vnd.usdz+zip',
+    );
+
+    if ( ! isset( $type_map[ $ext ] ) ) {
+        return $check; // Not a 3D model file — don't interfere.
+    }
+
+    // finfo returns these generic types for binary/archive files it doesn't
+    // recognise. Treat them as acceptable fallbacks for 3D model extensions.
+    $generic_mimes = array(
+        false,                          // finfo unavailable on this server
+        'application/octet-stream',
+        'application/zip',
+        'application/x-zip',
+        'application/x-zip-compressed',
+        'binary/octet-stream',
+    );
+
+    if ( ! in_array( $real_mime, $generic_mimes, true ) && $real_mime !== $type_map[ $ext ] ) {
+        // finfo returned a specific, non-matching MIME — honour that result.
+        return $check;
+    }
+
+    $check['ext']  = $ext;
+    $check['type'] = $type_map[ $ext ];
+
+    return $check;
+}
+add_filter( 'wp_check_filetype_and_ext', 'explorexr_fix_3d_model_filetype', 10, 5 );
+
+/**
  * Check if file upload is valid before processing
- * 
+ *
  * This is a lightweight check to determine if a file upload should be processed
  * without performing the full validation.
- * 
+ *
  * @param array $file The $_FILES array element
  * @return bool True if file appears valid for processing
  */
