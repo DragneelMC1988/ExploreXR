@@ -28,7 +28,13 @@ function explorexr_settings_page() {
             'explorexr_overlay_bg_color' => '#FFFFFF',
             'explorexr_overlay_bg_opacity' => 70,
             'explorexr_model_viewer_version' => '4.1.0',
-            'explorexr_max_upload_size' => 50
+            'explorexr_max_upload_size' => 50,
+            'explorexr_lazy_load_poster' => false,
+            'explorexr_lazy_load_model' => false,
+            'explorexr_load_button_text' => 'Load 3D Model',
+            'explorexr_load_button_bg_color' => '#1e88e5',
+            'explorexr_load_button_text_color' => '#ffffff',
+            'explorexr_load_button_border_radius' => 4,
         );
         
         // Update all options to defaults

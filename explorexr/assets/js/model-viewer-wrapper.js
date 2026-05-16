@@ -124,9 +124,11 @@ function initExploreXRModelViewers() {
     function setupLoadingUI(modelViewer, container, index) {
         ExploreXRDebugLog('[ExploreXR] Setting up loading UI for model #' + (index + 1));
         
-        // 1. Ensure the model-viewer element has the proper loading attributes
+        // 1. Ensure the model-viewer element has the proper loading attributes.
+        // PHP already sets loading="eager|lazy" via the filter; only default if missing.
         if (!modelViewer.hasAttribute('loading')) {
-            modelViewer.setAttribute('loading', 'eager');
+            const globalLazy = (typeof ExploreXRLoadingOptions !== 'undefined' && ExploreXRLoadingOptions.lazy_load_model);
+            modelViewer.setAttribute('loading', globalLazy ? 'lazy' : 'eager');
         }
         
         if (!modelViewer.hasAttribute('reveal')) {
@@ -593,7 +595,8 @@ function loadExploreXRModel(modelInstanceId, modelFileUrl, modelAttributes) {
                 }
                 
                 if (!modelAttributes.hasOwnProperty('loading')) {
-                    modelViewer.setAttribute('loading', 'eager');
+                    const globalLazy = (typeof ExploreXRLoadingOptions !== 'undefined' && ExploreXRLoadingOptions.lazy_load_model);
+                    modelViewer.setAttribute('loading', globalLazy ? 'lazy' : 'eager');
                 }
                 
                 if (!modelAttributes.hasOwnProperty('reveal')) {

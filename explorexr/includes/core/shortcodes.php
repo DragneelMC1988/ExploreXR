@@ -282,23 +282,48 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
 
     // Check file size for large model handling
     if (defined('EXPLOREXR_MODELS_URL') && defined('EXPLOREXR_MODELS_DIR')) {
+        // Legacy: constants defined (premium build)
         $file_path = str_replace(EXPLOREXR_MODELS_URL, EXPLOREXR_MODELS_DIR, $model_file);
+    } else {
+        // Free version: resolve URL → filesystem path via wp_upload_dir()
+        $upload_dir = wp_upload_dir();
+        $file_path = str_replace(
+            trailingslashit($upload_dir['baseurl']),
+            trailingslashit($upload_dir['basedir']),
+            $model_file
+        );
+    }
 
-        if (file_exists($file_path)) {
-            $file_size_mb = filesize($file_path) / (1024 * 1024);
+    if (file_exists($file_path)) {
+        $file_size_mb = filesize($file_path) / (1024 * 1024);
+        if ($file_size_mb >= $large_model_size_threshold) {
+            $is_large_model = true;
+        }
+    } elseif (strpos($model_file, 'http') === 0 && !file_exists($file_path)) {
+        // For external files only (not resolvable locally), try HEAD request
+        $request = wp_remote_head($model_file);
+        if (!is_wp_error($request) && isset($request['headers']['content-length'])) {
+            $file_size_mb = intval($request['headers']['content-length']) / (1024 * 1024);
             if ($file_size_mb >= $large_model_size_threshold) {
                 $is_large_model = true;
             }
-        } elseif (strpos($model_file, 'http') === 0) {
-            // For external files, try to get the size with a HEAD request
-            $request = wp_remote_head($model_file);
-            if (!is_wp_error($request) && isset($request['headers']['content-length'])) {
-                $file_size_mb = intval($request['headers']['content-length']) / (1024 * 1024);
-                if ($file_size_mb >= $large_model_size_threshold) {
-                    $is_large_model = true;
-                }
-            }
         }
+    }
+
+    // Use "lazy" large model mode: model-viewer native lazy loading (no button/poster required)
+    if ($is_large_model && $large_model_handling === 'lazy') {
+        $model_attributes = EXPLOREXR_build_model_attributes($model_id, $model_file, $alt_text, $width, $height, $model_poster);
+        $model_attributes['loading'] = 'lazy';
+        $model_attributes['class']   = 'explorexr-model';
+        $model_attributes['id']      = $model_css_id;
+        $model_attributes = array_filter($model_attributes, function($key) {
+            return is_string($key) && !is_numeric($key);
+        }, ARRAY_FILTER_USE_KEY);
+        $attributes_html = EXPLOREXR_generate_attributes_html($model_attributes);
+        ob_start();
+        include EXPLOREXR_PLUGIN_DIR . 'template-parts/standard-model-template.php';
+        $model_html = ob_get_clean();
+        return $responsive_css . $script . $model_html;
     }
 
     // Only use poster_button mode if specifically configured AND it's a large model AND we have a poster image

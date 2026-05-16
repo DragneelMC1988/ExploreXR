@@ -47,8 +47,8 @@ if (!defined('ABSPATH')) {
                 ?>
             </div>
         <?php endif; ?>
-        <button class="ExploreXR-load-model-btn" id="<?php echo esc_attr($model_instance_id); ?>-btn" style="position: relative; z-index: 10;">
-            <?php echo esc_html__('Load 3D Model', 'explorexr'); ?>
+        <button class="ExploreXR-load-model-btn" id="<?php echo esc_attr($model_instance_id); ?>-btn" style="position: relative; z-index: 10; background-color: <?php echo esc_attr(get_option('explorexr_load_button_bg_color', '#1e88e5')); ?>; color: <?php echo esc_attr(get_option('explorexr_load_button_text_color', '#ffffff')); ?>; border-radius: <?php echo absint(get_option('explorexr_load_button_border_radius', 4)); ?>px;">
+            <?php echo esc_html(get_option('explorexr_load_button_text', __('Load 3D Model', 'explorexr'))); ?>
         </button>
         
         <?php

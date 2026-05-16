@@ -176,6 +176,21 @@ wp_localize_script('explorexr-model-viewer-wrapper', 'explorexrScriptConfig', $s
 // Set global plugin URL for Model Viewer dependencies (WordPress.org compliance - properly escaped)
 wp_add_inline_script('explorexr-model-viewer-wrapper', 'window.explorexrPluginUrl = "' . esc_js(EXPLOREXR_PLUGIN_URL) . '";', 'before');
 
+// Configure Draco, KTX2/Basis and Meshopt decoder locations for the bundled model-viewer UMD.
+// These must run AFTER model-viewer-umd.js loads so ModelViewerElement is defined.
+$decoder_plugin_url = esc_js(EXPLOREXR_PLUGIN_URL);
+wp_add_inline_script(
+    $script_handle,
+    '(function() {
+        var MV = window.ModelViewerElement;
+        if (!MV) return;
+        MV.dracoDecoderLocation     = "' . $decoder_plugin_url . 'assets/vendor/draco/";
+        MV.ktx2TranscoderLocation   = "' . $decoder_plugin_url . 'assets/vendor/basis-universal/";
+        MV.meshoptDecoderLocation   = "' . $decoder_plugin_url . 'assets/vendor/meshopt/meshopt_decoder.js";
+    })();',
+    'after'
+);
+
 // Enqueue model-handler.js for debugging features
 wp_enqueue_script('explorexr-model-handler', EXPLOREXR_PLUGIN_URL . 'assets/js/model-handler.js', array('jquery'), EXPLOREXR_VERSION, true);
 
