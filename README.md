@@ -3,7 +3,7 @@
 [![WordPress Compatible](https://img.shields.io/badge/WordPress-5.0%2B-0073aa.svg)](https://wordpress.org/)
 [![PHP Version](https://img.shields.io/badge/PHP-7.4%2B-8892bf.svg)](https://php.net/)
 [![License](https://img.shields.io/badge/License-GPL%20v2-007ec6.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
-[![Version](https://img.shields.io/badge/Version-1.3.0-brightgreen.svg)](https://github.com/ExpoXR/ExploreXR/releases)
+[![Version](https://img.shields.io/badge/Version-1.3.1-brightgreen.svg)](https://github.com/ExpoXR/ExploreXR/releases)
 
 ## 🌐 Transform Your WordPress Site with Interactive 3D Content
 
@@ -263,6 +263,11 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 5. Open a Pull Request
 
 ## 📋 Changelog (Highlights)
+
+### 1.3.1
+* Fixed: PHP fatal error "Cannot redeclare function" when duplicate plugin folder (`explorexr-1/`) exists alongside active installation
+* Improved: Conflict notice distinguishes Premium-vs-Free from Free-vs-Free duplicate scenarios
+* Added: `function_exists()` guards on all file-scope functions
 
 ### 1.3.0
 * Fixed: GLB/GLTF/USDZ uploads failing with "Invalid file type" due to PHP finfo MIME detection mismatch

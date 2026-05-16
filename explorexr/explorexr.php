@@ -3,7 +3,7 @@
  * Plugin Name: ExploreXR – Interactive 3D Model Viewer
  * Plugin URI: https://expoxr.com/explorexr/
  * Description: The #1 interactive 3D model viewer for WordPress. Embed GLB, GLTF, and USDZ files via shortcode or page builder — no coding required. Works with Elementor, Divi, Avada, and Gutenberg.
- * Version: 1.3.0
+ * Version: 1.3.1
  * Requires at least: 5.0
  * Tested up to: 6.9
  * Requires PHP: 7.4
@@ -29,10 +29,15 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-// Prevent conflicts with premium version
+// Prevent conflicts with premium version or duplicate free installations
 if (defined('EXPLOREXR_VERSION') || class_exists('ExploreXR_License_Handler')) {
     add_action('admin_notices', function() {
-        echo '<div class="notice notice-error"><p><strong>ExploreXR:</strong> Cannot activate while ExploreXR Premium is active. Please deactivate the Premium version first.</p></div>';
+        if (class_exists('ExploreXR_License_Handler')) {
+            $msg = __('Cannot activate while ExploreXR Premium is active. Please deactivate the Premium version first.', 'explorexr');
+        } else {
+            $msg = __('ExploreXR is already active. Deactivate the existing installation before activating a duplicate copy.', 'explorexr');
+        }
+        echo '<div class="notice notice-error"><p><strong>ExploreXR:</strong> ' . esc_html( $msg ) . '</p></div>';
     });
     return;
 }
@@ -40,7 +45,7 @@ if (defined('EXPLOREXR_VERSION') || class_exists('ExploreXR_License_Handler')) {
 // Define plugin constants
 define('EXPLOREXR_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('EXPLOREXR_PLUGIN_URL', plugin_dir_url(__FILE__));
-define('EXPLOREXR_VERSION', '1.3.0');
+define('EXPLOREXR_VERSION', '1.3.1');
 define('EXPLOREXR_IS_FREE', true);
 
 // Load compatibility bridge and addon manager at file-include time — before
@@ -77,96 +82,98 @@ add_action('plugins_loaded', function () {
     explorexr_free_load_includes();
 }, 10); // After constants are defined
 
-function explorexr_free_load_includes() {
-    // Core functionality
-    if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/core/post-types/class-post-types.php')) {
-        require_once EXPLOREXR_PLUGIN_DIR . 'includes/core/post-types/class-post-types.php';
-    }
-    if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/core/shortcodes.php')) {
-        require_once EXPLOREXR_PLUGIN_DIR . 'includes/core/shortcodes.php';
-    }
-    if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/core/model-validator.php')) {
-        require_once EXPLOREXR_PLUGIN_DIR . 'includes/core/model-validator.php';
-    }
+if (!function_exists('explorexr_free_load_includes')) {
+    function explorexr_free_load_includes() {
+        // Core functionality
+        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/core/post-types/class-post-types.php')) {
+            require_once EXPLOREXR_PLUGIN_DIR . 'includes/core/post-types/class-post-types.php';
+        }
+        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/core/shortcodes.php')) {
+            require_once EXPLOREXR_PLUGIN_DIR . 'includes/core/shortcodes.php';
+        }
+        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/core/model-validator.php')) {
+            require_once EXPLOREXR_PLUGIN_DIR . 'includes/core/model-validator.php';
+        }
 
-    // Models functionality
-    if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/models/file-handler.php')) {
-        require_once EXPLOREXR_PLUGIN_DIR . 'includes/models/file-handler.php';
-    }
+        // Models functionality
+        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/models/file-handler.php')) {
+            require_once EXPLOREXR_PLUGIN_DIR . 'includes/models/file-handler.php';
+        }
 
-    if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/models/model-helper.php')) {
-        require_once EXPLOREXR_PLUGIN_DIR . 'includes/models/model-helper.php';
-    }
+        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/models/model-helper.php')) {
+            require_once EXPLOREXR_PLUGIN_DIR . 'includes/models/model-helper.php';
+        }
 
-    if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/models/model-cleanup.php')) {
-        require_once EXPLOREXR_PLUGIN_DIR . 'includes/models/model-cleanup.php';
-    }
+        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/models/model-cleanup.php')) {
+            require_once EXPLOREXR_PLUGIN_DIR . 'includes/models/model-cleanup.php';
+        }
 
-    // UI components
-    if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/ui/form-submission-handler.php')) {
-        require_once EXPLOREXR_PLUGIN_DIR . 'includes/ui/form-submission-handler.php';
-    }
+        // UI components
+        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/ui/form-submission-handler.php')) {
+            require_once EXPLOREXR_PLUGIN_DIR . 'includes/ui/form-submission-handler.php';
+        }
 
-    // Free addon loader helpers
-    if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/addons/free-addon-loader.php')) {
-        require_once EXPLOREXR_PLUGIN_DIR . 'includes/addons/free-addon-loader.php';
-    }
+        // Free addon loader helpers
+        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/addons/free-addon-loader.php')) {
+            require_once EXPLOREXR_PLUGIN_DIR . 'includes/addons/free-addon-loader.php';
+        }
 
-    // Admin functionality
-    if (file_exists(EXPLOREXR_PLUGIN_DIR . 'admin/core/admin-menu.php')) {
-        require_once EXPLOREXR_PLUGIN_DIR . 'admin/core/admin-menu.php';
-    }
+        // Admin functionality
+        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'admin/core/admin-menu.php')) {
+            require_once EXPLOREXR_PLUGIN_DIR . 'admin/core/admin-menu.php';
+        }
 
-    // Load admin pages (required by admin menu)
-    if (file_exists(EXPLOREXR_PLUGIN_DIR . 'admin/core/admin-pages.php')) {
-        require_once EXPLOREXR_PLUGIN_DIR . 'admin/core/admin-pages.php';
-    }
+        // Load admin pages (required by admin menu)
+        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'admin/core/admin-pages.php')) {
+            require_once EXPLOREXR_PLUGIN_DIR . 'admin/core/admin-pages.php';
+        }
 
-    // AJAX handlers
-    if (file_exists(EXPLOREXR_PLUGIN_DIR . 'admin/ajax/ajax-handlers.php')) {
-        require_once EXPLOREXR_PLUGIN_DIR . 'admin/ajax/ajax-handlers.php';
-    }
+        // AJAX handlers
+        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'admin/ajax/ajax-handlers.php')) {
+            require_once EXPLOREXR_PLUGIN_DIR . 'admin/ajax/ajax-handlers.php';
+        }
 
-    // Page-builder integrations (Elementor, Divi, Avada Fusion Builder).
-    // Each integration file checks for the corresponding builder before loading.
-    if ( file_exists( EXPLOREXR_PLUGIN_DIR . 'includes/integrations/index.php' ) ) {
-        require_once EXPLOREXR_PLUGIN_DIR . 'includes/integrations/index.php';
-    }
+        // Page-builder integrations (Elementor, Divi, Avada Fusion Builder).
+        // Each integration file checks for the corresponding builder before loading.
+        if ( file_exists( EXPLOREXR_PLUGIN_DIR . 'includes/integrations/index.php' ) ) {
+            require_once EXPLOREXR_PLUGIN_DIR . 'includes/integrations/index.php';
+        }
 
-    // Security (basic level for free version)
-    if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/security/file-upload-sanitizer.php')) {
-        require_once EXPLOREXR_PLUGIN_DIR . 'includes/security/file-upload-sanitizer.php';
-    }
+        // Security (basic level for free version)
+        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/security/file-upload-sanitizer.php')) {
+            require_once EXPLOREXR_PLUGIN_DIR . 'includes/security/file-upload-sanitizer.php';
+        }
 
-    if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/security/security-handler.php')) {
-        require_once EXPLOREXR_PLUGIN_DIR . 'includes/security/security-handler.php';
-    }
+        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/security/security-handler.php')) {
+            require_once EXPLOREXR_PLUGIN_DIR . 'includes/security/security-handler.php';
+        }
 
-    // Utils
-    if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/utils/form-helpers.php')) {
-        require_once EXPLOREXR_PLUGIN_DIR . 'includes/utils/form-helpers.php';
-    }
+        // Utils
+        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/utils/form-helpers.php')) {
+            require_once EXPLOREXR_PLUGIN_DIR . 'includes/utils/form-helpers.php';
+        }
 
-    if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/utils/safe-string-ops.php')) {
-        require_once EXPLOREXR_PLUGIN_DIR . 'includes/utils/safe-string-ops.php';
-    }
+        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/utils/safe-string-ops.php')) {
+            require_once EXPLOREXR_PLUGIN_DIR . 'includes/utils/safe-string-ops.php';
+        }
 
-    if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/utils/cache-manager.php')) {
-        require_once EXPLOREXR_PLUGIN_DIR . 'includes/utils/cache-manager.php';
-    }
+        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/utils/cache-manager.php')) {
+            require_once EXPLOREXR_PLUGIN_DIR . 'includes/utils/cache-manager.php';
+        }
 
-    if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/utils/strip-tags-fix.php')) {
-        require_once EXPLOREXR_PLUGIN_DIR . 'includes/utils/strip-tags-fix.php';
-    }
+        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/utils/strip-tags-fix.php')) {
+            require_once EXPLOREXR_PLUGIN_DIR . 'includes/utils/strip-tags-fix.php';
+        }
 
-    // Premium upgrade system for free version
-    if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/premium/upgrade-system.php')) {
-        require_once EXPLOREXR_PLUGIN_DIR . 'includes/premium/upgrade-system.php';
-    }
+        // Premium upgrade system for free version
+        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/premium/upgrade-system.php')) {
+            require_once EXPLOREXR_PLUGIN_DIR . 'includes/premium/upgrade-system.php';
+        }
 
-    // Premium trial system
-    if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/premium/trial-system.php')) {
-        require_once EXPLOREXR_PLUGIN_DIR . 'includes/premium/trial-system.php';
+        // Premium trial system
+        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/premium/trial-system.php')) {
+            require_once EXPLOREXR_PLUGIN_DIR . 'includes/premium/trial-system.php';
+        }
     }
 }
 
@@ -176,6 +183,7 @@ register_activation_hook(__FILE__, 'explorexr_free_activate');
 /**
  * Plugin activation function
  */
+if (!function_exists('explorexr_free_activate')) {
 function explorexr_free_activate() {
     // Block activation when ExploreXR Premium is already active
     if (!function_exists('is_plugin_active')) {
@@ -224,6 +232,7 @@ function explorexr_free_activate() {
     // Flush rewrite rules
     flush_rewrite_rules();
 }
+} // end function_exists('explorexr_free_activate')
 
 // Register deactivation hook
 register_deactivation_hook(__FILE__, 'explorexr_free_deactivate');
@@ -231,17 +240,23 @@ register_deactivation_hook(__FILE__, 'explorexr_free_deactivate');
 /**
  * Plugin deactivation function
  */
-function explorexr_free_deactivate() {
-    // Flush rewrite rules
-    flush_rewrite_rules();
+if (!function_exists('explorexr_free_deactivate')) {
+    function explorexr_free_deactivate() {
+        // Flush rewrite rules
+        flush_rewrite_rules();
+    }
 }
 
 // Helper function to check if premium is available
-function explorexr_is_premium_available() {
-    return false; // Always false in free version
+if (!function_exists('explorexr_is_premium_available')) {
+    function explorexr_is_premium_available() {
+        return false; // Always false in free version
+    }
 }
 
 // Helper function to get premium upgrade URL
-function explorexr_get_premium_upgrade_url() {
-    return 'https://expoxr.com/explorexr/premium/';
+if (!function_exists('explorexr_get_premium_upgrade_url')) {
+    function explorexr_get_premium_upgrade_url() {
+        return 'https://expoxr.com/explorexr/premium/';
+    }
 }
