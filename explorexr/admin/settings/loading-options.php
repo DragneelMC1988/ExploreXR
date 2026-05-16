@@ -72,6 +72,13 @@ function explorexr_get_loading_options() {
         
         // Lazy loading
         'lazy_load_poster' => get_option('explorexr_lazy_load_poster', false),
+        'lazy_load_model'  => get_option('explorexr_lazy_load_model', false),
+        
+        // Load button customization
+        'load_button_text'          => get_option('explorexr_load_button_text', __('Load 3D Model', 'explorexr')),
+        'load_button_bg_color'      => get_option('explorexr_load_button_bg_color', '#1e88e5'),
+        'load_button_text_color'    => get_option('explorexr_load_button_text_color', '#ffffff'),
+        'load_button_border_radius' => get_option('explorexr_load_button_border_radius', 4),
         
         // Computed flags for JavaScript
         'show_progress_bar' => ($loading_display === 'bar' || $loading_display === 'both'),
@@ -105,6 +112,21 @@ function explorexr_add_loading_options_to_model_viewer($attributes, $model_id = 
     $attributes['data-percentage-position'] = $loading_options['percentage_position'];
     $attributes['data-overlay-bg-color'] = $loading_options['overlay_bg_color'];
     $attributes['data-overlay-bg-opacity'] = $loading_options['overlay_bg_opacity'];
+    
+    // Apply lazy loading to the model-viewer element based on per-model setting or global fallback.
+    // Per-model setting (_explorexr_lazy_load): 'global' | 'eager' | 'lazy' — defaults to 'global'.
+    $per_model_lazy = '';
+    if ( $model_id ) {
+        $per_model_lazy = get_post_meta( $model_id, '_explorexr_lazy_load', true ) ?: 'global';
+    }
+    if ( $per_model_lazy === 'lazy' ) {
+        $attributes['loading'] = 'lazy';
+    } elseif ( $per_model_lazy === 'eager' ) {
+        $attributes['loading'] = 'eager';
+    } else {
+        // Use global setting
+        $attributes['loading'] = $loading_options['lazy_load_model'] ? 'lazy' : 'eager';
+    }
     
     // Add flags for JavaScript logic
     if ($loading_options['show_progress_bar']) {

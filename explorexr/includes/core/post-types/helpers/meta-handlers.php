@@ -116,6 +116,14 @@ function explorexr_save_all_post_meta($post_id) {
     // Save poster settings
     explorexr_save_poster_settings($post_id);
     
+    // Save per-model lazy load setting (free feature)
+    if (array_key_exists('explorexr_lazy_load', $_POST)) {
+        $lazy_load_value = sanitize_text_field(wp_unslash($_POST['explorexr_lazy_load']));
+        if (in_array($lazy_load_value, array('global', 'eager', 'lazy'), true)) {
+            update_post_meta($post_id, '_explorexr_lazy_load', $lazy_load_value);
+        }
+    }
+    
     // Save camera and accessibility settings - basic functionality only
     // Camera settings - basic functionality only
     if (false) { // Premium camera features disabled in free version

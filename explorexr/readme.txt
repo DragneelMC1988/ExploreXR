@@ -4,7 +4,7 @@ Tags: 3d model viewer, glb viewer, gltf, augmented reality, elementor 3d
 Requires at least: 5.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.3.1
+Stable tag: 1.3.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -239,7 +239,15 @@ Free support via the [WordPress.org support forum](https://wordpress.org/support
 
 == Changelog ==
 
-= 1.3.1 =
+= 1.3.2 =
+* New: Global lazy load setting for 3D models — enable once, applies to all models site-wide
+* New: Per-model lazy load override (Always Eager / Always Lazy / Use Global Setting) on the model edit screen
+* New: Load Model button customization — set custom text, background color, text color, and border radius in Loading Options
+* Fixed: Large model size check was never firing due to undefined constants (EXPLOREXR_MODELS_DIR / EXPLOREXR_MODELS_URL); now correctly resolved via wp_upload_dir()
+* Fixed: Hardcoded loading="eager" in model-viewer-wrapper.js now respects the global and per-model lazy load settings
+* New: "Lazy" mode for large model handling — renders model with loading="lazy" without requiring a poster image or button
+* New: Draco, KTX2/Basis and Meshopt decoder paths configured automatically so compressed GLB/GLTF files decode correctly
+* Added: assets/vendor/meshopt/meshopt_decoder.js shim enabling Meshopt-compressed model support
 * Fixed: PHP fatal error "Cannot redeclare function explorexr_free_load_includes()" when a duplicate plugin installation (e.g. explorexr-1/) exists alongside the active one
 * Improved: Conflict detection notice now distinguishes Premium-vs-Free from Free-vs-Free duplicate scenarios
 * Added: function_exists() guards on all file-scope functions for defensive loading
@@ -292,6 +300,9 @@ Free support via the [WordPress.org support forum](https://wordpress.org/support
 * Core 3D viewer, shortcode system, admin interface, and model upload
 
 == Upgrade Notice ==
+
+= 1.3.2 =
+Adds global and per-model lazy loading, Load Model button customization, fixes large model size detection, and enables Draco/Meshopt/Basis texture compression. Update recommended for all users.
 
 = 1.3.1 =
 Fixes PHP fatal error on duplicate plugin activation. Update required if you saw "Cannot redeclare function" in your error log.
