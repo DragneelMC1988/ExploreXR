@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
  */
 function EXPLOREXR_custom_ui_page() {
     // Get model stats
-    $total_models = wp_count_posts('explorexr_model')->publish;
+    $total_models = wp_count_posts('EXPLOREXR_model')->publish;
     
     // Count model files
     $models_dir = EXPLOREXR_MODELS_DIR;
@@ -37,9 +37,6 @@ function EXPLOREXR_custom_ui_page() {
     $current_version = EXPLOREXR_VERSION;
     
     // Basic functionality check
-    
-    // Check if Elementor is active
-    $elementor_active = is_plugin_active('elementor/elementor.php');
     ?>
     <div class="wrap explorexr-admin-container">
         <!-- Header -->
@@ -71,7 +68,10 @@ function EXPLOREXR_custom_ui_page() {
             <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-settings')); ?>">
                 <span class="dashicons dashicons-admin-settings"></span> Settings
             </a>
-            <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-premium')); ?>" class="explorexr-premium-action">
+            <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-addons')); ?>" class="explorexr-premium-action">
+                <span class="dashicons dashicons-admin-plugins"></span> Addons
+            </a>
+            <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-go-premium')); ?>" class="explorexr-premium-action">
                 <span class="dashicons dashicons-star-filled"></span> Go Premium
             </a>
         </div>
@@ -85,10 +85,10 @@ function EXPLOREXR_custom_ui_page() {
                     <span class="dashicons dashicons-welcome-learn-more"></span>
                 </div>
                 <div class="explorexr-card-content">
-                    <ol style="margin: 0; padding-left: 20px;">
-                        <li style="margin-bottom: 8px;">Upload 3D model files (GLB, GLTF, USDZ)</li>
-                        <li style="margin-bottom: 8px;">Create a new 3D model and configure display options</li>
-                        <li style="margin-bottom: 8px;">Use the shortcode to display the model on your site</li>
+                    <ol class="explorexr-getting-started-list">
+                        <li>Upload 3D model files (GLB, GLTF, USDZ)</li>
+                        <li>Create a new 3D model and configure display options</li>
+                        <li>Use the shortcode to display the model on your site</li>
                         <li>Customize loading options for better user experience</li>
                     </ol>
                 </div>
@@ -116,11 +116,11 @@ function EXPLOREXR_custom_ui_page() {
                         </div>
                         <div class="explorexr-stat-item-vertical">
                             <div class="explorexr-stat-label">Free Version</div>
-                            <div class="explorexr-stat-number"><span class="dashicons dashicons-star-filled" style="color:#ffb900;"></span></div>
+                            <div class="explorexr-stat-number"><span class="dashicons dashicons-star-filled explorexr-stat-icon-star"></span></div>
                         </div>
                         <div class="explorexr-stat-item-vertical">
                             <div class="explorexr-stat-label">Shortcode Ready</div>
-                            <div class="explorexr-stat-number"><span class="dashicons dashicons-yes" style="color:#46b450;"></span></div>
+                            <div class="explorexr-stat-number"><span class="dashicons dashicons-yes explorexr-stat-icon-ok"></span></div>
                         </div>
                     </div>
                 </div>
@@ -144,30 +144,30 @@ function EXPLOREXR_custom_ui_page() {
                     $max_upload_status = $max_upload >= 20;
                     
                     // Check model viewer version
-    $model_viewer_version = get_option('explorexr_model_viewer_version', '4.1.0');
+                    $model_viewer_version = get_option('EXPLOREXR_model_viewer_version', '4.1.0');
                     ?>
                     <div>
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <div class="explorexr-status-row">
                             <span>PHP Version:</span>
                             <span style="color: <?php echo esc_attr($php_status ? '#46b450' : '#dc3232'); ?>">
                                 <?php echo esc_html($php_version); ?> <?php echo esc_html($php_status ? '✓' : '✗'); ?>
                             </span>
                         </div>
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <div class="explorexr-status-row">
                             <span>Max Upload Size:</span>
                             <span style="color: <?php echo esc_attr($max_upload_status ? '#46b450' : '#dc3232'); ?>">
                                 <?php echo esc_html($max_upload); ?>MB <?php echo esc_html($max_upload_status ? '✓' : '✗'); ?>
                             </span>
                         </div>
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <div class="explorexr-status-row">
                             <span>Model Viewer:</span>
-                            <span style="color: #46b450;">
+                            <span class="explorexr-status-ok">
                                 v<?php echo esc_html($model_viewer_version); ?> ✓
                             </span>
                         </div>
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <div class="explorexr-status-row">
                             <span>WordPress:</span>
-                            <span style="color: #46b450;">
+                            <span class="explorexr-status-ok">
                                 <?php echo esc_html(get_bloginfo('version')); ?> ✓
                             </span>
                         </div>
@@ -187,19 +187,19 @@ function EXPLOREXR_custom_ui_page() {
                 <div class="explorexr-card-content">
                     <?php
                     $recent_models = new WP_Query([
-                        'post_type' => 'explorexr_model',
+                        'post_type' => 'EXPLOREXR_model',
                         'posts_per_page' => 5,
                         'order' => 'DESC',
                         'orderby' => 'date'
                     ]);
                     
                     if ($recent_models->have_posts()) {
-                        echo '<ul style="margin: 0; padding: 0; list-style: none;">';
+                        echo '<ul class="explorexr-recent-list">';
                         while ($recent_models->have_posts()) {
                             $recent_models->the_post();
-                            echo '<li style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f1;">';
+                            echo '<li>';
                             echo '<span>' . esc_html(get_the_title() ?: '') . '</span>';
-                            echo '<span style="color: #646970;">' . esc_html(get_the_date('M j, Y')) . '</span>';
+                            echo '<span class="explorexr-recent-date">' . esc_html(get_the_date('M j, Y')) . '</span>';
                             echo '</li>';
                         }
                         echo '</ul>';
@@ -221,17 +221,17 @@ function EXPLOREXR_custom_ui_page() {
                     <span class="dashicons dashicons-editor-code"></span>
                 </div>
                 <div class="explorexr-card-content">
-                    <p style="margin-bottom: 15px;">
+                    <p class="explorexr-how-to-intro">
                         <strong>ExploreXR Free Version uses shortcodes to display 3D models.</strong> 
                         Simply copy the shortcode from your model's edit page and paste it into any post, page, or widget.
                     </p>
-                    <div style="background: #f8f9fa; padding: 15px; border-radius: 4px; margin-bottom: 15px;">
+                    <div class="explorexr-code-box">
                         <strong>Example shortcode:</strong><br>
-                        <code style="background: #ffffff; padding: 5px; border-radius: 3px; font-size: 14px;">[EXPLOREXR_model id="123"]</code>
+                        <code class="explorexr-code-inline">[explorexr_model id="123"]</code>
                     </div>
-                    <p style="margin: 0; color: #646970; font-size: 13px;">
+                    <p class="explorexr-help-text">
                         <strong>Want more features?</strong> 
-                        <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-premium')); ?>">Upgrade to Premium</a> 
+                        <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-go-premium')); ?>">Upgrade to Premium</a>
                         to unlock additional features.
                     </p>
                 </div>
@@ -244,11 +244,11 @@ function EXPLOREXR_custom_ui_page() {
                     <span class="dashicons dashicons-admin-links"></span>
                 </div>
                 <div class="explorexr-card-content">
-                    <ul style="margin: 0; padding-left: 20px;">
-                        <li style="margin-bottom: 8px;"><a href="https://modelviewer.dev/" target="_blank">Model Viewer Documentation</a></li>
-                        <li style="margin-bottom: 8px;"><a href="https://sketchfab.com/features/free-3d-models" target="_blank">Free 3D Models (Sketchfab)</a></li>
-                        <li style="margin-bottom: 8px;"><a href="https://www.blender.org/" target="_blank">Blender - Free 3D Creation Software</a></li>
-                        <li style="margin-bottom: 8px;"><a href="https://khronos.org/gltf/" target="_blank">glTF Format Specification</a></li>
+                    <ul class="explorexr-resources-list">
+                        <li><a href="https://modelviewer.dev/" target="_blank">Model Viewer Documentation</a></li>
+                        <li><a href="https://sketchfab.com/features/free-3d-models" target="_blank">Free 3D Models (Sketchfab)</a></li>
+                        <li><a href="https://www.blender.org/" target="_blank">Blender - Free 3D Creation Software</a></li>
+                        <li><a href="https://khronos.org/gltf/" target="_blank">glTF Format Specification</a></li>
                         <li><a href="https://developer.apple.com/augmented-reality/quick-look/" target="_blank">Apple AR Quick Look (USDZ)</a></li>
                     </ul>
                 </div>
@@ -264,8 +264,8 @@ function EXPLOREXR_custom_ui_page() {
         
         if (false === $featured_models_ids) {
             // Use WP_Query with meta_query for WordPress standards compliance
-        $featured_query = new WP_Query([
-            'post_type' => 'explorexr_model',
+            $featured_query = new WP_Query([
+                'post_type' => 'EXPLOREXR_model',
                 'post_status' => 'publish',
                 'posts_per_page' => 3,
                 'orderby' => 'date',
@@ -273,7 +273,7 @@ function EXPLOREXR_custom_ui_page() {
                 // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Required for filtering 3D models with files
                 'meta_query' => [
                     [
-                        'key' => '_explorexr_model_file',
+                        'key' => '_EXPLOREXR_model_file',
                         'compare' => 'EXISTS'
                     ]
                 ],
@@ -285,7 +285,7 @@ function EXPLOREXR_custom_ui_page() {
         }
         
         $featured_models = new WP_Query([
-            'post_type' => 'explorexr_model',
+            'post_type' => 'EXPLOREXR_model',
             'post__in' => $featured_models_ids ? $featured_models_ids : [0], // Use 0 if empty to avoid issues
             'orderby' => 'post__in',
             'posts_per_page' => 3,
@@ -295,7 +295,7 @@ function EXPLOREXR_custom_ui_page() {
         
         if ($featured_models->have_posts()) {
             ?>
-            <div class="explorexr-section-header" style="margin-top: 40px; margin-bottom: 20px;">
+            <div class="explorexr-section-header explorexr-section-header-gap">
                 <h2>Featured Models</h2>
             </div>
             
@@ -303,7 +303,7 @@ function EXPLOREXR_custom_ui_page() {
                 <?php while ($featured_models->have_posts()) : $featured_models->the_post(); 
                       $model_file = get_post_meta(get_the_ID(), '_explorexr_model_file', true) ?: '';
                       $poster_url = get_post_meta(get_the_ID(), '_explorexr_model_poster', true) ?: '';
-                      $shortcode = '[EXPLOREXR_model id="' . get_the_ID() . '"]';
+                      $shortcode = '[explorexr_model id="' . get_the_ID() . '"]';
                 ?>
                     <div class="explorexr-card explorexr-model-card">
                         <div class="explorexr-model-thumb">
@@ -323,7 +323,7 @@ function EXPLOREXR_custom_ui_page() {
                                 }
                                 ?>
                             <?php else : ?>
-                                <span class="dashicons dashicons-format-image" style="font-size: 48px; opacity: 0.3;"></span>
+                                <span class="dashicons dashicons-format-image explorexr-empty-icon"></span>
                             <?php endif; ?>
                             
                             <div class="explorexr-model-actions">

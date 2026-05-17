@@ -274,7 +274,9 @@
             this.errors.push(error);
             
             if (this.debugMode) {
-                console.error('ExploreXR Error:', error);
+                if (typeof ExploreXRLogger !== 'undefined') {
+                    ExploreXRLogger.error('ExploreXR Error:', error);
+                }
             }
             
             // Call registered callbacks
@@ -282,7 +284,9 @@
                 try {
                     callback(error);
                 } catch (e) {
-                    console.error('Error in error callback:', e);
+                    if (typeof ExploreXRLogger !== 'undefined') {
+                        ExploreXRLogger.error('Error in error callback:', e);
+                    }
                 }
             });
             

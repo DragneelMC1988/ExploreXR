@@ -1,0 +1,229 @@
+/**
+ * ExploreXR Animation Frontend Controls Styles
+ */
+
+/* ============================================
+   Animation Controls Container
+   ============================================ */
+.explorexr-animation-controls {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+    background: rgba(15, 15, 15, 0.85);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border-radius: 10px;
+    padding: 0;
+    z-index: 100;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: #fff;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    pointer-events: auto;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Main row: play | progress | time | reset */
+.explorexr-anim-row--main {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+}
+
+/* ============================================
+   Buttons
+   ============================================ */
+.explorexr-anim-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.1s ease;
+    padding: 0;
+    line-height: 1;
+}
+
+.explorexr-anim-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.explorexr-anim-btn:active {
+    transform: scale(0.92);
+}
+
+.explorexr-anim-btn svg {
+    flex-shrink: 0;
+}
+
+/* ============================================
+   Progress Bar & Animation Name
+   ============================================ */
+.explorexr-anim-progress-wrap {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.explorexr-anim-name {
+    font-size: 11px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.7);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1;
+    padding-left: 2px;
+}
+
+.explorexr-anim-progress-bar {
+    position: relative;
+    width: 100%;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.explorexr-anim-progress-track {
+    position: relative;
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 2px;
+    overflow: visible;
+}
+
+.explorexr-anim-progress-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0%;
+    background: #4fc3f7;
+    border-radius: 2px;
+    transition: width 0.05s linear;
+}
+
+.explorexr-anim-progress-thumb {
+    position: absolute;
+    top: 50%;
+    left: 0%;
+    width: 10px;
+    height: 10px;
+    background: #fff;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transition: opacity 0.2s ease, left 0.05s linear;
+    pointer-events: none;
+}
+
+.explorexr-anim-progress-bar:hover .explorexr-anim-progress-thumb {
+    opacity: 1;
+}
+
+/* ============================================
+   Time Display
+   ============================================ */
+.explorexr-anim-time {
+    font-size: 11px;
+    font-family: 'SF Mono', 'Menlo', 'Consolas', monospace;
+    color: rgba(255, 255, 255, 0.6);
+    white-space: nowrap;
+    min-width: 32px;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+/* ============================================
+   Mobile Responsive
+   ============================================ */
+@media (max-width: 768px) {
+    .explorexr-animation-controls {
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
+        border-radius: 8px;
+    }
+
+    .explorexr-anim-row--main {
+        gap: 6px;
+        padding: 6px 8px;
+    }
+
+    .explorexr-anim-btn {
+        width: 26px;
+        height: 26px;
+    }
+
+    .explorexr-anim-name {
+        font-size: 10px;
+    }
+
+    .explorexr-anim-time {
+        font-size: 10px;
+        min-width: 28px;
+    }
+}
+
+@media (max-width: 400px) {
+    .explorexr-anim-name {
+        display: none;
+    }
+
+    .explorexr-anim-time {
+        display: none;
+    }
+}
+
+/* ============================================
+   Scroll-Based Animation Indicator
+   ============================================ */
+.explorexr-scroll-indicator {
+    display: none;
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%) translateY(8px);
+    background: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 20px;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.7;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    white-space: nowrap;
+}
+
+.explorexr-scroll-indicator.active {
+    opacity: 0;
+    transform: translateX(-50%) translateY(0);
+}
+
+@media (max-width: 768px) {
+    .explorexr-scroll-indicator {
+        font-size: 11px;
+        padding: 5px 12px;
+        bottom: 8px;
+    }
+}

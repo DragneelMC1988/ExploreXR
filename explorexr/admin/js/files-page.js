@@ -3,7 +3,9 @@
  * Handles file interactions and previews in the files admin page
  */
 jQuery(document).ready(function($) {
-    console.log('ExploreXR Files Page JS loaded successfully'); // Debug log
+    if (typeof ExploreXRLogger !== 'undefined') {
+        ExploreXRLogger.log('ExploreXR Files Page JS loaded successfully');
+    }
     
     // Delete file confirmation
     $('.delete-file').on('click', function(e) {
@@ -29,12 +31,16 @@ jQuery(document).ready(function($) {
     // Open modal when clicking View Model (using event delegation)
     $(document).on('click', '.view-3d-model', function(e) {
         e.preventDefault();
-        console.log('Files page: View 3D Model button clicked!'); // Debug log
+        if (typeof ExploreXRLogger !== 'undefined') {
+            ExploreXRLogger.log('Files page: View 3D Model button clicked!');
+        }
         
         const modelUrl = $(this).data('model-url');
         const modelName = $(this).data('model-name');
         
-        console.log('Files page model data:', { modelUrl, modelName }); // Debug log
+        if (typeof ExploreXRLogger !== 'undefined') {
+            ExploreXRLogger.log('Files page model data:', { modelUrl, modelName });
+        }
         
         // Function to set up model viewer once it's available
         function setupModelViewer() {
@@ -49,11 +55,15 @@ jQuery(document).ready(function($) {
             // Create the model-viewer element if it doesn't exist
             let modelViewer = $('#explorexr-model-viewer');
             if (modelViewer.length === 0) {
-                console.log('Files page: Creating model-viewer element');
+                if (typeof ExploreXRLogger !== 'undefined') {
+                    ExploreXRLogger.log('Files page: Creating model-viewer element');
+                }
                 
                 // Check if model-viewer custom element is defined
                 if (typeof customElements !== 'undefined' && !customElements.get('model-viewer')) {
-                    console.log('model-viewer custom element not yet defined, waiting...');
+                    if (typeof ExploreXRLogger !== 'undefined') {
+                        ExploreXRLogger.log('model-viewer custom element not yet defined, waiting...');
+                    }
                     setTimeout(setupModelViewer, 200);
                     return;
                 }
@@ -71,7 +81,9 @@ jQuery(document).ready(function($) {
             }
             
             function continueSetup() {
-                console.log('Setting up files page model viewer with URL:', modelUrl);
+                if (typeof ExploreXRLogger !== 'undefined') {
+                    ExploreXRLogger.log('Setting up files page model viewer with URL:', modelUrl);
+                }
                 
                 // Update model viewer source and title
                 modelViewer.attr('src', modelUrl);

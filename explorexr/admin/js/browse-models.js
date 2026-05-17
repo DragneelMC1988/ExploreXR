@@ -3,7 +3,9 @@
  * Handles search, sorting, and model interactions on the browse models page
  */
 jQuery(document).ready(function($) {
-    console.log('ExploreXR Browse Models JS loaded successfully'); // Debug log
+    if (typeof ExploreXRLogger !== 'undefined') {
+        ExploreXRLogger.log('Browse Models JS loaded');
+    }
     
     // Delete model functionality
     $('.delete-model').on('click', function(e) {
@@ -30,11 +32,13 @@ jQuery(document).ready(function($) {
             
             // Log for debugging (only in development)
             if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-                console.log('Delete request:', {
-                    model_id: modelId,
-                    security_present: !!explorexr_admin.nonce,
-                    ajax_url: explorexr_admin.ajax_url
-                });
+                if (typeof ExploreXRLogger !== 'undefined') {
+                    ExploreXRLogger.log('Delete request:', {
+                        model_id: modelId,
+                        security_present: !!explorexr_admin.nonce,
+                        ajax_url: explorexr_admin.ajax_url
+                    });
+                }
             }
             
             // Send delete request
@@ -83,7 +87,9 @@ jQuery(document).ready(function($) {
                             
                         // Log detailed error info for debugging
                         if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-                            console.error('Delete model error:', response);
+                            if (typeof ExploreXRLogger !== 'undefined') {
+                                ExploreXRLogger.error('Delete model error:', response);
+                            }
                         }
                         
                         alert('Error: ' + errorMsg);
@@ -98,7 +104,9 @@ jQuery(document).ready(function($) {
                     
                     // Log detailed error info for debugging
                     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-                        console.error('AJAX error:', {xhr, status, error});
+                        if (typeof ExploreXRLogger !== 'undefined') {
+                            ExploreXRLogger.error('AJAX error:', {xhr, status, error});
+                        }
                     }
                     
                     alert('Error: ' + errorMsg);
@@ -109,24 +117,67 @@ jQuery(document).ready(function($) {
             });
         }
     });
-    // Model search functionality — supports title text and exact/partial model ID
-    $('#model-search').on('input', function() {
-        const searchTerm = $(this).val().toLowerCase().trim();
+    // Track active addon filters
+    var activeAddonFilters = [];
 
-        // Search through all model cards
+    /**
+     * Apply all active filters (search + addon) to model cards.
+     * A card is shown only if it matches the search term AND all active addon filters.
+     */
+    function applyFilters() {
+        var searchTerm = ($('#model-search').val() || '').toLowerCase().trim();
+        
         $('.explorexr-model-card').each(function() {
-            const modelTitle = String($(this).data('title') || '').toLowerCase();
-            const modelId    = String($(this).data('id')    || '');
+            var $card = $(this);
+            var title = ($card.data('title') || '').toString().toLowerCase();
+            var modelId = ($card.data('model-id') || '').toString();
+            var cardAddons = ($card.data('addons') || '').toString().toLowerCase();
 
-            // Match by title substring OR by model ID (partial match allowed)
-            const matches = modelTitle.includes(searchTerm) || modelId.includes(searchTerm);
+            // Search match: by title or numeric ID
+            var matchesSearch = true;
+            if (searchTerm) {
+                var titleMatch = title.indexOf(searchTerm) !== -1;
+                var idMatch = modelId === searchTerm;
+                matchesSearch = titleMatch || idMatch;
+            }
 
-            if (matches) {
-                $(this).show();
+            // Addon filter match: card must have ALL active addon filters
+            var matchesAddons = true;
+            if (activeAddonFilters.length > 0) {
+                var cardAddonList = cardAddons ? cardAddons.split(',') : [];
+                for (var i = 0; i < activeAddonFilters.length; i++) {
+                    if (cardAddonList.indexOf(activeAddonFilters[i]) === -1) {
+                        matchesAddons = false;
+                        break;
+                    }
+                }
+            }
+
+            if (matchesSearch && matchesAddons) {
+                $card.show();
             } else {
-                $(this).hide();
+                $card.hide();
             }
         });
+    }
+
+    // Model search functionality (title + ID)
+    $('#model-search').on('input', function() {
+        applyFilters();
+    });
+
+    // Addon filter toggle buttons
+    $(document).on('click', '.explorexr-addon-filter-btn', function() {
+        var addon = $(this).data('addon');
+        var idx = activeAddonFilters.indexOf(addon);
+        if (idx === -1) {
+            activeAddonFilters.push(addon);
+            $(this).addClass('active');
+        } else {
+            activeAddonFilters.splice(idx, 1);
+            $(this).removeClass('active');
+        }
+        applyFilters();
     });
     
     // Sorting functionality
@@ -177,130 +228,74 @@ jQuery(document).ready(function($) {
       // 3D Model viewer modal functionality (using event delegation for dynamic content)
     $(document).on('click', '.view-3d-model', function(e) {
         e.preventDefault();
-        console.log('View 3D Model button clicked!'); // Debug log
+        if (typeof ExploreXRLogger !== 'undefined') {
+            ExploreXRLogger.log('View 3D Model button clicked');
+        }
         
-        const modelUrl = $(this).data('model-url');
+        const modelId = $(this).data('model-id');
         const modelName = $(this).data('model-name');
-        const posterUrl = $(this).data('poster-url');
         
-        console.log('Model data:', { modelUrl, modelName, posterUrl }); // Debug log
+        if (typeof ExploreXRLogger !== 'undefined') {
+            ExploreXRLogger.log('Model ID:', modelId, 'Name:', modelName);
+        }
         
-        if (!modelUrl) {
-            console.error('No model URL found');
-            alert('Error: No model URL found');
+        if (!modelId) {
+            if (typeof ExploreXRLogger !== 'undefined') {
+                ExploreXRLogger.error('No model ID found');
+            }
+            alert('Error: No model ID found');
             return;
         }
         
-        console.log('Loading 3D model from URL:', modelUrl);
+        // Show modal immediately with loading state
+        const modal = $('#explorexr-model-modal');
+        const container = $('#explorexr-model-viewer-container');
+        const modalTitle = $('#explorexr-model-title');
         
-        // Function to set up model viewer once it's available
-        function setupModelViewer() {
-            const container = document.getElementById('explorexr-model-viewer-container');
-            const modalTitle = $('#explorexr-model-title');
-            
-            console.log('setupModelViewer called, container exists:', !!container);
-            
-            // Wait for the container to exist (created by modal template)
-            if (!container) {
-                console.log('Container not found, retrying in 50ms');
-                setTimeout(setupModelViewer, 50);
-                return;
-            }
-            
-            // Create the model-viewer element if it doesn't exist
-            let modelViewer = $('#explorexr-model-viewer');
-            if (modelViewer.length === 0) {
-                console.log('Creating model-viewer element');
-                
-                // Check if model-viewer custom element is defined
-                if (typeof customElements !== 'undefined' && !customElements.get('model-viewer')) {
-                    console.log('model-viewer custom element not yet defined, waiting...');
-                    setTimeout(setupModelViewer, 200);
-                    return;
+        modalTitle.text('Loading: ' + modelName);
+        container.html('<div style="display: flex; align-items: center; justify-content: center; height: 500px;"><p>Loading 3D model with all addon settings...</p></div>');
+        modal.css('display', 'block');
+        
+        // Fetch rendered model HTML from server with all addon filters applied
+        $.ajax({
+            url: ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'explorexr_render_model_preview',
+                model_id: modelId,
+                nonce: $('#explorexr-ajax-nonce').val()
+            },
+            success: function(response) {
+                if (typeof ExploreXRLogger !== 'undefined') {
+                    ExploreXRLogger.log('AJAX response:', response);
                 }
                 
-                container.innerHTML = '<model-viewer id="explorexr-model-viewer" camera-controls auto-rotate loading="eager" reveal="interaction"></model-viewer>';
-                modelViewer = $('#explorexr-model-viewer');
-                
-                // Wait a moment for the element to be fully created
-                setTimeout(function() {
-                    continueSetup();
-                }, 100);
-                return;
-            } else {
-                console.log('Model viewer element already exists');
-                continueSetup();
-            }
-            
-            function continueSetup() {
-                console.log('Setting up model viewer with URL:', modelUrl);
-                
-                // Reset any previous error messages
-                $('.error-details').text('');
-                
-                // Register error handler before setting source
-                if (modelViewer[0]) {
-                    // Remove any existing error listeners to prevent duplicates
-                    const existingListeners = modelViewer[0]._exploreXRErrorHandler;
-                    if (existingListeners) {
-                        modelViewer[0].removeEventListener('error', existingListeners);
-                    }
-                    
-                    function handleModelError(event) {
-                        console.error('Model viewer error:', event);
-                        $('.error-details').text('Error type: ' + (event.detail?.type || 'unknown') + 
-                                                 ' - Path: ' + modelUrl);
-                    }
-                    
-                    // Store reference for cleanup
-                    modelViewer[0]._exploreXRErrorHandler = handleModelError;
-                    modelViewer[0].addEventListener('error', handleModelError);
-                    
-                    // Add event listener for when model is successfully loaded
-                    modelViewer[0].addEventListener('load', function() {
-                        console.log('Model loaded successfully');
-                    });
-                }
-                
-                // Set source and other attributes
-                modelViewer.attr('src', modelUrl);
-                modalTitle.text('3D Model Preview: ' + modelName);
-                
-                // Add poster if available
-                if (posterUrl) {
-                    modelViewer.attr('poster', posterUrl);
+                if (response.success && response.data.html) {
+                    // Insert the fully-rendered model-viewer HTML
+                    container.html(response.data.html);
+                    modalTitle.text('3D Model Preview: ' + response.data.title);
                 } else {
-                    modelViewer.removeAttr('poster');
+                    container.html('<div style="padding: 20px; color: red;">Error: ' + (response.data?.message || 'Failed to load model') + '</div>');
                 }
-                
-                // Show modal
-                $('#explorexr-model-modal').css('display', 'block');
+            },
+            error: function(xhr, status, error) {
+                if (typeof ExploreXRLogger !== 'undefined') {
+                    ExploreXRLogger.error('AJAX error:', status, error);
+                }
+                container.html('<div style="padding: 20px; color: red;">Error loading model: ' + error + '</div>');
             }
-        }
-        
-        // Start the setup process
-        setupModelViewer();
+        });
     });
     
-    // Close modal when clicking on X
-    $('.explorexr-model-close').on('click', function() {
+    // Close modal functionality
+    $(document).on('click', '.explorexr-model-close', function() {
         $('#explorexr-model-modal').css('display', 'none');
-        const modelViewer = $('#explorexr-model-viewer');
-        if (modelViewer.length > 0) {
-            modelViewer.attr('src', '');
-            modelViewer.removeAttr('poster');
-        }
     });
     
     // Close modal when clicking outside of modal content
     $(window).on('click', function(e) {
         if ($(e.target).hasClass('explorexr-model-modal')) {
             $('#explorexr-model-modal').css('display', 'none');
-            const modelViewer = $('#explorexr-model-viewer');
-            if (modelViewer.length > 0) {
-                modelViewer.attr('src', '');
-                modelViewer.removeAttr('poster');
-            }
         }
     });
 });

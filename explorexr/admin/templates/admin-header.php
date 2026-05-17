@@ -36,7 +36,10 @@ if (!defined('ABSPATH')) {
     <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-settings')); ?>">
         <span class="dashicons dashicons-admin-settings"></span> Settings
     </a>
-    <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-premium')); ?>" class="explorexr-premium-action">
+    <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-addons')); ?>">
+        <span class="dashicons dashicons-admin-plugins"></span> Addons
+    </a>
+    <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-go-premium')); ?>" class="explorexr-premium-action">
         <span class="dashicons dashicons-star-filled"></span> Go Premium
     </a>
 </div>

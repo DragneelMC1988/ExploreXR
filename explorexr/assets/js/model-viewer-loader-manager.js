@@ -15,7 +15,9 @@
     function explorexrDebugError(message, ...args) {
         // Always show errors, but check for debug mode for additional context
         if (typeof explorexrLoadingOptions !== 'undefined' && explorexrLoadingOptions.debug_mode) {
-            console.error(message, ...args);
+            if (typeof ExploreXRLogger !== 'undefined') {
+                ExploreXRLogger.error(message, ...args);
+            }
         }
     }
 
@@ -206,7 +208,9 @@
                     if (message && typeof message === 'string' && 
                         message.includes('model-viewer') && 
                         message.includes('already been used')) {
-                        console.warn('ExploreXR ModelViewerLoader: model-viewer already registered, continuing...');
+                        if (typeof ExploreXRLogger !== 'undefined') {
+                            ExploreXRLogger.warn('ExploreXR ModelViewerLoader: model-viewer already registered, continuing...');
+                        }
                         if (window.customElements && window.customElements.get('model-viewer')) {
                             resolve();
                             return true;
@@ -235,7 +239,9 @@
                 try {
                     callback(error);
                 } catch (e) {
-                    console.error('ExploreXR ModelViewerLoader: Callback error', e);
+                    if (typeof ExploreXRLogger !== 'undefined') {
+                        ExploreXRLogger.error('ExploreXR ModelViewerLoader: Callback error', e);
+                    }
                 }
             });
         },

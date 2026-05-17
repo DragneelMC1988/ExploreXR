@@ -52,42 +52,15 @@ function ExploreXR_process_form_submission($post_data, $post_id = 0, $edit_mode 
             }
         }
         
-        // Special handling for viewer size
-        
-        // Handle viewer_size_value (custom dimensions)
-        if (isset($post_data['viewer_size_value']) && !empty($post_data['viewer_size_value'])) {
-            // Use a custom size
-            $post_data['viewer_size'] = $post_data['viewer_size_value'];
-            
-
-        }
-        // Handle viewer_size_preset (preset size)
-        elseif (isset($post_data['viewer_size_preset']) && !empty($post_data['viewer_size_preset'])) {
-            // Use a preset size
-            $post_data['viewer_size'] = $post_data['viewer_size_preset'];
-            
-
-        }
-        // Handle if viewer_size is directly provided as an array
-        elseif (isset($post_data['viewer_size']) && is_array($post_data['viewer_size'])) {
-            // This might happen when loading settings from hidden fields
-            // Just ensure it's a string
-            $post_data['viewer_size'] = implode(',', $post_data['viewer_size']);
-            
-
-        }
-        // Default fallback
-        else {
-            // Set default size if none specified
+        // viewer_size is now submitted as a single hidden field value
+        // (small, medium, large, full, or custom). No legacy consolidation needed.
+        if (!isset($post_data['viewer_size']) || empty($post_data['viewer_size'])) {
             $post_data['viewer_size'] = 'medium';
-            
-
         }
-        
-        // Clean up size fields to prevent duplicate processing
-        // We've already consolidated them into viewer_size
-        unset($post_data['viewer_size_value']);
-        unset($post_data['viewer_size_preset']);
+        // Ensure it's a string, not an array
+        if (is_array($post_data['viewer_size'])) {
+            $post_data['viewer_size'] = $post_data['viewer_size'][0] ?? 'medium';
+        }
         
         // Process checkbox fields which may not be present in POST data when unchecked
         $checkbox_fields = array(
@@ -176,11 +149,11 @@ function ExploreXR_sanitize_form_data($data) {
         }
         // Select fields (specific options)
         elseif ($key === 'viewer_size') {
-            $allowed = array('small', 'medium', 'large', 'custom');
+            $allowed = array('small', 'medium', 'large', 'full', 'custom');
             $sanitized[$key] = in_array($value, $allowed) ? $value : 'medium';
         }
-        // Custom dimensions (custom size)
-        elseif ($key === 'custom_width' || $key === 'custom_height') {
+        // Dimension fields (viewer_width, viewer_height, tablet/mobile variants)
+        elseif (in_array($key, array('viewer_width', 'viewer_height', 'tablet_viewer_width', 'tablet_viewer_height', 'mobile_viewer_width', 'mobile_viewer_height'))) {
             // Allow CSS units and numeric values
             $sanitized[$key] = preg_replace('/[^0-9a-z%\.\-]/i', '', $value);
         }

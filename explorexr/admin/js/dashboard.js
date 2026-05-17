@@ -19,7 +19,9 @@ jQuery(document).ready(function($) {
                 notification.fadeOut(300);
             }, 2000);
         }).catch(function(err) {
-            console.error('Could not copy text: ', err);
+            if (typeof ExploreXRLogger !== 'undefined') {
+                ExploreXRLogger.error('Could not copy text: ', err);
+            }
             // Fallback for older browsers
             const textArea = document.createElement('textarea');
             textArea.value = shortcode;
@@ -45,15 +47,19 @@ jQuery(document).ready(function($) {
     // Open modal when clicking View Model
     $('.view-3d-model').on('click', function(e) {
         e.preventDefault();
-        console.log('View 3D Model button clicked');
+        if (typeof ExploreXRLogger !== 'undefined') {
+            ExploreXRLogger.log('View 3D Model button clicked');
+        }
         const modelUrl = $(this).data('model-url');
         const modelName = $(this).data('model-name');
         const posterUrl = $(this).data('poster-url');
         const animationName = $(this).data('animation-name');
-        
-        console.log('Loading 3D model from URL:', modelUrl);
-        console.log('Modal element:', modal);
-        console.log('Model viewer element:', modelViewer);
+
+        if (typeof ExploreXRLogger !== 'undefined') {
+            ExploreXRLogger.log('Loading 3D model from URL:', modelUrl);
+            ExploreXRLogger.log('Modal element:', modal);
+            ExploreXRLogger.log('Model viewer element:', modelViewer);
+        }
         
         // Reset any previous error messages
         $('.error-details').text('');
@@ -61,23 +67,29 @@ jQuery(document).ready(function($) {
         // Register error handler before setting source
         if (modelViewer[0]) {
             modelViewer[0].addEventListener('error', function(event) {
-                console.error('Model viewer error:', event);
+                if (typeof ExploreXRLogger !== 'undefined') {
+                    ExploreXRLogger.error('Model viewer error:', event);
+                }
                 $('.error-details').text('Error type: ' + (event.detail?.type || 'unknown') + 
                                          ' - Path: ' + modelUrl);
             });
             
             // Add event listener for when model is successfully loaded
             modelViewer[0].addEventListener('load', function() {
-                console.log('Model loaded successfully');
+                if (typeof ExploreXRLogger !== 'undefined') {
+                    ExploreXRLogger.log('Model loaded successfully');
+                }
             });
         }
         
         // Update model viewer source and title
         modelViewer.attr('src', modelUrl);
         modelTitle.text('3D Model Preview: ' + modelName);
-        
-        console.log('Model viewer source set to:', modelViewer.attr('src'));
-        console.log('Modal title set to:', modelTitle.text());
+
+        if (typeof ExploreXRLogger !== 'undefined') {
+            ExploreXRLogger.log('Model viewer source set to:', modelViewer.attr('src'));
+            ExploreXRLogger.log('Modal title set to:', modelTitle.text());
+        }
         
         // Add poster if available
         if (posterUrl) {
@@ -101,11 +113,15 @@ jQuery(document).ready(function($) {
         
         // Add loading UI options (Free Version feature)
         modelViewer.attr('data-loading-display', 'both');
-        
-        console.log('About to show modal');
+
+        if (typeof ExploreXRLogger !== 'undefined') {
+            ExploreXRLogger.log('About to show modal');
+        }
         // Show modal
         modal.css('display', 'block');
-        console.log('Modal should now be visible');
+        if (typeof ExploreXRLogger !== 'undefined') {
+            ExploreXRLogger.log('Modal should now be visible');
+        }
     });
     
     // Close modal

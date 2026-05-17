@@ -1,0 +1,87 @@
+/**
+ * ExploreXR Animation Addon - Admin Card Styles
+ * Styling for the Animation addon settings card in edit model page
+ * Note: Common preview and container styles are in addon-cards-shared.css
+ */
+
+/* Animation-specific Settings Container */
+#animation-settings {
+    width: 100%;
+    grid-column: 1 / -1;
+}
+
+/* Animation Detection Status */
+#animation-detection-status {
+    padding: 10px;
+    background: #f0f7ff;
+    border: 1px solid #d0e3f7;
+    border-radius: 4px;
+    color: #1e88e5;
+}
+
+/* Animation Checkboxes Container */
+#animation-checkboxes {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+#animation-checkboxes label {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#animation-checkboxes label:hover {
+    background: #f0f7ff;
+    border-color: #1e88e5;
+}
+
+#animation-checkboxes input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+/* Animation List Container */
+.animation-list {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 15px;
+    margin: 10px 0;
+}
+
+/* Frontend Control Settings */
+#frontend-control-settings {
+    padding-top: 15px;
+    border-top: 1px solid #e1e1e1;
+    margin-top: 15px;
+}
+
+/* Multiple Animation Settings */
+#multiple-animations-settings {
+    padding: 15px;
+    background: #fafafa;
+    border: 1px solid #e1e1e1;
+    border-radius: 6px;
+    margin-top: 10px;
+}
+
+/* Animation Section Headers */
+#animation-settings h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #23282d;
+    margin: 20px 0 10px 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e1e1e1;
+}
+
+#animation-settings h3:first-child {
+    margin-top: 0;
+}

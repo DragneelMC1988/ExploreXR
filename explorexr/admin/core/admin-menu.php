@@ -4,35 +4,24 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-// Include the admin page callbacks
 require_once EXPLOREXR_PLUGIN_DIR . 'admin/core/admin-pages.php';
-
-// Include the loading options page
 require_once EXPLOREXR_PLUGIN_DIR . 'admin/pages/loading-options-page.php';
-
-// Include the custom admin UI
 require_once EXPLOREXR_PLUGIN_DIR . 'admin/core/admin-ui.php';
-
-// Include custom functions
 require_once EXPLOREXR_PLUGIN_DIR . 'admin/core/functions.php';
-
-// Include the modern model browser
 require_once EXPLOREXR_PLUGIN_DIR . 'admin/models/modern-model-browser.php';
-
-// Include the edit link redirector
 require_once EXPLOREXR_PLUGIN_DIR . 'admin/core/edit-redirector.php';
 
-// Include premium upgrade page
-require_once EXPLOREXR_PLUGIN_DIR . 'admin/pages/premium-upgrade-page.php';
+// Free-version pages
+require_once EXPLOREXR_PLUGIN_DIR . 'admin/pages/addons-page.php';
+require_once EXPLOREXR_PLUGIN_DIR . 'admin/pages/go-premium-page.php';
 
 /**
- * Register admin menu pages for ExploreXR Free
+ * Register the admin menu for ExploreXR (free).
  */
 function explorexr_register_admin_menu() {
-    // Main menu page
     add_menu_page(
-        'ExploreXR',
-        'ExploreXR',
+        esc_html__('ExploreXR', 'explorexr'),
+        esc_html__('ExploreXR', 'explorexr'),
         'manage_options',
         'explorexr',
         'explorexr_dashboard_page',
@@ -40,254 +29,171 @@ function explorexr_register_admin_menu() {
         75
     );
 
-    // Submenu pages - Free version has limited functionality
-    add_submenu_page('explorexr', 'Dashboard', 'Dashboard', 'manage_options', 'explorexr', 'explorexr_dashboard_page');
-    add_submenu_page('explorexr', 'Create 3D Model', 'Create New Model', 'manage_options', 'explorexr-create-model', 'explorexr_create_model_page');
-    add_submenu_page('explorexr', 'Browse Models', 'Browse Models', 'manage_options', 'explorexr-browse-models', 'explorexr_browse_models_page');
-    add_submenu_page('explorexr', '3D Model Files', '3D Files', 'manage_options', 'explorexr-files', 'explorexr_files_page');
-    add_submenu_page('explorexr', 'Loading Options', 'Loading Options', 'manage_options', 'explorexr-loading-options', 'explorexr_loading_options_page');
-    add_submenu_page('explorexr', 'Settings', 'Settings', 'manage_options', 'explorexr-settings', 'explorexr_settings_page');
+    add_submenu_page('explorexr', esc_html__('Dashboard', 'explorexr'),       esc_html__('Dashboard', 'explorexr'),       'manage_options', 'explorexr',         'explorexr_dashboard_page');
+    add_submenu_page('explorexr', esc_html__('Create 3D Model', 'explorexr'), esc_html__('Create New Model', 'explorexr'),'manage_options', 'explorexr-create-model',    'explorexr_create_model_page');
+    add_submenu_page('explorexr', esc_html__('Browse Models', 'explorexr'),   esc_html__('Browse Models', 'explorexr'),   'manage_options', 'explorexr-browse-models',   'explorexr_browse_models_page');
+    add_submenu_page('explorexr', esc_html__('3D Model Files', 'explorexr'),  esc_html__('3D Files', 'explorexr'),        'manage_options', 'explorexr-files',           'explorexr_files_page');
+    add_submenu_page('explorexr', esc_html__('Loading Options', 'explorexr'), esc_html__('Loading Options', 'explorexr'), 'manage_options', 'explorexr-loading-options', 'explorexr_loading_options_page');
+    add_submenu_page('explorexr', esc_html__('Settings', 'explorexr'),        esc_html__('Settings', 'explorexr'),        'manage_options', 'explorexr-settings',        'explorexr_settings_page');
+    add_submenu_page('explorexr', esc_html__('Addons', 'explorexr'),          esc_html__('Addons', 'explorexr'),          'manage_options', 'explorexr-addons',          'explorexr_free_addons_page');
+    add_submenu_page('explorexr', esc_html__('Go Premium', 'explorexr'),      esc_html__('Go Premium', 'explorexr'),      'manage_options', 'explorexr-go-premium',      'explorexr_free_go_premium_page');
 
-    // Free Add-on page with "New" badge
-    add_submenu_page(
-        'explorexr',
-        __('Free Add-on', 'explorexr'),
-        __('Free Add-on', 'explorexr') . ' <span class="update-plugins count-1"><span class="plugin-count">New</span></span>',
-        'manage_options',
-        'explorexr-free-addons',
-        'explorexr_free_addons_page'
-    );
-
-    // Premium upgrade page - promoting premium features
-    add_submenu_page('explorexr', 'Go Premium', 'Go Premium', 'manage_options', 'explorexr-premium', 'explorexr_premium_upgrade_page');
-
-    // Hidden submenu for editing models (not shown in menu but accessible via URL)
-    // Use empty string instead of null to avoid PHP 8.1+ deprecation warnings
+    // Hidden submenu for editing models
     if (function_exists('explorexr_edit_model_page')) {
-        add_submenu_page('', 'Edit 3D Model', 'Edit 3D Model', 'manage_options', 'explorexr-edit-model', 'explorexr_edit_model_page');
+        add_submenu_page('', esc_html__('Edit 3D Model', 'explorexr'), esc_html__('Edit 3D Model', 'explorexr'), 'manage_options', 'explorexr-edit-model', 'explorexr_edit_model_page');
     }
 }
 add_action('admin_menu', 'explorexr_register_admin_menu');
 
-/**
- * Fix admin menu highlighting for edit model page
- */
+function explorexr_set_edit_model_title() {
+    if (isset($_GET['page']) && sanitize_text_field(wp_unslash($_GET['page'])) === 'explorexr-edit-model') { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        global $title, $admin_title;
+        $title       = esc_html__('Edit 3D Model', 'explorexr');
+        $admin_title = esc_html__('Edit 3D Model', 'explorexr'); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
+    }
+}
+add_action('admin_init', 'explorexr_set_edit_model_title', 1);
+
+function explorexr_fix_admin_title($admin_title, $title) {
+    if (isset($_GET['page']) && sanitize_text_field(wp_unslash($_GET['page'])) === 'explorexr-edit-model') { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        if (empty($title)) {
+            $title = esc_html__('Edit 3D Model', 'explorexr');
+        }
+        return $title . ' &lsaquo; ExploreXR';
+    }
+    return $admin_title; // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
+}
+add_filter('admin_title', 'explorexr_fix_admin_title', 10, 2);
+
 function explorexr_fix_admin_menu_highlighting($parent_file) {
     global $submenu_file;
-
-    // Check if we're on the edit model page
-    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used for display purposes only
-    if (isset($_GET['page']) && sanitize_text_field(wp_unslash($_GET['page'])) === 'explorexr-edit-model') {
-        $parent_file = 'explorexr'; // Set ExploreXR as the parent menu
-        $submenu_file = 'explorexr-browse-models'; // Highlight Browse Models submenu
+    if (isset($_GET['page']) && sanitize_text_field(wp_unslash($_GET['page'])) === 'explorexr-edit-model') { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        $parent_file  = 'explorexr';
+        $submenu_file = 'explorexr-browse-models';
     }
-
     return $parent_file;
 }
 add_filter('parent_file', 'explorexr_fix_admin_menu_highlighting');
 
 /**
- * Fix admin title to remove unwanted ‹ character
- * WordPress adds "‹" (lsaquo) separator in admin titles, we need to remove it for ExploreXR pages
- * This is especially important for hidden submenu pages like Edit Model
- */
-function explorexr_fix_admin_title($admin_title, $title) {
-    global $pagenow;
-
-    // Check if we're on an ExploreXR admin page (including hidden edit page)
-    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used for display purposes only
-    if ($pagenow === 'admin.php' && isset($_GET['page']) && strpos(sanitize_text_field(wp_unslash($_GET['page'])), 'explorexr') === 0) {
-        // Remove the ‹ character and extra spaces
-        $admin_title = str_replace(' ‹ ', ' ', $admin_title);
-        $admin_title = str_replace('‹ ', '', $admin_title);
-        $admin_title = str_replace(' ‹', '', $admin_title);
-        $admin_title = str_replace('‹', '', $admin_title);
-        // Also clean up any double spaces that might remain
-        $admin_title = preg_replace('/\s+/', ' ', $admin_title);
-        $admin_title = trim($admin_title);
-    }
-
-    return $admin_title;
-}
-add_filter('admin_title', 'explorexr_fix_admin_title', 10, 2);
-
-/**
- * Additional fix for edit model page title using JavaScript
- * This catches the title after WordPress has fully rendered it
- */
-function explorexr_fix_edit_model_title_script() {
-    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used for display purposes only
-    if (isset($_GET['page']) && sanitize_text_field(wp_unslash($_GET['page'])) === 'explorexr-edit-model') {
-        ?>
-        <script type="text/javascript">
-        (function() {
-            // Fix the page title by removing the ‹ character
-            document.title = document.title.replace(/‹\s*/g, '').replace(/\s*‹/g, '').replace(/\s+/g, ' ').trim();
-        })();
-        </script>
-        <?php
-    }
-}
-add_action('admin_head', 'explorexr_fix_edit_model_title_script');
-
-/**
- * Enqueue admin scripts and styles
+ * Enqueue admin styles + scripts on ExploreXR pages.
  */
 function explorexr_admin_enqueue_scripts($hook) {
-    // Common CSS for all admin pages
+    $screen = get_current_screen();
+    if ($screen && strpos($screen->id, 'explorexr') !== false) {
+        add_action('admin_head', 'explorexr_add_admin_viewport_meta');
+    }
+
     wp_enqueue_style('explorexr-admin-styles', EXPLOREXR_PLUGIN_URL . 'admin/css/admin-styles.css', array(), EXPLOREXR_VERSION);
     wp_enqueue_style('explorexr-button-system', EXPLOREXR_PLUGIN_URL . 'admin/css/button-system.css', array(), EXPLOREXR_VERSION);
-
-    // Premium upgrade styles
     wp_enqueue_style('explorexr-premium-upgrade', EXPLOREXR_PLUGIN_URL . 'admin/css/premium-upgrade.css', array(), EXPLOREXR_VERSION);
 
-    // Premium upgrade scripts (needed for notice dismissal functionality)
-    wp_enqueue_script('explorexr-premium-upgrade-js', EXPLOREXR_PLUGIN_URL . 'admin/js/premium-upgrade.js', array('jquery'), EXPLOREXR_VERSION, true);
+    if (strpos($hook ?? '', 'explorexr') === false && strpos($hook ?? '', 'explorexr_page_explorexr') === false) {
+        return;
+    }
 
-    // Localize script for premium upgrade functionality
-    wp_localize_script('explorexr-premium-upgrade-js', 'explorexr_premium', array(
-        'ajax_url' => admin_url('admin-ajax.php'),
-        'dismiss_nonce' => wp_create_nonce('EXPLOREXR_dismiss_notice')
-    ));
+    if (strpos($hook ?? '', 'explorexr-files') !== false) {
+        wp_enqueue_style('explorexr-files-page-css', EXPLOREXR_PLUGIN_URL . 'admin/css/files-page.css', array(), EXPLOREXR_VERSION);
+        wp_enqueue_script('explorexr-files-page-js', EXPLOREXR_PLUGIN_URL . 'admin/js/files-page.js', array('jquery'), EXPLOREXR_VERSION, true);
+    }
 
-    // Page-specific styles and scripts
-    if (strpos($hook ?? '', 'explorexr') !== false) {
-        // Specific CSS files
-        if (strpos($hook ?? '', 'explorexr-files') !== false) {
-            wp_enqueue_style('explorexr-files-page-css', EXPLOREXR_PLUGIN_URL . 'admin/css/files-page.css', array(), EXPLOREXR_VERSION);
-            wp_enqueue_script('explorexr-files-page-js', EXPLOREXR_PLUGIN_URL . 'admin/js/files-page.js', array('jquery'), EXPLOREXR_VERSION, true);
-        }
+    if (strpos($hook ?? '', 'explorexr-loading-options') !== false) {
+        wp_enqueue_style('explorexr-loading-options-css', EXPLOREXR_PLUGIN_URL . 'admin/css/loading-options.css', array(), EXPLOREXR_VERSION);
+        wp_enqueue_script('explorexr-loading-options-js', EXPLOREXR_PLUGIN_URL . 'admin/js/loading-options.js', array('jquery'), EXPLOREXR_VERSION, true);
+        wp_enqueue_style('wp-color-picker');
+        wp_enqueue_script('wp-color-picker');
+    }
 
-        if (strpos($hook ?? '', 'explorexr-loading-options') !== false) {
-            wp_enqueue_style('explorexr-loading-options-css', EXPLOREXR_PLUGIN_URL . 'admin/css/loading-options.css', array(), EXPLOREXR_VERSION);
-            wp_enqueue_script('explorexr-loading-options-js', EXPLOREXR_PLUGIN_URL . 'admin/js/loading-options.js', array('jquery'), EXPLOREXR_VERSION, true);
-            wp_enqueue_style('wp-color-picker');
-            wp_enqueue_script('wp-color-picker');
-        }
+    if (strpos($hook ?? '', 'explorexr-browse-models') !== false) {
+        wp_enqueue_style('explorexr-browse-models-css', EXPLOREXR_PLUGIN_URL . 'admin/css/browse-models.css', array(), EXPLOREXR_VERSION);
+        wp_enqueue_script('explorexr-browse-models-js', EXPLOREXR_PLUGIN_URL . 'admin/js/browse-models.js', array('jquery'), EXPLOREXR_VERSION, true);
+        wp_localize_script('explorexr-browse-models-js', 'explorexr_admin', array(
+            'nonce'            => wp_create_nonce('explorexr_admin_nonce'),
+            'create_model_url' => admin_url('admin.php?page=explorexr-create-model'),
+            'ajax_url'         => admin_url('admin-ajax.php'),
+        ));
+    }
 
-        if (strpos($hook ?? '', 'explorexr-browse-models') !== false) {
-            wp_enqueue_style('explorexr-browse-models-css', EXPLOREXR_PLUGIN_URL . 'admin/css/browse-models.css', array(), EXPLOREXR_VERSION);
-            wp_enqueue_script('explorexr-browse-models-js', EXPLOREXR_PLUGIN_URL . 'admin/js/browse-models.js', array('jquery'), EXPLOREXR_VERSION, true);
+    if (strpos($hook ?? '', 'explorexr-create-model') !== false) {
+        wp_enqueue_style('explorexr-create-model-css', EXPLOREXR_PLUGIN_URL . 'admin/css/create-model.css', array(), EXPLOREXR_VERSION);
+        wp_enqueue_script('explorexr-create-model-js', EXPLOREXR_PLUGIN_URL . 'admin/js/create-model.js', array('jquery'), EXPLOREXR_VERSION, true);
+        wp_enqueue_script('explorexr-model-size', EXPLOREXR_PLUGIN_URL . 'assets/js/model-size.js', array('jquery'), EXPLOREXR_VERSION, true);
+        wp_localize_script('explorexr-create-model-js', 'explorexr_admin', array(
+            'nonce'    => wp_create_nonce('explorexr_admin_nonce'),
+            'ajax_url' => admin_url('admin-ajax.php'),
+        ));
+    }
 
-            // Localize script with nonce and URLs
-            wp_localize_script('explorexr-browse-models-js', 'explorexr_admin', array(
-                'nonce' => wp_create_nonce('explorexr_admin_nonce'),
-                'create_model_url' => admin_url('admin.php?page=explorexr-create-model'),
-                'ajax_url' => admin_url('admin-ajax.php')
-            ));
-        }
+    if (strpos($hook ?? '', 'explorexr-settings') !== false) {
+        wp_enqueue_style('explorexr-settings-page-css', EXPLOREXR_PLUGIN_URL . 'admin/css/settings-page.css', array(), EXPLOREXR_VERSION);
+        wp_enqueue_script('explorexr-settings-page-js', EXPLOREXR_PLUGIN_URL . 'admin/js/settings-page.js', array('jquery'), EXPLOREXR_VERSION, true);
+    }
 
-        if (strpos($hook ?? '', 'explorexr-create-model') !== false) {
-            wp_enqueue_style('explorexr-components', EXPLOREXR_PLUGIN_URL . 'admin/css/components.css', array(), EXPLOREXR_VERSION);
-            wp_enqueue_style('explorexr-create-model-css', EXPLOREXR_PLUGIN_URL . 'admin/css/create-model.css', array('explorexr-components'), EXPLOREXR_VERSION);
-            wp_enqueue_script('explorexr-create-model-js', EXPLOREXR_PLUGIN_URL . 'admin/js/create-model.js', array('jquery'), EXPLOREXR_VERSION, true);
-
-            // Localize script with nonce
-            wp_localize_script('explorexr-create-model-js', 'explorexr_admin', array(
-                'nonce' => wp_create_nonce('explorexr_admin_nonce'),
-                'ajax_url' => admin_url('admin-ajax.php')
-            ));
-        }
-
-        if (strpos($hook ?? '', 'explorexr-settings') !== false) {
-            wp_enqueue_style('explorexr-settings-page-css', EXPLOREXR_PLUGIN_URL . 'admin/css/settings-page.css', array(), EXPLOREXR_VERSION);
-            wp_enqueue_script('explorexr-settings-page-js', EXPLOREXR_PLUGIN_URL . 'admin/js/settings-page.js', array('jquery'), EXPLOREXR_VERSION, true);
-        }
-
-        // Dashboard page specific
-        if (strpos($hook ?? '', 'toplevel_page_ExploreXR') !== false || $hook === 'toplevel_page_ExploreXR') {
-            wp_enqueue_script('explorexr-dashboard-js', EXPLOREXR_PLUGIN_URL . 'admin/js/dashboard.js', array('jquery'), EXPLOREXR_VERSION, true);
-
-            // Localize script with dashboard data
-            wp_localize_script('explorexr-dashboard-js', 'EXPLOREXR_dashboard', array(
-                'nonce' => wp_create_nonce('EXPLOREXR_dashboard_nonce'),
-                'ajax_url' => admin_url('admin-ajax.php')
-            ));
-        }
-
-        // Free Add-on page
-        if (strpos($hook ?? '', 'explorexr-free-addons') !== false) {
-            wp_enqueue_style(
-                'explorexr-free-addons',
-                EXPLOREXR_PLUGIN_URL . 'admin/css/free-addons-page.css',
-                array(),
-                EXPLOREXR_VERSION
-            );
-            wp_enqueue_script(
-                'explorexr-free-addons',
-                EXPLOREXR_PLUGIN_URL . 'admin/js/free-addons-page.js',
-                array('jquery'),
-                EXPLOREXR_VERSION,
-                true
-            );
-            wp_add_inline_script(
-                'explorexr-free-addons',
-                'var explorexrFreeAddons = ' . wp_json_encode( array(
-                    'ajaxUrl'      => admin_url('admin-ajax.php'),
-                    'installNonce' => wp_create_nonce('explorexr_install_addon_nonce'),
-                    'selectNonce'  => wp_create_nonce('explorexr_free_select_addon_nonce'),
-                    'dismissNonce' => wp_create_nonce('explorexr_dismiss_free_addon_hint'),
-                    'strings'      => array(
-                        'installing' => __('Installing...', 'explorexr'),
-                        'installed'  => __('Installed & Selected!', 'explorexr'),
-                        'error'      => __('Installation failed. Please try again.', 'explorexr'),
-                    ),
-                ) ) . ';',
-                'before'
-            );
-        }
-
-        // Common scripts for all pages
-        wp_enqueue_script('explorexr-admin-ui', EXPLOREXR_PLUGIN_URL . 'admin/js/admin-ui.js', array('jquery'), EXPLOREXR_VERSION, true);
-        wp_localize_script('explorexr-admin-ui', 'ExploreXRAdminUI', array(
-            'strings' => array(
-                'modelPreviewTitle' => __('Model Preview', 'explorexr')
+    if (strpos($hook ?? '', 'explorexr-addons') !== false) {
+        wp_enqueue_style('explorexr-addon-cards-shared-css', EXPLOREXR_PLUGIN_URL . 'admin/css/addon-cards-shared.css', array(), EXPLOREXR_VERSION);
+        wp_enqueue_style('explorexr-addon-cards-css',        EXPLOREXR_PLUGIN_URL . 'admin/css/addon-cards.css',        array('explorexr-addon-cards-shared-css'), EXPLOREXR_VERSION);
+        wp_enqueue_style('explorexr-addons-page-css',        EXPLOREXR_PLUGIN_URL . 'admin/css/addons-page.css',        array('explorexr-addon-cards-css'), EXPLOREXR_VERSION);
+        wp_enqueue_script('explorexr-addons-page-js',        EXPLOREXR_PLUGIN_URL . 'admin/js/addons-page.js',          array('jquery'), EXPLOREXR_VERSION, true);
+        wp_localize_script('explorexr-addons-page-js', 'explorexrPremiumAdminAjax', array(
+            'ajaxUrl'      => admin_url('admin-ajax.php'),
+            'nonce'        => wp_create_nonce('explorexr_admin_nonce'),
+            'installNonce' => wp_create_nonce('explorexr_install_addon_nonce'),
+            'strings'      => array(
+                'installing' => esc_html__('Installing…', 'explorexr'),
+                'error'      => esc_html__('Install failed', 'explorexr'),
             ),
-            'nonce' => wp_create_nonce('explorexr_admin_nonce'),
-            'ajax_url' => admin_url('admin-ajax.php')
         ));
+    }
 
-        // Localize script for admin vars (required by admin-ui.js)
-        wp_localize_script('explorexr-admin-ui', 'ExploreXRAdminVars', array(
-            'pluginUrl' => EXPLOREXR_PLUGIN_URL
+    if (strpos($hook ?? '', 'toplevel_page_explorexr') !== false || $hook === 'toplevel_page_explorexr') {
+        wp_enqueue_script('explorexr-dashboard-js', EXPLOREXR_PLUGIN_URL . 'admin/js/dashboard.js', array('jquery'), EXPLOREXR_VERSION, true);
+        wp_localize_script('explorexr-dashboard-js', 'EXPLOREXR_dashboard', array(
+            'nonce'    => wp_create_nonce('EXPLOREXR_dashboard_nonce'),
+            'ajax_url' => admin_url('admin-ajax.php'),
         ));
+    }
 
-        // Edit model page specific
-        if (strpos($hook ?? '', 'explorexr-edit-model') !== false) {
-            wp_enqueue_style('explorexr-components', EXPLOREXR_PLUGIN_URL . 'admin/css/components.css', array(), EXPLOREXR_VERSION);
-            wp_enqueue_style('explorexr-edit-model-css', EXPLOREXR_PLUGIN_URL . 'admin/css/edit-model.css', array('explorexr-components'), EXPLOREXR_VERSION);
-            wp_enqueue_script('explorexr-edit-model-js', EXPLOREXR_PLUGIN_URL . 'admin/js/edit-model.js', array('jquery'), EXPLOREXR_VERSION, true);
+    // Common admin UI scripts
+    wp_enqueue_script('explorexr-admin-ui', EXPLOREXR_PLUGIN_URL . 'admin/js/admin-ui.js', array('jquery'), EXPLOREXR_VERSION, true);
+    wp_localize_script('explorexr-admin-ui', 'ExploreXRAdminUI', array(
+        'strings'  => array('modelPreviewTitle' => esc_html__('Model Preview', 'explorexr')),
+        'nonce'    => wp_create_nonce('explorexr_admin_nonce'),
+        'ajax_url' => admin_url('admin-ajax.php'),
+    ));
+    wp_localize_script('explorexr-admin-ui', 'ExploreXRAdminVars', array(
+        'pluginUrl' => EXPLOREXR_PLUGIN_URL,
+    ));
+    wp_enqueue_script('explorexr-model-viewer-modal-js', EXPLOREXR_PLUGIN_URL . 'admin/js/model-viewer-modal.js', array('jquery'), EXPLOREXR_VERSION, true);
 
-            // Include WordPress media uploader
-            wp_enqueue_media();
+    if (strpos($hook ?? '', 'explorexr-go-premium') !== false) {
+        wp_enqueue_style('explorexr-go-premium-css', EXPLOREXR_PLUGIN_URL . 'admin/css/go-premium-page.css', array(), EXPLOREXR_VERSION);
+    }
 
-            // Color picker for settings
-            wp_enqueue_style('wp-color-picker');
-            wp_enqueue_script('wp-color-picker');
-
-            // Localize script with data
-            wp_localize_script('explorexr-edit-model-js', 'explorexr_admin', array(
-                'nonce' => wp_create_nonce('explorexr_admin_nonce'),
-                'ajax_url' => admin_url('admin-ajax.php'),
-                'plugin_url' => EXPLOREXR_PLUGIN_URL,
-                'is_premium' => false,
-                'premium_upgrade_url' => explorexr_get_premium_upgrade_url()
-            ));
-        }
+    if (strpos($hook ?? '', 'explorexr-edit-model') !== false) {
+        wp_enqueue_style('explorexr-edit-model-css', EXPLOREXR_PLUGIN_URL . 'admin/css/edit-model.css', array(), EXPLOREXR_VERSION);
+        wp_enqueue_style('explorexr-addon-cards-css', EXPLOREXR_PLUGIN_URL . 'admin/css/addon-cards.css', array(), EXPLOREXR_VERSION);
+        wp_enqueue_style('explorexr-addon-cards-shared-css', EXPLOREXR_PLUGIN_URL . 'admin/css/addon-cards-shared.css', array(), EXPLOREXR_VERSION);
+        wp_enqueue_script('explorexr-edit-model-js', EXPLOREXR_PLUGIN_URL . 'admin/js/edit-model.js', array('jquery'), EXPLOREXR_VERSION, true);
+        wp_enqueue_script('explorexr-model-preview-card-js', EXPLOREXR_PLUGIN_URL . 'admin/js/model-preview-card.js', array('jquery'), EXPLOREXR_VERSION, true);
+        wp_enqueue_script('explorexr-viewer-controls-card-js', EXPLOREXR_PLUGIN_URL . 'admin/js/viewer-controls-card.js', array('jquery'), EXPLOREXR_VERSION, true);
+        wp_enqueue_media();
+        wp_enqueue_style('wp-color-picker');
+        wp_enqueue_script('wp-color-picker');
+        wp_localize_script('explorexr-edit-model-js', 'explorexr_admin', array(
+            'nonce'               => wp_create_nonce('explorexr_admin_nonce'),
+            'ajax_url'            => admin_url('admin-ajax.php'),
+            'plugin_url'          => EXPLOREXR_PLUGIN_URL,
+            'is_premium'          => false,
+            'premium_upgrade_url' => admin_url('admin.php?page=explorexr-go-premium'),
+        ));
     }
 }
 add_action('admin_enqueue_scripts', 'explorexr_admin_enqueue_scripts');
 
-/**
- * Add viewport meta tag to admin pages that use model-viewer
- */
 function explorexr_add_admin_viewport_meta() {
     echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">' . "\n";
 }
 
-/**
- * Initialize viewport meta tag for ExploreXR admin pages
- */
 function explorexr_init_admin_viewport_meta() {
     $screen = get_current_screen();
     if ($screen && strpos($screen->id, 'explorexr') !== false) {
@@ -296,23 +202,17 @@ function explorexr_init_admin_viewport_meta() {
 }
 add_action('current_screen', 'explorexr_init_admin_viewport_meta');
 
-/**
- * Add custom body classes for admin pages
- */
 function EXPLOREXR_admin_body_class($classes) {
     $screen = get_current_screen();
-
     if ($screen && strpos($screen->base, 'explorexr') !== false) {
-        $classes .= ' explorexr-admin-page explorexr-version';
+        $classes .= ' explorexr-admin-page explorexr-free-version';
     }
-
     return $classes;
 }
 add_filter('admin_body_class', 'EXPLOREXR_admin_body_class');
 
 // Register plugin settings
 add_action('admin_init', function() {
-    // Clean up removed debug options on plugin initialization (one time)
     $cleanup_done = get_option('explorexr_debug_cleanup_done', false);
     if (!$cleanup_done) {
         delete_option('explorexr_debug_mode');
@@ -324,99 +224,29 @@ add_action('admin_init', function() {
         update_option('explorexr_debug_cleanup_done', true);
     }
 
-    // Register a settings section
-    add_settings_section(
-        'explorexr_general_settings',
-        'General Settings',
-        'explorexr_general_settings_callback',
-        'explorexr-settings'
-    );
+    add_settings_section('explorexr_general_settings', esc_html__('General Settings', 'explorexr'), 'explorexr_general_settings_callback', 'explorexr-settings');
 
-    // Register Model Viewer version field
-    add_settings_field(
-        'explorexr_model_viewer_version',
-        'Model Viewer Version',
-        'explorexr_model_viewer_version_callback',
-        'explorexr-settings',
-        'explorexr_general_settings',
-        array('label_for' => 'explorexr_model_viewer_version')
-    );
+    add_settings_field('explorexr_model_viewer_version', esc_html__('Model Viewer Version', 'explorexr'), 'explorexr_model_viewer_version_callback', 'explorexr-settings', 'explorexr_general_settings', array('label_for' => 'explorexr_model_viewer_version'));
+    add_settings_field('explorexr_max_upload_size',      esc_html__('Max Upload Size (MB)', 'explorexr'), 'explorexr_max_upload_size_callback',      'explorexr-settings', 'explorexr_general_settings', array('label_for' => 'explorexr_max_upload_size'));
 
-    // Register Max Upload Size field
-    add_settings_field(
-        'explorexr_max_upload_size',
-        'Max Upload Size (MB)',
-        'explorexr_max_upload_size_callback',
-        'explorexr-settings',
-        'explorexr_general_settings',
-        array('label_for' => 'explorexr_max_upload_size')
-    );
-
-    // Register settings with sanitization
-    register_setting('explorexr_settings', 'explorexr_model_viewer_version', array(
-        'sanitize_callback' => 'sanitize_text_field'
-    ));
-    register_setting('explorexr_settings', 'explorexr_max_upload_size', array(
-        'sanitize_callback' => 'absint',
-        'default' => 50
-    ));
+    register_setting('explorexr_settings', 'explorexr_model_viewer_version', array('sanitize_callback' => 'sanitize_text_field'));
+    register_setting('explorexr_settings', 'explorexr_max_upload_size',      array('sanitize_callback' => 'absint', 'default' => 50));
+    register_setting('explorexr_settings', 'explorexr_default_tone_mapping', array('sanitize_callback' => 'sanitize_text_field', 'default' => 'aces'));
 });
 
-// AJAX Handlers for Premium Info
-add_action('wp_ajax_EXPLOREXR_get_premium_info', 'EXPLOREXR_ajax_get_premium_info');
-
 /**
- * AJAX handler for getting premium information
+ * Strip an unwanted "‹" character occasionally inserted by WP into ExploreXR
+ * admin page titles.
  */
-function EXPLOREXR_ajax_get_premium_info() {
-    // Verify nonce
-    if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'explorexr_admin_nonce')) {
-        wp_die('Security check failed');
+add_action('admin_enqueue_scripts', function($hook) {
+    if (strpos($hook, 'explorexr') === false) {
+        return;
     }
-
-    // Check user capabilities
-    if (!current_user_can('manage_options')) {
-        wp_send_json_error(array('message' => 'Insufficient permissions'));
-    }
-
-    // Return premium features and pricing info
-    wp_send_json_success(array(
-        'premium_features' => array(
-            'ar' => array(
-                'name' => 'AR Support',
-                'description' => 'Augmented Reality experiences for mobile devices',
-                'icon' => '📱'
-            ),
-            'camera-controls' => array(
-                'name' => 'Camera Controls',
-                'description' => 'Camera interaction controls',
-                'icon' => '📷'
-            )
-        ),
-        'pricing_tiers' => array(
-            'pro' => array(
-                'name' => 'Pro',
-                'price' => '59',
-                'currency' => 'EUR',
-                'period' => 'year',
-                'features' => array('3 Premium Features', 'Email Support', 'Basic License Management')
-            ),
-            'plus' => array(
-                'name' => 'Plus',
-                'price' => '99',
-                'currency' => 'EUR',
-                'period' => 'year',
-                'features' => array('5 Premium Features', 'Priority Support', 'License Management', 'Custom Branding'),
-                'popular' => true
-            ),
-            'ultra' => array(
-                'name' => 'Ultra',
-                'price' => '199',
-                'currency' => 'EUR',
-                'period' => 'year',
-                'features' => array('All Premium Features', 'VIP Support', 'White-label Options', 'Custom Development')
-            )
-        ),
-        'upgrade_url' => explorexr_get_premium_upgrade_url()
-    ));
-}
+    $script = "document.addEventListener('DOMContentLoaded', function() {\n"
+        . "    var t = document.querySelector('.wrap h1');\n"
+        . "    if (t && t.textContent.indexOf('‹') !== -1) {\n"
+        . "        t.textContent = t.textContent.replace(/‹\\s*/g, '');\n"
+        . "    }\n"
+        . "});";
+    wp_add_inline_script('jquery', $script);
+});

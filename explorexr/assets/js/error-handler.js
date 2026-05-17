@@ -21,8 +21,10 @@
     window.addEventListener('error', function(event) {
         // Check for errors in Elementor's element.js file
         if (event.filename && event.filename.indexOf('element.js') > -1) {
-            console.warn('ExploreXR intercepted Elementor element.js error:', event.message);
-            console.warn('Line:', event.lineno, 'Column:', event.colno);
+            if (typeof ExploreXRLogger !== 'undefined') {
+                ExploreXRLogger.warn('ExploreXR intercepted Elementor element.js error:', event.message);
+                ExploreXRLogger.warn('Line:', event.lineno, 'Column:', event.colno);
+            }
             
             // If it's the specific syntax error at line 1299, prevent it from propagating
             if (event.lineno === 1299) {

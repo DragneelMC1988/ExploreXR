@@ -22,14 +22,18 @@ if (!defined('ABSPATH')) {
  */
 ?>
 
-<div class="ExploreXR-model-container" style="width: <?php echo esc_attr($width); ?>; height: <?php echo esc_attr($height); ?>; position: relative;">
-    <div class="ExploreXR-model-poster" id="<?php echo esc_attr($model_instance_id); ?>-poster" style="width: 100%; height: 100%; position: relative;">
+<div class="ExploreXR-model-container"
+     id="<?php echo esc_attr($model_css_id); ?>"
+     data-width="<?php echo esc_attr($width); ?>"
+     data-height="<?php echo esc_attr($height); ?>">
+    <div class="ExploreXR-model-poster" id="<?php echo esc_attr($model_instance_id); ?>-poster">
         <?php if (!empty($model_poster_id)) : ?>
             <?php 
             // Use wp_get_attachment_image for better WordPress compliance
             echo wp_get_attachment_image($model_poster_id, 'large', false, array(
-                'alt' => esc_attr__('3D Model Poster', 'explorexr'),
-                'style' => 'width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;'
+                'alt'      => esc_attr__('3D Model Poster', 'explorexr'),
+                'loading'  => 'lazy',
+                'decoding' => 'async'
             ));
             ?>
         <?php elseif (!empty($model_poster)) : ?>
@@ -38,45 +42,37 @@ if (!defined('ABSPATH')) {
                 <?php
                 // phpcs:disable PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage
                 printf(
-                    '<img src="%s" alt="%s" style="%s">',
+                    '<img src="%s" alt="%s" loading="lazy" decoding="async">',
                     esc_url($model_poster),
-                    esc_attr__('3D Model Poster', 'explorexr'),
-                    esc_attr('width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;')
+                    esc_attr__('3D Model Poster', 'explorexr')
                 );
                 // phpcs:enable PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage
                 ?>
             </div>
         <?php endif; ?>
-        <button class="ExploreXR-load-model-btn" id="<?php echo esc_attr($model_instance_id); ?>-btn" style="position: relative; z-index: 10; background-color: <?php echo esc_attr(get_option('explorexr_load_button_bg_color', '#1e88e5')); ?>; color: <?php echo esc_attr(get_option('explorexr_load_button_text_color', '#ffffff')); ?>; border-radius: <?php echo absint(get_option('explorexr_load_button_border_radius', 4)); ?>px;">
-            <?php echo esc_html(get_option('explorexr_load_button_text', __('Load 3D Model', 'explorexr'))); ?>
+        <button class="ExploreXR-load-model-btn"
+                id="<?php echo esc_attr($model_instance_id); ?>-btn"
+                data-instance-id="<?php echo esc_attr($model_instance_id); ?>"
+                data-model-url="<?php echo esc_url($model_file); ?>"
+                data-model-attrs="<?php echo esc_attr($model_attributes_json); ?>">
+            <?php
+            $explorexr_button_text = get_option('explorexr_load_button_text', '');
+            if ($explorexr_button_text === '') {
+                $explorexr_button_text = __('Load 3D Model', 'explorexr');
+            }
+            echo esc_html($explorexr_button_text);
+            ?>
         </button>
         
         <?php
-        // WordPress.org compliance: Convert inline script to wp_add_inline_script
-        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for inline script
-        $large_model_script = '
-        document.addEventListener("DOMContentLoaded", function() {
-            // Get the button element
-            var loadButton = document.getElementById("' . esc_js($model_instance_id) . '-btn");
-            
-            // Add both click and touchend events for better mobile compatibility
-            loadButton.addEventListener("click", loadModel);
-            loadButton.addEventListener("touchend", function(e) {
-                e.preventDefault(); // Prevent default touch behavior
-                loadModel(e);
-            });
-            
-            function loadModel(e) {
-                e.stopPropagation(); // Prevent event bubbling
-                loadExploreXRModel("' . esc_js($model_instance_id) . '", "' . esc_js($model_file) . '", ' . wp_json_encode($model_attributes_json) . ');
-            }
-        });
-        ';
-        wp_add_inline_script('explorexr-model-loader', $large_model_script);
+        // Load button JS is handled by assets/js/large-model-handler.js
+        // (enqueued in template-parts/model-viewer-script.php).
         ?>
     </div>
-    <div id="<?php echo esc_attr($model_instance_id); ?>-viewer" style="width: 100%; height: 100%; display: none;">
+    <div id="<?php echo esc_attr($model_instance_id); ?>-viewer" class="ExploreXR-model-viewer-wrapper explorexr-hidden">
         <!-- Model viewer will be inserted here via JavaScript -->
     </div>
 </div>
+
+
 

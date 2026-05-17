@@ -1,27 +1,16 @@
 <?php
 /**
- * Plugin Name: ExploreXR – Interactive 3D Model Viewer
+ * Plugin Name: ExploreXR
  * Plugin URI: https://expoxr.com/explorexr/
- * Description: The #1 interactive 3D model viewer for WordPress. Embed GLB, GLTF, and USDZ files via shortcode or page builder — no coding required. Works with Elementor, Divi, Avada, and Gutenberg.
- * Version: 1.3.2
- * Requires at least: 5.0
- * Tested up to: 6.9
- * Requires PHP: 7.4
+ * Description: Free 3D model viewer for WordPress. Embed glTF/GLB/USDZ models with Google's <model-viewer>. Supports a single addon from a curated list. Upgrade to Premium for advanced features.
+ * Version: 1.3.3
  * Author: Ayal Othman
  * Author URI: https://expoxr.com
  * Text Domain: explorexr
+ * Requires at least: 5.8
+ * Requires PHP: 7.4
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- *
- * ExploreXR is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * any later version.
- *
- * ExploreXR is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
  */
 
 // Exit if accessed directly
@@ -29,234 +18,339 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-// Prevent conflicts with premium version or duplicate free installations
-if (defined('EXPLOREXR_VERSION') || class_exists('ExploreXR_License_Handler')) {
-    add_action('admin_notices', function() {
-        if (class_exists('ExploreXR_License_Handler')) {
-            $msg = __('Cannot activate while ExploreXR Premium is active. Please deactivate the Premium version first.', 'explorexr');
-        } else {
-            $msg = __('ExploreXR is already active. Deactivate the existing installation before activating a duplicate copy.', 'explorexr');
-        }
-        echo '<div class="notice notice-error"><p><strong>ExploreXR:</strong> ' . esc_html( $msg ) . '</p></div>';
-    });
-    return;
-}
-
-// Define plugin constants
+// Plugin constants. Free plugin defines both the canonical EXPLOREXR_* names
+// and the EXPLOREXR_PREMIUM_* aliases so addons and shared code that reference
+// either set of constants keep working unchanged.
+define('EXPLOREXR_VERSION', '1.3.3');
+define('EXPLOREXR_PLUGIN_FILE', __FILE__);
 define('EXPLOREXR_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('EXPLOREXR_PLUGIN_URL', plugin_dir_url(__FILE__));
-define('EXPLOREXR_VERSION', '1.3.2');
-define('EXPLOREXR_IS_FREE', true);
+define('EXPLOREXR_PLUGIN_BASENAME', plugin_basename(__FILE__));
 
-// Load compatibility bridge and addon manager at file-include time — before
-// plugins_loaded fires — so addon plugins' own plugins_loaded callbacks see
-// these functions and the ExploreXR_Addon_Manager class immediately.
-require_once EXPLOREXR_PLUGIN_DIR . 'includes/addons/compatibility-bridge.php';
-require_once EXPLOREXR_PLUGIN_DIR . 'includes/addons/class-addon-manager.php';
+if (!defined('EXPLOREXR_PREMIUM_VERSION'))         { define('EXPLOREXR_PREMIUM_VERSION', EXPLOREXR_VERSION); }
+if (!defined('EXPLOREXR_PREMIUM_PLUGIN_FILE'))     { define('EXPLOREXR_PREMIUM_PLUGIN_FILE', EXPLOREXR_PLUGIN_FILE); }
+if (!defined('EXPLOREXR_PREMIUM_PLUGIN_DIR'))      { define('EXPLOREXR_PREMIUM_PLUGIN_DIR', EXPLOREXR_PLUGIN_DIR); }
+if (!defined('EXPLOREXR_PREMIUM_PLUGIN_URL'))      { define('EXPLOREXR_PREMIUM_PLUGIN_URL', EXPLOREXR_PLUGIN_URL); }
+if (!defined('EXPLOREXR_PREMIUM_PLUGIN_BASENAME')) { define('EXPLOREXR_PREMIUM_PLUGIN_BASENAME', EXPLOREXR_PLUGIN_BASENAME); }
 
-// Define models directory constants after WordPress is loaded
-add_action('plugins_loaded', function () {
-    // Define models directory in WordPress uploads folder
-    if (!defined('EXPLOREXR_MODELS_DIR')) {
-        $upload_dir = wp_upload_dir();
-        define('EXPLOREXR_MODELS_DIR', $upload_dir['basedir'] . '/explorexr_models/');
-        define('EXPLOREXR_MODELS_URL', $upload_dir['baseurl'] . '/explorexr_models/');
-    }
-}, 1); // Early priority
-
-// Create models directory and load includes
-add_action('plugins_loaded', function () {
-    // Ensure models directory exists
-    if (!file_exists(EXPLOREXR_MODELS_DIR)) {
-        wp_mkdir_p(EXPLOREXR_MODELS_DIR);
-
-        // Create index.php for security using WordPress filesystem
-        require_once(ABSPATH . 'wp-admin/includes/file.php');
-        WP_Filesystem();
-        global $wp_filesystem;
-        $index_content = "<?php\n// Silence is golden.\n";
-        $wp_filesystem->put_contents(EXPLOREXR_MODELS_DIR . 'index.php', $index_content, FS_CHMOD_FILE);
-    }
-
-    // Load all includes after WordPress is ready
-    explorexr_free_load_includes();
-}, 10); // After constants are defined
-
-if (!function_exists('explorexr_free_load_includes')) {
-    function explorexr_free_load_includes() {
-        // Core functionality
-        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/core/post-types/class-post-types.php')) {
-            require_once EXPLOREXR_PLUGIN_DIR . 'includes/core/post-types/class-post-types.php';
-        }
-        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/core/shortcodes.php')) {
-            require_once EXPLOREXR_PLUGIN_DIR . 'includes/core/shortcodes.php';
-        }
-        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/core/model-validator.php')) {
-            require_once EXPLOREXR_PLUGIN_DIR . 'includes/core/model-validator.php';
-        }
-
-        // Models functionality
-        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/models/file-handler.php')) {
-            require_once EXPLOREXR_PLUGIN_DIR . 'includes/models/file-handler.php';
-        }
-
-        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/models/model-helper.php')) {
-            require_once EXPLOREXR_PLUGIN_DIR . 'includes/models/model-helper.php';
-        }
-
-        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/models/model-cleanup.php')) {
-            require_once EXPLOREXR_PLUGIN_DIR . 'includes/models/model-cleanup.php';
-        }
-
-        // UI components
-        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/ui/form-submission-handler.php')) {
-            require_once EXPLOREXR_PLUGIN_DIR . 'includes/ui/form-submission-handler.php';
-        }
-
-        // Free addon loader helpers
-        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/addons/free-addon-loader.php')) {
-            require_once EXPLOREXR_PLUGIN_DIR . 'includes/addons/free-addon-loader.php';
-        }
-
-        // Admin functionality
-        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'admin/core/admin-menu.php')) {
-            require_once EXPLOREXR_PLUGIN_DIR . 'admin/core/admin-menu.php';
-        }
-
-        // Load admin pages (required by admin menu)
-        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'admin/core/admin-pages.php')) {
-            require_once EXPLOREXR_PLUGIN_DIR . 'admin/core/admin-pages.php';
-        }
-
-        // AJAX handlers
-        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'admin/ajax/ajax-handlers.php')) {
-            require_once EXPLOREXR_PLUGIN_DIR . 'admin/ajax/ajax-handlers.php';
-        }
-
-        // Page-builder integrations (Elementor, Divi, Avada Fusion Builder).
-        // Each integration file checks for the corresponding builder before loading.
-        if ( file_exists( EXPLOREXR_PLUGIN_DIR . 'includes/integrations/index.php' ) ) {
-            require_once EXPLOREXR_PLUGIN_DIR . 'includes/integrations/index.php';
-        }
-
-        // Security (basic level for free version)
-        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/security/file-upload-sanitizer.php')) {
-            require_once EXPLOREXR_PLUGIN_DIR . 'includes/security/file-upload-sanitizer.php';
-        }
-
-        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/security/security-handler.php')) {
-            require_once EXPLOREXR_PLUGIN_DIR . 'includes/security/security-handler.php';
-        }
-
-        // Utils
-        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/utils/form-helpers.php')) {
-            require_once EXPLOREXR_PLUGIN_DIR . 'includes/utils/form-helpers.php';
-        }
-
-        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/utils/safe-string-ops.php')) {
-            require_once EXPLOREXR_PLUGIN_DIR . 'includes/utils/safe-string-ops.php';
-        }
-
-        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/utils/cache-manager.php')) {
-            require_once EXPLOREXR_PLUGIN_DIR . 'includes/utils/cache-manager.php';
-        }
-
-        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/utils/strip-tags-fix.php')) {
-            require_once EXPLOREXR_PLUGIN_DIR . 'includes/utils/strip-tags-fix.php';
-        }
-
-        // Premium upgrade system for free version
-        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/premium/upgrade-system.php')) {
-            require_once EXPLOREXR_PLUGIN_DIR . 'includes/premium/upgrade-system.php';
-        }
-
-        // Premium trial system
-        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/premium/trial-system.php')) {
-            require_once EXPLOREXR_PLUGIN_DIR . 'includes/premium/trial-system.php';
-        }
-    }
+// Models directory + URL
+if (!defined('EXPLOREXR_MODELS_DIR')) {
+    $explorexr_upload_dir = wp_upload_dir();
+    define('EXPLOREXR_MODELS_DIR', $explorexr_upload_dir['basedir'] . '/explorexr-models/');
+}
+if (!defined('EXPLOREXR_MODELS_URL')) {
+    $explorexr_upload_dir = wp_upload_dir();
+    define('EXPLOREXR_MODELS_URL', $explorexr_upload_dir['baseurl'] . '/explorexr-models/');
 }
 
-// Register activation hook
-register_activation_hook(__FILE__, 'explorexr_free_activate');
+// Tier flags
+if (!defined('EXPLOREXR_IS_PREMIUM')) { define('EXPLOREXR_IS_PREMIUM', false); }
+if (!defined('EXPLOREXR_IS_FREE'))    { define('EXPLOREXR_IS_FREE', true); }
 
 /**
- * Plugin activation function
+ * Self-deactivate if the Premium plugin is loaded. Premium runs at priority 1
+ * and deactivates the Free file path; running first guarantees no overlap.
  */
-if (!function_exists('explorexr_free_activate')) {
-function explorexr_free_activate() {
-    // Block activation when ExploreXR Premium is already active
+function explorexr_free_check_premium_active() {
     if (!function_exists('is_plugin_active')) {
         require_once ABSPATH . 'wp-admin/includes/plugin.php';
     }
+
     if (is_plugin_active('explorexr-premium/ExploreXR-Premium.php')) {
-        // Translators: plugin name
-        $message = __('ExploreXR Premium is already active. Please deactivate Premium before activating the free version.', 'explorexr');
-        wp_die(
-            '<p>' . esc_html( $message ) . '</p>',
-            esc_html__('Plugin Activation Error', 'explorexr'),
-            array('back_link' => true)
-        );
+        deactivate_plugins(plugin_basename(__FILE__), true);
+        if (is_admin() && current_user_can('activate_plugins')) {
+            add_action('admin_notices', static function() {
+                echo '<div class="notice notice-warning is-dismissible"><p>';
+                esc_html_e('ExploreXR has been deactivated because ExploreXR Premium is active.', 'explorexr');
+                echo '</p></div>';
+            });
+        }
     }
-    // Define models directory constants for activation (since plugins_loaded hasn't fired yet)
-    if (!defined('EXPLOREXR_MODELS_DIR')) {
-        $upload_dir = wp_upload_dir();
-        define('EXPLOREXR_MODELS_DIR', $upload_dir['basedir'] . '/explorexr_models/');
-        define('EXPLOREXR_MODELS_URL', $upload_dir['baseurl'] . '/explorexr_models/');
-    }
-
-    // Create models directory in WordPress uploads folder
-    if (!file_exists(EXPLOREXR_MODELS_DIR)) {
-        wp_mkdir_p(EXPLOREXR_MODELS_DIR);
-
-        // Create index.php for security using WordPress filesystem
-        require_once(ABSPATH . 'wp-admin/includes/file.php');
-        WP_Filesystem();
-        global $wp_filesystem;
-        $index_content = "<?php\n// Silence is golden.\n";
-        $wp_filesystem->put_contents(EXPLOREXR_MODELS_DIR . 'index.php', $index_content, FS_CHMOD_FILE);
-
-        // Create .htaccess for additional security using WordPress filesystem
-        $htaccess_content = "# ExploreXR Models Directory Protection\n";
-        $htaccess_content .= "Options -Indexes\n";
-        $htaccess_content .= "<FilesMatch \"\\.(php|php3|php4|php5|phtml|pl|py|jsp|asp|aspx|sh|cgi)$\">\n";
-        $htaccess_content .= "    Order Allow,Deny\n";
-        $htaccess_content .= "    Deny from all\n";
-        $htaccess_content .= "</FilesMatch>\n";
-        $wp_filesystem->put_contents(EXPLOREXR_MODELS_DIR . '.htaccess', $htaccess_content, FS_CHMOD_FILE);
-    }
-
-    // Set default options
-    add_option('explorexr_free_activated', true);
-
-    // Flush rewrite rules
-    flush_rewrite_rules();
 }
-} // end function_exists('explorexr_free_activate')
-
-// Register deactivation hook
-register_deactivation_hook(__FILE__, 'explorexr_free_deactivate');
+add_action('plugins_loaded', 'explorexr_free_check_premium_active', 1);
 
 /**
- * Plugin deactivation function
+ * Migrate CDN option to local (WordPress.org compliance).
  */
-if (!function_exists('explorexr_free_deactivate')) {
-    function explorexr_free_deactivate() {
-        // Flush rewrite rules
-        flush_rewrite_rules();
+function explorexr_free_migrate_cdn_option() {
+    if (get_option('explorexr_cdn_source') === 'cdn') {
+        update_option('explorexr_cdn_source', 'local');
+    }
+}
+add_action('admin_init', 'explorexr_free_migrate_cdn_option', 1);
+
+/**
+ * One-time migration: legacy lazy-load post meta keys → unified
+ * _explorexr_premium_load_behavior. Gated by explorexr_load_behavior_migrated.
+ */
+function explorexr_free_migrate_load_behavior_meta() {
+    if (get_option('explorexr_load_behavior_migrated') === '1') {
+        return;
+    }
+    $query = new WP_Query(array(
+        'post_type'      => array('explorexr_model'),
+        'post_status'    => 'any',
+        'posts_per_page' => -1,
+        'fields'         => 'ids',
+        // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- one-time migration gated by option flag
+        'meta_query'     => array(
+            'relation' => 'OR',
+            array('key' => '_explorexr_premium_lazy_load_model', 'compare' => 'EXISTS'),
+            array('key' => '_explorexr_lazy_load_model', 'compare' => 'EXISTS'),
+        ),
+    ));
+    foreach ($query->posts as $migration_post_id) {
+        $legacy = get_post_meta($migration_post_id, '_explorexr_premium_lazy_load_model', true);
+        if ($legacy === '' || $legacy === false) {
+            $legacy = get_post_meta($migration_post_id, '_explorexr_lazy_load_model', true);
+        }
+        if ($legacy === 'on') {
+            $existing = get_post_meta($migration_post_id, '_explorexr_premium_load_behavior', true);
+            if ($existing === '' || $existing === false) {
+                update_post_meta($migration_post_id, '_explorexr_premium_load_behavior', 'lazy');
+            }
+        }
+        delete_post_meta($migration_post_id, '_explorexr_premium_lazy_load_model');
+        delete_post_meta($migration_post_id, '_explorexr_lazy_load_model');
+    }
+    update_option('explorexr_load_behavior_migrated', '1');
+}
+add_action('admin_init', 'explorexr_free_migrate_load_behavior_meta', 5);
+
+/**
+ * Register frontend assets early so page-builder previews can find them.
+ */
+function explorexr_free_register_frontend_assets() {
+    if (!wp_script_is('explorexr-model-loader', 'registered')) {
+        wp_register_script(
+            'explorexr-model-loader',
+            EXPLOREXR_PLUGIN_URL . 'assets/js/model-loader.js',
+            array('jquery'),
+            EXPLOREXR_VERSION,
+            true
+        );
+    }
+    if (!wp_style_is('explorexr-model-viewer', 'registered')) {
+        wp_register_style(
+            'explorexr-model-viewer',
+            EXPLOREXR_PLUGIN_URL . 'assets/css/model-viewer.css',
+            array(),
+            EXPLOREXR_VERSION
+        );
+    }
+}
+add_action('wp_enqueue_scripts', 'explorexr_free_register_frontend_assets', 5);
+add_action('elementor/frontend/after_register_scripts', 'explorexr_free_register_frontend_assets');
+add_action('elementor/frontend/after_register_styles', 'explorexr_free_register_frontend_assets');
+add_action('fl_builder_before_render_shortcodes', 'explorexr_free_register_frontend_assets');
+add_action('et_builder_ready', 'explorexr_free_register_frontend_assets');
+
+/**
+ * Main plugin initialization.
+ */
+function explorexr_free_init() {
+    // Helper functions MUST load first - addons depend on these stubs.
+    require_once EXPLOREXR_PLUGIN_DIR . 'includes/core/helper-functions.php';
+
+    // Core
+    require_once EXPLOREXR_PLUGIN_DIR . 'includes/core/post-types.php';
+    require_once EXPLOREXR_PLUGIN_DIR . 'includes/core/shortcodes.php';
+    require_once EXPLOREXR_PLUGIN_DIR . 'includes/core/model-validator.php';
+
+    // Models
+    foreach (array('file-handler.php', 'model-cleanup.php', 'model-helper.php') as $explorexr_models_file) {
+        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/models/' . $explorexr_models_file)) {
+            require_once EXPLOREXR_PLUGIN_DIR . 'includes/models/' . $explorexr_models_file;
+        }
+    }
+
+    // UI / utils
+    foreach (array(
+        'includes/ui/admin-bar.php',
+        'includes/ui/deactivation-handler.php',
+        'includes/ui/form-submission-handler.php',
+        'includes/ui/model-viewer-renderer.php',
+        'includes/utils/core-file-verification.php',
+        'includes/utils/emergency-script-fix.php',
+        'includes/utils/form-helpers.php',
+        'includes/utils/safe-string-ops.php',
+        'includes/utils/size-validator.php',
+        'includes/utils/strip-tags-fix.php',
+        'includes/shared/addon-notices-helper.php',
+    ) as $explorexr_extra) {
+        if (file_exists(EXPLOREXR_PLUGIN_DIR . $explorexr_extra)) {
+            require_once EXPLOREXR_PLUGIN_DIR . $explorexr_extra;
+        }
+    }
+
+    // Admin
+    if (is_admin()) {
+        require_once EXPLOREXR_PLUGIN_DIR . 'includes/admin/class-admin-notices.php';
+        require_once EXPLOREXR_PLUGIN_DIR . 'admin/core/admin-menu.php';
+        require_once EXPLOREXR_PLUGIN_DIR . 'admin/core/admin-pages.php';
+        require_once EXPLOREXR_PLUGIN_DIR . 'admin/core/admin-ui.php';
+        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'admin/core/functions.php')) {
+            require_once EXPLOREXR_PLUGIN_DIR . 'admin/core/functions.php';
+        }
+        foreach (array('settings-callbacks.php', 'import-export.php', 'loading-options.php') as $explorexr_settings_file) {
+            if (file_exists(EXPLOREXR_PLUGIN_DIR . 'admin/settings/' . $explorexr_settings_file)) {
+                require_once EXPLOREXR_PLUGIN_DIR . 'admin/settings/' . $explorexr_settings_file;
+            }
+        }
+        require_once EXPLOREXR_PLUGIN_DIR . 'admin/ajax/ajax-handlers.php';
+        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'admin/ajax/render-model-ajax.php')) {
+            require_once EXPLOREXR_PLUGIN_DIR . 'admin/ajax/render-model-ajax.php';
+        }
+    }
+
+    // Addon manager (Free-tier: one addon, whitelist of 4).
+    require_once EXPLOREXR_PLUGIN_DIR . 'includes/addons/free-addon-manager.php';
+    ExploreXR_Addon_Manager::get_instance();
+
+    // Page builder integrations
+    if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/integrations/class-page-builder-loader.php')) {
+        require_once EXPLOREXR_PLUGIN_DIR . 'includes/integrations/class-page-builder-loader.php';
+        if (class_exists('ExploreXR_Page_Builder_Loader')) {
+            ExploreXR_Page_Builder_Loader::init();
+        }
+    }
+
+    // Emit <link rel="preload"> hints for decoder WASM binaries into <head>.
+    // Registered here so wp_head fires them before the_content renders.
+    add_action('wp_head', 'explorexr_free_preload_decoder_assets', 1);
+}
+add_action('plugins_loaded', 'explorexr_free_init', 5);
+
+/**
+ * Output <link rel="preload"> hints for Draco and Basis Universal WASM decoders.
+ * Only emits on frontend pages that contain model-viewer shortcodes, and only
+ * for files that are confirmed present on disk.
+ */
+function explorexr_free_preload_decoder_assets() {
+    if (!function_exists('explorexr_premium_has_model_viewers') || !explorexr_premium_has_model_viewers()) {
+        return;
+    }
+
+    $draco_wasm = EXPLOREXR_PLUGIN_DIR . 'assets/vendor/draco/draco_decoder.wasm';
+    $basis_wasm = EXPLOREXR_PLUGIN_DIR . 'assets/vendor/basis-universal/basis_transcoder.wasm';
+
+    if (file_exists($draco_wasm)) {
+        echo '<link rel="preload" href="' . esc_url(EXPLOREXR_PLUGIN_URL . 'assets/vendor/draco/draco_decoder.wasm') . '" as="fetch" crossorigin>' . "\n";
+    }
+    if (file_exists($basis_wasm)) {
+        echo '<link rel="preload" href="' . esc_url(EXPLOREXR_PLUGIN_URL . 'assets/vendor/basis-universal/basis_transcoder.wasm') . '" as="fetch" crossorigin>' . "\n";
     }
 }
 
-// Helper function to check if premium is available
-if (!function_exists('explorexr_is_premium_available')) {
-    function explorexr_is_premium_available() {
-        return false; // Always false in free version
+/**
+ * Enqueue frontend assets when a model viewer shortcode is present.
+ */
+function explorexr_free_enqueue_scripts() {
+    if (!function_exists('explorexr_premium_has_model_viewers') || !explorexr_premium_has_model_viewers()) {
+        return;
     }
-}
 
-// Helper function to get premium upgrade URL
-if (!function_exists('explorexr_get_premium_upgrade_url')) {
-    function explorexr_get_premium_upgrade_url() {
-        return 'https://expoxr.com/explorexr/premium/';
+    if (file_exists(EXPLOREXR_PLUGIN_DIR . 'assets/css/frontend.css')) {
+        wp_enqueue_style('explorexr-frontend', EXPLOREXR_PLUGIN_URL . 'assets/css/frontend.css', array(), EXPLOREXR_VERSION);
+    }
+    if (file_exists(EXPLOREXR_PLUGIN_DIR . 'assets/css/lazy-load.css')) {
+        wp_enqueue_style('explorexr-lazy-load', EXPLOREXR_PLUGIN_URL . 'assets/css/lazy-load.css', array(), EXPLOREXR_VERSION);
+    }
+    if (file_exists(EXPLOREXR_PLUGIN_DIR . 'assets/js/frontend.js')) {
+        wp_enqueue_script('explorexr-frontend', EXPLOREXR_PLUGIN_URL . 'assets/js/frontend.js', array('jquery'), EXPLOREXR_VERSION, true);
     }
 }
+add_action('wp_enqueue_scripts', 'explorexr_free_enqueue_scripts', 10);
+
+/**
+ * Admin styles and scripts.
+ */
+function explorexr_free_admin_enqueue_scripts($hook) {
+    $explorexr_pages = array(
+        'toplevel_page_explorexr',
+        'explorexr_page_explorexr-settings',
+        'explorexr_page_explorexr-loading-options',
+        'explorexr_page_explorexr-addons',
+        'explorexr_page_explorexr-go-premium',
+        'explorexr_page_explorexr-browse-models',
+        'explorexr_page_explorexr-create-model',
+        'explorexr_page_explorexr-edit-model',
+        'explorexr_page_explorexr-files',
+        'admin_page_explorexr-edit-model',
+    );
+
+    global $post_type;
+    $page              = isset($_GET['page']) ? sanitize_key(wp_unslash($_GET['page'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+    $is_explorexr_page = in_array($hook, $explorexr_pages, true)
+        || $post_type === 'explorexr_model'
+        || $page === 'explorexr-edit-model';
+
+    if (!$is_explorexr_page) {
+        return;
+    }
+
+    wp_enqueue_style('explorexr-admin', EXPLOREXR_PLUGIN_URL . 'admin/css/admin-ui.css', array(), EXPLOREXR_VERSION);
+    wp_enqueue_script('explorexr-admin', EXPLOREXR_PLUGIN_URL . 'admin/js/admin-ui.js', array('jquery'), EXPLOREXR_VERSION, true);
+    wp_localize_script('explorexr-admin', 'explorexrAdmin', array(
+        'ajaxUrl'   => admin_url('admin-ajax.php'),
+        'nonce'     => wp_create_nonce('explorexr_admin_nonce'),
+        'isPremium' => false,
+        'version'   => EXPLOREXR_VERSION,
+    ));
+    wp_localize_script('explorexr-admin', 'ExploreXRAdminVars', array(
+        'pluginUrl' => EXPLOREXR_PLUGIN_URL,
+        'ajaxUrl'   => admin_url('admin-ajax.php'),
+        'nonce'     => wp_create_nonce('explorexr_admin_nonce'),
+    ));
+}
+add_action('admin_enqueue_scripts', 'explorexr_free_admin_enqueue_scripts');
+
+/**
+ * Plugin activation.
+ */
+function explorexr_free_activate() {
+    if (function_exists('explorexr_register_post_types')) {
+        explorexr_register_post_types();
+    }
+    flush_rewrite_rules();
+    if (!get_option('explorexr_version')) {
+        update_option('explorexr_version', EXPLOREXR_VERSION);
+    }
+    // Model uploads need the dedicated dir to exist before the file handler
+    // can write to it. wp_mkdir_p is a no-op if the path is already there.
+    if (defined('EXPLOREXR_MODELS_DIR') && !is_dir(EXPLOREXR_MODELS_DIR)) {
+        wp_mkdir_p(EXPLOREXR_MODELS_DIR);
+    }
+}
+register_activation_hook(__FILE__, 'explorexr_free_activate');
+
+/**
+ * Add Settings + Go Premium links on the wp-admin Plugins screen row.
+ */
+function explorexr_free_plugin_action_links($links) {
+    if (!is_array($links)) {
+        $links = array();
+    }
+    $custom = array(
+        'settings'   => sprintf(
+            '<a href="%s">%s</a>',
+            esc_url(admin_url('admin.php?page=explorexr-settings')),
+            esc_html__('Settings', 'explorexr')
+        ),
+        'go-premium' => sprintf(
+            '<a href="%s" style="color:#d63638;font-weight:600;">%s</a>',
+            esc_url(admin_url('admin.php?page=explorexr-go-premium')),
+            esc_html__('Go Premium', 'explorexr')
+        ),
+    );
+    return array_merge($custom, $links);
+}
+add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'explorexr_free_plugin_action_links');
+
+/**
+ * Plugin deactivation.
+ */
+function explorexr_free_deactivate() {
+    flush_rewrite_rules();
+}
+register_deactivation_hook(__FILE__, 'explorexr_free_deactivate');

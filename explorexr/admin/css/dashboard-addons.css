@@ -1,0 +1,97 @@
+/**
+ * ExploreXR Premium - Dashboard Add-ons Section Styles
+ *
+ * @package ExploreXR
+ * @subpackage Admin
+ */
+
+/* Active Add-ons Summary */
+.explorexr-active-addons-summary {
+    background: #f0f9ff;
+    border: 2px solid #2271b1;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.explorexr-active-addons-summary h4 {
+    margin-top: 0;
+    color: #2271b1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 0;
+}
+
+.explorexr-active-addons-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.explorexr-active-addon-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 15px;
+    background: white;
+    border: 1px solid #2271b1;
+    border-radius: 20px;
+    font-weight: 600;
+    color: #2271b1;
+}
+
+/* Add-ons Features Grid */
+.explorexr-addons-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.explorexr-addon-feature {
+    display: flex;
+    gap: 12px;
+    padding: 15px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.explorexr-addon-feature:hover {
+    border-color: #2271b1;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.explorexr-addon-icon {
+    flex-shrink: 0;
+}
+
+.explorexr-addon-icon .dashicons {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+    color: #2271b1;
+}
+
+.explorexr-addon-info h4 {
+    margin: 0 0 5px 0;
+    font-size: 15px;
+    color: #1d2327;
+}
+
+.explorexr-addon-info p {
+    margin: 0;
+    font-size: 13px;
+    color: #646970;
+    line-height: 1.5;
+}
+
+/* Responsive */
+@media (max-width: 782px) {
+    .explorexr-addons-features {
+        grid-template-columns: 1fr;
+    }
+}

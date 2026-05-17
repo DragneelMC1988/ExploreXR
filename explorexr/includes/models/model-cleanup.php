@@ -23,9 +23,9 @@ function explorexr_model_file_exists($model_file_url) {
     }
     
     // Check if it's a local file in our models directory
-    if (defined('EXPLOREXR_MODELS_URL') && defined('EXPLOREXR_MODELS_DIR') &&
-        strpos($model_file_url, EXPLOREXR_MODELS_URL) === 0) {
-        $file_path = str_replace(EXPLOREXR_MODELS_URL, EXPLOREXR_MODELS_DIR, $model_file_url);
+    if (defined('EXPLOREXR_MODELS_URL') && defined('EXPLOREXR_MODELS_DIR') && 
+        !empty($model_file_url) && strpos($model_file_url, EXPLOREXR_MODELS_URL) === 0) {
+        $file_path = str_replace(EXPLOREXR_MODELS_URL, EXPLOREXR_MODELS_DIR, $model_file_url ?? '');
         return file_exists($file_path);
     }
     
@@ -244,83 +244,46 @@ function explorexr_orphaned_models_widget_callback() {
         
         <p>
             <a href="#" class="button" id="explorexr-check-orphaned-models">Check for Missing Files</a>
-            <span class="spinner" style="float: none; margin-top: 0;"></span>
+            <span class="spinner"></span>
         </p>
         <div id="explorexr-check-result"></div>
     </div>
     
     <?php
-    // WordPress.org compliance: Convert inline script to wp_add_inline_script
-    $cleanup_script = '
-    jQuery(document).ready(function($) {
-        $("#explorexr-check-orphaned-models").on("click", function(e) {
-            e.preventDefault();
-            
-            const $button = $(this);
-            const $spinner = $button.next(".spinner");
-            const $result = $("#explorexr-check-result");
-            
-            $button.prop("disabled", true);
-            $spinner.addClass("is-active");
-            $result.html("");
-            
-            $.ajax({
-                url: ajaxurl,
-                type: "POST",
-                data: {
-                    action: "explorexr_cleanup_models",
-                    nonce: "' . esc_js(wp_create_nonce('explorexr_admin_nonce')) . '"
-                },
-                success: function(response) {
-                    if (response.success) {
-                        $result.html("<p class=\"explorexr-success\">" + response.data.message + "</p>");
-                        
-                        // Refresh the page if orphaned models were found
-                        if (response.data.results.orphaned > 0) {
-                            setTimeout(function() {
-                                location.reload();
-                            }, 2000);
-                        }
-                    } else {
-                        $result.html("<p class=\"explorexr-error\">Error: " + response.data.message + "</p>");
-                    }
-                },
-                error: function() {
-                    $result.html("<p class=\"explorexr-error\">Error checking models. Please try again.</p>");
-                },
-                complete: function() {
-                    $button.prop("disabled", false);
-                    $spinner.removeClass("is-active");
-                }
-            });
-        });
-    });
-    ';
-    
-    wp_add_inline_script('jquery', $cleanup_script);
-    
-    // WordPress.org compliance: Convert inline style to wp_add_inline_style
-    $cleanup_style = '
-    .explorexr-dashboard-widget .explorexr-success {
-        color: #46b450;
-    }
-    .explorexr-dashboard-widget .explorexr-warning {
-        color: #ffb900;
-    }
-    .explorexr-dashboard-widget .explorexr-error {
-        color: #dc3232;
-    }
-    .explorexr-dashboard-widget #explorexr-check-result {
-        margin-top: 10px;
-    }
-    ';
-    
-    wp_add_inline_style('wp-admin', $cleanup_style);
-    ?>
-    <?php
+    // Cleanup JS is loaded via admin/js/model-cleanup.js (enqueued by explorexr_enqueue_cleanup_scripts).
+    // Styles live in admin/css/admin-ui.css.
 }
+
+/**
+ * Enqueue dashboard widget script on the WordPress dashboard page.
+ */
+function explorexr_enqueue_cleanup_scripts( $hook ) {
+    if ( 'index.php' !== $hook ) {
+        return;
+    }
+    wp_enqueue_script(
+        'explorexr-model-cleanup',
+        EXPLOREXR_PLUGIN_URL . 'admin/js/model-cleanup.js',
+        array( 'jquery' ),
+        EXPLOREXR_VERSION,
+        true
+    );
+    wp_localize_script(
+        'explorexr-model-cleanup',
+        'explorexrCleanup',
+        array(
+            'nonce'   => wp_create_nonce( 'explorexr_admin_nonce' ),
+            'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+        )
+    );
+}
+add_action( 'admin_enqueue_scripts', 'explorexr_enqueue_cleanup_scripts' );
 
 // Register the dashboard widget
 add_action('wp_dashboard_setup', 'explorexr_register_orphaned_models_widget');
+
+
+
+
 
 

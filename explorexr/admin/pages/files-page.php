@@ -13,10 +13,12 @@ function explorexr_files_page() {
             echo '<div class="notice notice-error"><p>Security check failed. Please try again.</p></div>';
         } else {
             // Manually sanitize $_FILES data to avoid nonce verification warnings
+            // Note: tmp_name is NOT sanitized - it's a server-generated path that must remain unchanged
             $file_upload = array(
                 'name' => isset($_FILES['model_file_upload']['name']) ? sanitize_file_name(wp_unslash($_FILES['model_file_upload']['name'])) : '',
                 'type' => isset($_FILES['model_file_upload']['type']) ? sanitize_mime_type(wp_unslash($_FILES['model_file_upload']['type'])) : '',
-                'tmp_name' => isset($_FILES['model_file_upload']['tmp_name']) ? sanitize_text_field(wp_unslash($_FILES['model_file_upload']['tmp_name'])) : '',
+                // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- tmp_name is server-generated path, sanitization breaks file operations
+                'tmp_name' => isset($_FILES['model_file_upload']['tmp_name']) ? wp_unslash($_FILES['model_file_upload']['tmp_name']) : '',
                 'error' => isset($_FILES['model_file_upload']['error']) ? absint($_FILES['model_file_upload']['error']) : UPLOAD_ERR_NO_FILE,
                 'size' => isset($_FILES['model_file_upload']['size']) ? absint($_FILES['model_file_upload']['size']) : 0,
             );

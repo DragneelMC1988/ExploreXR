@@ -1,0 +1,290 @@
+/**
+ * Animation Admin Card Styles
+ * Scoped to #explorexr-animation-settings to prevent conflicts
+ * Following ADDON_UI_DEVELOPMENT_GUIDE.md
+ */
+
+/* Main Container */
+#explorexr-animation-settings {
+    width: 100%;
+}
+
+/* Preview Container */
+#explorexr-animation-settings .explorexr-premium-model-preview-container {
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+#explorexr-animation-settings .explorexr-premium-model-preview-container h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+#explorexr-animation-settings .explorexr-premium-model-preview-container .description {
+    margin-bottom: 15px;
+    color: #666;
+}
+
+/* Preview Wrapper */
+#explorexr-animation-settings .explorexr-animation-preview-wrapper {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #f5f5f5;
+    margin-bottom: 15px;
+}
+
+#explorexr-animation-settings .explorexr-animation-preview-wrapper model-viewer {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Animation Controls */
+#explorexr-animation-settings .explorexr-animation-controls {
+    text-align: center;
+    padding: 15px 0;
+}
+
+#explorexr-animation-settings .explorexr-animation-controls .button {
+    margin: 0 5px;
+}
+
+#explorexr-animation-settings .explorexr-animation-controls .button .dashicons {
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
+/* Settings Panel */
+#explorexr-animation-settings .explorexr-premium-settings-panel {
+    width: 100%;
+}
+
+/* Form Grid - 3 Column Layout */
+#explorexr-animation-settings .explorexr-premium-form-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    width: 100%;
+    margin-bottom: 50px;
+}
+
+/* Feature Cards */
+#explorexr-animation-settings .explorexr-premium-settings-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 0;
+}
+
+#explorexr-animation-settings .explorexr-premium-settings-card h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 16px;
+    font-weight: 600;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+#explorexr-animation-settings .explorexr-premium-settings-card h3 .dashicons {
+    vertical-align: middle;
+    margin-right: 8px;
+    color: #2271b1;
+}
+
+/* Form groups inherit shared styling */
+/* Checkbox Labels */
+#explorexr-animation-settings .explorexr-premium-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+#explorexr-animation-settings .explorexr-premium-checkbox-label input[type="checkbox"] {
+    margin: 0;
+}
+
+#explorexr-animation-settings .explorexr-premium-checkbox-label span {
+    flex: 1;
+}
+
+/* Animation List */
+#explorexr-animation-settings .animation-list {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 15px;
+    background: #f9f9f9;
+    margin-bottom: 8px;
+}
+
+#explorexr-animation-settings #animation-checkboxes {
+    display: grid;
+    gap: 10px;
+}
+
+#explorexr-animation-settings #animation-checkboxes label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    cursor: pointer;
+    font-weight: normal;
+}
+
+#explorexr-animation-settings #animation-checkboxes label:hover {
+    background: #f0f0f1;
+}
+
+#explorexr-animation-settings #animation-checkboxes input[type="checkbox"] {
+    margin: 0;
+}
+
+/* Frontend Control Settings (nested conditional display) */
+#explorexr-animation-settings #frontend-control-settings {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+/* Scroll-Based Animation Notice */
+#explorexr-animation-settings .explorexr-premium-scroll-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 16px;
+    background: #fff8e1;
+    border: 1px solid #ffcc02;
+    border-left: 4px solid #ffcc02;
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
+
+#explorexr-animation-settings .explorexr-premium-scroll-notice .dashicons {
+    color: #d63638;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+#explorexr-animation-settings .explorexr-premium-scroll-notice-content {
+    flex: 1;
+}
+
+#explorexr-animation-settings .explorexr-premium-scroll-notice-content strong {
+    display: block;
+    margin-bottom: 4px;
+    color: #1d2327;
+}
+
+#explorexr-animation-settings .explorexr-premium-scroll-notice-content p {
+    margin: 0 0 8px 0;
+    color: #50575e;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+#explorexr-animation-settings .explorexr-premium-scroll-notice-content .button-small {
+    margin-top: 4px;
+}
+
+/* Range Slider */
+#explorexr-animation-settings .explorexr-premium-range-slider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 6px;
+}
+
+#explorexr-animation-settings .explorexr-premium-range-slider input[type="range"] {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    background: #ddd;
+    border-radius: 3px;
+    outline: none;
+}
+
+#explorexr-animation-settings .explorexr-premium-range-slider input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #2271b1;
+    cursor: pointer;
+    border: 2px solid #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+#explorexr-animation-settings .explorexr-premium-range-slider input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #2271b1;
+    cursor: pointer;
+    border: 2px solid #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+#explorexr-animation-settings .explorexr-premium-range-value {
+    display: inline-block;
+    min-width: 32px;
+    padding: 4px 8px;
+    background: #f0f0f1;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 13px;
+    color: #1d2327;
+}
+
+/* Disabled state styling for conflicting settings */
+#explorexr-animation-settings .explorexr-premium-form-group.scroll-disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* Responsive Design */
+
+/* Tablet - 2 columns */
+@media (max-width: 1200px) {
+    #explorexr-animation-settings .explorexr-premium-form-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Small Tablet - Stack preview controls */
+@media (max-width: 900px) {
+    #explorexr-animation-settings .explorexr-animation-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
+    }
+    
+    #explorexr-animation-settings .explorexr-animation-controls .button {
+        margin: 0;
+        width: 100%;
+    }
+}
+
+/* Mobile - 1 column */
+@media (max-width: 700px) {
+    #explorexr-animation-settings .explorexr-premium-form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    #explorexr-animation-settings .explorexr-animation-preview-wrapper model-viewer {
+        height: 400px;
+    }
+}

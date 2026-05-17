@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
             <?php 
             // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage -- Plugin logo for admin footer
             printf('<img src="%s" alt="%s" class="explorexr-footer-logo" loading="lazy">', 
-                esc_url(EXPLOREXR_PLUGIN_URL . 'assets/img/logos/explorexr-Logo-dark.png'), 
+                esc_url(EXPLOREXR_PLUGIN_URL . 'assets/img/logos/explorexr-logo-dark.png'), 
                                 esc_attr__('ExploreXR Logo', 'explorexr')
             );
             ?>
@@ -27,7 +27,7 @@ if (!defined('ABSPATH')) {
             </p>
         </div>
         <div class="explorexr-footer-links">
-            <a href="https://expoxr.com" target="_blank">ExpoXR</a>
+            <a href="https://expoxr.com" target="_blank">Visit ExpoXR.com</a>
             <a href="https://expoxr.com/explorexr/documentation/" target="_blank">Documentation</a>
             <a href="https://expoxr.com/support/" target="_blank">Support</a>
         </div>

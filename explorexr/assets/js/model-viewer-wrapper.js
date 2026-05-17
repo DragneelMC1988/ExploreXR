@@ -10,27 +10,23 @@
  * - Model poster support
  */
 
-// Helper function to check if debug logging is enabled
-function ExploreXRDebugLog(message, ...args) {
-    if (typeof ExploreXRLoadingOptions !== 'undefined' && ExploreXRLoadingOptions.debug_mode) {
+// Thin wrappers that delegate to ExploreXRLogger when available.
+// ExploreXRLogger is provided by the Debug Addon (WP_DEBUG builds); on
+// production a no-op stub is inlined by model-viewer-script.php.
+function ExploreXRDebugLog(message) {
+    if (typeof ExploreXRLogger !== 'undefined') {
+        ExploreXRLogger.log(message, 'info');
     }
 }
 
-function ExploreXRDebugWarn(message, ...args) {
-    if (typeof ExploreXRLoadingOptions !== 'undefined' && ExploreXRLoadingOptions.debug_mode) {
-        console.warn(message, ...args);
+function ExploreXRDebugWarn(message) {
+    if (typeof ExploreXRLogger !== 'undefined') {
+        ExploreXRLogger.warn(message);
     }
 }
 
 // Function to initialize all model viewers
 function initExploreXRModelViewers() {
-    // Log loaded configuration (only if debug mode is enabled)
-    if (typeof ExploreXRLoadingOptions !== 'undefined') {
-        ExploreXRDebugLog('[ExploreXR] Loading with options:', ExploreXRLoadingOptions);
-    } else {
-        ExploreXRDebugLog('[ExploreXR] No global loading options found, using defaults');
-    }
-
     // Target all model-viewer elements, not just ones with the ExploreXR-model class
     // This ensures all existing models get the new loading UI
     const modelViewers = document.querySelectorAll('model-viewer');
@@ -49,6 +45,12 @@ function initExploreXRModelViewers() {
     const arSupport = isARSupported();
     
     modelViewers.forEach(function(modelViewer, index) {
+        // Guard: skip viewers that have already been initialised by this function.
+        if (modelViewer.hasAttribute('data-explorexr-wrapper-init')) {
+            return;
+        }
+        modelViewer.setAttribute('data-explorexr-wrapper-init', 'true');
+
         // Make sure model viewer is in a container
         let container = modelViewer.parentElement;
         
@@ -94,21 +96,13 @@ function initExploreXRModelViewers() {
                     container = wrapper;
                 }
             }
-              // Free Version: Set default camera orbit if camera-controls is enabled
-            if (modelViewer.hasAttribute('camera-controls') && !modelViewer.hasAttribute('camera-orbit')) {
-                modelViewer.setAttribute('camera-orbit', '0deg 75deg 105%');
-            }
+            // camera-orbit is set from post meta by the shortcode when explicitly
+            // configured. Do not override it here — let model-viewer auto-frame.
             
             // Don't automatically add auto-rotate unless explicitly set
             // This respects user settings and prevents conflicts
             
-            // Set up animation - Free version supports a single animation
-            if (modelViewer.hasAttribute('animation-name')) {
-                // Single animation is already set up, ensure autoplay works
-                if (!modelViewer.hasAttribute('autoplay')) {
-                    modelViewer.setAttribute('autoplay', '');
-                }
-            }
+            // Set up animation - autoplay is driven by explicit settings/attributes.
             
             // Setup loading UI using the official model-viewer approach
             setupLoadingUI(modelViewer, container, index);
@@ -123,16 +117,28 @@ function initExploreXRModelViewers() {
      */
     function setupLoadingUI(modelViewer, container, index) {
         ExploreXRDebugLog('[ExploreXR] Setting up loading UI for model #' + (index + 1));
+
+        // If the Loading Addon is active and enabled for this model, skip the
+        // core loading UI entirely — the addon creates its own overlay, bar,
+        // percentage and text elements.  Creating both causes duplicate bars.
+        var addonEnabled = modelViewer.getAttribute('data-loading-addon-enabled');
+        if (addonEnabled && (addonEnabled === 'true' || addonEnabled === '1')) {
+            ExploreXRDebugLog('[ExploreXR] Loading Addon active for model #' + (index + 1) + ' – skipping core loading UI');
+            return;
+        }
         
-        // 1. Ensure the model-viewer element has the proper loading attributes.
-        // PHP already sets loading="eager|lazy" via the filter; only default if missing.
+        // 1. Ensure the model-viewer element has the proper loading attributes
         if (!modelViewer.hasAttribute('loading')) {
-            const globalLazy = (typeof ExploreXRLoadingOptions !== 'undefined' && ExploreXRLoadingOptions.lazy_load_model);
-            modelViewer.setAttribute('loading', globalLazy ? 'lazy' : 'eager');
+            modelViewer.setAttribute('loading', 'eager');
         }
         
         if (!modelViewer.hasAttribute('reveal')) {
-            modelViewer.setAttribute('reveal', 'interaction');
+            // Always use 'auto' so the model renders and reveals as soon as it is
+            // ready — regardless of whether camera-controls is enabled.
+            // Using 'interaction' caused a blank screen after loading because the
+            // WebGL canvas was not initialised until the user first touched/clicked,
+            // so dismissPoster() hid the overlay but left an empty frame behind.
+            modelViewer.setAttribute('reveal', 'auto');
         }
         
         // Get loading settings from global options or data attributes
@@ -550,7 +556,7 @@ function loadExploreXRModel(modelInstanceId, modelFileUrl, modelAttributes) {
             try {
                 modelAttributes = JSON.parse(modelAttributes);
             } catch (e) {
-                console.error('ExploreXR: Failed to parse model attributes JSON:', e);
+                ExploreXRDebugWarn('ExploreXR: Failed to parse model attributes JSON');
                 modelAttributes = {};
             }
         }
@@ -595,12 +601,11 @@ function loadExploreXRModel(modelInstanceId, modelFileUrl, modelAttributes) {
                 }
                 
                 if (!modelAttributes.hasOwnProperty('loading')) {
-                    const globalLazy = (typeof ExploreXRLoadingOptions !== 'undefined' && ExploreXRLoadingOptions.lazy_load_model);
-                    modelViewer.setAttribute('loading', globalLazy ? 'lazy' : 'eager');
+                    modelViewer.setAttribute('loading', 'eager');
                 }
                 
                 if (!modelAttributes.hasOwnProperty('reveal')) {
-                    modelViewer.setAttribute('reveal', 'interaction');
+                    modelViewer.setAttribute('reveal', 'auto');
                 }
                 
                 // Set width and height to 100% to fill container
@@ -615,13 +620,20 @@ function loadExploreXRModel(modelInstanceId, modelFileUrl, modelAttributes) {
                     }
                     
                     // Validate attribute name: must be a string and start with a letter
-                    if (typeof key === 'string' && /^[a-zA-Z]/.test(key) && value !== null && value !== undefined) {
-                        modelViewer.setAttribute(key, value);
-                    } else if (typeof key !== 'string' || !/^[a-zA-Z]/.test(key)) {
-                        // Only show this warning if debug mode is enabled to prevent console spam
-                        if (typeof ExploreXRLoadingOptions !== 'undefined' && ExploreXRLoadingOptions.debug_mode) {
-                            console.warn('ExploreXR: Invalid attribute name skipped:', key);
+                    if (typeof key === 'string' && /^[a-zA-Z]/.test(key)) {
+                        // CRITICAL FIX: Handle boolean attributes (autoplay, loop, camera-controls)
+                        // These come from PHP as empty string '' and must be set without value
+                        const isBooleanAttr = (value === '' || value === true || value === '1' || value === 1);
+                        
+                        if (isBooleanAttr) {
+                            // Boolean attribute - just set the attribute name
+                            modelViewer.setAttribute(key, '');
+                        } else if (value !== null && value !== undefined) {
+                            // Regular attribute with value
+                            modelViewer.setAttribute(key, value);
                         }
+                    } else if (typeof key !== 'string' || !/^[a-zA-Z]/.test(key)) {
+                        ExploreXRDebugWarn('ExploreXR: invalid attribute name skipped');
                     }
                 }
                 
@@ -649,6 +661,8 @@ function loadExploreXRModel(modelInstanceId, modelFileUrl, modelAttributes) {
                 
                 // Append model viewer to wrapper
                 wrapper.appendChild(modelViewer);
+                
+                ExploreXRDebugLog('ExploreXR: loadExploreXRModel DOM ready — ' + modelInstanceId);
                 
                 // Append wrapper to viewer container
                 viewerContainer.appendChild(wrapper);
@@ -690,6 +704,37 @@ window.loadExploreXRModel = loadExploreXRModel;
 
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
+    // Apply explicit sizing from data attributes only for containers that do NOT have an id.
+    // Containers with an id are sized by the responsive <style> block injected directly into the
+    // shortcode HTML (which includes breakpoint-specific media queries for tablet and mobile).
+    // Setting container.style.width / container.style.height here would override those media
+    // queries because inline JS styles have higher specificity than any stylesheet rule, breaking
+    // responsive sizing on tablet and mobile.
+    document.querySelectorAll('.ExploreXR-model-container[data-width][data-height]').forEach(function(container) {
+        // Skip containers managed by responsive CSS (identified by a unique id attribute).
+        if (container.id) {
+            // Still expose dimensions as CSS custom properties so child JS can read them,
+            // but do NOT set width/height inline styles.
+            const width = container.getAttribute('data-width');
+            const height = container.getAttribute('data-height');
+            if (width) { container.style.setProperty('--explorexr-width', width); }
+            if (height) { container.style.setProperty('--explorexr-height', height); }
+            return;
+        }
+
+        const width = container.getAttribute('data-width');
+        const height = container.getAttribute('data-height');
+
+        if (width) {
+            container.style.setProperty('--explorexr-width', width);
+            container.style.width = width;
+        }
+        if (height) {
+            container.style.setProperty('--explorexr-height', height);
+            container.style.height = height;
+        }
+    });
+    
     // Use centralized loader to ensure model-viewer is available
     if (window.loadModelViewer && !window.isModelViewerLoaded()) {
         const scriptConfig = window.ExploreXRScriptConfig || {};
@@ -697,9 +742,8 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(function() {
                 initExploreXRModelViewers();
             })
-            .catch(function(error) {
-                console.warn('ExploreXR: Model viewer could not be loaded, models will show in fallback mode.');
-                // Initialize anyway to show error state
+            .catch(function() {
+                ExploreXRDebugWarn('ExploreXR: model-viewer could not be loaded, showing fallback state');
                 initExploreXRModelViewers();
             });
     } else {
@@ -708,17 +752,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Also listen for the model-viewer script loaded event from preloader
-document.addEventListener('ExploreXR-model-viewer-ready', function(event) {
-    
-    // Re-initialize to ensure any delayed content is processed
-    setTimeout(function() {
-        initExploreXRModelViewers();
-    }, 300);
-});
-
-// Also initialize when new content might be loaded via AJAX
-document.addEventListener('ExploreXR-model-added', function() {
+// Re-initialize when model-viewer script signals it is ready (e.g. on-demand load).
+// Per-element guard in initExploreXRModelViewers prevents double-init.
+document.addEventListener('ExploreXR-model-viewer-ready', function() {
     initExploreXRModelViewers();
 });
 

@@ -4,38 +4,59 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-// Allow uploading of 3D model file types
+// Allow uploading of 3D model file types and HDR environment files
 add_filter('upload_mimes', function ($mimes) {
     $mimes['glb'] = 'model/gltf-binary';
     $mimes['gltf'] = 'model/gltf+json';
     $mimes['usdz'] = 'model/vnd.usdz+zip';
+    
+    // HDR/EXR environment files for lighting
+    $mimes['hdr'] = 'image/vnd.radiance';
+    $mimes['exr'] = 'image/x-exr';
+
+    // WebAssembly decoder binaries (Draco, Basis Universal)
+    $mimes['wasm'] = 'application/wasm';
+
     return $mimes;
 });
 
-// Fix MIME type detection for 3D model files.
-// PHP's finfo reports GLB/GLTF/USDZ as application/octet-stream because they
-// are not in most finfo magic databases. WordPress then sees a mismatch between
-// the extension-based MIME (model/gltf-binary) and the real MIME detected by
-// finfo (application/octet-stream) and fails the check. This filter corrects
-// the result when the file extension is a known 3D model type.
+// Fix wp_check_filetype_and_ext for 3D model files and HDR environment files
+// WordPress doesn't recognize GLB/GLTF/USDZ/HDR/EXR file signatures, so we need to bypass the strict MIME check
 add_filter('wp_check_filetype_and_ext', function ($data, $file, $filename, $mimes) {
-    $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-
-    if ($ext === 'glb' && (empty($data['ext']) || empty($data['type']))) {
-        $data['ext']  = 'glb';
-        $data['type'] = 'model/gltf-binary';
+    // Get the file extension
+    $filetype = wp_check_filetype($filename, $mimes);
+    $ext = $filetype['ext'];
+    $type = $filetype['type'];
+    
+    // If it's a 3D model or HDR environment file, trust the extension
+    if (in_array($ext, array('glb', 'gltf', 'usdz', 'hdr', 'exr'), true)) {
+        // Check if file exists before accessing
+        if (file_exists($file)) {
+            $data['ext'] = $ext;
+            $data['type'] = $type;
+            
+            // For GLB files, also accept application/octet-stream
+            if ($ext === 'glb' && empty($data['type'])) {
+                $data['type'] = 'model/gltf-binary';
+            }
+            
+            // For USDZ files, also accept application/zip
+            if ($ext === 'usdz' && empty($data['type'])) {
+                $data['type'] = 'model/vnd.usdz+zip';
+            }
+            
+            // For HDR files, set proper MIME type
+            if ($ext === 'hdr' && empty($data['type'])) {
+                $data['type'] = 'image/vnd.radiance';
+            }
+            
+            // For EXR files, set proper MIME type
+            if ($ext === 'exr' && empty($data['type'])) {
+                $data['type'] = 'image/x-exr';
+            }
+        }
     }
-
-    if ($ext === 'gltf' && (empty($data['ext']) || empty($data['type']))) {
-        $data['ext']  = 'gltf';
-        $data['type'] = 'model/gltf+json';
-    }
-
-    if ($ext === 'usdz' && (empty($data['ext']) || empty($data['type']))) {
-        $data['ext']  = 'usdz';
-        $data['type'] = 'model/vnd.usdz+zip';
-    }
-
+    
     return $data;
 }, 10, 4);
 

@@ -17,39 +17,37 @@ if (!isset($model_id) && isset($_GET['model_id'])) {
     $model_id = intval($_GET['model_id']);
 }
 
-// Include loading options
+// Include loading options 
 if (!function_exists('explorexr_get_loading_options')) {
-    if (file_exists(EXPLOREXR_PLUGIN_DIR . 'admin/settings/loading-options.php')) {
+    if (file_exists(EXPLOREXR_PLUGIN_DIR . 'admin/loading-options.php')) {
+        require_once EXPLOREXR_PLUGIN_DIR . 'admin/loading-options.php';
+    } elseif (file_exists(EXPLOREXR_PLUGIN_DIR . 'admin/settings/loading-options.php')) {
         require_once EXPLOREXR_PLUGIN_DIR . 'admin/settings/loading-options.php';
     }
 }
 
 // Define version fallback if EXPLOREXR_VERSION is not defined
 if (!defined('EXPLOREXR_VERSION')) {
-    define('EXPLOREXR_VERSION', '1.0.1');
+    define('EXPLOREXR_VERSION', '1.0.0');
 }
 
 // Get settings from options
 // phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variables for script configuration
-$cdn_source = get_option('explorexr_cdn_source', 'local');
-
-// Force local mode for WordPress.org compliance - override any CDN setting
-if ($cdn_source === 'cdn') {
-    $cdn_source = 'local';
-    // Update the option to prevent future issues
-    update_option('explorexr_cdn_source', 'local');
-}
+// Force local mode for WordPress.org compliance - always use local (CDN disabled)
+// Note: Option migration to 'local' is handled in admin_init hook, not during render
+$cdn_source = 'local';
 $model_viewer_version = get_option('explorexr_model_viewer_version', '4.1.0');
 
 // Get the new loading options
 $script_location = get_option('explorexr_script_location', 'footer');
 $script_loading_timing = get_option('explorexr_script_loading_timing', 'auto');
 $lazy_load_poster = get_option('explorexr_lazy_load_poster', false);
-$lazy_load_model = get_option('explorexr_lazy_load_model', false);
 
 // Determine script loading settings
 $load_in_footer = ($script_location === 'footer');
 $script_attributes = array();
+// Ensure the plugin URL is available before any model-viewer script executes
+$plugin_url_inline_script = 'window.explorexrPluginUrl = window.explorexrPluginUrl || "' . esc_js(EXPLOREXR_PLUGIN_URL) . '";';
 // phpcs:enable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 
 // Configure script loading timing
@@ -65,9 +63,19 @@ if ($script_loading_timing === 'defer') {
 }
 
 // Check if script has already been enqueued to prevent duplicates
-// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for script handle
-$script_handle = 'model-viewer-script';
-if (!wp_script_is($script_handle, 'enqueued')) {
+// First check if the global registration from admin/core/functions.php exists
+if (wp_script_is('explorexr-premium-model-viewer', 'registered') || wp_script_is('explorexr-premium-model-viewer', 'enqueued')) {
+    // Global registration exists, just enqueue it (don't re-register)
+    if (!wp_script_is('explorexr-premium-model-viewer', 'enqueued')) {
+        wp_enqueue_script('explorexr-premium-model-viewer');
+    }
+    // Ensure model-viewer picks up the correct plugin URL before execution
+    wp_add_inline_script('explorexr-premium-model-viewer', $plugin_url_inline_script, 'before');
+} else {
+    // Fallback: Use template's own registration (legacy support)
+    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for script handle
+    $script_handle = 'model-viewer-script';
+    if (!wp_script_is($script_handle, 'enqueued')) {
     if ($cdn_source === 'local') {
         // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for file path check
         $local_umd_path = EXPLOREXR_PLUGIN_DIR . 'assets/js/model-viewer-umd.js';
@@ -126,6 +134,10 @@ if (!wp_script_is($script_handle, 'enqueued')) {
         
         return; // Exit without loading any external script
     }
+    } // End fallback registration check
+    
+    // Ensure the plugin URL is defined before the legacy model-viewer script executes
+    wp_add_inline_script($script_handle, $plugin_url_inline_script, 'before');
 }
 
 // Enqueue centralized loader manager first
@@ -176,34 +188,151 @@ wp_localize_script('explorexr-model-viewer-wrapper', 'explorexrScriptConfig', $s
 // Set global plugin URL for Model Viewer dependencies (WordPress.org compliance - properly escaped)
 wp_add_inline_script('explorexr-model-viewer-wrapper', 'window.explorexrPluginUrl = "' . esc_js(EXPLOREXR_PLUGIN_URL) . '";', 'before');
 
-// Configure Draco, KTX2/Basis and Meshopt decoder locations for the bundled model-viewer UMD.
-// These must run AFTER model-viewer-umd.js loads so ModelViewerElement is defined.
-$decoder_plugin_url = esc_js(EXPLOREXR_PLUGIN_URL);
-wp_add_inline_script(
-    $script_handle,
-    '(function() {
-        var MV = window.ModelViewerElement;
-        if (!MV) return;
-        MV.dracoDecoderLocation     = "' . $decoder_plugin_url . 'assets/vendor/draco/";
-        MV.ktx2TranscoderLocation   = "' . $decoder_plugin_url . 'assets/vendor/basis-universal/";
-        MV.meshoptDecoderLocation   = "' . $decoder_plugin_url . 'assets/vendor/meshopt/meshopt_decoder.js";
-    })();',
-    'after'
-);
-
-// Enqueue model-handler.js for debugging features
-wp_enqueue_script('explorexr-model-handler', EXPLOREXR_PLUGIN_URL . 'assets/js/model-handler.js', array('jquery'), EXPLOREXR_VERSION, true);
+// debug-logger and model-handler are only needed when WP_DEBUG is on.
+// On production sites they add unnecessary weight — ExploreXRLogger stubs
+// are already inlined so log calls are safe to make without the full file.
+if (defined('WP_DEBUG') && WP_DEBUG) {
+    wp_enqueue_script('explorexr-debug-logger', EXPLOREXR_PLUGIN_URL . 'assets/js/debug-logger.js', array(), EXPLOREXR_VERSION, true);
+    wp_add_inline_script('explorexr-debug-logger',
+        'window.explorexrDebug = window.explorexrDebug || { enabled: false };',
+        'before'
+    );
+    wp_enqueue_script('explorexr-model-handler', EXPLOREXR_PLUGIN_URL . 'assets/js/model-handler.js', array('jquery', 'explorexr-debug-logger'), EXPLOREXR_VERSION, true);
+} else {
+    // Provide a lightweight no-op stub so ExploreXRLogger calls don't throw.
+    wp_add_inline_script('explorexr-model-viewer-wrapper',
+        'window.explorexrDebug = window.explorexrDebug || { enabled: false };' .
+        'window.ExploreXRLogger = window.ExploreXRLogger || { log: function(){}, warn: function(){}, error: function(){} };',
+        'before'
+    );
+}
 
 // Enqueue custom CSS
 wp_enqueue_style('explorexr-model-viewer', EXPLOREXR_PLUGIN_URL . 'assets/css/model-viewer.css', array(), EXPLOREXR_VERSION);
 
-// Base model-viewer inline styles
-$explorexr_base_css = "
-    model-viewer {
-        --poster-color: transparent;
+// AR session handler (replaces $ar_fix_css inline style — CSS lives in assets/css/model-viewer.css)
+// AR session JS extracted to assets/js/ar-session-handler.js and enqueued below
+
+// Load Model button: project configured colors into CSS custom properties so the
+// hardcoded fallbacks in model-viewer.css can be overridden from the settings UI.
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for inline CSS
+$loadbtn_bg          = get_option('explorexr_load_button_bg', '');
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
+$loadbtn_color       = get_option('explorexr_load_button_color', '');
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
+$loadbtn_hover_bg    = get_option('explorexr_load_button_hover_bg', '');
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
+$loadbtn_hover_color = get_option('explorexr_load_button_hover_color', '');
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
+$loadbtn_radius      = get_option('explorexr_load_button_radius', '');
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- template-scoped CSS variable accumulator
+$loadbtn_vars        = '';
+if ($loadbtn_bg !== '') {
+    $loadbtn_vars .= '--exr-loadbtn-bg:' . esc_attr($loadbtn_bg) . ';';
+}
+if ($loadbtn_color !== '') {
+    $loadbtn_vars .= '--exr-loadbtn-color:' . esc_attr($loadbtn_color) . ';';
+}
+if ($loadbtn_hover_bg !== '') {
+    $loadbtn_vars .= '--exr-loadbtn-hover-bg:' . esc_attr($loadbtn_hover_bg) . ';';
+}
+if ($loadbtn_hover_color !== '') {
+    $loadbtn_vars .= '--exr-loadbtn-hover-color:' . esc_attr($loadbtn_hover_color) . ';';
+}
+if ($loadbtn_radius !== '') {
+    $loadbtn_vars .= '--exr-loadbtn-radius:' . esc_attr($loadbtn_radius) . ';';
+}
+// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
+if ($loadbtn_vars !== '') {
+    wp_add_inline_style('explorexr-model-viewer', '.ExploreXR-load-model-btn, .explorexr-load-model-btn {' . $loadbtn_vars . '}');
+}
+
+// Enqueue AR session handler (JS extracted from inline script — CSS in model-viewer.css)
+wp_enqueue_script(
+    'explorexr-ar-session-handler',
+    EXPLOREXR_PLUGIN_URL . 'assets/js/ar-session-handler.js',
+    array( 'explorexr-model-viewer-wrapper' ),
+    EXPLOREXR_VERSION,
+    true
+);
+
+// Enqueue large-model load button handler (replaces per-instance wp_add_inline_script)
+wp_enqueue_script(
+    'explorexr-large-model-handler',
+    EXPLOREXR_PLUGIN_URL . 'assets/js/large-model-handler.js',
+    array( 'explorexr-model-loader' ),
+    EXPLOREXR_VERSION,
+    true
+);
+
+// Only add this filter once
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for filter control
+static $filter_added = false;
+if (!$filter_added) {
+    add_filter('explorexr_premium_model_viewer_attributes', 'explorexr_add_model_viewer_attributes', 10, 2);
+    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for filter control
+    $filter_added = true;
+}
+
+// Define the function only if it doesn't exist
+if (!function_exists('explorexr_add_model_viewer_attributes')) {    /**
+     * Add data attributes to the model viewer based on plugin settings
+     * 
+     * @param array $attributes Existing model viewer attributes
+     * @param int $model_id Model ID (optional, for compatibility)
+     * @return array Updated attributes
+     */
+    function explorexr_add_model_viewer_attributes($attributes, $model_id = null) {
+        // Get settings from options
+        $loading_display = get_option('explorexr_loading_display', 'bar');
+        $loading_bar_color = get_option('explorexr_loading_bar_color', '#1e88e5');
+        $loading_bar_size = get_option('explorexr_loading_bar_size', 'medium');
+        $loading_bar_position = get_option('explorexr_loading_bar_position', 'middle');
+        $percentage_font_size = get_option('explorexr_percentage_font_size', 24);
+        $percentage_font_family = get_option('explorexr_percentage_font_family', 'Arial, sans-serif');
+        $percentage_font_color = get_option('explorexr_percentage_font_color', '#333333');
+        $percentage_position = get_option('explorexr_percentage_position', 'center-center');
+        
+        // Resolve lazy poster: per-model override wins, otherwise global.
+        $lazy_load_poster = get_option('explorexr_lazy_load_poster', false);
+        if (!empty($model_id)) {
+            $per_model_lazy_poster = get_post_meta($model_id, '_explorexr_premium_lazy_load_poster', true);
+            if ($per_model_lazy_poster === 'on') {
+                $lazy_load_poster = true;
+            } elseif ($per_model_lazy_poster === 'off') {
+                $lazy_load_poster = false;
+            }
+        }
+
+        // NOTE: Loading addon now handles all loading attributes via filter hook
+        // These old attributes have been removed to prevent conflicts
+        // The Loading Options Add-on injects the new field structure via
+        // the 'explorexr_premium_model_viewer_attributes' filter
+
+        // Add lazy loading attributes
+        if ($lazy_load_poster) {
+            $attributes['data-lazy-load-poster'] = 'true';
+            $attributes['loading'] = 'lazy'; // Add native lazy loading attribute
+        }
+
+        // Inject compression decoder locations on every model-viewer.
+        // model-viewer fetches these only when the .glb actually contains the
+        // matching compression payload, so there is no overhead for plain models.
+        if (defined('EXPLOREXR_PLUGIN_URL')) {
+            $attributes['draco-decoder-location']   = EXPLOREXR_PLUGIN_URL . 'assets/vendor/draco/';
+            $attributes['ktx2-transcoder-location'] = EXPLOREXR_PLUGIN_URL . 'assets/vendor/basis-universal/';
+            $meshopt_file = EXPLOREXR_PLUGIN_DIR . 'assets/vendor/meshopt/meshopt_decoder.module.js';
+            if (file_exists($meshopt_file)) {
+                $attributes['meshopt-decoder'] = EXPLOREXR_PLUGIN_URL . 'assets/vendor/meshopt/meshopt_decoder.module.js';
+            }
+        }
+
+        // AR support is not available in the Free version
+        // Premium AR features are available in the Pro version only
+
+        return $attributes;
     }
-";
-wp_add_inline_style('explorexr-model-viewer', $explorexr_base_css);
+}
 
 // Add the on-demand script loader function
 if (!function_exists('explorexr_add_ondemand_script_loader')) {
@@ -288,7 +417,9 @@ if (!function_exists('explorexr_add_ondemand_script_loader')) {
                 };
                 
                 script.onerror = function() {
-                    console.warn("ExploreXR: Model viewer script could not be loaded from the selected source.");
+                    if (typeof ExploreXRLogger !== "undefined") {
+                        ExploreXRLogger.log("ExploreXR: model-viewer script could not be loaded", "warn");
+                    }
                     
                     // Try to show user-friendly notification if notification system is available
                     if (typeof window.ExploreXRCreateNotification !== "undefined") {
@@ -399,4 +530,8 @@ if (!function_exists('explorexr_add_ondemand_script_loader')) {
         wp_add_inline_script('explorexr-model-viewer-wrapper', $script_loader_js);
     }
 }
+?>
+
+
+
 

@@ -38,6 +38,7 @@
     display: flex;
     flex-direction: column;
     min-height: 350px; /* Set minimum height for consistency */
+    justify-content: space-between;
 }
 
 .explorexr-model-card:hover {
@@ -93,9 +94,12 @@
 /* Model actions container */
 .explorexr-model-actions {
     display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
     margin-top: 10px;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: space-between;
+    align-items: baseline;
 }
 
 /* Model action buttons */
@@ -270,4 +274,86 @@
     100% {
         transform: rotate(360deg);
     }
+}
+
+/* ─── Addon Filter Bar ─── */
+.explorexr-addon-filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.explorexr-addon-filter-label {
+    font-weight: 600;
+    font-size: 13px;
+    color: #1d2327;
+    margin-right: 4px;
+}
+
+.explorexr-addon-filter-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border: 1px solid #dcdcde;
+    border-radius: 16px;
+    background: #fff;
+    color: #50575e;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    line-height: 1.4;
+}
+
+.explorexr-addon-filter-btn .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+.explorexr-addon-filter-btn:hover {
+    border-color: #2271b1;
+    color: #2271b1;
+    background: #f0f7fc;
+}
+
+.explorexr-addon-filter-btn.active {
+    border-color: #2271b1;
+    background: #2271b1;
+    color: #fff;
+}
+
+.explorexr-addon-filter-btn.active .dashicons {
+    color: #fff;
+}
+
+/* ─── Addon Badges on Model Cards ─── */
+.explorexr-model-addon-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 8px;
+}
+
+.explorexr-addon-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    background: #f0f0f1;
+    color: #50575e;
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+.explorexr-addon-badge .dashicons {
+    font-size: 12px;
+    width: 12px;
+    height: 12px;
+    color: #2271b1;
 }

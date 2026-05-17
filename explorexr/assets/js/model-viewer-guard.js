@@ -26,7 +26,9 @@
         const originalDefine = window.customElements.define;
         window.customElements.define = function(name, constructor, options) {
             if (name === 'model-viewer') {
-                console.warn('[ExploreXR Guard] Blocked attempt to redefine model-viewer custom element');
+                if (typeof ExploreXRLogger !== 'undefined') {
+                    ExploreXRLogger.warn('[ExploreXR Guard] Blocked attempt to redefine model-viewer custom element');
+                }
                 return; // Silently block the redefinition
             }
             return originalDefine.call(this, name, constructor, options);
@@ -42,7 +44,9 @@
         window.customElements.define = function(name, constructor, options) {
             if (name === 'model-viewer') {
                 if (window.explorexr_mODEL_VIEWER_LOADED.registered) {
-                    console.warn('[ExploreXR Guard] Blocked attempt to redefine model-viewer custom element');
+                    if (typeof ExploreXRLogger !== 'undefined') {
+                        ExploreXRLogger.warn('[ExploreXR Guard] Blocked attempt to redefine model-viewer custom element');
+                    }
                     return; // Silently block the redefinition
                 } else {
                     // This is the first registration
@@ -53,7 +57,9 @@
                     try {
                         return originalDefine.call(this, name, constructor, options);
                     } catch (e) {
-                        console.error('[ExploreXR Guard] Error during model-viewer registration:', e);
+                        if (typeof ExploreXRLogger !== 'undefined') {
+                            ExploreXRLogger.error('[ExploreXR Guard] Error during model-viewer registration:', e);
+                        }
                         // If registration failed but we didn't detect it was already registered,
                         // it might be a different error, so set registered back to false
                         if (!e.message.includes('already been used')) {
@@ -81,7 +87,9 @@
              (message.includes('Failed to execute \'define\' on \'CustomElementRegistry\'') && 
               message.includes('model-viewer')))) {
             
-            console.warn('[ExploreXR Guard] Suppressed model-viewer registration error:', message);
+            if (typeof ExploreXRLogger !== 'undefined') {
+                ExploreXRLogger.warn('[ExploreXR Guard] Suppressed model-viewer registration error:', message);
+            }
             
             // Update our tracking object
             window.explorexr_mODEL_VIEWER_LOADED.registered = true;

@@ -1,0 +1,960 @@
+/**
+ * ExploreXR AR Add-On - Admin Styles
+ *
+ * Styles for the AR options in the admin interface
+ */
+
+/* ============================================================
+ * AR Card — Tab Navigation (matches Materials addon pattern)
+ * ============================================================ */
+
+.explorexr-ar-card {
+    margin: 0;
+}
+
+.explorexr-ar-top-row {
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e5e7f2;
+    margin-bottom: 16px;
+}
+
+.explorexr-ar-enable-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* ── Tabs ── */
+.explorexr-ar-tabs {
+    display: flex;
+    gap: 4px;
+    border-bottom: 2px solid #e5e7f2;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.explorexr-ar-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: none;
+    border-bottom: 3px solid transparent;
+    background: transparent;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-bottom: -2px;
+    border-radius: 4px 4px 0 0;
+    transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    white-space: nowrap;
+}
+
+.explorexr-ar-tab:hover {
+    color: #0d152c;
+    background: #f8f9fa;
+}
+
+.explorexr-ar-tab.is-active {
+    color: #0d152c;
+    border-bottom-color: #2aace2;
+    background: #fff;
+    font-weight: 600;
+}
+
+.explorexr-ar-tab .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    line-height: 1;
+}
+
+.explorexr-ar-tab-badge {
+    display: inline-block;
+    background: #2aace2;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 10px;
+    min-width: 18px;
+    text-align: center;
+}
+
+.explorexr-ar-tab-badge--active {
+    background: #22c55e;
+}
+
+/* ── Tab content panels ── */
+.explorexr-ar-tab-content {
+    display: none;
+}
+
+.explorexr-ar-tab-content.is-active {
+    display: block;
+    animation: explorexr-ar-fadein 0.15s ease-in-out;
+}
+
+@keyframes explorexr-ar-fadein {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Tab intro text ── */
+.explorexr-ar-tab-intro {
+    margin-bottom: 16px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-left: 3px solid #2aace2;
+    border-radius: 0 4px 4px 0;
+}
+
+.explorexr-ar-tab-intro p {
+    margin: 0;
+    color: #64748b;
+    font-size: 13px;
+}
+
+/* ── Field label styles ── */
+.explorexr-ar-field-label {
+    display: block;
+    font-weight: 600;
+    color: #0d152c;
+    margin-bottom: 4px;
+}
+
+.explorexr-ar-label-hint {
+    font-weight: 400;
+    color: #64748b;
+    font-size: 12px;
+}
+
+/* ── Styling grid (3-column on wide screens) ── */
+.explorexr-ar-styling-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px 24px;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 1100px) {
+    .explorexr-ar-styling-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 782px) {
+    .explorexr-ar-styling-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ── Color picker ── */
+.explorexr-ar-color-picker {
+    display: block;
+    width: 48px;
+    height: 36px;
+    padding: 2px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    cursor: pointer;
+    background: none;
+}
+
+/* ── Icon section ── */
+.explorexr-ar-icon-section {
+    padding-top: 16px;
+    border-top: 1px solid #e5e7f2;
+    margin-top: 8px;
+}
+
+/* ── Upload field row ── */
+.explorexr-ar-upload-field {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+}
+
+.explorexr-ar-upload-field input[type="text"] {
+    flex: 1;
+    min-width: 200px;
+}
+
+/* ── Preview block ── */
+.explorexr-ar-preview-block {
+    margin-bottom: 24px;
+    border: 1px solid #e5e7f2;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.explorexr-ar-preview-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e5e7f2;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.explorexr-ar-preview-header h4 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #0d152c;
+}
+
+/* ── Compat notice ── */
+.explorexr-ar-compat-notice {
+    margin-top: 20px;
+    padding: 14px 16px;
+    background: #f0f6fc;
+    border-left: 4px solid #72aee6;
+    border-radius: 0 4px 4px 0;
+}
+
+.explorexr-ar-compat-notice p {
+    margin-top: 0;
+    margin-bottom: 8px;
+}
+
+.explorexr-ar-compat-notice ul {
+    margin: 0 0 0 20px;
+}
+
+.explorexr-ar-compat-notice li {
+    margin-bottom: 4px;
+    font-size: 13px;
+    color: #0d152c;
+}
+
+/* ── File preview ── */
+.explorexr-ar-file-preview a,
+.explorexr-ar-icon-preview {
+    display: inline-block;
+    margin-top: 6px;
+}
+
+/* ── Legacy two-column layout removed — kept only for backward compat selectors ── */
+.explorexr-ar-config-container,
+.explorexr-ar-styling-container,
+.explorexr-ar-advanced-container {
+    /* These selectors are no longer used in the tab layout. */
+}
+
+/* AR Settings Container */
+.ar-settings-container {
+    width: 100%;
+    padding-top: 20px;
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
+}
+
+.explorexr-premium-ar-settings-container {
+    margin: 15px 0;
+}
+
+.explorexr-premium-setting-section {
+    margin-bottom: 20px;
+    padding: 0 12px;
+}
+
+.explorexr-premium-setting-section h4 {
+    border-bottom: 1px solid #0D152C;
+    padding-bottom: 8px;
+    margin: 15px 0;
+    color: #0D152C;
+}
+
+/* Field Rows */
+.explorexr-premium-field-row {
+    margin: 15px 0;
+    padding-bottom: 15px;
+}
+
+.explorexr-premium-field-row:not(:last-child) {
+    border-bottom: 1px dotted #E5E7F2;
+}
+
+.explorexr-premium-field-row label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #0D152C;
+}
+
+.explorexr-premium-field-row .description {
+    color: #64748B;
+    font-style: italic;
+    margin-top: 5px;
+}
+
+/* Checkbox Group */
+.explorexr-premium-checkbox-group {
+    margin: 8px 0;
+}
+
+.explorexr-premium-checkbox-group label {
+    display: block;
+    font-weight: normal;
+    margin-bottom: 8px;
+}
+
+/* AR Button Preview Container (NOT the button itself) */
+#ar-button-preview {
+    /* Removed: background gradient that was overriding button inline styles */
+    /* The button itself has inline styles for background-color */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    transition: all 0.3s ease;
+    /* Background, border, colors, padding set via inline styles from JavaScript */
+}
+
+/* USDZ File Upload */
+#explorexr_usdz_upload {
+    margin-top: 10px;
+    padding: 15px;
+    background: linear-gradient(135deg, #F8FAFC 0%, #E5E7F2 100%);
+    border: 1px solid #0D152C;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(13, 21, 44, 0.1);
+}
+
+.usdz-file-selected {
+    color: #0D152C;
+    background: linear-gradient(135deg, #2AACE2 0%, #1e40af 100%);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border-left: 3px solid #1e40af;
+    font-weight: 500;
+}
+
+/* AR Metabox Placeholder */
+.explorexr-premium-ar-metabox-placeholder {
+    padding: 20px;
+    background: linear-gradient(135deg, #F8FAFC 0%, #E5E7F2 100%);
+    border: 1px solid #0D152C;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(13, 21, 44, 0.1);
+}
+
+.explorexr-premium-addon-info h3 {
+    margin-top: 0;
+}
+
+.explorexr-premium-addon-features ul {
+    list-style: disc;
+    margin-left: 20px;
+}
+
+.explorexr-premium-ar-cta {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.explorexr-premium-ar-data-info {
+    background: #f0f6fc;
+    padding: 10px;
+    border-left: 4px solid #72aee6;
+    margin-top: 15px;
+}
+
+/* Migration status */
+.explorexr-premium-migration-status {
+    background: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 15px;
+    margin-top: 20px;
+}
+
+.explorexr-premium-manual-migration {
+    background: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 15px;
+    margin-top: 20px;
+}
+
+/* AR Statistics */
+.explorexr-premium-ar-statistics {
+    padding: 10px;
+}
+
+.explorexr-premium-ar-statistics ul {
+    margin-left: 15px;
+}
+
+/* AR Settings page */
+.explorexr-premium-ar-settings-wrapper {
+    max-width: 800px;
+}
+
+.explorexr-premium-ar-settings-wrapper .form-table th {
+    width: 250px;
+}
+
+/* ============================================
+ * AR Settings Page Styles (moved from inline)
+ * ============================================ */
+
+/* Enhanced checkbox group styling */
+.explorexr-premium-checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.explorexr-premium-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: normal;
+    cursor: pointer;
+    padding: 4px 0;
+    transition: background-color 0.2s ease;
+}
+
+.explorexr-premium-checkbox-label:hover {
+    background-color: #f8f9fa;
+    border-radius: 3px;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.explorexr-premium-checkbox-label input[type="checkbox"] {
+    margin: 0;
+}
+
+/* File and image upload fields */
+.image-upload-field,
+.file-upload-field {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.image-upload-field input[type="text"],
+.file-upload-field input[type="text"] {
+    flex: 1;
+    min-width: 200px;
+}
+
+/* Image preview styling */
+.image-preview {
+    margin-top: 8px;
+    border: 1px solid #ddd;
+    padding: 5px;
+    display: inline-block;
+    background: #f9f9f9;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.image-preview img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+.image-preview-container {
+    width: 100%;
+    margin-top: 8px;
+}
+
+/* Button hover effects for enhanced fields */
+.ar-select-image.hover-effect,
+.ar-select-file.hover-effect {
+    background-color: #0073aa;
+    color: #fff;
+    border-color: #0073aa;
+}
+
+/* Enhanced field validation states */
+.field-validation-error {
+    border-color: #8062AA !important;
+    box-shadow: 0 0 2px rgba(220, 50, 50, 0.8);
+}
+
+.field-validation-success {
+    border-color: #2AACE2 !important;
+    box-shadow: 0 0 2px rgba(70, 180, 80, 0.8);
+}
+
+/* Tooltip styling for enhanced fields */
+.explorexr-premium-checkbox-label[title] {
+    position: relative;
+}
+
+.explorexr-premium-checkbox-label[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: #fff;
+    padding: 5px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 1000;
+    margin-bottom: 5px;
+}
+
+.explorexr-premium-checkbox-label[title]:hover::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #333;
+    z-index: 1000;
+}
+
+/* Maintenance Tools Styles */
+.maintenance-tool {
+    margin: 15px 0;
+    padding: 15px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.maintenance-tool button {
+    margin-bottom: 10px;
+}
+
+.maintenance-tool button.loading {
+    position: relative;
+    color: transparent;
+}
+
+.maintenance-tool button.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 16px;
+    height: 16px;
+    border: 2px solid #ccc;
+    border-top-color: #666;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+.ar-action-result {
+    margin-top: 10px;
+    padding: 0;
+    min-height: 0;
+    transition: all 0.3s ease;
+}
+
+.ar-action-result.success {
+    border-left: 4px solid #2AACE2;
+    background: #f7fcf0;
+}
+
+.ar-action-result.error {
+    border-left: 4px solid #8062AA;
+    background: #fef7f1;
+}
+
+.ar-action-result p {
+    margin: 0;
+    padding: 8px 12px;
+    font-size: 13px;
+}
+
+.ar-action-result .success-message {
+    color: #155724;
+}
+
+.ar-action-result .error-message {
+    color: #721c24;
+}
+
+/* Maintenance section warning notice */
+.notice.inline {
+    display: block;
+    margin: 10px 0;
+    padding: 12px;
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+}
+
+.notice.inline p {
+    margin: 0;
+    font-size: 13px;
+}
+
+/* Responsive improvements */
+@media (max-width: 782px) {
+    .explorexr-premium-checkbox-group {
+        gap: 6px;
+    }
+    
+    .explorexr-premium-checkbox-label {
+        padding: 6px 4px;
+    }
+    
+    .image-upload-field,
+    .file-upload-field {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .image-upload-field,
+    .file-upload-field {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .image-upload-field input[type="text"],
+    .file-upload-field input[type="text"] {
+        min-width: auto;
+        margin-bottom: 8px;
+    }
+    
+    .image-upload-field button,
+    .file-upload-field button {
+        width: 100%;
+        margin-bottom: 4px;
+    }
+}
+/**
+ * ExploreXR AR Add-On - Additional Admin Styles
+ * Styles for the restructured AR settings cards
+ */
+
+/* AR Settings Container Layout */
+.explorexr-ar-settings-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 60px;
+}
+
+.explorexr-ar-config-container,
+.explorexr-ar-styling-container {
+    flex: 1;
+}
+
+.explorexr-ar-advanced-container {
+    width: 100%;
+}
+
+/* Settings Card Styling */
+.explorexr-premium-settings-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    height: 100%;
+}
+
+.explorexr-premium-settings-card-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 20px 0;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #f0f0f0;
+    color: #1e40af;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.explorexr-premium-settings-card-title .dashicons {
+    color: #2AACE2;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+/* Form groups inherit base shared styles */
+
+.explorexr-premium-settings-card select,
+.explorexr-premium-settings-card input[type="text"],
+.explorexr-premium-settings-card input[type="number"] {
+    width: 100%;
+    max-width: 100%;
+}
+
+.explorexr-premium-settings-card input[type="number"].small-text {
+    width: 100px;
+}
+
+/* Checkbox Group Styling */
+.explorexr-premium-settings-card .explorexr-premium-checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.explorexr-premium-settings-card .explorexr-premium-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: normal;
+    margin: 0;
+}
+
+.explorexr-premium-settings-card .explorexr-premium-checkbox-label input[type="checkbox"] {
+    margin: 0;
+}
+
+/* File Upload Area */
+.explorexr-premium-file-upload-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.explorexr-premium-media-preview {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: #f0f0f0;
+    border-radius: 4px;
+    margin-top: 8px;
+}
+
+.explorexr-premium-media-preview-filename {
+    font-size: 13px;
+    color: #333;
+}
+
+.explorexr-premium-media-preview-view {
+    color: #2271b1;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.explorexr-premium-media-preview-view:hover {
+    text-decoration: underline;
+}
+
+/* Buttons */
+.explorexr-premium-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    border: 1px solid;
+    transition: all 0.2s ease;
+}
+
+.explorexr-premium-button-secondary {
+    background: #2271b1;
+    color: #fff;
+    border-color: #2271b1;
+}
+
+.explorexr-premium-button-secondary:hover {
+    background: #135e96;
+    border-color: #135e96;
+    color: #fff;
+}
+
+.explorexr-premium-button-link {
+    background: transparent;
+    color: #b32d2e;
+    border-color: #b32d2e;
+}
+
+.explorexr-premium-button-link:hover {
+    background: #b32d2e;
+    color: #fff;
+}
+
+.explorexr-premium-button .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .explorexr-ar-settings-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* AR Button Preview Styling */
+.ar-button-preview {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+.ar-button-preview:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+/* AR Device Toggle */
+.explorexr-ar-device-toggle {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    justify-content: center;
+}
+
+.explorexr-device-btn {
+    flex: 1;
+    padding: 10px 20px;
+    background: #fff;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    color: #64748B;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.explorexr-device-btn:hover {
+    border-color: #0D152C;
+    color: #0D152C;
+    background: #f8f9fa;
+}
+
+.explorexr-device-btn.active {
+    background: #0D152C;
+    border-color: #0D152C;
+    color: #fff;
+}
+
+.explorexr-device-btn .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+/* AR Canvas Container */
+.explorexr-ar-canvas-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background: #f5f5f5;
+    border-radius: 8px;
+    min-height: 500px;
+}
+
+.explorexr-ar-canvas {
+    position: relative;
+    background: #ffffff;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s ease;
+    overflow: hidden;
+}
+
+/* Mobile Canvas: iPhone dimensions */
+.explorexr-ar-canvas.mobile {
+    width: 375px;
+    height: 667px;
+}
+
+/* Tablet Canvas: iPad dimensions */
+.explorexr-ar-canvas.tablet {
+    width: 768px;
+    height: 1024px;
+}
+
+/* Canvas Label */
+.explorexr-ar-canvas-label {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(13, 21, 44, 0.9);
+    color: #fff;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    z-index: 50;
+    pointer-events: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+    .explorexr-ar-canvas.tablet {
+        width: 600px;
+        height: 800px;
+    }
+}
+
+@media (max-width: 700px) {
+    .explorexr-ar-canvas.mobile {
+        width: 300px;
+        height: 533px;
+    }
+    
+    .explorexr-ar-canvas.tablet {
+        width: 500px;
+        height: 667px;
+    }
+}
+
+/* AR Addon Specific - Prevent Loading Addon CSS from affecting AR */
+/* Ensure AR cards maintain their default layout */
+.explorexr-ar-config-container .explorexr-premium-settings-card,
+.explorexr-ar-styling-container .explorexr-premium-settings-card,
+.explorexr-ar-advanced-container .explorexr-premium-settings-card {
+    display: block !important;
+}
+
+.explorexr-ar-config-container .explorexr-premium-form-group,
+.explorexr-ar-styling-container .explorexr-premium-form-group,
+.explorexr-ar-advanced-container .explorexr-premium-form-group {
+    display: block !important;
+    margin-right: 0 !important;
+    margin-bottom: 15px;
+}
+
+.explorexr-ar-advanced-container {
+    grid-column: 1 / -1;
+    width: 100%;
+}

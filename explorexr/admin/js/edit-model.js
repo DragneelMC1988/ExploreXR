@@ -1,53 +1,57 @@
 /**
  * Edit Model Page JavaScript
- * 
- * Handles all interactions on the Edit Model page
+ *
+ * Handles interactions on the Edit Model page that are NOT related to
+ * display size (size tabs, device tabs, predefined radio buttons).
+ * All size logic is handled by assets/js/model-size.js.
  */
 jQuery(document).ready(function($) {
     'use strict';
-    
-    const percentRuleError = 'Width and height cannot both be percentages. Please use px, vw, or vh for one dimension.';
-    
-    // WordPress admin menu compatibility - avoid interfering with WordPress menu functionality
+
+    // ─── WordPress admin menu compatibility ──────────────────────────
+
     function fixAdminMenuScroll() {
         try {
-            // Only fix critical scroll issues without breaking WordPress admin menu hover
             $('html, body').css({
                 'overflow': 'visible',
                 'height': 'auto'
             });
-            
-            // Don't override WordPress admin menu positioning as it breaks hover functionality
-            // The WordPress core handles admin menu positioning correctly
-            
         } catch (e) {
-            console.warn('ExploreXR: Admin menu scroll fix error:', e);
+            if (typeof ExploreXRLogger !== 'undefined') {
+                ExploreXRLogger.warn('ExploreXR: Admin menu scroll fix error:', e);
+            }
         }
     }
-    
-    // Elementor compatibility - delay our fix to avoid conflicts
+
     setTimeout(function() {
         try {
-            // Call the fix function
             fixAdminMenuScroll();
         } catch (e) {
-            console.warn('ExploreXR: Delayed admin menu fix error:', e);
+            if (typeof ExploreXRLogger !== 'undefined') {
+                ExploreXRLogger.warn('ExploreXR: Delayed admin menu fix error:', e);
+            }
         }
     }, 500);
-    
-    // Tab functionality
-    $('.explorexr-tab').on('click', function() {
-        const tabId = $(this).data('tab');
-        const tabGroup = $(this).closest('.explorexr-tabs').parent();
-        
-        // Update active tab
-        tabGroup.find('.explorexr-tab').removeClass('active');
+
+    // ─── Non-size tab functionality (model source, poster method) ────
+
+    // Handle tabs that are NOT part of the display-size card
+    $(document).on('click', '.explorexr-tab', function() {
+        var tabId = $(this).data('tab');
+
+        // Skip size-related tabs — those are handled by model-size.js
+        if (tabId === 'predefined-sizes' || tabId === 'custom-sizes') {
+            return;
+        }
+
+        var $parent = $(this).closest('.explorexr-tabs').parent();
+
+        $parent.find('> .explorexr-tabs .explorexr-tab').removeClass('active');
         $(this).addClass('active');
-        
-        // Show the selected tab content
-        tabGroup.find('.explorexr-tab-content').removeClass('active');
-        tabGroup.find(`#${tabId}`).addClass('active');
-        
+
+        $parent.find('> .explorexr-tab-content').removeClass('active');
+        $parent.find('#' + tabId).addClass('active');
+
         // Update hidden input values for form submission
         if (tabId === 'upload-model') {
             $('#model_source_input').val('upload');
@@ -59,33 +63,13 @@ jQuery(document).ready(function($) {
             $('#poster_method_input').val('library');
         }
     });
-    
-    // Device tab functionality
-    $('.explorexr-device-tab').on('click', function() {
-        const deviceId = $(this).data('device');
-        const deviceGroup = $(this).closest('.explorexr-device-tabs').parent();
-        
-        // Update active device tab
-        deviceGroup.find('.explorexr-device-tab').removeClass('active');
-        $(this).addClass('active');
-        
-        // Show the selected device content
-        deviceGroup.find('.explorexr-device-content').removeClass('active');
-        deviceGroup.find(`#${deviceId}-size`).addClass('active');
-    });
-    
-    // When a predefined size is selected, make sure the Custom Size field is not marked as selected
-    $('input[name="viewer_size"][value!="custom"]').on('change', function() {
-        if ($(this).is(':checked')) {
-            $('#custom_size_field').prop('checked', false);
-        }
-    });
-    
-    // Enhanced file input functionality
+
+    // ─── Enhanced file input ─────────────────────────────────────────
+
     $('.explorexr-styled-file-input').on('change', function() {
-        const $wrapper = $(this).closest('.explorexr-file-input-wrapper');
-        const $textElement = $wrapper.find('.explorexr-file-input-text');
-        
+        var $wrapper = $(this).closest('.explorexr-file-input-wrapper');
+        var $textElement = $wrapper.find('.explorexr-file-input-text');
+
         if (this.files.length > 0) {
             $textElement.text(this.files[0].name);
             $wrapper.find('.explorexr-file-input-decoration').css('border-style', 'solid');
@@ -94,74 +78,62 @@ jQuery(document).ready(function($) {
             $wrapper.find('.explorexr-file-input-decoration').css('border-style', 'dashed');
         }
     });
-    
-    // Copy shortcode functionality
+
+    // ─── Copy shortcode ──────────────────────────────────────────────
+
     $('.copy-shortcode').on('click', function() {
-        const shortcode = $(this).data('shortcode');
-        
-        // Create a temporary textarea element to copy the text
-        const $temp = $('<textarea>');
+        var shortcode = $(this).data('shortcode');
+
+        var $temp = $('<textarea>');
         $('body').append($temp);
         $temp.val(shortcode).select();
         document.execCommand('copy');
         $temp.remove();
-        
-        // Show a temporary tooltip
-        const $this = $(this);
-        const originalText = $this.html();
+
+        var $this = $(this);
+        var originalText = $this.html();
         $this.html('<span class="dashicons dashicons-yes"></span> Copied!');
-        
+
         setTimeout(function() {
             $this.html(originalText);
         }, 2000);
     });
-    
-    // Media library for poster image
+
+    // ─── Poster handling ─────────────────────────────────────────────
+
     var mediaUploader;
     $('#explorexr-select-poster').on('click', function(e) {
         e.preventDefault();
-        
-        // Check if wp.media is available
+
         if (typeof wp === 'undefined' || typeof wp.media === 'undefined') {
-            console.error('WordPress Media Library is not available');
+            if (typeof ExploreXRLogger !== 'undefined') {
+                ExploreXRLogger.error('WordPress Media Library is not available');
+            }
             alert('Media Library functionality is not available. Please check your WordPress installation.');
             return;
         }
-        
-        // If the uploader object has already been created, reopen the dialog
+
         if (mediaUploader) {
             mediaUploader.open();
             return;
         }
-        
-        // Create the media uploader
+
         mediaUploader = wp.media({
             title: 'Select Model Poster Image',
-            button: {
-                text: 'Use this image'
-            },
-            multiple: false  // Set to true if you want to select multiple images
+            button: { text: 'Use this image' },
+            multiple: false
         });
-        
-        // When an image is selected in the media manager...
+
         mediaUploader.on('select', function() {
-            // Get the selected attachment details
             var attachment = mediaUploader.state().get('selection').first().toJSON();
-            
-            // Update the form fields with the selected image details
             $('#model_poster_id').val(attachment.id);
             $('#model_poster_url').val(attachment.url);
-            
-            // Show the preview
-            var previewElement = $('#explorexr-poster-preview');
-            previewElement.show().find('img').attr('src', attachment.url);
+            $('#explorexr-poster-preview').show().find('img').attr('src', attachment.url);
         });
-        
-        // Open the uploader dialog
+
         mediaUploader.open();
     });
-    
-    // When removing poster is checked, hide the preview
+
     $('input[name="remove_poster"]').on('change', function() {
         if ($(this).is(':checked')) {
             $('#explorexr-poster-preview').hide();
@@ -169,74 +141,42 @@ jQuery(document).ready(function($) {
             $('#explorexr-poster-preview').show();
         }
     });
-    
-    // Addon integration removed from free version
-    
-    /**
-     * Show notification message
-     */
-    function showNotification(message, type = 'info') {
-        const $notification = $(`
-            <div class="explorexr-edit-notification ${type}">
-                <span class="notification-message">${message}</span>
-                <button class="notification-close">&times;</button>
-            </div>
-        `);
-        
-        $('body').append($notification);
-        
-        // Auto-remove after 3 seconds
-        setTimeout(() => {
-            $notification.fadeOut(() => $notification.remove());
-        }, 3000);
-        
-        // Manual close
-        $notification.find('.notification-close').on('click', () => {
-            $notification.fadeOut(() => $notification.remove());
-        });
-    }
-    
-    // AR functionality removed from free version - available in premium only
-    
-    // Auto-rotate settings toggle
+
+    // ─── Auto-rotate settings toggle ─────────────────────────────────
+
     $('#explorexr_auto_rotate').on('change', function() {
-        const autoRotateSettings = $('#auto-rotate-settings');
+        var autoRotateSettings = $('#auto-rotate-settings');
         if ($(this).is(':checked')) {
             autoRotateSettings.slideDown();
         } else {
             autoRotateSettings.slideUp();
         }
     });
-    
-    /**
-     * Prevent saving when width/height are both percentages for any breakpoint.
-     */
-    function violatesPercentRule(width, height) {
-        const isPercent = (value) => typeof value === 'string' && value.trim().endsWith('%');
-        return isPercent(width) && isPercent(height);
+
+    // ─── Notification helper ─────────────────────────────────────────
+
+    function showNotification(message, type) {
+        type = type || 'info';
+        var $notification = $(
+            '<div class="explorexr-edit-notification ' + type + '">' +
+                '<span class="notification-message">' + message + '</span>' +
+                '<button class="notification-close">&times;</button>' +
+            '</div>'
+        );
+
+        $('body').append($notification);
+
+        setTimeout(function() {
+            $notification.fadeOut(function() { $notification.remove(); });
+        }, 3000);
+
+        $notification.find('.notification-close').on('click', function() {
+            $notification.fadeOut(function() { $notification.remove(); });
+        });
     }
-    
-    $('form').on('submit', function(e) {
-        const desktopWidth = $('#viewer_width').val();
-        const desktopHeight = $('#viewer_height').val();
-        const tabletWidth = $('#tablet_viewer_width').val();
-        const tabletHeight = $('#tablet_viewer_height').val();
-        const mobileWidth = $('#mobile_viewer_width').val();
-        const mobileHeight = $('#mobile_viewer_height').val();
-        
-        if (
-            violatesPercentRule(desktopWidth, desktopHeight) ||
-            violatesPercentRule(tabletWidth, tabletHeight) ||
-            violatesPercentRule(mobileWidth, mobileHeight)
-        ) {
-            e.preventDefault();
-            alert(percentRuleError);
-            return false;
-        }
-        
-        return true;
-    });
-    
+
+    // ─── URL validation helper ───────────────────────────────────────
+
     function isValidURL(string) {
         try {
             new URL(string);

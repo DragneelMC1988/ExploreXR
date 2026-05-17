@@ -6,6 +6,10 @@
 (function($) {
     'use strict';
 
+    const MODEL_VIEWER_ANIMATION_RETRY_LIMIT = 50;
+    const overlayObservers = [];
+    let overlayCleanupObserver = null;
+
     // Initialize when DOM is ready
     $(document).ready(function() {
         initializeModelViewers();
@@ -16,38 +20,68 @@
      * Initialize all model viewer elements
      */
     function initializeModelViewers() {
-        // Find all model viewers in the page
         const modelViewers = document.querySelectorAll('model-viewer.explorexr-model');
-        
+
+        if ('IntersectionObserver' in window) {
+            const viewerObserver = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(function(entry) {
+                    if (!entry.isIntersecting) {
+                        return;
+                    }
+
+                    initializeSingleModelViewer(entry.target);
+                    observer.unobserve(entry.target);
+                });
+            }, { rootMargin: '200px 0px', threshold: 0.01 });
+
+            modelViewers.forEach(function(modelViewer) {
+                if (modelViewer.hasAttribute('data-explorexr-core-initialized')) {
+                    return;
+                }
+
+                viewerObserver.observe(modelViewer);
+            });
+
+            window.addEventListener('pagehide', function() {
+                viewerObserver.disconnect();
+            }, { once: true });
+
+            return;
+        }
+
         modelViewers.forEach(function(modelViewer) {
-            // Add event listeners for model-viewer events
-            modelViewer.addEventListener('load', onModelLoad);
-            modelViewer.addEventListener('error', onModelError);
-            
-            // Set up camera controls
-            setupBasicCameraControls(modelViewer);
-            
-            // Apply model poster if it exists
-            if (modelViewer.getAttribute('poster')) {
-                setupModelPoster(modelViewer);
-            }
+            initializeSingleModelViewer(modelViewer);
         });
-    }    /**
+    }
+
+    function initializeSingleModelViewer(modelViewer) {
+        if (!modelViewer || modelViewer.hasAttribute('data-explorexr-core-initialized')) {
+            return;
+        }
+
+        modelViewer.setAttribute('data-explorexr-core-initialized', 'true');
+        modelViewer.addEventListener('load', onModelLoad);
+        modelViewer.addEventListener('error', onModelError);
+        setupBasicCameraControls(modelViewer);
+
+        if (modelViewer.getAttribute('poster')) {
+            setupModelPoster(modelViewer);
+        }
+
+        if (modelViewer.loaded) {
+            onModelLoad({ target: modelViewer });
+        }
+    }
+
+    /**
      * Set up basic camera controls for a model viewer
      */
     function setupBasicCameraControls(modelViewer) {
-        // Don't automatically add camera-controls - only set defaults if already enabled
-        if (modelViewer.hasAttribute('camera-controls')) {
-            // Set default camera orbit if not specified
-            if (!modelViewer.hasAttribute('camera-orbit')) {
-                modelViewer.setAttribute('camera-orbit', '0deg 75deg 2m');
-            }
-        }
-        
-        // Set default field of view if not specified
-        if (!modelViewer.hasAttribute('field-of-view')) {
-            modelViewer.setAttribute('field-of-view', '30deg');
-        }
+        // Do not override camera-orbit or field-of-view here.
+        // The shortcode sets camera-orbit from post meta when explicitly configured,
+        // and model-viewer auto-computes the optimal FOV for each model.
+        // Forcing defaults here overrides both user settings and the per-model
+        // auto-framing that model-viewer performs after the scene loads.
     }
 
     /**
@@ -70,24 +104,22 @@
      */
     function onModelError(event) {
         const modelViewer = event.target;
-        
+
         // Check if error notifications should be shown
         if (typeof expoXRNotifications !== 'undefined' && !expoXRNotifications.show_error_notifications) {
-            console.warn('Model display issue occurred but error notifications are disabled');
+            ExploreXRLogger.log('ExploreXR: model error suppressed by notification settings', 'info');
             return;
         }
-        
+
         // Check if the error is a 404 (file not found)
         let errorMessage = 'Unable to display 3D model';
         let troubleshooting = '';
-        
-        // Log detailed error information
-        console.warn('Model display issue:', event);
-        
+
+        ExploreXRLogger.log('ExploreXR: model display issue', 'warn');
+
         // If we have source error details, use them
         if (event.detail && event.detail.sourceError) {
-            // For debugging, log the specific error
-            console.warn('Source error:', event.detail.sourceError);
+            ExploreXRLogger.log('ExploreXR: source error — ' + event.detail.sourceError, 'warn');
             
             // If it's a network error (like 404), show a more specific message
             if (event.detail.sourceError instanceof TypeError || 
@@ -195,11 +227,21 @@
      * Check if the model has animations and set up controls
      */
     function checkAndSetupAnimations(modelViewer) {
-        // Wait until animations are available
+        const retryCount = parseInt(modelViewer.getAttribute('data-explorexr-animation-retries') || '0', 10);
         if (!modelViewer.availableAnimations) {
+            if (retryCount >= MODEL_VIEWER_ANIMATION_RETRY_LIMIT) {
+                if (window.explorexrDebug && window.explorexrDebug.enabled && typeof ExploreXRLogger !== 'undefined') {
+                    ExploreXRLogger.log('animation init timeout', 'warn');
+                }
+                return;
+            }
+
+            modelViewer.setAttribute('data-explorexr-animation-retries', String(retryCount + 1));
             setTimeout(() => checkAndSetupAnimations(modelViewer), 100);
             return;
         }
+
+        modelViewer.removeAttribute('data-explorexr-animation-retries');
         
         // Check if the model has animations
         if (modelViewer.availableAnimations && modelViewer.availableAnimations.length > 0) {
@@ -229,7 +271,9 @@
     function createAnimationControls(modelViewer, animationName) {
         // This function requires ExploreXR Premium
         // Animation controls are a premium feature
-        console.warn('createAnimationControls requires ExploreXR Premium. Upgrade to access animation controls.');
+        if (typeof ExploreXRLogger !== 'undefined') {
+            ExploreXRLogger.warn('createAnimationControls requires ExploreXR Premium. Upgrade to access animation controls.');
+        }
     }
     */
 
@@ -258,5 +302,184 @@
             // This is handled in the createAnimationControls function
         });
     }
+    
+    /**
+     * Debug helper for troubleshooting
+     * Usage in console: window.explorexrInspectModels()
+     */
+    window.explorexrInspectModels = function() {
+        const models = document.querySelectorAll('model-viewer');
+
+        const logger = (typeof ExploreXRLogger !== 'undefined')
+            ? ExploreXRLogger
+            : { log: function() {}, warn: function() {}, error: function() {} };
+        
+        if (models.length === 0) {
+            logger.warn('❌ No model-viewer elements found on page');
+            return;
+        }
+        
+        logger.log(`✅ Found ${models.length} model-viewer element(s):`);
+        
+        models.forEach((model, index) => {
+            logger.log(`Model #${index + 1}: ${model.id || '(no ID)'}`);
+            
+            // Basic info
+            logger.log('📍 Source:', model.getAttribute('src') || '(no source)');
+            logger.log('🎬 Animation:', model.getAttribute('animation-name') || 'none');
+            logger.log('▶️  Autoplay:', model.hasAttribute('autoplay') ? 'YES' : 'NO');
+            logger.log('🔁 Loop:', model.hasAttribute('loop') ? 'YES' : 'NO');
+            
+            // Debug config
+            const debugConfig = model.getAttribute('data-debug-config');
+            if (debugConfig) {
+                try {
+                    const config = JSON.parse(debugConfig);
+                    logger.log('🐛 Debug Config:', config);
+                } catch (e) {
+                    logger.warn('⚠️  Debug config parse error:', e);
+                }
+            }
+            
+            // Animation attributes
+            const animAttrs = {};
+            Array.from(model.attributes).forEach(attr => {
+                if (attr.name.includes('animation') || attr.name.includes('data-animation')) {
+                    animAttrs[attr.name] = attr.value;
+                }
+            });
+            if (Object.keys(animAttrs).length > 0) {
+                logger.log('🎬 Animation Attributes:', animAttrs);
+            }
+            
+            // Post-processing attributes
+            const ppAttrs = {};
+            Array.from(model.attributes).forEach(attr => {
+                if (attr.name.startsWith('data-pp-')) {
+                    ppAttrs[attr.name] = attr.value;
+                }
+            });
+            if (Object.keys(ppAttrs).length > 0) {
+                logger.log('📊 Post-Processing Attributes:', ppAttrs);
+            } else if (model.hasAttribute('data-pp-enabled')) {
+                logger.warn('⚠️  PP enabled but no effect attributes found');
+            }
+            
+            // Model state
+            logger.log('📦 Model Loaded:', model.loaded ? 'YES' : 'NO');
+            if (model.availableAnimations && model.availableAnimations.length > 0) {
+                logger.log('🎭 Available Animations:', model.availableAnimations);
+            }
+        });
+        
+        logger.log('\n💡 Tips:');
+        logger.log('  - Check if animation-name matches availableAnimations');
+        logger.log('  - Verify autoplay/loop are boolean attributes (no value)');
+        logger.log('  - Ensure data-pp-enabled="true" if using post-processing');
+        logger.log('  - Use WP_DEBUG to see data-debug-config details');
+    };
+    
+    // Auto-run inspector when debug mode is explicitly requested via URL param.
+    // Requires ?explorexr_debug=1 AND the debug flag to be active.
+    if (window.location.search.includes('explorexr_debug=1') &&
+        window.explorexrDebug && window.explorexrDebug.enabled) {
+        $(document).ready(function() {
+            setTimeout(function() {
+                ExploreXRLogger.log('ExploreXR debug inspector active', 'info');
+                window.explorexrInspectModels();
+            }, 2000);
+        });
+    }
+
+    /**
+     * Overlay Position Manager
+     * Moves addon overlays into shared position containers to prevent overlap.
+     * Addons can call: window.explorexrRegisterOverlay(container, element, position)
+     * Or add data-overlay-position="top-right" to elements within .ExploreXR-model-container
+     */
+    function registerOverlayObserver(container, observer) {
+        overlayObservers.push({ container: container, observer: observer });
+    }
+
+    function cleanupDetachedOverlayObservers() {
+        for (let i = overlayObservers.length - 1; i >= 0; i -= 1) {
+            const entry = overlayObservers[i];
+            if (!entry.container || !document.body.contains(entry.container)) {
+                entry.observer.disconnect();
+                overlayObservers.splice(i, 1);
+            }
+        }
+    }
+
+    function disconnectOverlayObservers() {
+        overlayObservers.forEach(function(entry) {
+            entry.observer.disconnect();
+        });
+        overlayObservers.length = 0;
+
+        if (overlayCleanupObserver) {
+            overlayCleanupObserver.disconnect();
+            overlayCleanupObserver = null;
+        }
+    }
+
+    function initOverlayManager() {
+        var containers = document.querySelectorAll('.ExploreXR-model-container');
+        containers.forEach(function(container) {
+            var groups = {};
+            container.querySelectorAll('.explorexr-overlay-group[data-position]').forEach(function(g) {
+                groups[g.getAttribute('data-position')] = g;
+            });
+
+            // Find orphan overlays (addon elements with data-overlay-position)
+            // Use a MutationObserver so dynamically-added overlays are also caught
+            function moveOrphanOverlays() {
+                container.querySelectorAll('[data-overlay-position]').forEach(function(el) {
+                    var pos = el.getAttribute('data-overlay-position');
+                    var group = groups[pos];
+                    if (group && el.parentNode !== group) {
+                        group.appendChild(el);
+                    }
+                });
+            }
+
+            // Run once for static content
+            moveOrphanOverlays();
+
+            // Watch for dynamically added overlays
+            var observer = new MutationObserver(function(mutations) {
+                var hasNewNodes = mutations.some(function(m) { return m.addedNodes.length > 0; });
+                if (hasNewNodes) {
+                    moveOrphanOverlays();
+                }
+            });
+            observer.observe(container, { childList: true, subtree: true });
+            registerOverlayObserver(container, observer);
+        });
+
+        if (!overlayCleanupObserver && document.body) {
+            overlayCleanupObserver = new MutationObserver(function() {
+                cleanupDetachedOverlayObservers();
+            });
+            overlayCleanupObserver.observe(document.body, { childList: true, subtree: true });
+        }
+    }
+
+    // Expose a global API for addons to register overlays
+    window.explorexrRegisterOverlay = function(containerEl, overlayEl, position) {
+        if (!containerEl || !overlayEl || !position) return;
+        var group = containerEl.querySelector('.explorexr-overlay-group[data-position="' + position + '"]');
+        if (group) {
+            overlayEl.removeAttribute('data-overlay-position');
+            group.appendChild(overlayEl);
+        }
+    };
+
+    // Init overlay manager after a short delay to let addons render
+    $(document).ready(function() {
+        setTimeout(initOverlayManager, 100);
+    });
+
+    window.addEventListener('pagehide', disconnectOverlayObservers);
 
 })(jQuery);

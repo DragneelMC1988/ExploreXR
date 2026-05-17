@@ -1,11 +1,8 @@
 /**
  * Edit Model Page CSS
  * 
- * Page-specific styles for the Edit Model admin page
- * Shared components are in components.css
- * 
- * @package ExploreXR
- * @since 1.0.8
+ * Styles for the Edit Model admin page
+ * Aligned with ExploreXR's admin style guidelines
  */
 
 /* WordPress admin compatibility fixes - Only apply minimal necessary changes */
@@ -77,7 +74,40 @@ body.wp-admin {
     margin-bottom: 20px;
 }
 
-/* Form grid and groups - shared styles moved to components.css */
+.explorexr-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.explorexr-form-group {
+    margin-bottom: 20px;
+}
+
+.explorexr-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.explorexr-form-group .description {
+    display: block;
+    color: #646970;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+.explorexr-form-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.explorexr-form-row label {
+    margin-bottom: 0;
+    min-width: 60px;
+}
 
 .explorexr-empty-preview {
     height: 300px;
@@ -98,7 +128,156 @@ body.wp-admin {
     opacity: 0.5;
 }
 
-/* Tabs, device tabs, and size options - shared styles moved to components.css */
+.explorexr-tabs {
+    display: flex;
+    border-bottom: 1px solid #c3c4c7;
+    margin-bottom: 20px;
+}
+
+.explorexr-tab {
+    padding: 8px 15px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-size: 14px;
+    color: #646970;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -1px;
+}
+
+.explorexr-tab:hover {
+    color: #2271b1;
+}
+
+.explorexr-tab.active {
+    color: #2271b1;
+    border-bottom-color: #2271b1;
+}
+
+.explorexr-tab-content {
+    display: none;
+}
+
+.explorexr-tab-content.active {
+    display: block;
+}
+
+.explorexr-device-tabs {
+    display: flex;
+    margin-bottom: 15px;
+    background: #f6f7f7;
+    border-radius: 0;
+    padding: 5px;
+}
+
+.explorexr-device-tab {
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #646970;
+    transition: all 0.2s ease;
+}
+
+.explorexr-device-tab.active {
+    background: #fff;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+    color: #2271b1;
+}
+
+.explorexr-device-content {
+    display: none;
+}
+
+.explorexr-device-content.active {
+    display: block;
+}
+
+.explorexr-size-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.explorexr-size-option {
+    display: flex;
+    cursor: pointer;
+    border: 1px solid #c3c4c7;
+    border-radius: 0;
+    padding: 15px;
+    background: #f6f7f7;
+    transition: all 0.2s ease;
+}
+
+.explorexr-size-option:hover {
+    background: #0D152C;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+}
+
+.explorexr-size-option input[type="radio"] {
+    margin-right: 10px;
+}
+
+.explorexr-size-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+}
+
+.explorexr-size-box {
+    background: #ddd;
+    border-radius: 4px;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.explorexr-file-input-wrapper {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.explorexr-file-input-wrapper input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.explorexr-file-input-decoration {
+    border: 2px dashed #c3c4c7;
+    border-radius: 0;
+    padding: 30px;
+    text-align: center;
+    color: #646970;
+    transition: all 0.3s ease;
+    background: #f6f7f7;
+}
+
+.explorexr-file-input-wrapper:hover .explorexr-file-input-decoration {
+    border-color: #2AACE2;
+    background: #f0f7fc;
+}
+
+.explorexr-file-input-decoration .dashicons {
+    display: block;
+    margin: 0 auto 10px;
+    font-size: 36px;
+    width: 36px;
+    height: 36px;
+    color: #2AACE2;
+}
 
 .explorexr-current-model {
     margin-bottom: 20px;
@@ -150,12 +329,57 @@ body.wp-admin {
     margin-top: 10px;
 }
 
-/* Input groups and checkbox groups - shared styles moved to components.css */
+.explorexr-input-group {
+    display: flex;
+    gap: 5px;
+}
+
+.explorexr-input-group input {
+    flex-grow: 1;
+}
+
+.explorexr-checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.explorexr-checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.explorexr-checkbox-label:hover {
+    background-color: #f6f7f7;
+}
+
+.explorexr-checkbox-label span {
+    line-height: 20px;
+}
+
+/* Form Actions Card - Separate visual section */
+.explorexr-form-actions-card {
+    margin-top: 30px;
+    background: #f9f9f9;
+    border: 2px solid #2AACE2;
+}
+
+.explorexr-form-actions-card .explorexr-card-content {
+    padding: 20px;
+}
 
 .explorexr-form-actions {
-    margin-top: 30px;
+    margin: 0;
     display: flex;
     gap: 10px;
+    justify-content: flex-start;
+    align-items: center;
 }
 
 /* Button styles */
@@ -190,14 +414,14 @@ body.wp-admin {
 }
 
 .explorexr-secondary-button,
-.button {
+.wrap.explorexr-edit-model-page .button {
     background-color: #0D152C;
     color: #2c3338;
     border: 1px solid #c3c4c7;
 }
 
 .explorexr-secondary-button:hover,
-.button:hover {
+.wrap.explorexr-edit-model-page .button:hover {
     background-color: #e2e4e7;
     color: #1d2327;
 }
@@ -206,81 +430,152 @@ span.required {
     color: #d63638;
 }
 
-/* Optional span and poster styles - shared styles moved to components.css */
+span.optional {
+    font-size: 12px;
+    color: #646970;
+    font-weight: normal;
+}
 
 /* Alert styles aligned with admin-style.css */
-.explorexr-alert {
+.explorexr-alert,
+.ExploreXR-alert {
     display: flex;
     padding: 15px;
     margin-bottom: 20px;
-    border-radius: 0;
+    border-radius: 4px;
     align-items: flex-start;
     line-height: 1.5;
     border-left: 4px solid;
+    gap: 10px;
 }
 
-.explorexr-alert.success {
+.explorexr-alert > div,
+.ExploreXR-alert > div {
+    flex: 1;
+}
+
+.explorexr-alert p,
+.ExploreXR-alert p {
+    margin: 0 0 8px 0;
+}
+
+.explorexr-alert p:last-child,
+.ExploreXR-alert p:last-child {
+    margin-bottom: 0;
+}
+
+.explorexr-alert.success,
+.ExploreXR-alert.success {
     background-color: #d4edda;
     border-color: #00a32a;
     color: #155724;
 }
 
-.explorexr-alert.info {
+.explorexr-alert.info,
+.ExploreXR-alert.info {
     background-color: #d1ecf1;
     border-color: #72aee6;
     color: #0c5460;
 }
 
-.explorexr-alert.warning {
+.explorexr-alert.warning,
+.ExploreXR-alert.warning {
     background-color: #fff3cd;
     border-color: #ffb900;
     color: #856404;
 }
 
-.explorexr-alert.error {
+.explorexr-alert.error,
+.ExploreXR-alert.error {
     background-color: #f8d7da;
     border-color: #d63638;
     color: #721c24;
 }
 
-.explorexr-alert .dashicons {
+.explorexr-alert .dashicons,
+.ExploreXR-alert .dashicons {
     font-size: 24px;
     width: 24px;
     height: 24px;
-    margin-right: 15px;
+    flex-shrink: 0;
+    margin-top: 2px;
 }
 
-.explorexr-alert.success .dashicons {
+.explorexr-alert.success .dashicons,
+.ExploreXR-alert.success .dashicons {
     color: #00a32a;
 }
 
-.explorexr-alert.error .dashicons {
+.explorexr-alert.error .dashicons,
+.ExploreXR-alert.error .dashicons {
     color: #d63638;
+}
+
+.explorexr-alert code,
+.ExploreXR-alert code {
+    background: rgba(0, 0, 0, 0.05);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 13px;
 }
 
 .copy-shortcode {
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    padding: 4px 8px;
-    background: #E4E9EC;
-    border: 1px solid #c3c4c7;
-    border-radius: 4px;
+    padding: 5px 10px;
+    margin-left: 8px;
+    background: #2271b1;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    font-size: 13px;
+    line-height: 1;
+    transition: background 0.2s;
 }
 
 .copy-shortcode:hover {
-    background: #e2e4e7;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: #135e96;
+}
+
+.copy-shortcode .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    margin: 0;
+}
+
+/* Shortcode display styling */
+.explorexr-model-shortcode {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: #f6f7f7;
+    border: 1px solid #dcdcde;
+    border-radius: 4px;
+}
+
+.explorexr-model-shortcode code {
+    background: #fff;
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 13px;
+    font-family: 'Courier New', monospace;
+    color: #2c3338;
+    border: 1px solid #e0e0e0;
+}
+
+.explorexr-model-shortcode .copy-shortcode {
+    margin-left: 0;
 }
 
 /* Additional button icon styles */
 .explorexr-action-button .dashicons,
 .explorexr-primary-button .dashicons,
 .explorexr-secondary-button .dashicons,
-.button .dashicons {
+.wrap.explorexr-edit-model-page .button .dashicons {
     margin-right: 5px;
     font-size: 18px;
     width: 18px;
@@ -311,6 +606,7 @@ span.required {
 
 /* Model viewer styling */
 .explorexr-model-preview {
+    display: block !important; /* Override model-viewer's inline display */
     width: 100%; 
     height: 400px; 
     background-color: #f6f7f7; 
@@ -323,7 +619,70 @@ span.required {
     grid-column: 1 / -1;
 }
 
-/* Poster preview and thumbnail styles - shared styles moved to components.css */
+/* Size box demo elements */
+.explorexr-size-box-small {
+    width: 60px; 
+    height: 60px;
+    background-color: #e2e4e7;
+}
+
+.explorexr-size-box-medium {
+    width: 80px; 
+    height: 80px;
+    background-color: #e2e4e7;
+}
+
+.explorexr-size-box-large {
+    width: 100px; 
+    height: 80px;
+    background-color: #e2e4e7;
+}
+
+.explorexr-size-box-xlarge {
+    width: 120px;
+    height: 90px;
+    background-color: #e2e4e7;
+}
+
+.explorexr-size-box-full {
+    width: 120px;
+    height: 70px;
+    background-color: #e2e4e7;
+}
+
+/* Poster preview styling */
+.explorexr-poster-thumbnail {
+    max-width: 150px; 
+    max-height: 150px; 
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.explorexr-poster-thumbnail:hover {
+    transform: scale(1.05);
+}
+
+.explorexr-poster-preview {
+    margin-top: 15px;
+    padding: 15px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.explorexr-poster-preview img {
+    max-width: 200px;
+    width: auto;
+    height: auto;
+    border: 2px solid #2AACE2; 
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(42, 172, 226, 0.3);
+    display: block;
+    margin: 0 auto;
+}
 
 /* Edit Model Notifications */
 .explorexr-edit-notification {
@@ -439,11 +798,27 @@ span.required {
     }
 }
 
-/* Bug Fix #3: Hide upload sections initially until user clicks the tab */
-#upload-model:not(.active),
-#existing-model:not(.active),
-#upload-poster:not(.active) {
-    display: none;
+/* Responsive Model Viewer Sizes - WordPress Breakpoints */
+@media screen and (max-width: 782px) {
+    /* Tablet devices - Use tablet custom sizes if set */
+    .explorexr-model-viewer-container[data-tablet-width]:not([data-tablet-width=""]) {
+        width: var(--tablet-viewer-width) !important;
+    }
+    
+    .explorexr-model-viewer-container[data-tablet-height]:not([data-tablet-height=""]) {
+        height: var(--tablet-viewer-height) !important;
+    }
 }
 
-/* Device content visibility - shared styles in components.css */
+@media screen and (max-width: 600px) {
+    /* Mobile devices - Use mobile custom sizes if set */
+    .explorexr-model-viewer-container[data-mobile-width]:not([data-mobile-width=""]) {
+        width: var(--mobile-viewer-width) !important;
+    }
+    
+    .explorexr-model-viewer-container[data-mobile-height]:not([data-mobile-height=""]) {
+        height: var(--mobile-viewer-height) !important;
+    }
+}
+
+.explorexr-form-group-indent { margin-top: 15px; margin-left: 20px; }

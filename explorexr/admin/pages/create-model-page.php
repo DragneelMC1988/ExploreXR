@@ -12,6 +12,42 @@ if (!function_exists('explorexr_handle_model_upload')) {
 }
 
 /**
+ * Initialize addon toggle defaults for a newly created model.
+ *
+ * New models should start with all addon toggles disabled so the Edit Model
+ * Addons card always opens in an untoggled state.
+ *
+ * @param int $post_id Model post ID.
+ * @return void
+ */
+function explorexr_initialize_new_model_addon_defaults($post_id) {
+    $post_id = absint($post_id);
+    if ($post_id <= 0) {
+        return;
+    }
+
+    $defaults = array(
+        '_explorexr_premium_annotations_enabled'   => '0',
+        '_explorexr_premium_ar_enabled'            => 'off',
+        '_explorexr_premium_animation_enabled'     => 'off',
+        '_explorexr_premium_camera_enabled'        => '0',
+        '_explorexr_draggable_enabled'             => '0',
+        '_explorexr_environment_enabled'           => '0',
+        '_explorexr_loading_enable'                => '0',
+        '_explorexr_premium_materials_enabled'     => 'off',
+        '_explorexr_morphing_enable'               => '0',
+        '_explorexr_morphing_enabled'              => '0', // Legacy key for backward compatibility.
+        '_explorexr_mouse3d_enabled'               => '0',
+        '_explorexr_pp_enable'                     => '0',
+        '_explorexr_premium_wc_integration_enabled' => 'off',
+    );
+
+    foreach ($defaults as $meta_key => $meta_value) {
+        update_post_meta($post_id, $meta_key, $meta_value);
+    }
+}
+
+/**
  * Handle model creation form submission before any output
  */
 function explorexr_handle_model_creation() {
@@ -41,26 +77,105 @@ function explorexr_handle_model_creation() {
     ]);
     
     if ($post_id && !is_wp_error($post_id)) {
+        // Ensure all addon cards start untoggled for a brand-new model.
+        explorexr_initialize_new_model_addon_defaults($post_id);
+
         $model_source = isset($_POST['model_source']) ? sanitize_text_field(wp_unslash($_POST['model_source'])) : 'upload';
         
-        // Normalize and save viewer sizes (applies presets + device fallbacks)
-        $raw_viewer_size = isset($_POST['viewer_size']) ? sanitize_text_field(wp_unslash($_POST['viewer_size'])) : 'custom';
-        $normalized_sizes = explorexr_normalize_viewer_sizes($raw_viewer_size, array(
-            'width'         => isset($_POST['viewer_width']) ? sanitize_text_field(wp_unslash($_POST['viewer_width'])) : '',
-            'height'        => isset($_POST['viewer_height']) ? sanitize_text_field(wp_unslash($_POST['viewer_height'])) : '',
-            'tablet_width'  => isset($_POST['tablet_viewer_width']) ? sanitize_text_field(wp_unslash($_POST['tablet_viewer_width'])) : '',
-            'tablet_height' => isset($_POST['tablet_viewer_height']) ? sanitize_text_field(wp_unslash($_POST['tablet_viewer_height'])) : '',
-            'mobile_width'  => isset($_POST['mobile_viewer_width']) ? sanitize_text_field(wp_unslash($_POST['mobile_viewer_width'])) : '',
-            'mobile_height' => isset($_POST['mobile_viewer_height']) ? sanitize_text_field(wp_unslash($_POST['mobile_viewer_height'])) : '',
-        ));
+        // Load size validator for validation
+        require_once EXPLOREXR_PREMIUM_PLUGIN_DIR . 'includes/utils/size-validator.php';
         
-        update_post_meta($post_id, '_explorexr_viewer_size', $normalized_sizes['viewer_size']);
-        update_post_meta($post_id, '_explorexr_viewer_width', $normalized_sizes['width']);
-        update_post_meta($post_id, '_explorexr_viewer_height', $normalized_sizes['height']);
-        update_post_meta($post_id, '_explorexr_tablet_viewer_width', $normalized_sizes['tablet_width']);
-        update_post_meta($post_id, '_explorexr_tablet_viewer_height', $normalized_sizes['tablet_height']);
-        update_post_meta($post_id, '_explorexr_mobile_viewer_width', $normalized_sizes['mobile_width']);
-        update_post_meta($post_id, '_explorexr_mobile_viewer_height', $normalized_sizes['mobile_height']);
+        // Validate and save model viewer size settings
+        $width_input = isset($_POST['viewer_width']) ? sanitize_text_field(wp_unslash($_POST['viewer_width'])) : '100vw';
+        $height_input = isset($_POST['viewer_height']) ? sanitize_text_field(wp_unslash($_POST['viewer_height'])) : '500px';
+        
+        if (!empty($width_input) && !empty($height_input)) {
+            $validation_result = ExploreXR_Size_Validator::validate_size_pair($width_input, $height_input);
+            
+            if ($validation_result['valid']) {
+                update_post_meta($post_id, '_explorexr_viewer_width', $width_input);
+                update_post_meta($post_id, '_explorexr_viewer_height', $height_input);
+            } else {
+                // Use safe defaults and store warning
+                update_post_meta($post_id, '_explorexr_viewer_width', '100vw');
+                update_post_meta($post_id, '_explorexr_viewer_height', '500px');
+                set_transient('explorexr_size_validation_warning', $validation_result['error'], 30);
+            }
+        } else {
+            if (!empty($width_input)) {
+                update_post_meta($post_id, '_explorexr_viewer_width', ExploreXR_Size_Validator::sanitize_dimension($width_input, '100vw'));
+            }
+            if (!empty($height_input)) {
+                update_post_meta($post_id, '_explorexr_viewer_height', ExploreXR_Size_Validator::sanitize_dimension($height_input, '500px'));
+            }
+        }
+        
+        // Validate and save tablet size settings
+        $tablet_width = isset($_POST['tablet_viewer_width']) ? sanitize_text_field(wp_unslash($_POST['tablet_viewer_width'])) : '';
+        $tablet_height = isset($_POST['tablet_viewer_height']) ? sanitize_text_field(wp_unslash($_POST['tablet_viewer_height'])) : '';
+        
+        if (!empty($tablet_width) && !empty($tablet_height)) {
+            $tablet_validation = ExploreXR_Size_Validator::validate_size_pair($tablet_width, $tablet_height);
+            if ($tablet_validation['valid']) {
+                update_post_meta($post_id, '_explorexr_tablet_viewer_width', $tablet_width);
+                update_post_meta($post_id, '_explorexr_tablet_viewer_height', $tablet_height);
+            } else {
+                // Don't save invalid tablet sizes (will use desktop fallback)
+                if (get_transient('explorexr_size_validation_warning') === false) {
+                    set_transient('explorexr_size_validation_warning', 'Tablet: ' . $tablet_validation['error'], 30);
+                }
+            }
+        } else {
+            // Allow partial updates with validation
+            if (!empty($tablet_width)) {
+                $clean = ExploreXR_Size_Validator::sanitize_dimension($tablet_width, '');
+                if ($clean) {
+                    update_post_meta($post_id, '_explorexr_tablet_viewer_width', $clean);
+                }
+            }
+            if (!empty($tablet_height)) {
+                $clean = ExploreXR_Size_Validator::sanitize_dimension($tablet_height, '');
+                if ($clean) {
+                    update_post_meta($post_id, '_explorexr_tablet_viewer_height', $clean);
+                }
+            }
+        }
+        
+        // Validate and save mobile size settings
+        $mobile_width = isset($_POST['mobile_viewer_width']) ? sanitize_text_field(wp_unslash($_POST['mobile_viewer_width'])) : '';
+        $mobile_height = isset($_POST['mobile_viewer_height']) ? sanitize_text_field(wp_unslash($_POST['mobile_viewer_height'])) : '';
+        
+        if (!empty($mobile_width) && !empty($mobile_height)) {
+            $mobile_validation = ExploreXR_Size_Validator::validate_size_pair($mobile_width, $mobile_height);
+            if ($mobile_validation['valid']) {
+                update_post_meta($post_id, '_explorexr_mobile_viewer_width', $mobile_width);
+                update_post_meta($post_id, '_explorexr_mobile_viewer_height', $mobile_height);
+            } else {
+                // Don't save invalid mobile sizes (will use desktop fallback)
+                if (get_transient('explorexr_size_validation_warning') === false) {
+                    set_transient('explorexr_size_validation_warning', 'Mobile: ' . $mobile_validation['error'], 30);
+                }
+            }
+        } else {
+            // Allow partial updates with validation
+            if (!empty($mobile_width)) {
+                $clean = ExploreXR_Size_Validator::sanitize_dimension($mobile_width, '');
+                if ($clean) {
+                    update_post_meta($post_id, '_explorexr_mobile_viewer_width', $clean);
+                }
+            }
+            if (!empty($mobile_height)) {
+                $clean = ExploreXR_Size_Validator::sanitize_dimension($mobile_height, '');
+                if ($clean) {
+                    update_post_meta($post_id, '_explorexr_mobile_viewer_height', $clean);
+                }
+            }
+        }
+        
+        // Save predefined size if selected
+        if (isset($_POST['viewer_size']) && !empty($_POST['viewer_size'])) {
+            update_post_meta($post_id, '_explorexr_viewer_size', sanitize_text_field(wp_unslash($_POST['viewer_size'])));
+        }
         
         // Handle poster image upload if available
         if (isset($_POST['poster_method']) && $_POST['poster_method'] === 'upload' && isset($_FILES['model_poster']) && isset($_FILES['model_poster']['size']) && $_FILES['model_poster']['size'] > 0) {
@@ -84,10 +199,12 @@ function explorexr_handle_model_creation() {
         } else if ($model_source === 'upload' && isset($_FILES['model_file']) && isset($_FILES['model_file']['size']) && $_FILES['model_file']['size'] > 0) {
             if (function_exists('explorexr_handle_model_upload')) {
                 // Manually sanitize $_FILES data to avoid nonce verification warnings
+                // Note: tmp_name is NOT sanitized - it's a server-generated path that must remain unchanged
                 $file_upload = array(
                     'name' => isset($_FILES['model_file']['name']) ? sanitize_file_name(wp_unslash($_FILES['model_file']['name'])) : '',
                     'type' => isset($_FILES['model_file']['type']) ? sanitize_mime_type(wp_unslash($_FILES['model_file']['type'])) : '',
-                    'tmp_name' => isset($_FILES['model_file']['tmp_name']) ? sanitize_text_field(wp_unslash($_FILES['model_file']['tmp_name'])) : '',
+                    // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- tmp_name is server-generated path, sanitization breaks file operations
+                    'tmp_name' => isset($_FILES['model_file']['tmp_name']) ? wp_unslash($_FILES['model_file']['tmp_name']) : '',
                     'error' => isset($_FILES['model_file']['error']) ? absint($_FILES['model_file']['error']) : UPLOAD_ERR_NO_FILE,
                     'size' => isset($_FILES['model_file']['size']) ? absint($_FILES['model_file']['size']) : 0,
                 );
@@ -144,7 +261,23 @@ function explorexr_create_model_page() {
     // Initialize variables for error handling
     $error_message = '';
     $success_message = '';
-    $size_presets = explorexr_get_viewer_size_presets();
+    
+    // Enqueue validation and preview scripts
+    wp_enqueue_script(
+        'explorexr-size-validation',
+        EXPLOREXR_PREMIUM_PLUGIN_URL . 'admin/js/size-validation.js',
+        array('jquery'),
+        EXPLOREXR_PREMIUM_VERSION,
+        true
+    );
+    
+    wp_enqueue_script(
+        'explorexr-size-preview-indicator',
+        EXPLOREXR_PREMIUM_PLUGIN_URL . 'admin/js/size-preview-indicator.js',
+        array('jquery'),
+        EXPLOREXR_PREMIUM_VERSION,
+        true
+    );
     
     // Check for error messages from redirects
     // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used for display purposes only
@@ -191,7 +324,7 @@ function explorexr_create_model_page() {
         <?php 
         $page_title = 'Create New 3D Model';
         $header_actions = '<a href="' . esc_url(admin_url('admin.php?page=explorexr-browse-models')) . '" class="button">
-            <span class="dashicons dashicons-format-gallery explorexr-icon-spacing"></span> Browse Models
+            <span class="dashicons dashicons-format-gallery" style="margin-right: 5px;"></span> Browse Models
         </a>';
         include EXPLOREXR_PLUGIN_DIR . 'admin/templates/admin-header.php'; 
         
@@ -222,7 +355,7 @@ function explorexr_create_model_page() {
                             <input name="model_title" type="text" id="model_title" class="regular-text" required placeholder="Enter a descriptive title" />
                         </div>
                         
-                        <div class="explorexr-form-group explorexr-full-width">
+                        <div class="explorexr-form-group" style="grid-column: 1 / -1;">
                             <label for="model_description">Description</label>
                             <textarea name="model_description" id="model_description" rows="3" placeholder="Add a description for this 3D model (optional)"></textarea>
                         </div>
@@ -230,63 +363,85 @@ function explorexr_create_model_page() {
             </div>
         </div>
         
-        <div class="explorexr-card">
+        <div class="explorexr-card" id="explorexr-display-size-card">
             <div class="explorexr-card-header">
-                <h2>Display Size</h2>
-                <span class="dashicons dashicons-editor-distractionfree"></span>
+                <h2><span class="dashicons dashicons-editor-distractionfree"></span> Display Size</h2>
             </div>
             <div class="explorexr-card-content">
-                
-               
+                <!-- Single authoritative hidden field for viewer_size -->
+                <input type="hidden" name="viewer_size" id="explorexr_viewer_size_field" value="medium">
+
                 <div class="explorexr-tabs">
                     <button type="button" class="explorexr-tab active" data-tab="predefined-sizes">Predefined Sizes</button>
                     <button type="button" class="explorexr-tab" data-tab="custom-sizes">Custom Sizes</button>
                 </div>
-                
+
                 <div class="explorexr-tab-content active" id="predefined-sizes">
+                    <p class="description" style="margin-bottom: 15px;">
+                        <span class="dashicons dashicons-info"></span>
+                        Predefined sizes automatically adapt for tablet and smartphone devices.
+                    </p>
                     <div class="explorexr-size-options">
                         <label class="explorexr-size-option">
-                            <input type="radio" name="viewer_size" value="small">
+                            <input type="radio" name="explorexr_predefined_size" value="small">
                             <div class="explorexr-size-preview">
                                 <div class="explorexr-size-box explorexr-size-box-small"></div>
                                 <span>Small</span>
-                                <small class="explorexr-responsive-info">
-                                    Desktop: <?php echo esc_html($size_presets['small']['desktop']['width']); ?>×<?php echo esc_html($size_presets['small']['desktop']['height']); ?><br>
-                                    Tablet: <?php echo esc_html($size_presets['small']['tablet']['width']); ?>×<?php echo esc_html($size_presets['small']['tablet']['height']); ?><br>
-                                    Mobile: <?php echo esc_html($size_presets['small']['mobile']['width']); ?>×<?php echo esc_html($size_presets['small']['mobile']['height']); ?>
+                                <small style="display: block; color: #666; margin-top: 4px;">
+                                    Desktop: 300×300px<br>
+                                    Tablet: 280×280px<br>
+                                    Mobile: 100vw×250px
                                 </small>
                             </div>
                         </label>
-                        
+
                         <label class="explorexr-size-option">
-                            <input type="radio" name="viewer_size" value="medium" checked>
+                            <input type="radio" name="explorexr_predefined_size" value="medium" checked>
                             <div class="explorexr-size-preview">
                                 <div class="explorexr-size-box explorexr-size-box-medium"></div>
                                 <span>Medium</span>
-                                <small class="explorexr-responsive-info">
-                                    Desktop: <?php echo esc_html($size_presets['medium']['desktop']['width']); ?>×<?php echo esc_html($size_presets['medium']['desktop']['height']); ?><br>
-                                    Tablet: <?php echo esc_html($size_presets['medium']['tablet']['width']); ?>×<?php echo esc_html($size_presets['medium']['tablet']['height']); ?><br>
-                                    Mobile: <?php echo esc_html($size_presets['medium']['mobile']['width']); ?>×<?php echo esc_html($size_presets['medium']['mobile']['height']); ?>
+                                <small style="display: block; color: #666; margin-top: 4px;">
+                                    Desktop: 500×500px<br>
+                                    Tablet: 400×400px<br>
+                                    Mobile: 100vw×350px
                                 </small>
                             </div>
                         </label>
-                        
+
                         <label class="explorexr-size-option">
-                            <input type="radio" name="viewer_size" value="large">
+                            <input type="radio" name="explorexr_predefined_size" value="large">
                             <div class="explorexr-size-preview">
                                 <div class="explorexr-size-box explorexr-size-box-large"></div>
                                 <span>Large</span>
-                                <small class="explorexr-responsive-info">
-                                    Desktop: <?php echo esc_html($size_presets['large']['desktop']['width']); ?>×<?php echo esc_html($size_presets['large']['desktop']['height']); ?><br>
-                                    Tablet: <?php echo esc_html($size_presets['large']['tablet']['width']); ?>×<?php echo esc_html($size_presets['large']['tablet']['height']); ?><br>
-                                    Mobile: <?php echo esc_html($size_presets['large']['mobile']['width']); ?>×<?php echo esc_html($size_presets['large']['mobile']['height']); ?>
+                                <small style="display: block; color: #666; margin-top: 4px;">
+                                    Desktop: 800×600px<br>
+                                    Tablet: 600×450px<br>
+                                    Mobile: 100vw×400px
+                                </small>
+                            </div>
+                        </label>
+
+                        <label class="explorexr-size-option">
+                            <input type="radio" name="explorexr_predefined_size" value="full">
+                            <div class="explorexr-size-preview">
+                                <div class="explorexr-size-box explorexr-size-box-full"></div>
+                                <span>Full</span>
+                                <small style="display: block; color: #666; margin-top: 4px;">
+                                    Desktop: 100vw×90vh<br>
+                                    Tablet: 100vw×70vh<br>
+                                    Mobile: 100vw×60vh
                                 </small>
                             </div>
                         </label>
                     </div>
                 </div>
-                
+
                 <div class="explorexr-tab-content" id="custom-sizes">
+                    <!-- Important validation notice -->
+                    <div class="notice notice-info inline" style="margin: 0 0 15px 0; padding: 8px 12px;">
+                        <p style="margin: 0.5em 0;"><strong><span class="dashicons dashicons-info" style="vertical-align: middle;"></span> Important:</strong> Allowed units: <code>px</code>, <code>vw</code>, <code>vh</code>, <code>dvw</code>, <code>dvh</code>, <code>em</code>, <code>rem</code>. Percentage (%) is <strong>not</strong> supported — use <code>vw</code>/<code>vh</code> for viewport-relative sizing instead.</p>
+                    </div>
+
                     <div class="explorexr-device-tabs">
                         <button type="button" class="explorexr-device-tab active" data-device="desktop">
                             <span class="dashicons dashicons-desktop"></span> Desktop
@@ -295,59 +450,57 @@ function explorexr_create_model_page() {
                             <span class="dashicons dashicons-tablet"></span> Tablet
                         </button>
                         <button type="button" class="explorexr-device-tab" data-device="mobile">
-                            <span class="dashicons dashicons-smartphone"></span> Smartphone
+                            <span class="dashicons dashicons-smartphone"></span> Mobile
                         </button>
                     </div>
-                    
+
                     <div class="explorexr-device-content active" id="desktop-size">
                         <div class="explorexr-form-group">
                             <h3>Desktop Size</h3>
                             <div class="explorexr-form-row">
                                 <label for="viewer_width">Width:</label>
-                                <input type="text" name="viewer_width" id="viewer_width" value="<?php echo esc_attr($size_presets['medium']['desktop']['width']); ?>" class="small-text">
-                                <span class="description">(e.g., 500px, 100%, etc.)</span>
+                                <input type="text" name="viewer_width" id="viewer_width" value="100vw" class="small-text">
+                                <span class="description">(e.g., 500px, 100vw, 50dvw)</span>
                             </div>
-                            
+
                             <div class="explorexr-form-row">
                                 <label for="viewer_height">Height:</label>
-                                <input type="text" name="viewer_height" id="viewer_height" value="<?php echo esc_attr($size_presets['medium']['desktop']['height']); ?>" class="small-text">
-                                <span class="description">(e.g., 400px, 600px, etc.)</span>
+                                <input type="text" name="viewer_height" id="viewer_height" value="500px" class="small-text">
+                                <span class="description">(e.g., 500px, 50vh, 90dvh)</span>
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="explorexr-device-content" id="tablet-size">
                         <div class="explorexr-form-group">
-                            <h3>Tablet Size <span class="optional">(optional)</span></h3>
-                            <p class="description">If left empty, desktop size will be used for tablet devices (768px-1024px width).</p>
+                            <h3>Tablet Size <span class="optional">(optional — leave empty to inherit desktop)</span></h3>
                             <div class="explorexr-form-row">
                                 <label for="tablet_viewer_width">Width:</label>
-                                <input type="text" name="tablet_viewer_width" id="tablet_viewer_width" value="" class="small-text" placeholder="e.g., 600px, 90%">
-                                <span class="description">(e.g., 500px, 100%, etc.)</span>
+                                <input type="text" name="tablet_viewer_width" id="tablet_viewer_width" value="" class="small-text">
+                                <span class="description">(e.g., 100vw, 500px, 50dvw)</span>
                             </div>
-                            
+
                             <div class="explorexr-form-row">
                                 <label for="tablet_viewer_height">Height:</label>
-                                <input type="text" name="tablet_viewer_height" id="tablet_viewer_height" value="" class="small-text" placeholder="e.g., 450px">
-                                <span class="description">(e.g., 400px, 500px, etc.)</span>
+                                <input type="text" name="tablet_viewer_height" id="tablet_viewer_height" value="" class="small-text">
+                                <span class="description">(e.g., 400px, 50vh, 70dvh)</span>
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="explorexr-device-content" id="mobile-size">
                         <div class="explorexr-form-group">
-                            <h3>Mobile Size <span class="optional">(optional)</span></h3>
-                            <p class="description">If left empty, desktop size will be used for mobile devices (up to 767px width).</p>
+                            <h3>Mobile Size <span class="optional">(optional — leave empty to inherit desktop)</span></h3>
                             <div class="explorexr-form-row">
                                 <label for="mobile_viewer_width">Width:</label>
-                                <input type="text" name="mobile_viewer_width" id="mobile_viewer_width" value="" class="small-text" placeholder="e.g., 100%, 320px">
-                                <span class="description">(e.g., 100%, 300px, etc.)</span>
+                                <input type="text" name="mobile_viewer_width" id="mobile_viewer_width" value="" class="small-text">
+                                <span class="description">(e.g., 100vw, 300px, 100dvw)</span>
                             </div>
-                            
+
                             <div class="explorexr-form-row">
                                 <label for="mobile_viewer_height">Height:</label>
-                                <input type="text" name="mobile_viewer_height" id="mobile_viewer_height" value="" class="small-text" placeholder="e.g., 350px">
-                                <span class="description">(e.g., 300px, 400px, etc.)</span>
+                                <input type="text" name="mobile_viewer_height" id="mobile_viewer_height" value="" class="small-text">
+                                <span class="description">(e.g., 300px, 50vh, 60dvh)</span>
                             </div>
                         </div>
                     </div>
@@ -428,10 +581,10 @@ function explorexr_create_model_page() {
                                 <span class="dashicons dashicons-admin-media"></span> Select Image
                             </button>
                         </div>
-                        <div id="explorexr-poster-preview" class="explorexr-poster-preview-create explorexr-hidden">
+                        <div id="explorexr-poster-preview" style="margin-top: 15px; display: none;">
                             <?php 
                             // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage -- Dynamic preview image for upload interface, no attachment ID available
-                            printf('<img src="" alt="%s" loading="lazy">', 
+                            printf('<img src="" alt="%s" style="max-width: 200px; max-height: 200px; border: 1px solid #ddd; border-radius: 4px;" loading="lazy">', 
                                 esc_attr__('Poster preview', 'explorexr')
                             );
                             ?>
@@ -457,20 +610,29 @@ function explorexr_create_model_page() {
     // Create model page functionality
     $create_model_script = "
         jQuery(document).ready(function($) {
-            // Tab functionality
+
+            // Canonical predefined dimensions — MUST match shortcodes.php exactly.
+            var PREDEFINED_SIZES = {
+                small:  { width: '300px', height: '300px' },
+                medium: { width: '500px', height: '500px' },
+                large:  { width: '800px', height: '600px' },
+                full:   { width: '100vw', height: '90vh'  }
+            };
+
+            // -----------------------------------------------------------------
+            // Main tab functionality
+            // -----------------------------------------------------------------
             $('.explorexr-tab').on('click', function() {
-                const tabId = $(this).data('tab');
-                const tabGroup = $(this).closest('.explorexr-tabs').parent();
-                
-                // Update active tab
+                var tabId = $(this).data('tab');
+                var tabGroup = $(this).closest('.explorexr-tabs').parent();
+
                 tabGroup.find('.explorexr-tab').removeClass('active');
                 $(this).addClass('active');
-                
-                // Show the selected tab content
+
                 tabGroup.find('.explorexr-tab-content').removeClass('active');
                 tabGroup.find('#' + tabId).addClass('active');
-                
-                // Update hidden input values for form submission
+
+                // Keep hidden source/method fields in sync
                 if (tabId === 'upload-model') {
                     $('#model_source_input').val('upload');
                 } else if (tabId === 'existing-model') {
@@ -480,97 +642,95 @@ function explorexr_create_model_page() {
                 } else if (tabId === 'library-poster') {
                     $('#poster_method_input').val('library');
                 }
+
+                // Display-size tab synchronisation
+                if (tabId === 'custom-sizes') {
+                    // Custom tab active — the form should submit viewer_size='custom'
+                    $('#explorexr_viewer_size_field').val('custom');
+                } else if (tabId === 'predefined-sizes') {
+                    // Restore the value of the currently checked radio button
+                    var checked = \$('input[name=\"explorexr_predefined_size\"]:checked').val();
+                    if (checked) {
+                        $('#explorexr_viewer_size_field').val(checked);
+                    }
+                }
             });
-              // Device tab functionality
+
+            // -----------------------------------------------------------------
+            // Device tab functionality
+            // -----------------------------------------------------------------
             $('.explorexr-device-tab').on('click', function() {
-                const deviceId = $(this).data('device');
-                const deviceGroup = $(this).closest('.explorexr-device-tabs').parent();
-                
-                // Update active device tab
+                var deviceId = $(this).data('device');
+                var deviceGroup = $(this).closest('.explorexr-device-tabs').parent();
+
                 deviceGroup.find('.explorexr-device-tab').removeClass('active');
                 $(this).addClass('active');
-                
-                // Show the selected device content
+
                 deviceGroup.find('.explorexr-device-content').removeClass('active');
                 deviceGroup.find('#' + deviceId + '-size').addClass('active');
             });
-            
-            // Handle predefined size selection
-            $('input[name=\"viewer_size\"]').on('change', function() {
-                const selectedSize = $(this).val();
-                
-                if (selectedSize !== 'custom') {
-                    // Update width/height fields based on predefined size
-                    let width, height;
-                    
-                    switch(selectedSize) {
-                        case 'small':
-                            width = '300px';
-                            height = '300px';
-                            break;
-                        case 'medium':
-                            width = '500px';
-                            height = '500px';
-                            break;
-                        case 'large':
-                            width = '800px';
-                            height = '600px';
-                            break;
-                        case 'full':
-                            width = '98vw';
-                            height = '98vh';
-                            break;
-                        default:
-                            return; // Don't update for unknown sizes
-                    }
-                    
-                    // Update the width/height input fields
-                    $('#viewer_width').val(width);
-                    $('#viewer_height').val(height);
+
+            // -----------------------------------------------------------------
+            // Predefined size radio selection
+            // -----------------------------------------------------------------
+            \$('input[name=\"explorexr_predefined_size\"]').on('change', function() {
+                var selectedSize = $(this).val();
+                var dims = PREDEFINED_SIZES[selectedSize];
+
+                if (!dims) {
+                    return; // Unknown size — leave fields as-is
                 }
+
+                // 1. Update the single authoritative hidden field.
+                $('#explorexr_viewer_size_field').val(selectedSize);
+
+                // 2. Mirror canonical values into visible inputs.
+                $('#viewer_width').val(dims.width).trigger('input');
+                $('#viewer_height').val(dims.height).trigger('input');
             });
-            
-            // Initialize the WordPress Media Uploader for the poster image
+
+            // -----------------------------------------------------------------
+            // WordPress Media Uploader for poster image
+            // -----------------------------------------------------------------
             var mediaUploader;
-            
+
             $('#explorexr-select-poster').on('click', function(e) {
                 e.preventDefault();
-                
-                // If the uploader object has already been created, reopen the dialog
+
                 if (mediaUploader) {
                     mediaUploader.open();
                     return;
                 }
-                
-                // Create the media uploader
+
                 mediaUploader = wp.media({
                     title: 'Select Model Poster Image',
-                    button: {
-                        text: 'Use this image'
-                    },
-                    multiple: false  // Set to true if you want to select multiple images
+                    button: { text: 'Use this image' },
+                    multiple: false
                 });
-                
-                // When an image is selected in the media manager...
+
                 mediaUploader.on('select', function() {
-                    // Get the selected attachment details
                     var attachment = mediaUploader.state().get('selection').first().toJSON();
-                    
-                    // Update the form fields with the selected image details
                     $('#model_poster_id').val(attachment.id);
                     $('#model_poster_url').val(attachment.url);
-                    
-                    // Show the preview
                     var previewElement = $('#explorexr-poster-preview');
                     previewElement.show().find('img').attr('src', attachment.url);
                 });
-                
-                // Open the uploader dialog
+
                 mediaUploader.open();
             });
+
+            // -----------------------------------------------------------------
+            // Initialise hidden field from the default checked radio on load
+            // -----------------------------------------------------------------
+            (function initSizeState() {
+                var checked = \$('input[name=\"explorexr_predefined_size\"]:checked').val();
+                if (checked && $('#explorexr_viewer_size_field').val() !== 'custom') {
+                    $('#explorexr_viewer_size_field').val(checked);
+                }
+            })();
         });
     ";
-    
+
     wp_add_inline_script('jquery', $create_model_script);
     ?>
     
@@ -581,8 +741,6 @@ function explorexr_create_model_page() {
     </div><!-- .wrap -->
     <?php
 }
-
-
 
 
 

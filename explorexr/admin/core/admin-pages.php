@@ -14,7 +14,6 @@ require_once EXPLOREXR_PLUGIN_DIR . 'admin/pages/browse-models-page.php';
 require_once EXPLOREXR_PLUGIN_DIR . 'admin/pages/files-page.php';
 require_once EXPLOREXR_PLUGIN_DIR . 'admin/pages/loading-options-page.php';
 require_once EXPLOREXR_PLUGIN_DIR . 'admin/pages/settings-page.php';
-require_once EXPLOREXR_PLUGIN_DIR . 'admin/pages/free-addons-page.php';
 
 // Include edit model page if exists
 // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template file path variable
@@ -29,3 +28,12 @@ $import_export_file = EXPLOREXR_PLUGIN_DIR . 'admin/settings/import-export.php';
 if (file_exists($import_export_file)) {
     require_once $import_export_file;
 }
+
+// Additional settings and callbacks can be added here if needed
+// The main admin page functions are now in their respective files
+
+
+
+
+
+

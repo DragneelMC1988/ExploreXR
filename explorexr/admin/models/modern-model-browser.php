@@ -72,7 +72,7 @@ function explorexr_modern_model_browser_page() {
                     
                     <div class="explorexr-form-group" style="flex: 1; min-width: 200px;">
                         <label for="search">Search Models</label>
-                        <input type="text" id="search" name="search" value="<?php echo esc_attr($search_term); ?>" placeholder="Search by title or ID..." class="regular-text">
+                        <input type="text" id="search" name="search" value="<?php echo esc_attr($search_term); ?>" placeholder="Search by title..." class="regular-text">
                     </div>
                     
                     <div class="explorexr-form-group" style="width: 150px;">
@@ -131,14 +131,9 @@ function explorexr_modern_model_browser_page() {
             'orderby' => ($sort_by === 'title') ? 'title' : 'date'
         );
         
-        // Add search if provided — numeric-only terms are treated as a model ID lookup
+        // Add search if provided
         if (!empty($search_term)) {
-            if (ctype_digit($search_term)) {
-                // Exact post ID match
-                $args['p'] = intval($search_term);
-            } else {
-                $args['s'] = $search_term;
-            }
+            $args['s'] = $search_term;
         }
         
         $models = new WP_Query($args);

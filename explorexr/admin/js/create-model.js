@@ -3,21 +3,25 @@
  * Handles tab functionality and media uploader for model creation
  */
 jQuery(document).ready(function($) {
-    const percentRuleError = 'Width and height cannot both be percentages. Please use px, vw, or vh for one dimension.';
-    
-    // Tab functionality
+    // Tab functionality (non-size tabs only — size tabs handled by model-size.js)
     $('.explorexr-tab').on('click', function() {
         const tabId = $(this).data('tab');
+
+        // Skip size-related tabs — those are handled by model-size.js
+        if (tabId === 'predefined-sizes' || tabId === 'custom-sizes') {
+            return;
+        }
+
         const tabGroup = $(this).closest('.explorexr-tabs').parent();
-        
+
         // Update active tab
         tabGroup.find('.explorexr-tab').removeClass('active');
         $(this).addClass('active');
-        
+
         // Show the selected tab content
         tabGroup.find('.explorexr-tab-content').removeClass('active');
         tabGroup.find(`#${tabId}`).addClass('active');
-        
+
         // Update hidden input values for form submission
         if (tabId === 'upload-model') {
             $('#model_source_input').val('upload');
@@ -28,20 +32,6 @@ jQuery(document).ready(function($) {
         } else if (tabId === 'library-poster') {
             $('#poster_method_input').val('library');
         }
-    });
-    
-    // Device tab functionality for responsive sizes
-    $('.explorexr-device-tab').on('click', function() {
-        const deviceId = $(this).data('device');
-        const deviceGroup = $(this).closest('.explorexr-device-tabs').parent();
-        
-        // Update active device tab
-        deviceGroup.find('.explorexr-device-tab').removeClass('active');
-        $(this).addClass('active');
-        
-        // Show the selected device content
-        deviceGroup.find('.explorexr-device-content').removeClass('active');
-        deviceGroup.find(`#${deviceId}-size`).addClass('active');
     });
     
     // Enhanced file input functionality
@@ -145,34 +135,5 @@ jQuery(document).ready(function($) {
         
         // Open the uploader dialog
         mediaUploader.open();
-    });
-    
-    /**
-     * Block submission when any breakpoint uses %/% which would hide the model.
-     */
-    function violatesPercentRule(width, height) {
-        const isPercent = (value) => typeof value === 'string' && value.trim().endsWith('%');
-        return isPercent(width) && isPercent(height);
-    }
-    
-    $('form').on('submit', function(e) {
-        const desktopWidth = $('#viewer_width').val();
-        const desktopHeight = $('#viewer_height').val();
-        const tabletWidth = $('#tablet_viewer_width').val();
-        const tabletHeight = $('#tablet_viewer_height').val();
-        const mobileWidth = $('#mobile_viewer_width').val();
-        const mobileHeight = $('#mobile_viewer_height').val();
-        
-        if (
-            violatesPercentRule(desktopWidth, desktopHeight) ||
-            violatesPercentRule(tabletWidth, tabletHeight) ||
-            violatesPercentRule(mobileWidth, mobileHeight)
-        ) {
-            e.preventDefault();
-            alert(percentRuleError);
-            return false;
-        }
-        
-        return true;
     });
 });

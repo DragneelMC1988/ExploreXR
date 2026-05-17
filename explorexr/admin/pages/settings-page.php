@@ -5,6 +5,46 @@ if (!defined('ABSPATH')) {
 }
 
 // Settings page callback
+if (!function_exists('explorexr_premium_clear_plugin_cache')) {
+    function explorexr_premium_clear_plugin_cache() {
+        // Clear specific transients
+        delete_transient('explorexr_viewer_version_check');
+        delete_transient('explorexr_license_cache');
+        delete_option('explorexr_last_cdn_check');
+        
+        global $wpdb;
+        // Clear ExploreXR related transients (core + premium + addons)
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Necessary for bulk cache clearing
+        $deleted = $wpdb->query(
+            $wpdb->prepare(
+                "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s OR option_name LIKE %s OR option_name LIKE %s",
+                $wpdb->esc_like('_transient_explorexr_') . '%',
+                $wpdb->esc_like('_transient_timeout_explorexr_') . '%',
+                $wpdb->esc_like('_transient_explorexr_premium_') . '%',
+                $wpdb->esc_like('_transient_timeout_explorexr_premium_') . '%'
+            )
+        );
+        
+        // Clear post meta cache for all models
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Necessary for clearing model cache
+        $models = $wpdb->get_col(
+            "SELECT ID FROM {$wpdb->posts} WHERE post_type = 'explorexr_model' OR post_type = 'explorexr_premium_model'"
+        );
+        
+        foreach ($models as $model_id) {
+            wp_cache_delete($model_id, 'post_meta');
+            clean_post_cache($model_id);
+        }
+        
+        // Clear WordPress object cache if available
+        if (function_exists('wp_cache_flush')) {
+            wp_cache_flush();
+        }
+        
+        return (int) $deleted;
+    }
+}
+
 function explorexr_settings_page() {
     // Check user capabilities
     if (!current_user_can('manage_options')) {
@@ -13,49 +53,126 @@ function explorexr_settings_page() {
     
     // Process reset request
     if (isset($_POST['explorexr_reset_settings']) && isset($_POST['explorexr_reset_nonce']) && wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['explorexr_reset_nonce'])), 'explorexr_reset_settings')) {
-        // Reset option values to defaults
-        $default_options = array(
-            'explorexr_loading_display' => 'bar',
-            'explorexr_loading_bar_color' => '#1e88e5',
-            'explorexr_loading_bar_size' => 'medium',
-            'explorexr_loading_bar_position' => 'middle',
-            'explorexr_percentage_font_size' => 24,
-            'explorexr_percentage_font_family' => 'Arial, sans-serif',
-            'explorexr_percentage_font_color' => '#333333',
-            'explorexr_percentage_position' => 'center-center',
-            'explorexr_large_model_handling' => 'direct',
-            'explorexr_large_model_size_threshold' => 16,
-            'explorexr_overlay_bg_color' => '#FFFFFF',
-            'explorexr_overlay_bg_opacity' => 70,
-            'explorexr_model_viewer_version' => '4.1.0',
-            'explorexr_max_upload_size' => 50,
-            'explorexr_lazy_load_poster' => false,
-            'explorexr_lazy_load_model' => false,
-            'explorexr_load_button_text' => 'Load 3D Model',
-            'explorexr_load_button_bg_color' => '#1e88e5',
-            'explorexr_load_button_text_color' => '#ffffff',
-            'explorexr_load_button_border_radius' => 4,
+        // Define all options to reset
+        $options_to_reset = array(
+            // Loading options
+            'explorexr_loading_display',
+            'explorexr_loading_bar_color',
+            'explorexr_loading_bar_size',
+            'explorexr_loading_bar_position',
+            'explorexr_percentage_font_size',
+            'explorexr_percentage_font_family',
+            'explorexr_percentage_font_color',
+            'explorexr_percentage_position',
+            
+            // Model handling options
+            'explorexr_large_model_handling',
+            'explorexr_large_model_size_threshold',
+            
+            // Overlay options
+            'explorexr_overlay_bg_color',
+            'explorexr_overlay_bg_opacity',
+            
+            // System options
+            'explorexr_model_viewer_version',
+            'explorexr_max_upload_size',
+            'explorexr_cdn_source',
+            'explorexr_script_location',
+            'explorexr_script_loading_timing',
+            'explorexr_lazy_load_poster',
+            'explorexr_lazy_load_model',
+            
+            // Premium loading options
+            'explorexr_premium_loading_bar_color',
+            'explorexr_premium_loading_bar_height',
+            'explorexr_premium_loading_bar_position',
+            'explorexr_premium_percentage_show',
+            'explorexr_premium_percentage_precision',
+            'explorexr_premium_percentage_suffix',
+            'explorexr_premium_loading_text_show',
+            'explorexr_premium_loading_text_content',
+            'explorexr_premium_loading_text_position',
+            'explorexr_premium_loading_text_color',
+            'explorexr_premium_overlay_show',
+            'explorexr_premium_overlay_color',
+            'explorexr_premium_overlay_blur',
+            'explorexr_premium_lazy_load_model',
+            'explorexr_premium_script_location',
+
+            // Load Model button customization (new)
+            'explorexr_load_button_text',
+            'explorexr_load_button_bg',
+            'explorexr_load_button_color',
+            'explorexr_load_button_hover_bg',
+            'explorexr_load_button_hover_color',
+            'explorexr_load_button_radius',
+
+            // Internal migration flag
+            'explorexr_load_behavior_migrated'
         );
         
-        // Update all options to defaults
-        foreach ($default_options as $option_name => $default_value) {
-            update_option($option_name, $default_value);
+        // Also reset any ExploreXR/Premium addon options while preserving license data
+        $option_prefixes = array(
+            'explorexr_',
+            'explorexr_premium_',
+            'explorexr-premium-'
+        );
+        $protected_prefixes = array(
+            'explorexr_license_'
+        );
+        
+        global $wpdb;
+        $options_to_delete = array_fill_keys($options_to_reset, true);
+        foreach ($option_prefixes as $prefix) {
+            $like_prefix = $wpdb->esc_like($prefix) . '%';
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Necessary for bulk option reset
+            $found_options = $wpdb->get_col(
+                $wpdb->prepare(
+                    "SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE %s",
+                    $like_prefix
+                )
+            );
+            
+            foreach ($found_options as $option_name) {
+                $is_protected = false;
+                foreach ($protected_prefixes as $protected_prefix) {
+                    if (strpos($option_name, $protected_prefix) === 0) {
+                        $is_protected = true;
+                        break;
+                    }
+                }
+                if (!$is_protected) {
+                    $options_to_delete[$option_name] = true;
+                }
+            }
         }
         
-        echo '<div class="notice notice-success is-dismissible"><p>All settings have been reset to default values!</p></div>';
+        foreach (array_keys($options_to_delete) as $option_name) {
+            delete_option($option_name);
+        }
+        
+        // Clear all related transients
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Necessary for bulk transient deletion
+        $wpdb->query(
+            $wpdb->prepare(
+                "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s OR option_name LIKE %s OR option_name LIKE %s",
+                $wpdb->esc_like('_transient_explorexr_') . '%',
+                $wpdb->esc_like('_transient_timeout_explorexr_') . '%',
+                $wpdb->esc_like('_transient_explorexr_premium_') . '%',
+                $wpdb->esc_like('_transient_timeout_explorexr_premium_') . '%'
+            )
+        );
+        
+        // Clear caches to ensure fresh defaults load immediately
+        explorexr_premium_clear_plugin_cache();
+        
+        echo '<div class="notice notice-success is-dismissible"><p><strong>All settings have been reset to default values!</strong> The page will reload in 2 seconds.</p></div>';
+        echo '<meta http-equiv="refresh" content="2">';
     }
       // Process cache clearing
     if (isset($_POST['explorexr_clear_cache']) && isset($_POST['explorexr_clear_cache_nonce']) && wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['explorexr_clear_cache_nonce'])), 'explorexr_clear_cache')) {
-        // Clear all ExploreXR caches using the cache manager
-        if (function_exists('explorexr_clear_all_cache')) {
-            $cleared_count = explorexr_clear_all_cache();
-            echo '<div class="notice notice-success is-dismissible"><p>Successfully cleared ' . esc_html($cleared_count) . ' cache entries!</p></div>';
-        } else {
-            // Fallback if cache manager not loaded
-            delete_transient('explorexr_viewer_version_check');
-            delete_option('explorexr_last_cdn_check');
-            echo '<div class="notice notice-success is-dismissible"><p>Model viewer cache has been cleared successfully!</p></div>';
-        }
+        $deleted = explorexr_premium_clear_plugin_cache();
+        echo '<div class="notice notice-success is-dismissible"><p><strong>Cache cleared successfully!</strong> Deleted ' . (int)$deleted . ' transient(s) and cleared model cache.</p></div>';
     }
     
     // Process general settings form submission
@@ -64,13 +181,20 @@ function explorexr_settings_page() {
         if (isset($_POST['explorexr_model_viewer_version'])) {
             update_option('explorexr_model_viewer_version', sanitize_text_field(wp_unslash($_POST['explorexr_model_viewer_version'])));
         }
+        if (isset($_POST['explorexr_default_tone_mapping'])) {
+            $allowed_tone_mappings = array( 'aces', 'pbr-neutral', 'neutral', 'commerce', 'agx', 'filmic' );
+            $tone_mapping = sanitize_text_field( wp_unslash( $_POST['explorexr_default_tone_mapping'] ) );
+            if ( in_array( $tone_mapping, $allowed_tone_mappings, true ) ) {
+                update_option( 'explorexr_default_tone_mapping', $tone_mapping );
+            }
+        }
         if (isset($_POST['explorexr_max_upload_size'])) {
             $max_upload = absint($_POST['explorexr_max_upload_size']);
             if ($max_upload > 0) {
                 update_option('explorexr_max_upload_size', $max_upload);
             }
         }
-        
+
         echo '<div class="notice notice-success is-dismissible"><p>General settings have been saved successfully!</p></div>';
     }
     
@@ -106,7 +230,8 @@ function explorexr_settings_page() {
             
             <!-- Get current option values -->
             <?php
-            $model_viewer_version = get_option('explorexr_model_viewer_version', '4.1.0');
+            $model_viewer_version    = get_option('explorexr_model_viewer_version', '4.1.0');
+            $default_tone_mapping    = get_option('explorexr_default_tone_mapping', 'aces');
             $max_upload_size = get_option('explorexr_max_upload_size', 50);
             $server_max = function_exists('explorexr_get_server_max_upload') ? explorexr_get_server_max_upload() : 50;
             ?>
@@ -125,6 +250,22 @@ function explorexr_settings_page() {
                             <option value="3.0.0" <?php selected($model_viewer_version, '3.0.0'); ?>>v3.0.0</option>
                         </select>
                         <p class="description">The version of Google's Model Viewer library to use. Newer versions may have more features but could be less stable.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        <label for="explorexr_default_tone_mapping">Default Tone Mapping</label>
+                    </th>
+                    <td>
+                        <select name="explorexr_default_tone_mapping" id="explorexr_default_tone_mapping">
+                            <option value="aces" <?php selected($default_tone_mapping, 'aces'); ?>>ACES (legacy default, v3.x behaviour)</option>
+                            <option value="pbr-neutral" <?php selected($default_tone_mapping, 'pbr-neutral'); ?>>PBR Neutral (Model Viewer v4.x default)</option>
+                            <option value="neutral" <?php selected($default_tone_mapping, 'neutral'); ?>>Neutral (Khronos standard)</option>
+                            <option value="commerce" <?php selected($default_tone_mapping, 'commerce'); ?>>Commerce</option>
+                            <option value="agx" <?php selected($default_tone_mapping, 'agx'); ?>>AgX</option>
+                            <option value="filmic" <?php selected($default_tone_mapping, 'filmic'); ?>>Filmic</option>
+                        </select>
+                        <p class="description">Site-wide fallback tone mapping. Model Viewer v4.0 changed the default from <code>aces</code> to <code>pbr-neutral</code>. Keeping <strong>ACES</strong> preserves the look of existing models. The Environment addon overrides this per-model when active.</p>
                     </td>
                 </tr>
                 <tr>
@@ -261,32 +402,16 @@ function explorexr_settings_page() {
         ?>
           <!-- Cache Management -->
         <?php
-        $card_title = 'Cache Management';
+        $card_title = 'Model Viewer Cache';
         $card_icon = 'update-alt';
         ob_start();
         ?>
-        <p>ExploreXR caches model output and settings to improve performance. Clear the cache if you notice display issues after making changes.</p>
-        
-        <?php
-        // Show cache statistics if available
-        if (function_exists('explorexr_get_cache_stats')) {
-            $cache_stats = explorexr_get_cache_stats();
-            echo '<div class="explorexr-cache-stats" style="margin: 15px 0; padding: 15px; background: #f5f5f5; border-radius: 4px;">';
-            echo '<p><strong>Current Cache Status:</strong></p>';
-            echo '<ul style="margin: 5px 0 0 20px;">';
-            echo '<li>Cached entries: <strong>' . esc_html($cache_stats['count']) . '</strong></li>';
-            echo '<li>Total size: <strong>' . esc_html($cache_stats['size_kb']) . ' KB</strong></li>';
-            echo '</ul>';
-            echo '</div>';
-        }
-        ?>
-        
-        <form method="post" onsubmit="return confirm('Are you sure you want to clear all ExploreXR caches? This will not affect your saved settings or models.');">
+        <p>In some cases, clearing the model viewer cache can help resolve display issues with 3D models.</p>
+        <form method="post" onsubmit="return confirm('Are you sure you want to clear the model viewer cache? This will not affect your saved settings.'));\">
             <?php wp_nonce_field('explorexr_clear_cache', 'explorexr_clear_cache_nonce'); ?>
             <p class="submit">
-                <input type="submit" name="explorexr_clear_cache" class="button button-secondary" value="Clear All Cache">
-            </p>
-        </form>
+                <input type="submit" name="explorexr_clear_cache" class="button button-secondary" value="Clear Cache">
+            </p>        </form>
         <?php
         $card_content = ob_get_clean();
         include EXPLOREXR_PLUGIN_DIR . 'admin/templates/card.php';
@@ -325,7 +450,7 @@ function explorexr_settings_page() {
                 <?php 
                 // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage -- Plugin logo for admin interface
                 printf('<img src="%s" alt="%s" class="explorexr-logo" loading="lazy">', 
-                    esc_url(EXPLOREXR_PLUGIN_URL . 'assets/img/logos/explorexr-Logo-dark.png'), 
+                    esc_url(EXPLOREXR_PLUGIN_URL . 'assets/img/logos/explorexr-logo-dark.png'), 
                     esc_attr__('ExploreXR Logo', 'explorexr')
                 );
                 ?>
@@ -336,7 +461,7 @@ function explorexr_settings_page() {
             </div>
         </div>
         <p>For documentation, support, and more information, please visit our website:</p>
-        <p><a href="https://expoxr.com/explorexr/home/" class="button" target="_blank">Visit ExploreXR Website</a></p>
+        <p><a href="https://expoxr.com" class="button" target="_blank">Visit ExploreXR Website</a></p>
         <?php
         $card_content = ob_get_clean();
         include EXPLOREXR_PLUGIN_DIR . 'admin/templates/card.php';
@@ -388,7 +513,6 @@ function explorexr_general_settings_register_settings() {
     );
 }
 add_action('admin_init', 'explorexr_general_settings_register_settings');
-
 
 
 

@@ -5,6 +5,35 @@ if (!defined('ABSPATH')) {
 }
 
 /**
+ * Sanitize a color value for the Load Model button. Accepts hex (#abc / #aabbcc)
+ * and falls back to the supplied default when invalid.
+ */
+function explorexr_sanitize_load_button_color($value) {
+    if (function_exists('explorexr_sanitize_hex_color')) {
+        return explorexr_sanitize_hex_color($value, '');
+    }
+    $value = is_string($value) ? trim($value) : '';
+    if (preg_match('/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/', $value)) {
+        return $value;
+    }
+    return '';
+}
+
+/**
+ * Sanitize a CSS length value for the Load Model button radius (e.g. 4px, 50%, 0.5rem).
+ */
+function explorexr_sanitize_load_button_radius($value) {
+    $value = is_string($value) ? trim($value) : '';
+    if ($value === '') {
+        return '';
+    }
+    if (preg_match('/^\d{1,3}(\.\d+)?(px|%|em|rem)$/', $value)) {
+        return $value;
+    }
+    return '';
+}
+
+/**
  * Register loading options settings
  */
 function explorexr_loading_options_register_settings() {
@@ -21,10 +50,27 @@ function explorexr_loading_options_register_settings() {
     register_setting('explorexr_loading_settings', 'explorexr_lazy_load_poster', array(
         'sanitize_callback' => 'sanitize_text_field'
     ));
-    register_setting('explorexr_loading_settings', 'explorexr_lazy_load_model', array(
+
+    // Load Model Button customization settings
+    register_setting('explorexr_loading_settings', 'explorexr_load_button_text', array(
         'sanitize_callback' => 'sanitize_text_field'
     ));
-    
+    register_setting('explorexr_loading_settings', 'explorexr_load_button_bg', array(
+        'sanitize_callback' => 'explorexr_sanitize_load_button_color'
+    ));
+    register_setting('explorexr_loading_settings', 'explorexr_load_button_color', array(
+        'sanitize_callback' => 'explorexr_sanitize_load_button_color'
+    ));
+    register_setting('explorexr_loading_settings', 'explorexr_load_button_hover_bg', array(
+        'sanitize_callback' => 'explorexr_sanitize_load_button_color'
+    ));
+    register_setting('explorexr_loading_settings', 'explorexr_load_button_hover_color', array(
+        'sanitize_callback' => 'explorexr_sanitize_load_button_color'
+    ));
+    register_setting('explorexr_loading_settings', 'explorexr_load_button_radius', array(
+        'sanitize_callback' => 'explorexr_sanitize_load_button_radius'
+    ));
+
     // Add settings sections
     add_settings_section(
         'explorexr_loading_core_section',
@@ -61,14 +107,6 @@ function explorexr_loading_options_register_settings() {
         'explorexr_lazy_load_poster',
         esc_html__('Lazy Load Poster Images', 'explorexr'),
         'explorexr_lazy_load_poster_callback',
-        'explorexr-loading-settings',
-        'explorexr_loading_lazy_section'
-    );
-
-    add_settings_field(
-        'explorexr_lazy_load_model',
-        esc_html__('Lazy Load 3D Models (Global)', 'explorexr'),
-        'explorexr_lazy_load_model_callback',
         'explorexr-loading-settings',
         'explorexr_loading_lazy_section'
     );
@@ -133,8 +171,8 @@ function explorexr_loading_display_callback() {
         <?php 
         printf(
             // translators: %s: Link to Premium version
-            esc_html__('For more styling options and effects, consider upgrading to %s.', 'explorexr'),
-            '<a href="' . esc_url(admin_url('admin.php?page=explorexr-premium')) . '">' . esc_html__('ExploreXR Premium', 'explorexr') . '</a>'
+            esc_html__('For more styling options and effects, consider using the Loading Addon %s.', 'explorexr'),
+            '<a href="' . esc_url(admin_url('admin.php?page=explorexr-addons')) . '">' . esc_html__('ExploreXR Addons', 'explorexr') . '</a>'
         ); ?>
     </p>
     <?php
@@ -148,17 +186,6 @@ function explorexr_lazy_load_poster_callback() {
         <?php esc_html_e('Enable lazy loading for poster images', 'explorexr'); ?>
     </label>
     <p class="description"><?php esc_html_e('Only load poster images when they come into the viewport. Improves initial page load time.', 'explorexr'); ?></p>
-    <?php
-}
-
-function explorexr_lazy_load_model_callback() {
-    $lazy_load_model = get_option('explorexr_lazy_load_model', false);
-    ?>
-    <label for="explorexr_lazy_load_model">
-        <input type="checkbox" id="explorexr_lazy_load_model" name="explorexr_lazy_load_model" value="1" <?php checked($lazy_load_model, true); ?>>
-        <?php esc_html_e('Enable lazy loading for all 3D models by default', 'explorexr'); ?>
-    </label>
-    <p class="description"><?php esc_html_e('Models will only begin loading when they enter the viewport. Per-model settings can override this. Recommended for pages with multiple models.', 'explorexr'); ?></p>
     <?php
 }
 
@@ -227,26 +254,34 @@ function explorexr_loading_options_page() {
         } else {
             update_option('explorexr_lazy_load_poster', false);
         }
-        // Handle checkbox for lazy load model (global)
-        if (isset($_POST['explorexr_lazy_load_model']) && $_POST['explorexr_lazy_load_model'] === '1') {
-            update_option('explorexr_lazy_load_model', true);
-        } else {
-            update_option('explorexr_lazy_load_model', false);
-        }
-        // Handle button customization fields
+
+        // Load Model button customization
         if (isset($_POST['explorexr_load_button_text'])) {
             update_option('explorexr_load_button_text', sanitize_text_field(wp_unslash($_POST['explorexr_load_button_text'])));
         }
-        if (isset($_POST['explorexr_load_button_bg_color'])) {
-            update_option('explorexr_load_button_bg_color', sanitize_hex_color(wp_unslash($_POST['explorexr_load_button_bg_color'])) ?: '#1e88e5');
+        $explorexr_button_color_fields = array(
+            'explorexr_load_button_bg',
+            'explorexr_load_button_color',
+            'explorexr_load_button_hover_bg',
+            'explorexr_load_button_hover_color',
+        );
+        foreach ($explorexr_button_color_fields as $explorexr_color_field) {
+            if (isset($_POST[$explorexr_color_field])) {
+                update_option(
+                    $explorexr_color_field,
+                    // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- custom hex sanitization via explorexr_sanitize_load_button_color()
+                explorexr_sanitize_load_button_color(wp_unslash($_POST[$explorexr_color_field]))
+                );
+            }
         }
-        if (isset($_POST['explorexr_load_button_text_color'])) {
-            update_option('explorexr_load_button_text_color', sanitize_hex_color(wp_unslash($_POST['explorexr_load_button_text_color'])) ?: '#ffffff');
+        if (isset($_POST['explorexr_load_button_radius'])) {
+            update_option(
+                'explorexr_load_button_radius',
+                // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- custom CSS length sanitization via explorexr_sanitize_load_button_radius()
+                explorexr_sanitize_load_button_radius(wp_unslash($_POST['explorexr_load_button_radius']))
+            );
         }
-        if (isset($_POST['explorexr_load_button_border_radius'])) {
-            update_option('explorexr_load_button_border_radius', absint($_POST['explorexr_load_button_border_radius']));
-        }
-        
+
         echo '<div class="notice notice-success is-dismissible"><p>Loading options have been saved successfully!</p></div>';
     }
     
@@ -256,7 +291,7 @@ function explorexr_loading_options_page() {
     // Prepare settings page structure using the standardized template
     $settings_args = array(
         'page_title'    => esc_html__('Loading Options', 'explorexr'),
-        'plugin_name'   => esc_html__('ExploreXR', 'explorexr'),
+        'plugin_name'   => esc_html__('explorexr', 'explorexr'),
         'plugin_version' => defined('EXPLOREXR_VERSION') ? EXPLOREXR_VERSION : '1.0.1',
         'doc_url'       => 'https://expoxr.com/explorexr/documentation/',
         'settings_group' => 'explorexr_loading_settings',
@@ -323,11 +358,6 @@ function explorexr_loading_options_page() {
             $large_model_handling = get_option('explorexr_large_model_handling', 'direct');
             $large_model_size_threshold = get_option('explorexr_large_model_size_threshold', 16);
             $lazy_load_poster = get_option('explorexr_lazy_load_poster', false);
-            $lazy_load_model = get_option('explorexr_lazy_load_model', false);
-            $load_button_text = get_option('explorexr_load_button_text', __('Load 3D Model', 'explorexr'));
-            $load_button_bg_color = get_option('explorexr_load_button_bg_color', '#1e88e5');
-            $load_button_text_color = get_option('explorexr_load_button_text_color', '#ffffff');
-            $load_button_border_radius = get_option('explorexr_load_button_border_radius', 4);
             ?>
             
             <h3><?php esc_html_e('Core Loading Settings', 'explorexr'); ?></h3>
@@ -359,8 +389,8 @@ function explorexr_loading_options_page() {
                             <?php 
                             printf(
                                 // translators: %s: Link to Premium version
-                                esc_html__('For more styling options and effects, consider upgrading to %s.', 'explorexr'),
-                                '<a href="' . esc_url(admin_url('admin.php?page=explorexr-premium')) . '">' . esc_html__('ExploreXR Premium', 'explorexr') . '</a>'
+                                esc_html__('For more styling options and effects, consider using the Loading Addon %s.', 'explorexr'),
+                                '<a href="' . esc_url(admin_url('admin.php?page=explorexr-addons')) . '">' . esc_html__('ExploreXR Addons', 'explorexr') . '</a>'
                             ); ?>
                         </p>
                     </td>
@@ -379,16 +409,6 @@ function explorexr_loading_options_page() {
                         <input type="checkbox" id="explorexr_lazy_load_poster" name="explorexr_lazy_load_poster" value="1" <?php checked($lazy_load_poster, true); ?>>
                         <label for="explorexr_lazy_load_poster"><?php esc_html_e('Enable lazy loading for poster images', 'explorexr'); ?></label>
                         <p class="description"><?php esc_html_e('Poster images will only load when they are about to enter the viewport, improving initial page load times.', 'explorexr'); ?></p>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">
-                        <label for="explorexr_lazy_load_model"><?php esc_html_e('Lazy Load 3D Models (Global)', 'explorexr'); ?></label>
-                    </th>
-                    <td>
-                        <input type="checkbox" id="explorexr_lazy_load_model" name="explorexr_lazy_load_model" value="1" <?php checked($lazy_load_model, true); ?>>
-                        <label for="explorexr_lazy_load_model"><?php esc_html_e('Enable lazy loading for all 3D models by default', 'explorexr'); ?></label>
-                        <p class="description"><?php esc_html_e('Models will only begin loading when they enter the viewport. Per-model settings can override this globally.', 'explorexr'); ?></p>
                     </td>
                 </tr>
             </table>
@@ -438,48 +458,122 @@ function explorexr_loading_options_page() {
                 </tr>
             </table>
             
-            <h3><?php esc_html_e('Load Model Button Customization', 'explorexr'); ?></h3>
-            <p><?php esc_html_e('Customize the appearance of the "Load 3D Model" button shown for large models.', 'explorexr'); ?></p>
-            
+            <h3><?php esc_html_e('Load Model Button', 'explorexr'); ?></h3>
+            <p><?php esc_html_e('Customize the button shown over the poster when using the "Poster + Load Button" mode.', 'explorexr'); ?></p>
+
+            <?php
+            $explorexr_button_text         = get_option('explorexr_load_button_text', '');
+            $explorexr_button_bg           = get_option('explorexr_load_button_bg', '');
+            $explorexr_button_color        = get_option('explorexr_load_button_color', '');
+            $explorexr_button_hover_bg     = get_option('explorexr_load_button_hover_bg', '');
+            $explorexr_button_hover_color  = get_option('explorexr_load_button_hover_color', '');
+            $explorexr_button_radius       = get_option('explorexr_load_button_radius', '');
+            ?>
+
             <table class="form-table" role="presentation">
                 <tr>
                     <th scope="row">
                         <label for="explorexr_load_button_text"><?php esc_html_e('Button Text', 'explorexr'); ?></label>
                     </th>
                     <td>
-                        <input type="text" id="explorexr_load_button_text" name="explorexr_load_button_text" value="<?php echo esc_attr($load_button_text); ?>" class="regular-text">
-                        <p class="description"><?php esc_html_e('Text displayed on the load button. Default: "Load 3D Model"', 'explorexr'); ?></p>
+                        <input type="text" name="explorexr_load_button_text" id="explorexr_load_button_text" value="<?php echo esc_attr($explorexr_button_text); ?>" class="regular-text" placeholder="<?php esc_attr_e('Load 3D Model', 'explorexr'); ?>">
+                        <p class="description"><?php esc_html_e('Label shown on the load button. Leave empty for the default "Load 3D Model".', 'explorexr'); ?></p>
                     </td>
                 </tr>
                 <tr>
                     <th scope="row">
-                        <label for="explorexr_load_button_bg_color"><?php esc_html_e('Button Background Color', 'explorexr'); ?></label>
+                        <label for="explorexr_load_button_bg"><?php esc_html_e('Background Color', 'explorexr'); ?></label>
                     </th>
                     <td>
-                        <input type="color" id="explorexr_load_button_bg_color" name="explorexr_load_button_bg_color" value="<?php echo esc_attr($load_button_bg_color); ?>">
-                        <p class="description"><?php esc_html_e('Background color of the load button.', 'explorexr'); ?></p>
+                        <input type="text" name="explorexr_load_button_bg" id="explorexr_load_button_bg" value="<?php echo esc_attr($explorexr_button_bg); ?>" class="small-text" placeholder="#0073aa">
+                        <p class="description"><?php esc_html_e('Hex color (e.g. #0073aa). Leave empty for default.', 'explorexr'); ?></p>
                     </td>
                 </tr>
                 <tr>
                     <th scope="row">
-                        <label for="explorexr_load_button_text_color"><?php esc_html_e('Button Text Color', 'explorexr'); ?></label>
+                        <label for="explorexr_load_button_color"><?php esc_html_e('Text Color', 'explorexr'); ?></label>
                     </th>
                     <td>
-                        <input type="color" id="explorexr_load_button_text_color" name="explorexr_load_button_text_color" value="<?php echo esc_attr($load_button_text_color); ?>">
-                        <p class="description"><?php esc_html_e('Text color of the load button.', 'explorexr'); ?></p>
+                        <input type="text" name="explorexr_load_button_color" id="explorexr_load_button_color" value="<?php echo esc_attr($explorexr_button_color); ?>" class="small-text" placeholder="#ffffff">
                     </td>
                 </tr>
                 <tr>
                     <th scope="row">
-                        <label for="explorexr_load_button_border_radius"><?php esc_html_e('Button Border Radius (px)', 'explorexr'); ?></label>
+                        <label for="explorexr_load_button_hover_bg"><?php esc_html_e('Hover Background', 'explorexr'); ?></label>
                     </th>
                     <td>
-                        <input type="number" id="explorexr_load_button_border_radius" name="explorexr_load_button_border_radius" value="<?php echo esc_attr($load_button_border_radius); ?>" class="small-text" min="0" max="50"> px
-                        <p class="description"><?php esc_html_e('Rounded corners for the button (0 = square, higher = more rounded).', 'explorexr'); ?></p>
+                        <input type="text" name="explorexr_load_button_hover_bg" id="explorexr_load_button_hover_bg" value="<?php echo esc_attr($explorexr_button_hover_bg); ?>" class="small-text" placeholder="#005177">
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        <label for="explorexr_load_button_hover_color"><?php esc_html_e('Hover Text Color', 'explorexr'); ?></label>
+                    </th>
+                    <td>
+                        <input type="text" name="explorexr_load_button_hover_color" id="explorexr_load_button_hover_color" value="<?php echo esc_attr($explorexr_button_hover_color); ?>" class="small-text" placeholder="#ffffff">
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        <label for="explorexr_load_button_radius"><?php esc_html_e('Border Radius', 'explorexr'); ?></label>
+                    </th>
+                    <td>
+                        <input type="text" name="explorexr_load_button_radius" id="explorexr_load_button_radius" value="<?php echo esc_attr($explorexr_button_radius); ?>" class="small-text" placeholder="4px">
+                        <p class="description"><?php esc_html_e('CSS length value: px, %, em, or rem (e.g. 4px, 50%, 0.5rem).', 'explorexr'); ?></p>
                     </td>
                 </tr>
             </table>
-            
+
+            <h3><?php esc_html_e('Compression & Texture Optimization', 'explorexr'); ?></h3>
+            <p><?php esc_html_e('ExploreXR ships Draco, KTX2/Basis Universal and Meshopt decoders. Model files using these formats decode automatically — no per-model configuration needed.', 'explorexr'); ?></p>
+
+            <?php
+            $explorexr_draco_path   = EXPLOREXR_PLUGIN_DIR . 'assets/vendor/draco/draco_decoder.wasm';
+            $explorexr_ktx2_path    = EXPLOREXR_PLUGIN_DIR . 'assets/vendor/basis-universal/basis_transcoder.wasm';
+            $explorexr_meshopt_path = EXPLOREXR_PLUGIN_DIR . 'assets/vendor/meshopt/meshopt_decoder.module.js';
+            $explorexr_compression_rows = array(
+                array(
+                    'label' => esc_html__('Draco Geometry Decoder', 'explorexr'),
+                    'ok'    => file_exists($explorexr_draco_path),
+                    'path'  => 'assets/vendor/draco/',
+                ),
+                array(
+                    'label' => esc_html__('KTX2 / Basis Universal Texture Transcoder', 'explorexr'),
+                    'ok'    => file_exists($explorexr_ktx2_path),
+                    'path'  => 'assets/vendor/basis-universal/',
+                ),
+                array(
+                    'label' => esc_html__('Meshopt Decoder', 'explorexr'),
+                    'ok'    => file_exists($explorexr_meshopt_path),
+                    'path'  => 'assets/vendor/meshopt/',
+                ),
+            );
+            ?>
+            <table class="form-table" role="presentation">
+                <?php foreach ($explorexr_compression_rows as $explorexr_row) : ?>
+                    <tr>
+                        <th scope="row"><?php echo esc_html($explorexr_row['label']); ?></th>
+                        <td>
+                            <?php if ($explorexr_row['ok']) : ?>
+                                <span style="color:#1a7f37;font-weight:600;">&#x2713; <?php esc_html_e('Available', 'explorexr'); ?></span>
+                            <?php else : ?>
+                                <span style="color:#b32d2e;font-weight:600;">&#x2717; <?php esc_html_e('Missing', 'explorexr'); ?></span>
+                            <?php endif; ?>
+                            <code><?php echo esc_html($explorexr_row['path']); ?></code>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                <tr>
+                    <th scope="row"><?php esc_html_e('Decoder Attributes', 'explorexr'); ?></th>
+                    <td>
+                        <p class="description">
+                            <?php esc_html_e('Injected automatically on every <model-viewer> element via the explorexr_premium_model_viewer_attributes filter:', 'explorexr'); ?>
+                            <code>draco-decoder-location</code>, <code>ktx2-transcoder-location</code>, <code>meshopt-decoder</code>.
+                        </p>
+                    </td>
+                </tr>
+            </table>
+
             <?php submit_button('Save Loading Options'); ?>
         </form>
         <?php

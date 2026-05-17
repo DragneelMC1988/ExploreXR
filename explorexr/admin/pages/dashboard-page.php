@@ -94,8 +94,6 @@ function explorexr_dashboard_page() {
         
         <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/notifications-area.php'; ?>
         
-        <?php explorexr_render_trial_banner(); ?>
-        
         <!-- Moving Gradient Banner -->
         <div class="explorexr-gradient-banner">
             <div class="explorexr-gradient-banner-content">
@@ -210,6 +208,7 @@ function explorexr_dashboard_page() {
                         <th>Title</th>
                         <th>Created</th>
                         <th>Shortcode</th>
+                        <th></th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -222,6 +221,8 @@ function explorexr_dashboard_page() {
                             <td><?php echo esc_html(date_i18n(get_option('date_format'), strtotime($model->post_date))); ?></td>
                             <td>
                                 <code><?php echo esc_html($shortcode); ?></code>
+                            </td>
+                            <td>                                
                                 <button type="button" class="button button-small copy-shortcode" data-shortcode="<?php echo esc_attr($shortcode); ?>" style="margin-left: 5px;">
                                     <span class="dashicons dashicons-clipboard" style="font-size: 14px; width: 14px; height: 14px;"></span> Copy Shortcode
                                 </button>
@@ -267,35 +268,146 @@ function explorexr_dashboard_page() {
         ?>
         
 
-         <!-- Premium Features -->
+        <!-- Add-ons Features (Premium Only) -->
+        <?php if (defined('EXPLOREXR_IS_PREMIUM') && EXPLOREXR_IS_PREMIUM === true): ?>
+            <?php
+            // Get license handler and addon information
+            $license_handler = class_exists('ExploreXR_License_Handler') ? ExploreXR_License_Handler::instance() : null;
+            $activated_addons = $license_handler ? $license_handler->get_activated_addons() : [];
+            $all_addons = $license_handler ? $license_handler->get_addons() : [];
+            
+            $card_title = 'Available Add-ons';
+            $card_icon = 'admin-plugins';
+            ob_start();
+            ?>
+            <p>ExploreXR Premium comes with powerful add-ons to enhance your 3D models. Choose the ones that fit your needs based on your license tier.</p>
+            
+            <?php if (!empty($activated_addons)): ?>
+                <div class="explorexr-active-addons-summary">
+                    <h4><span class="dashicons dashicons-yes-alt"></span> Your Active Add-ons (<?php echo count($activated_addons); ?>)</h4>                    
+                </div>
+            <?php endif; ?>
+            
+            <div class="explorexr-addons-features">
+                <div class="explorexr-addon-feature">
+                    <div class="explorexr-addon-icon">
+                        <span class="dashicons dashicons-admin-comments"></span>
+                    </div>
+                    <div class="explorexr-addon-info">
+                        <h4>Annotations</h4>
+                        <p>Add interactive hotspots and information points to your 3D models.</p>
+                    </div>
+                </div>
+                <div class="explorexr-addon-feature">
+                    <div class="explorexr-addon-icon">
+                        <span class="dashicons dashicons-smartphone"></span>
+                    </div>
+                    <div class="explorexr-addon-info">
+                        <h4>Augmented Reality</h4>
+                        <p>Enable AR viewing with iOS Quick Look and Android Scene Viewer support.</p>
+                    </div>
+                </div>
+                <div class="explorexr-addon-feature">
+                    <div class="explorexr-addon-icon">
+                        <span class="dashicons dashicons-camera"></span>
+                    </div>
+                    <div class="explorexr-addon-info">
+                        <h4>Camera Controls</h4>
+                        <p>Advanced camera positioning, orbits, and cinematic view controls.</p>
+                    </div>
+                </div>
+                <div class="explorexr-addon-feature">
+                    <div class="explorexr-addon-icon">
+                        <span class="dashicons dashicons-art"></span>
+                    </div>
+                    <div class="explorexr-addon-info">
+                        <h4>Materials Variants</h4>
+                        <p>Switch between different materials and textures dynamically.</p>
+                    </div>
+                </div>
+                <div class="explorexr-addon-feature">
+                    <div class="explorexr-addon-icon">
+                        <span class="dashicons dashicons-clock"></span>
+                    </div>
+                    <div class="explorexr-addon-info">
+                        <h4>Loading Options</h4>
+                        <p>Customize loading screens, progress bars, and loading animations.</p>
+                    </div>
+                </div>
+                <div class="explorexr-addon-feature">
+                    <div class="explorexr-addon-icon">
+                        <span class="dashicons dashicons-cart"></span>
+                    </div>
+                    <div class="explorexr-addon-info">
+                        <h4>WooCommerce Integration</h4>
+                        <p>Integrate 3D models directly with your WooCommerce products.</p>
+                    </div>
+                </div>
+                <div class="explorexr-addon-feature">
+                    <div class="explorexr-addon-icon">
+                        <span class="dashicons dashicons-controls-play"></span>
+                    </div>
+                    <div class="explorexr-addon-info">
+                        <h4>Animation</h4>
+                        <p>Control and trigger animations with timeline and playback controls.</p>
+                    </div>
+                </div>
+                <div class="explorexr-addon-feature">
+                    <div class="explorexr-addon-icon">
+                        <span class="dashicons dashicons-image-flip-horizontal"></span>
+                    </div>
+                    <div class="explorexr-addon-info">
+                        <h4>Morphing</h4>
+                        <p>Create smooth shape transformations with morph target animations.</p>
+                    </div>
+                </div>
+                <div class="explorexr-addon-feature">
+                    <div class="explorexr-addon-icon">
+                        <span class="dashicons dashicons-move"></span>
+                    </div>
+                    <div class="explorexr-addon-info">
+                        <h4>Mouse 3D</h4>
+                        <p>Enhanced mouse interaction with drag, zoom, and rotate controls.</p>
+                    </div>
+                </div>
+                <div class="explorexr-addon-feature">
+                    <div class="explorexr-addon-icon">
+                        <span class="dashicons dashicons-admin-appearance"></span>
+                    </div>
+                    <div class="explorexr-addon-info">
+                        <h4>Post Processing</h4>
+                        <p>Apply visual effects, filters, and rendering enhancements.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="explorexr-actions" style="margin-top: 20px;">
+                <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-addons')); ?>" class="button button-primary button-large">
+                    <span class="dashicons dashicons-admin-plugins" style="margin-right: 5px;"></span> Manage Add-ons
+                </a>
+                <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-license')); ?>" class="button button-large">
+                    <span class="dashicons dashicons-admin-network" style="margin-right: 5px;"></span> View License
+                </a>
+            </div>
+            <?php
+            $card_content = ob_get_clean();
+            include EXPLOREXR_PLUGIN_DIR . 'admin/templates/card.php';
+            ?>
+        <?php else: ?>
+            <!-- Show upgrade section for free version -->
             <?php
             $card_title = 'Upgrade to Premium';
             $card_icon = 'star-filled';
             ob_start();
             ?>
-            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; padding: 16px 20px; margin-bottom: 16px; color: #fff;">
-                <strong>🚀 Try Premium Free for 14 Days</strong> — Experience all 12 addons. No credit card required.
-                <a href="<?php echo esc_url(explorexr_get_premium_upgrade_url()); ?>" style="color: #fff; text-decoration: underline; margin-left: 5px;" target="_blank">Get Your Free Trial →</a>
-            </div>
-
-            <p>Unlock powerful features with our <strong>12 specialized addons</strong>. Choose the ones that fit your needs based on your subscription tier:</p>
+            <p>Unlock powerful features with our 10 specialized add-ons. Choose the ones that fit your needs based on your subscription tier:</p>
             <div class="explorexr-premium-features">
                 <div class="explorexr-premium-feature">
                     <div class="explorexr-premium-icon">
                         <span class="dashicons dashicons-smartphone"></span>
                     </div>
                     <div class="explorexr-premium-info">
-                        <h4>AR (Augmented Reality)</h4>
-                        <p>Place 3D models in the real world via iOS Quick Look, Android Scene Viewer, and WebXR.</p>
-                    </div>
-                </div>
-                <div class="explorexr-premium-feature">
-                    <div class="explorexr-premium-icon">
-                        <span class="dashicons dashicons-video-alt3"></span>
-                    </div>
-                    <div class="explorexr-premium-info">
-                        <h4>Animation & Annotations</h4>
-                        <p>Multi-clip animation control with crossfade, plus 4 annotation types including dimension lines.</p>
+                        <h4>Enhanced AR Features</h4>
+                        <p>Advanced augmented reality with better tracking, lighting, and iOS Quick Look support.</p>
                     </div>
                 </div>
                 <div class="explorexr-premium-feature">
@@ -303,17 +415,26 @@ function explorexr_dashboard_page() {
                         <span class="dashicons dashicons-camera"></span>
                     </div>
                     <div class="explorexr-premium-info">
-                        <h4>Camera, Lighting & Effects</h4>
-                        <p>Expert camera constraints, HDRI environment lighting, and cinematic post-processing filters.</p>
+                        <h4>Professional Camera Controls</h4>
+                        <p>Custom camera paths, smooth transitions, and advanced view controls for cinematic experiences.</p>
                     </div>
                 </div>
                 <div class="explorexr-premium-feature">
                     <div class="explorexr-premium-icon">
-                        <span class="dashicons dashicons-art"></span>
+                        <span class="dashicons dashicons-performance"></span>
                     </div>
                     <div class="explorexr-premium-info">
-                        <h4>Materials, Morphing & More</h4>
-                        <p>Real-time material switching, model-to-model transitions, Mouse3D cursor control, draggable viewer, and WooCommerce integration.</p>
+                        <h4>Loading Customization</h4>
+                        <p>Customize loading screens, progress bars, and transitions for better user experience.</p>
+                    </div>
+                </div>
+                <div class="explorexr-premium-feature">
+                    <div class="explorexr-premium-icon">
+                        <span class="dashicons dashicons-info"></span>
+                    </div>
+                    <div class="explorexr-premium-info">
+                        <h4>And 7 More Add-ons Available</h4>
+                        <p>We're constantly adding powerful new add-ons to take your 3D experience to the next level!</p>
                     </div>
                 </div>
             </div>
@@ -322,33 +443,30 @@ function explorexr_dashboard_page() {
                     <div class="explorexr-pricing-tier">
                         <h4>Pro</h4>
                         <div class="explorexr-price">€59/year</div>
-                        <div class="explorexr-addon-count">3 Addons</div>
-                        <p>Choose any 3 addons</p>
+                        <div class="explorexr-addon-count">3 Add-ons</div>
+                        <p>Choose any 3 add-ons</p>
                     </div>
                     <div class="explorexr-pricing-tier featured">
                         <h4>Plus</h4>
                         <div class="explorexr-price">€99/year</div>
-                        <div class="explorexr-addon-count">5 Addons</div>
-                        <p>Choose any 5 addons</p>
+                        <div class="explorexr-addon-count">5 Add-ons</div>
+                        <p>Choose any 5 add-ons</p>
                         <span class="explorexr-popular-badge">Most Popular</span>
                     </div>
                     <div class="explorexr-pricing-tier">
                         <h4>Ultra</h4>
                         <div class="explorexr-price">€179/year</div>
-                        <div class="explorexr-addon-count">all 12 addons</div>
+                        <div class="explorexr-addon-count">All 10 Add-ons</div>
                         <p>Complete collection</p>
                     </div>
                 </div>
                 <div class="explorexr-addon-note">
-                    <p><strong>All tiers include:</strong> Core 3D model viewer + Debug Toolkit (free) + your chosen addons.</p>
+                    <p><strong>All tiers include:</strong> Core 3D model viewer + your chosen add-ons. Add-ons can be activated/deactivated through your license dashboard.</p>
                 </div>
             </div>
             <div class="explorexr-actions">
-                <a href="<?php echo esc_url(explorexr_get_premium_upgrade_url()); ?>" class="button button-primary button-large" target="_blank">
-                    <span class="dashicons dashicons-star-filled" style="margin-right: 5px;"></span> Get Free Trial
-                </a>
-                <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-premium')); ?>" class="button button-large">
-                    <span class="dashicons dashicons-unlock" style="margin-right: 5px;"></span> View All Addons
+                <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-go-premium')); ?>" class="button button-primary button-large">
+                    <span class="dashicons dashicons-unlock" style="margin-right: 5px;"></span> Upgrade Now
                 </a>
                 <a href="https://expoxr.com/explorexr/pricing/" target="_blank" class="button">
                     <span class="dashicons dashicons-info" style="margin-right: 5px;"></span> Compare Plans
@@ -358,6 +476,7 @@ function explorexr_dashboard_page() {
             $card_content = ob_get_clean();
             include EXPLOREXR_PLUGIN_DIR . 'admin/templates/card.php';
             ?>
+        <?php endif; ?>
         <!-- Resources and Help -->
         <div class="explorexr-card-grid">           
             
@@ -424,47 +543,3 @@ function explorexr_dashboard_page() {
 
 
 
-
-/**
- * Show a one-time "New: Free Add-on" notice on ExploreXR admin pages.
- * Dismissed per-user via AJAX → explorexr_dismiss_free_addon_hint.
- */
-function explorexr_free_addon_hint_notice(): void {
-    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only page check
-    $page = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : '';
-    if ( strpos( $page, 'explorexr' ) !== 0 ) {
-        return;
-    }
-    if ( $page === 'explorexr-free-addons' ) {
-        return; // Already on the add-on page — don't show a second banner
-    }
-    if ( get_user_meta( get_current_user_id(), 'explorexr_free_addon_hint_dismissed', true ) ) {
-        return;
-    }
-    $addon_page_url = admin_url( 'admin.php?page=explorexr-free-addons' );
-    ?>
-    <div class="notice notice-info is-dismissible" id="explorexr-free-addon-hint-notice">
-        <p>
-            <strong><?php esc_html_e( 'New in ExploreXR: Free Add-on!', 'explorexr' ); ?></strong>
-            <?php
-            printf(
-                /* translators: %s: link to free add-on page */
-                esc_html__( 'You can now activate one premium add-on for free — AR, Animation, Camera Controls, or Annotations. %s', 'explorexr' ),
-                '<a href="' . esc_url( $addon_page_url ) . '">' . esc_html__( 'Choose your free add-on →', 'explorexr' ) . '</a>'
-            );
-            ?>
-        </p>
-    </div>
-    <script>
-    (function($){
-        $(document).on('click', '#explorexr-free-addon-hint-notice .notice-dismiss', function(){
-            $.post(ajaxurl, {
-                action: 'explorexr_dismiss_free_addon_hint',
-                nonce:  '<?php echo esc_js( wp_create_nonce( 'explorexr_dismiss_free_addon_hint' ) ); ?>'
-            });
-        });
-    })(jQuery);
-    </script>
-    <?php
-}
-add_action( 'admin_notices', 'explorexr_free_addon_hint_notice' );

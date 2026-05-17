@@ -1,15 +1,9 @@
 <?php
 /**
- * ExploreXR – Divi Builder Module
- *
- * Registers a custom Divi Builder module so editors can search for
- * "3D Model" in the Divi module list, pick a model from a dropdown and
- * see it rendered live in the Divi Visual Builder.
- *
- * Divi Builder renders shortcodes in its frontend Visual Builder preview,
- * so the model-viewer custom element works without any extra workaround.
+ * Divi Builder Module: ExploreXR 3D Model
  *
  * @package ExploreXR
+ * @since 1.1.3
  */
 
 // Exit if accessed directly.
@@ -18,111 +12,115 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Bootstrap: hook into Divi's module init action.
+ * Class ExploreXR_Divi_Module
  */
-add_action( 'et_builder_ready', 'explorexr_register_divi_module' );
+class ExploreXR_Divi_Module extends ET_Builder_Module {
 
-function explorexr_register_divi_module() {
-    // Guard: only load if ET_Builder_Module exists (Divi / Extra / Divi Builder plugin).
-    if ( ! class_exists( 'ET_Builder_Module' ) ) {
-        return;
+    public $slug       = 'explorexr_3d_model';
+    public $vb_support = 'on';
+
+    /**
+     * Module initialisation.
+     */
+    public function init() {
+        $this->name = esc_html__( 'ExploreXR 3D Model', 'explorexr' );
+        $this->icon = 'E';
+
+        $this->settings_modal_toggles = array(
+            'general' => array(
+                'toggles' => array(
+                    'main_content' => esc_html__( '3D Model', 'explorexr' ),
+                ),
+            ),
+        );
     }
 
     /**
-     * Class ExploreXR_Divi_Module
+     * Define module fields.
      *
-     * A Divi Builder module that wraps the [explorexr_model] shortcode.
+     * @return array
      */
-    class ExploreXR_Divi_Module extends ET_Builder_Module { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound
+    public function get_fields() {
+        $models  = $this->get_model_options();
 
-        /** @var string Unique module slug. */
-        public $slug       = 'explorexr_3d_model';
-
-        /** @var string Visual Builder render method. */
-        public $vb_support = 'on';
-
-        /**
-         * Module metadata.
-         */
-        public function init() {
-            $this->name             = esc_html__( '3D Model (ExploreXR)', 'explorexr' );
-            $this->icon_path        = EXPLOREXR_PLUGIN_DIR . 'assets/img/icons/Icon.png';
-            $this->main_css_element = '%%order_class%%';
-        }
-
-        /**
-         * Module fields (controls shown in the Divi editor sidebar).
-         *
-         * @return array
-         */
-        public function get_fields() {
-            // Build select options from all published ExploreXR models.
-            $model_posts   = get_posts( [
-                'post_type'      => 'explorexr_model',
-                'post_status'    => 'publish',
-                'posts_per_page' => -1,
-                'orderby'        => 'title',
-                'order'          => 'ASC',
-            ] );
-
-            $model_options = [ '0' => esc_html__( '— Select a model —', 'explorexr' ) ];
-            foreach ( $model_posts as $model ) {
-                $model_options[ $model->ID ] = sprintf( '%s (ID: %d)', $model->post_title, $model->ID );
-            }
-
-            return [
-                'model_id' => [
-                    'label'           => esc_html__( '3D Model', 'explorexr' ),
-                    'type'            => 'select',
-                    'option_category' => 'basic_option',
-                    'options'         => $model_options,
-                    'default'         => '0',
-                    'description'     => esc_html__( 'Choose the 3D model to display. Manage models under ExploreXR → Browse Models.', 'explorexr' ),
-                ],
-                'model_id_manual' => [
-                    'label'           => esc_html__( 'Or enter Model ID manually', 'explorexr' ),
-                    'type'            => 'text',
-                    'option_category' => 'basic_option',
-                    'default'         => '',
-                    'description'     => esc_html__( 'Overrides the dropdown. Find the ID in ExploreXR → Browse Models.', 'explorexr' ),
-                ],
-            ];
-        }
-
-        /**
-         * Render the module's HTML output.
-         *
-         * @param array  $attrs   Module attributes.
-         * @param string $content Module inner content (unused).
-         * @param string $render_slug The module slug being rendered.
-         * @return string HTML output.
-         */
-        public function render( $attrs, $content, $render_slug ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-            $model_id = ! empty( $this->props['model_id_manual'] ) && ctype_digit( trim( $this->props['model_id_manual'] ) )
-                ? intval( $this->props['model_id_manual'] )
-                : intval( $this->props['model_id'] ?? 0 );
-
-            if ( ! $model_id ) {
-                return '<p style="padding:20px;background:#f0f0f0;text-align:center;">'
-                     . esc_html__( 'ExploreXR: Please select a 3D model in the module settings.', 'explorexr' )
-                     . '</p>';
-            }
-
-            // Verify the post.
-            $post = get_post( $model_id );
-            if ( ! $post || $post->post_type !== 'explorexr_model' || $post->post_status !== 'publish' ) {
-                return '<p style="padding:20px;background:#f0f0f0;text-align:center;">'
-                     . sprintf(
-                         /* translators: %d: model ID */
-                         esc_html__( 'ExploreXR: Model ID %d not found or not published.', 'explorexr' ),
-                         $model_id
-                     )
-                     . '</p>';
-            }
-
-            return do_shortcode( '[explorexr_model id="' . $model_id . '"]' );
-        }
+        return array(
+            'model_id' => array(
+                'label'           => esc_html__( 'Select Model', 'explorexr' ),
+                'type'            => 'select',
+                'options'         => $models,
+                'default'         => '',
+                'toggle_slug'     => 'main_content',
+                'description'     => esc_html__( 'Choose an ExploreXR 3D model to display.', 'explorexr' ),
+                'computed_affects' => array( '__model_html' ),
+            ),
+            '__model_html' => array(
+                'type'                => 'computed',
+                'computed_callback'   => array( __CLASS__, 'compute_model_html' ),
+                'computed_depends_on' => array( 'model_id' ),
+            ),
+        );
     }
 
-    new ExploreXR_Divi_Module(); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals
+    /**
+     * Build the model options array.
+     *
+     * @return array
+     */
+    private function get_model_options() {
+        $options = array( '' => esc_html__( '— Select a model —', 'explorexr' ) );
+
+        $models = get_posts( array(
+            'post_type'      => array( 'explorexr_model', 'explorexr_premium_model' ),
+            'posts_per_page' => 100,
+            'post_status'    => 'publish',
+            'orderby'        => 'title',
+            'order'          => 'ASC',
+        ) );
+
+        foreach ( $models as $model ) {
+            $options[ (string) $model->ID ] = $model->post_title;
+        }
+
+        return $options;
+    }
+
+    /**
+     * Computed callback for Visual Builder AJAX render.
+     *
+     * @param array $args Module attributes.
+     * @return string HTML output.
+     */
+    public static function compute_model_html( $args = array() ) {
+        $model_id = ! empty( $args['model_id'] ) ? absint( $args['model_id'] ) : 0;
+
+        if ( ! $model_id ) {
+            return '<div style="padding:40px;text-align:center;background:#f7f7f7;border:1px dashed #ccc;">'
+                 . esc_html__( 'Select a 3D model from the module settings.', 'explorexr' )
+                 . '</div>';
+        }
+
+        return do_shortcode( '[explorexr_model id="' . $model_id . '"]' );
+    }
+
+    /**
+     * Render the module on the frontend (standard Divi render).
+     *
+     * @param array  $attrs       Module attributes.
+     * @param string $content     Module content (unused).
+     * @param string $render_slug Module slug.
+     * @return string
+     */
+    public function render( $attrs, $content, $render_slug ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
+        $model_id = ! empty( $this->props['model_id'] ) ? absint( $this->props['model_id'] ) : 0;
+
+        if ( ! $model_id ) {
+            return '<div style="padding:40px;text-align:center;background:#f7f7f7;border:1px dashed #ccc;">'
+                 . esc_html__( 'Select a 3D model from the module settings.', 'explorexr' )
+                 . '</div>';
+        }
+
+        return do_shortcode( '[explorexr_model id="' . $model_id . '"]' );
+    }
 }
+
+new ExploreXR_Divi_Module();

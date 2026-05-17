@@ -1,0 +1,579 @@
+/**
+ * ExploreXR Premium - Shared Addon Card Styles
+ * Common styles for all addon settings cards
+ * Applied across Materials, Post-Processing, Annotations, Loading, and Animation addons
+ */
+
+/* ===========================
+   Shared Card Layout
+   =========================== */
+
+.explorexr-addon-card,
+.explorexr-materials-card,
+.explorexr-premium-settings-card {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.explorexr-addon-preview-block,
+.explorexr-materials-preview-block {
+    width: 100%;
+}
+
+.explorexr-addon-preview-wrapper,
+.explorexr-materials-preview-wrapper,
+.explorexr-premium-model-viewer-wrapper {
+    position: relative;
+    min-height: 320px;
+}
+
+/* ===========================
+   Form Elements - Base Styles
+   =========================== */
+
+.explorexr-premium-form-group {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 20px;
+    transition: all 0.2s ease;
+}
+
+.explorexr-premium-form-group:hover {
+    border-color: #1e88e5;
+    box-shadow: 0 2px 8px rgba(30, 136, 229, 0.1);
+}
+
+.explorexr-premium-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #1d2327;
+    font-size: 13px;
+}
+
+.explorexr-premium-form-group .description {
+    display: block;
+    color: #646970;
+    font-size: 12px;
+    margin-top: 6px;
+    font-style: italic;
+    line-height: 1.4;
+}
+
+.explorexr-premium-form-group input[type="text"],
+.explorexr-premium-form-group input[type="number"],
+.explorexr-premium-form-group input[type="email"],
+.explorexr-premium-form-group input[type="url"],
+.explorexr-premium-form-group input[type="color"],
+.explorexr-premium-form-group textarea,
+.explorexr-premium-form-group select,
+.explorexr-premium-form-group .regular-text {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #dcdcde;
+    border-radius: 4px;
+    font-size: 14px;
+    line-height: 1.5;
+    background-color: #fff;
+    color: #2c3338;
+    box-shadow: 0 0 0 transparent;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.explorexr-premium-form-group input[type="color"] {
+    height: 40px;
+    cursor: pointer;
+}
+
+.explorexr-premium-form-group input[type="text"]:focus,
+.explorexr-premium-form-group input[type="number"]:focus,
+.explorexr-premium-form-group input[type="email"]:focus,
+.explorexr-premium-form-group input[type="url"]:focus,
+.explorexr-premium-form-group input[type="color"]:focus,
+.explorexr-premium-form-group textarea:focus,
+.explorexr-premium-form-group select:focus {
+    border-color: #2271b1;
+    outline: none;
+    box-shadow: 0 0 0 1px #2271b1;
+}
+
+.explorexr-premium-form-group select {
+    cursor: pointer;
+    min-height: 36px;
+    padding-right: 32px;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%201-7%207-7-7%202-1z%22%20fill%3D%22%23555%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 16px 16px;
+    appearance: none;
+}
+
+.explorexr-premium-form-group textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.explorexr-premium-form-group.explorexr-premium-full-width {
+    background: #f0f7ff;
+    border: 1px solid #1e88e5;
+    border-left: 4px solid #1e88e5;
+    border-radius: 6px;
+    padding: 16px;
+}
+
+.explorexr-premium-checkbox-label,
+.explorexr-premium-radio-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-bottom: 8px;
+    user-select: none;
+}
+
+.explorexr-premium-checkbox-label input[type="checkbox"],
+.explorexr-premium-radio-label input[type="radio"] {
+    margin: 0;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.explorexr-premium-checkbox-label span,
+.explorexr-premium-radio-label span {
+    flex: 1;
+    line-height: 1.4;
+    color: #23282d;
+}
+
+.explorexr-premium-checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.explorexr-premium-form-group input[type="range"] {
+    width: 100%;
+    margin: 8px 0;
+}
+
+.explorexr-premium-form-group .range-value {
+    display: inline-block;
+    min-width: 40px;
+    padding: 4px 8px;
+    background: #f0f0f1;
+    border-radius: 3px;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
+    margin-left: 8px;
+}
+
+/* Form Grid Layouts */
+.explorexr-premium-form-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.explorexr-premium-form-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.explorexr-premium-full-width {
+    grid-column: 1 / -1;
+}
+
+/* Settings Panel Layout */
+.explorexr-premium-settings-panel {
+    padding: 0;
+}
+
+.explorexr-premium-form-grid.has-preview {
+    display: grid;
+    grid-template-columns: 600px 1fr;
+    gap: 30px;
+    align-items: start;
+}
+
+/* Panel header styling to mirror Loading add-on UI */
+.explorexr-premium-settings-panel {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 14px;
+    background: #fff;
+}
+
+.explorexr-premium-settings-panel + .explorexr-premium-settings-panel {
+    margin-top: 16px;
+}
+
+.explorexr-premium-settings-panel-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 16px 0;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.explorexr-premium-settings-panel-header h4,
+.explorexr-premium-settings-panel h4 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #1e40af;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.explorexr-premium-settings-panel-header .dashicons,
+.explorexr-premium-settings-panel h4 .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: #2AACE2;
+}
+
+/* Responsive Grid Adjustments */
+@media (max-width: 1200px) {
+    .explorexr-premium-form-grid.has-preview {
+        grid-template-columns: 500px 1fr;
+    }
+    
+    .explorexr-premium-form-grid-3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .explorexr-premium-form-grid.has-preview {
+        grid-template-columns: 1fr;
+    }
+    
+    .explorexr-premium-form-grid-2,
+    .explorexr-premium-form-grid-3 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ===========================
+   Preview Sections - Shared
+   =========================== */
+
+#explorexr-premium-materials-preview,
+#explorexr-premium-pp-preview,
+#explorexr-premium-annotations-preview {
+    margin-bottom: 20px;
+}
+
+#explorexr-premium-materials-preview h4,
+#explorexr-premium-pp-preview h4,
+#explorexr-premium-annotations-preview h4 {
+    color: #23282d;
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+}
+
+#explorexr-premium-materials-preview .description,
+#explorexr-premium-pp-preview .description,
+#explorexr-premium-annotations-preview .description {
+    color: #666;
+    font-style: italic;
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+/* Model Preview Container - Shared */
+.explorexr-premium-model-preview-container {
+    position: relative;
+    margin-top: 10px;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.explorexr-premium-model-preview-container.has-slider {
+    display: flex;
+}
+
+/* Model Viewer Wrapper - Shared */
+.explorexr-premium-model-viewer-wrapper {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background: linear-gradient(135deg, #f5f5f5 0%, #e9e9e9 100%);
+    min-height: 400px;
+}
+
+.explorexr-premium-model-preview-container.has-slider .explorexr-premium-model-viewer-wrapper {
+    flex: 1;
+}
+
+/* Model Viewer Element - Ensure proper dimensions */
+.explorexr-premium-model-viewer-wrapper model-viewer {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* ===========================
+   Settings Source Toggle
+   =========================== */
+
+.explorexr-premium-settings-toggle {
+    background: #f5f5f5;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    border-left: 4px solid #0073aa;
+}
+
+.explorexr-premium-settings-toggle h3 {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.explorexr-premium-radio-label {
+    display: block;
+    margin-bottom: 8px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.explorexr-premium-radio-label input[type="radio"] {
+    margin-right: 8px;
+    cursor: pointer;
+}
+
+.explorexr-premium-settings-toggle p {
+    margin: 10px 0 0 0;
+    color: #666;
+    font-size: 13px;
+}
+
+/* ===========================
+   Animation Preview Controls
+   =========================== */
+
+.explorexr-premium-preview-animation-controls {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    z-index: 10;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 5px;
+    border-radius: 3px;
+}
+
+.explorexr-premium-preview-animation-controls select {
+    margin-left: 5px;
+    max-width: 150px;
+}
+
+/* ===========================
+   3-Column Annotation Layout - Shared Styles
+   =========================== */
+
+/* Override for inline flex column layout */
+#explorexr-premium-annotation-slider {
+    /* No longer using absolute positioning */
+    /* Flex properties are controlled by parent container */
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow-y: auto;
+}
+
+.explorexr-premium-slider-header {
+    padding: 15px;
+    background: #f5f5f5;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.explorexr-premium-slider-header h4 {
+    margin: 0;
+    font-size: 14px;
+}
+
+.explorexr-premium-slider-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+    color: #666;
+}
+
+.explorexr-premium-slider-close:hover {
+    color: #000;
+}
+
+.explorexr-premium-slider-content {
+    padding: 15px;
+}
+
+/* Form Steps in Slider */
+.explorexr-premium-form-step {
+    margin-bottom: 20px;
+}
+
+.explorexr-premium-form-step h5 {
+    margin: 0 0 15px 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: #23282d;
+}
+
+/* Positioning Instructions */
+.explorexr-premium-positioning-instructions {
+    margin-bottom: 15px;
+}
+
+.explorexr-premium-instruction-box {
+    display: flex;
+    align-items: flex-start;
+    padding: 12px;
+    background: #f0f7ff;
+    border: 1px solid #d0e3f7;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.explorexr-premium-instruction-icon {
+    margin-right: 12px;
+    flex-shrink: 0;
+}
+
+.explorexr-premium-instruction-icon .dashicons {
+    font-size: 24px;
+    color: #1e88e5;
+}
+
+.explorexr-premium-instruction-text strong {
+    display: block;
+    margin-bottom: 5px;
+    color: #23282d;
+}
+
+.explorexr-premium-instruction-text .description {
+    margin: 0;
+    font-size: 12px;
+}
+
+.explorexr-premium-dimension-instructions {
+    display: none;
+    background: #fff5f5;
+    border-color: #f7d0d0;
+}
+
+.explorexr-premium-dimension-instructions .dashicons {
+    color: #e74c3c !important;
+}
+
+#explorexr-premium-dimension-progress {
+    margin-top: 8px;
+    display: none;
+    font-size: 12px;
+}
+
+#explorexr-premium-dimension-progress .dashicons {
+    color: #46b450;
+}
+
+.explorexr-premium-position-status {
+    display: none;
+    background: #f0fff5;
+    border-color: #d0f7e3;
+}
+
+.explorexr-premium-status-icon .dashicons {
+    color: #46b450 !important;
+}
+
+.explorexr-premium-position-info {
+    display: none;
+    margin-top: 10px;
+}
+
+.explorexr-premium-step-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+/* ===========================
+   Disabled Settings Overlay
+   =========================== */
+
+#explorexr-premium-individual-loading-settings[style*="display: none"] {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* ===========================
+   Conditional Display States
+   =========================== */
+
+#animation-settings[style*="display: none"],
+#pp-settings[style*="display: none"],
+#frontend-control-settings[style*="display: none"],
+#multiple-animations-settings[style*="display: none"],
+#bloom-settings[style*="display: none"],
+#ssao-settings[style*="display: none"],
+#dof-settings[style*="display: none"],
+#grain-settings[style*="display: none"],
+#vignette-settings[style*="display: none"],
+#tonemapping-settings[style*="display: none"],
+#ssr-settings[style*="display: none"] {
+    transition: all 0.3s ease;
+}
+
+/* ===========================
+   Responsive Adjustments
+   =========================== */
+
+@media (max-width: 782px) {
+    .explorexr-premium-model-preview-container {
+        height: 300px;
+    }
+    
+    #explorexr-premium-annotation-slider {
+        width: 280px;
+    }
+    
+    .explorexr-premium-instruction-box {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .explorexr-premium-instruction-icon {
+        margin: 0 0 10px 0;
+    }
+}
+
+@media (max-width: 600px) {
+    .explorexr-premium-model-preview-container.has-slider {
+        flex-direction: column;
+    }
+    
+    #explorexr-premium-annotation-slider {
+        width: 100%;
+        border-left: none;
+        border-top: 1px solid #ddd;
+        max-height: 300px;
+    }
+}

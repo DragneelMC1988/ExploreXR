@@ -1,0 +1,322 @@
+/**
+ * ExploreXR Go Premium Page Styles
+ *
+ * @package ExploreXR
+ */
+
+/* Hero banner */
+.explorexr-go-premium-page .gp-hero {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+    padding: 32px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 10px;
+    margin-top: 14px;
+}
+
+.explorexr-go-premium-page .gp-hero img {
+    max-width: 140px;
+    height: auto;
+}
+
+.explorexr-go-premium-page .gp-hero h1 {
+    font-size: 32px;
+    margin: 0 0 8px 0;
+    color: #ffffff;
+}
+
+.explorexr-go-premium-page .gp-hero p {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #ffffff;
+    margin: 0 0 14px 0;
+}
+
+.explorexr-go-premium-page .gp-hero .gp-cta {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* Why section */
+.explorexr-go-premium-page .gp-why {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-top: 24px;
+}
+
+.explorexr-go-premium-page .gp-why-item {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 18px;
+}
+
+.explorexr-go-premium-page .gp-why-item .dashicons {
+    color: #f59e0b;
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    margin-bottom: 6px;
+}
+
+.explorexr-go-premium-page .gp-why-item h3 {
+    margin: 6px 0;
+    font-size: 16px;
+}
+
+/* Section headings */
+.explorexr-go-premium-page .gp-section-title {
+    margin-top: 30px;
+}
+
+.explorexr-go-premium-page .gp-section-title-lg {
+    margin-top: 36px;
+}
+
+/* Tier cards */
+.explorexr-go-premium-page .gp-tiers {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-top: 24px;
+}
+
+.explorexr-go-premium-page .gp-tier {
+    position: relative;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.explorexr-go-premium-page .gp-tier.gp-highlight {
+    border: 2px solid #7c3aed;
+    box-shadow: 0 4px 16px rgba(124, 58, 237, 0.18);
+}
+
+.explorexr-go-premium-page .gp-tier .gp-pill {
+    position: absolute;
+    top: -12px;
+    right: 14px;
+    background: #7c3aed;
+    color: #fff;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.explorexr-go-premium-page .gp-tier h2 {
+    margin: 0 0 4px 0;
+    font-size: 22px;
+}
+
+/* Tier-specific heading colours (replaces inline style="color:…") */
+.explorexr-go-premium-page .gp-tier--free  h2 { color: #6c757d; }
+.explorexr-go-premium-page .gp-tier--pro   h2 { color: #0073aa; }
+.explorexr-go-premium-page .gp-tier--plus  h2 { color: #7c3aed; }
+.explorexr-go-premium-page .gp-tier--ultra h2 { color: #b91c1c; }
+
+.explorexr-go-premium-page .gp-tier .gp-price {
+    font-size: 32px;
+    font-weight: 700;
+    margin: 8px 0 2px 0;
+}
+
+.explorexr-go-premium-page .gp-tier .gp-period {
+    color: #6b7280;
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+
+.explorexr-go-premium-page .gp-tier .gp-slots {
+    font-size: 13px;
+    color: #4b5563;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.explorexr-go-premium-page .gp-tier .gp-tagline {
+    font-size: 13px;
+    color: #6b7280;
+    min-height: 34px;
+}
+
+.explorexr-go-premium-page .gp-tier ul {
+    margin: 12px 0 16px 0;
+    padding: 0;
+    list-style: none;
+    flex: 1;
+}
+
+.explorexr-go-premium-page .gp-tier ul li {
+    padding: 4px 0 4px 22px;
+    position: relative;
+    font-size: 13px;
+    color: #374151;
+}
+
+.explorexr-go-premium-page .gp-tier ul li::before {
+    content: "\2713";
+    position: absolute;
+    left: 0;
+    color: #16a34a;
+    font-weight: bold;
+}
+
+.explorexr-go-premium-page .gp-tier .button {
+    width: 100%;
+    text-align: center;
+}
+
+/* Addon grid */
+.explorexr-go-premium-page .gp-addons-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-top: 18px;
+}
+
+.explorexr-go-premium-page .gp-addon {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.explorexr-go-premium-page .gp-addon-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.explorexr-go-premium-page .gp-addon-head .dashicons {
+    color: #0073aa;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    margin-right: 6px;
+    vertical-align: middle;
+}
+
+.explorexr-go-premium-page .gp-addon-head strong {
+    font-size: 14px;
+}
+
+.explorexr-go-premium-page .gp-badge {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    color: #fff;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* Badge colour by addon tier (replaces inline style="background:…") */
+.explorexr-go-premium-page .gp-addon--free  .gp-badge { background: #1a7f37; }
+.explorexr-go-premium-page .gp-addon--pro   .gp-badge,
+.explorexr-go-premium-page .gp-addon--plus  .gp-badge,
+.explorexr-go-premium-page .gp-addon--ultra .gp-badge { background: #7c3aed; }
+
+.explorexr-go-premium-page .gp-addon p {
+    margin: 0;
+    color: #5f6c7b;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+/* Site plans */
+.explorexr-go-premium-page .gp-sites {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-top: 18px;
+}
+
+.explorexr-go-premium-page .gp-site {
+    text-align: center;
+    padding: 18px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+}
+
+.explorexr-go-premium-page .gp-site .gp-site-num {
+    font-size: 34px;
+    font-weight: 700;
+    color: #0073aa;
+    padding: 16px;
+}
+
+/* Site description (replaces inline style="color:#6b7280;font-size:13px;margin:6px 0 0 0;") */
+.explorexr-go-premium-page .gp-site-desc {
+    color: #6b7280;
+    font-size: 13px;
+    margin: 6px 0 0 0;
+}
+
+/* FAQ */
+.explorexr-go-premium-page .gp-faq details {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin-bottom: 8px;
+}
+
+.explorexr-go-premium-page .gp-faq summary {
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.explorexr-go-premium-page .gp-faq details[open] summary {
+    margin-bottom: 8px;
+}
+
+/* Footer CTA */
+.explorexr-go-premium-page .gp-footer-cta {
+    text-align: center;
+    padding: 30px;
+    background: #f3f4f6;
+    border-radius: 10px;
+    margin-top: 22px;
+}
+
+/* Replaces inline style="margin-top:0;" */
+.explorexr-go-premium-page .gp-footer-cta h2 {
+    margin-top: 0;
+}
+
+/* Replaces inline style="margin:8px 0 18px 0;color:#4b5563;" */
+.explorexr-go-premium-page .gp-footer-desc {
+    margin: 8px 0 18px 0;
+    color: #4b5563;
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+    .explorexr-go-premium-page .gp-tiers,
+    .explorexr-go-premium-page .gp-addons-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 700px) {
+    .explorexr-go-premium-page .gp-hero {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .explorexr-go-premium-page .gp-why,
+    .explorexr-go-premium-page .gp-tiers,
+    .explorexr-go-premium-page .gp-addons-grid,
+    .explorexr-go-premium-page .gp-sites {
+        grid-template-columns: 1fr;
+    }
+}

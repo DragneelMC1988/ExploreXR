@@ -55,14 +55,14 @@
     background: #f9f9f9;
 }
 
-.premium-feature-header {
+.explorexr-premium-card .premium-feature-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 15px;
 }
 
-.premium-feature-title {
+.explorexr-premium-card .premium-feature-title {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -70,7 +70,7 @@
     font-size: 18px;
 }
 
-.premium-feature-icon {
+.explorexr-premium-card .premium-feature-icon {
     font-size: 24px;
 }
 
@@ -85,7 +85,7 @@
     letter-spacing: 0.5px;
 }
 
-.premium-feature-description {
+.explorexr-premium-card .premium-feature-description {
     color: #666;
     margin: 10px 0 15px 0;
     line-height: 1.6;
@@ -296,7 +296,7 @@
         align-self: flex-start;
     }
     
-    .premium-feature-header {
+    .explorexr-premium-card .premium-feature-header {
         flex-direction: column;
         align-items: flex-start;
         gap: 10px;
@@ -307,48 +307,48 @@
         text-align: center;
     }
     
-    .feature-teaser-icon {
+    .explorexr-feature-teaser .feature-teaser-icon {
         margin-right: 0;
         margin-bottom: 10px;
     }
     
-    .feature-teaser-cta {
+    .explorexr-feature-teaser .feature-teaser-cta {
         margin-left: 0;
         margin-top: 10px;
     }
     
-    .explorexr-premium-hero {
+    .explorexr-premium-upgrade-page .explorexr-premium-hero {
         flex-direction: column;
         text-align: center;
     }
 
-    .hero-content h1 {
+    .explorexr-premium-upgrade-page .hero-content h1 {
         font-size: 2em;
     }
 
-    .cta-buttons {
+    .explorexr-premium-upgrade-page .cta-buttons {
         flex-direction: column;
         align-items: center;
     }
 
-    .comparison-table {
+    .explorexr-premium-upgrade-page .comparison-table {
         overflow-x: auto;
     }
 
-    .addon-tier-overview {
+    .explorexr-premium-upgrade-page .addon-tier-overview {
         flex-direction: column;
         gap: 15px;
     }
 
-    .tier-overview-card {
+    .explorexr-premium-upgrade-page .tier-overview-card {
         min-width: auto;
     }
 
-    .addons-grid {
+    .explorexr-premium-upgrade-page .addons-grid {
         grid-template-columns: 1fr;
     }
 
-    .pricing-grid {
+    .explorexr-premium-upgrade-page .pricing-grid {
         grid-template-columns: 1fr;
     }
 }
@@ -416,14 +416,14 @@
         padding: 0;
     }
 
-    .explorexr-premium-header {
+    .explorexr-premium-upgrade-page .explorexr-premium-header {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
         padding: 40px 20px;
         margin: 0 -20px 30px -20px;
     }
 
-    .explorexr-premium-hero {
+    .explorexr-premium-upgrade-page .explorexr-premium-hero {
         max-width: 1200px;
         margin: 0 auto;
         display: flex;
@@ -431,77 +431,77 @@
         gap: 40px;
     }
 
-    .hero-content {
+    .explorexr-premium-upgrade-page .hero-content {
         flex: 1;
     }
 
-    .hero-content h1 {
+    .explorexr-premium-upgrade-page .hero-content h1 {
         font-size: 3em;
         margin: 0 0 20px 0;
         color: white;
     }
 
-    .hero-subtitle {
+    .explorexr-premium-upgrade-page .hero-subtitle {
         font-size: 1.4em;
         margin: 0 0 30px 0;
         opacity: 0.9;
     }
 
-    .hero-cta {
+    .explorexr-premium-upgrade-page .hero-cta {
         display: flex;
         align-items: center;
         gap: 20px;
     }
 
-    .button-hero {
+    /* Scoped to ExploreXR premium upgrade page only */
+    .explorexr-premium-upgrade-page .button-hero {
         padding: 15px 30px !important;
         font-size: 18px !important;
         height: auto !important;
     }
 
-    .price-info {
+    .explorexr-premium-upgrade-page .price-info {
         color: rgba(255,255,255,0.8);
         font-size: 14px;
     }
 
-    .hero-image {
+    .explorexr-premium-upgrade-page .hero-image {
         flex: 1;
         text-align: center;
     }
 
-    .hero-image img {
+    .explorexr-premium-upgrade-page .hero-image img {
         max-width: 50%;
         height: auto;
     }
 
-    .explorexr-premium-content {
+    .explorexr-premium-upgrade-page .explorexr-premium-content {
         margin: 0 auto;
         padding: 0;
     }
 
-    .addon-summary {
+    .explorexr-premium-upgrade-page .addon-summary {
         text-align: center;
         margin-bottom: 40px;
         padding: 30px;
-        background: #f8f9fa;
         border-radius: 12px;
     }
 
-    .summary-description {
+    .explorexr-premium-upgrade-page .summary-description {
         font-size: 1.1em;
         color: #666;
         margin: 15px 0 30px 0;
         line-height: 1.6;
     }
 
-    .addon-tier-overview {
+    .explorexr-premium-upgrade-page .addon-tier-overview {
         display: flex;
         justify-content: center;
         gap: 30px;
         flex-wrap: wrap;
     }
 
-    .tier-overview-card {
+    .explorexr-premium-upgrade-page .tier-overview-card {
         background: white;
         border: 2px solid #e9ecef;
         border-radius: 12px;
@@ -511,65 +511,65 @@
         transition: all 0.3s ease;
     }
 
-    .tier-overview-card:hover {
+    .explorexr-premium-upgrade-page .tier-overview-card:hover {
         border-color: #667eea;
         transform: translateY(-2px);
     }
 
-    .tier-overview-card h4 {
+    .explorexr-premium-upgrade-page .tier-overview-card h4 {
         margin: 0 0 15px 0;
         color: #333;
         font-size: 1.1em;
     }
 
-    .tier-number {
+    .explorexr-premium-upgrade-page .tier-number {
         font-size: 2.5em;
         font-weight: bold;
         color: #667eea;
         margin: 0 0 10px 0;
     }
 
-    .tier-overview-card p {
+    .explorexr-premium-upgrade-page .tier-overview-card p {
         margin: 0;
         color: #666;
         font-size: 0.9em;
     }
 
-    .comparison-table {
+    .explorexr-premium-upgrade-page .comparison-table {
         margin: 30px 0;
     }
 
-    .comparison-table table {
+    .explorexr-premium-upgrade-page .comparison-table table {
         width: 100%;
         border-collapse: collapse;
     }
 
-    .comparison-table th,
-    .comparison-table td {
+    .explorexr-premium-upgrade-page .comparison-table th,
+    .explorexr-premium-upgrade-page .comparison-table td {
         padding: 15px;
         text-align: left;
         border-bottom: 1px solid #ddd;
     }
 
-    .free-column {
+    .explorexr-premium-upgrade-page .free-column {
         background-color: #f9f9f9;
         text-align: center;
     }
 
-    .premium-column {
+    .explorexr-premium-upgrade-page .premium-column {
         background-color: #e8f5e8;
         text-align: center;
         font-weight: bold;
     }
 
-    .features-grid {
+    .explorexr-premium-upgrade-page .features-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 20px;
         margin: 30px 0;
     }
 
-    .feature-card {
+    .explorexr-premium-upgrade-page .feature-card {
         background: white;
         border: 1px solid #ddd;
         border-radius: 8px;
@@ -578,28 +578,28 @@
         transition: transform 0.2s;
     }
 
-    .feature-card:hover {
+    .explorexr-premium-upgrade-page .feature-card:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 8px rgba(0,0,0,0.15);
     }
 
-    .feature-icon {
+    .explorexr-premium-upgrade-page .feature-icon {
         font-size: 3em;
         margin-bottom: 15px;
     }
 
-    .feature-card h3 {
+    .explorexr-premium-upgrade-page .feature-card h3 {
         margin: 0 0 15px 0;
         color: #333;
     }
 
-    .feature-card p {
+    .explorexr-premium-upgrade-page .feature-card p {
         margin: 0 0 15px 0;
         color: #666;
         line-height: 1.6;
     }
 
-    .pricing-grid {
+    .explorexr-premium-upgrade-page .pricing-grid {
         display: flex;
         flex-wrap: wrap;
         flex-direction: row;
@@ -608,7 +608,7 @@
         margin: 30px 0;
     }
 
-    .pricing-card {
+    .explorexr-premium-upgrade-page .pricing-card {
         background: white;
         border: 2px solid #ddd;
         border-radius: 12px;
@@ -619,16 +619,16 @@
         min-width: 300px;
     }
 
-    .pricing-card:hover {
+    .explorexr-premium-upgrade-page .pricing-card:hover {
         transform: translateY(-4px);
     }
 
-    .pricing-card.featured {
+    .explorexr-premium-upgrade-page .pricing-card.featured {
         border-color: #667eea;
         transform: scale(1.05);
     }
 
-    .pricing-card .badge {
+    .explorexr-premium-upgrade-page .pricing-card .badge {
         position: absolute;
         top: -10px;
         left: 50%;
@@ -640,24 +640,24 @@
         font-size: 12px;
     }
 
-    .pricing-card h3 {
+    .explorexr-premium-upgrade-page .pricing-card h3 {
         margin: 0 0 20px 0;
         font-size: 1.5em;
     }
 
-    .price {
+    .explorexr-premium-upgrade-page .price {
         font-size: 2.5em;
         font-weight: bold;
         color: #333;
         margin: 0 0 20px 0;
     }
 
-    .price span {
+    .explorexr-premium-upgrade-page .price span {
         font-size: 0.4em;
         color: #666;
     }
 
-    .addon-count {
+    .explorexr-premium-upgrade-page .addon-count {
         background: #e8f5e8;
         color: #2d7a2d;
         padding: 8px 15px;
@@ -668,19 +668,19 @@
         display: inline-block;
     }
 
-    .pricing-card.featured .addon-count {
+    .explorexr-premium-upgrade-page .pricing-card.featured .addon-count {
         background: #667eea;
         color: white;
     }
 
-    .testimonials-grid {
+    .explorexr-premium-upgrade-page .testimonials-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 20px;
         margin: 30px 0;
     }
 
-    blockquote {
+    .explorexr-premium-upgrade-page blockquote {
         background: #f9f9f9;
         border-left: 4px solid #667eea;
         margin: 0;
@@ -689,7 +689,7 @@
         font-style: italic;
     }
 
-    cite {
+    .explorexr-premium-upgrade-page cite {
         display: block;
         margin-top: 10px;
         font-style: normal;
@@ -697,7 +697,7 @@
         color: #666;
     }
 
-    .upgrade-cta {
+    .explorexr-premium-upgrade-page .upgrade-cta {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
         padding: 60px 40px;
@@ -705,22 +705,22 @@
         text-align: center;
     }
 
-    .cta-content h2 {
+    .explorexr-premium-upgrade-page .cta-content h2 {
         color: white;
         margin: 0 0 20px 0;
         font-size: 2.5em;
     }
 
-    .cta-content p {
+    .explorexr-premium-upgrade-page .cta-content p {
         font-size: 1.2em;
         margin: 0 0 30px 0;
         opacity: 0.9;
     }
-    .cta-content span {
+    .explorexr-premium-upgrade-page .cta-content span {
         color: white
     }
 
-    .cta-buttons {
+    .explorexr-premium-upgrade-page .cta-buttons {
         display: flex;
         justify-content: center;
         gap: 20px;
@@ -731,12 +731,12 @@
         align-items: center;
     }
 
-    .guarantee {
+    .explorexr-premium-upgrade-page .guarantee {
         font-size: 14px;
         opacity: 0.8;
     }
 
-    .addons-note {
+    .explorexr-premium-upgrade-page .addons-note {
         background: #f8f9fa;
         border: 1px solid #e9ecef;
         border-radius: 8px;
@@ -744,29 +744,29 @@
         margin-top: 30px;
     }
 
-    .tier-addon-list {
+    .explorexr-premium-upgrade-page .tier-addon-list {
         list-style: none;
         padding: 0;
         margin: 15px 0;
     }
 
-    .tier-addon-list li {
+    .explorexr-premium-upgrade-page .tier-addon-list li {
         padding: 8px 0;
         border-bottom: 1px solid #e9ecef;
     }
 
-    .tier-addon-list li:last-child {
+    .explorexr-premium-upgrade-page .tier-addon-list li:last-child {
         border-bottom: none;
     }
 
-    .addons-grid {
+    .explorexr-premium-upgrade-page .addons-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
         gap: 25px;
         margin: 30px 0;
     }
 
-    .addon-card {
+    .explorexr-premium-upgrade-page .addon-card {
         background: white;
         border: 1px solid #ddd;
         border-radius: 12px;
@@ -775,20 +775,20 @@
         transition: all 0.3s ease;
     }
 
-    .addon-card:hover {
+    .explorexr-premium-upgrade-page .addon-card:hover {
         transform: translateY(-4px);
         box-shadow: 0 6px 20px rgba(0,0,0,0.15);
     }
 
     /* Coming Soon Addon Card Styles */
-    .addon-card.addon-coming-soon {
+    .explorexr-premium-upgrade-page .addon-card.addon-coming-soon {
         background: linear-gradient(135deg, #f8f9ff 0%, #e8f4f8 100%);
         border: 2px solid #667eea;
         position: relative;
         overflow: hidden;
     }
 
-    .addon-card.addon-coming-soon::before {
+    .explorexr-premium-upgrade-page .addon-card.addon-coming-soon::before {
         content: '';
         position: absolute;
         top: 0;
@@ -798,7 +798,7 @@
         background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
     }
 
-    .addon-card.addon-coming-soon .addon-icon {
+    .explorexr-premium-upgrade-page .addon-card.addon-coming-soon .addon-icon {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         -webkit-background-clip: text;
         background-clip: text;
@@ -806,18 +806,18 @@
         margin-bottom: 10px;
     }
 
-    .addon-card.addon-coming-soon h3 {
+    .explorexr-premium-upgrade-page .addon-card.addon-coming-soon h3 {
         color: #667eea;
         font-weight: 600;
         margin-bottom: 10px;
     }
 
-    .addon-card.addon-coming-soon .addon-description {
+    .explorexr-premium-upgrade-page .addon-card.addon-coming-soon .addon-description {
         color: #555;
         font-style: italic;
     }
 
-    .coming-soon-badge {
+    .explorexr-premium-upgrade-page .coming-soon-badge {
         position: inherit;
         top: 15px;
         right: 15px;
@@ -832,30 +832,30 @@
         box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
     }
 
-    .addon-card.addon-coming-soon .addon-features li {
+    .explorexr-premium-upgrade-page .addon-card.addon-coming-soon .addon-features li {
         color: #666;
         font-size: 0.95em;
     }
 
-    .addon-card.addon-coming-soon:hover {
+    .explorexr-premium-upgrade-page .addon-card.addon-coming-soon:hover {
         transform: translateY(-2px);
         box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
     }
 
-    .addon-icon {
+    .explorexr-premium-upgrade-page .addon-icon {
         font-size: 2.5em;
         margin-bottom: 15px;
         text-align: center;
     }
 
-    .addon-card h3 {
+    .explorexr-premium-upgrade-page .addon-card h3 {
         margin: 0 0 15px 0;
         color: #333;
         font-size: 1.3em;
         text-align: center;
     }
 
-    .addon-description {
+    .explorexr-premium-upgrade-page .addon-description {
         color: #666;
         line-height: 1.6;
         margin: 0 0 15px 0;
@@ -866,28 +866,28 @@
             padding: 15px;
         }
         
-        .premium-addon-item {
+        .explorexr-premium-metabox .premium-addon-item {
             display: flex;
             align-items: center;
             padding: 8px 0;
             border-bottom: 1px solid #f0f0f0;
         }
         
-        .premium-addon-item:last-child {
+        .explorexr-premium-metabox .premium-addon-item:last-child {
             border-bottom: none;
         }
         
-        .addon-icon {
+        .explorexr-premium-metabox .addon-icon {
             margin-right: 10px;
             font-size: 16px;
         }
         
-        .addon-name {
+        .explorexr-premium-metabox .addon-name {
             flex: 1;
             font-weight: 500;
         }
         
-        .premium-badge {
+        .explorexr-premium-metabox .premium-badge {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 2px 8px;
@@ -896,13 +896,13 @@
             font-weight: bold;
         }
         
-        .premium-upgrade-cta ul {
+        .explorexr-premium-metabox .premium-upgrade-cta ul {
             margin: 10px 0;
             padding-left: 0;
             list-style: none;
         }
         
-        .premium-upgrade-cta li {
+        .explorexr-premium-metabox .premium-upgrade-cta li {
             padding: 3px 0;
             font-size: 13px;
         }
@@ -928,7 +928,7 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.3);
         }
         
-        .premium-popup-header {
+        .explorexr-premium-popup .premium-popup-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -936,12 +936,12 @@
             border-bottom: 1px solid #eee;
         }
         
-        .premium-popup-header h3 {
+        .explorexr-premium-popup .premium-popup-header h3 {
             margin: 0;
             font-size: 1.4em;
         }
         
-        .close-popup {
+        .explorexr-premium-popup .close-popup {
             background: none;
             border: none;
             font-size: 24px;
@@ -949,22 +949,22 @@
             color: #999;
         }
         
-        .premium-popup-content {
+        .explorexr-premium-popup .premium-popup-content {
             padding: 20px 25px 25px;
         }
         
-        .premium-popup-content ul {
+        .explorexr-premium-popup .premium-popup-content ul {
             margin: 15px 0;
             padding-left: 0;
             list-style: none;
         }
         
-        .premium-popup-content li {
+        .explorexr-premium-popup .premium-popup-content li {
             padding: 3px 0;
             font-size: 14px;
         }
         
-        .premium-upgrade-btn {
+        .explorexr-premium-popup .premium-upgrade-btn {
             display: block;
             width: 100%;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -978,13 +978,13 @@
             transition: transform 0.2s;
         }
         
-        .premium-upgrade-btn:hover {
+        .explorexr-premium-popup .premium-upgrade-btn:hover {
             transform: translateY(-2px);
             text-decoration: none;
             color: white;
         }
 
-        .premium-tier-overview {
+        .explorexr-premium-metabox .premium-tier-overview {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;

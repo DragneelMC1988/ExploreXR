@@ -30,15 +30,12 @@
             }
         });
         
-        // Add hover effects to premium features
-        $('.explorexr-premium-card').hover(
-            function() {
-                $(this).addClass('premium-highlight');
-            },
-            function() {
-                $(this).removeClass('premium-highlight');
-            }
-        );
+        // Add hover effects to premium features (using modern event handlers instead of deprecated hover)
+        $('.explorexr-premium-card').on('mouseenter', function() {
+            $(this).addClass('premium-highlight');
+        }).on('mouseleave', function() {
+            $(this).removeClass('premium-highlight');
+        });
     }
     
     /**
@@ -287,17 +284,15 @@
             var feature = $element.data('feature');
             var tooltip = $('<div class="premium-tooltip">Premium Feature - Click to learn more</div>');
             
-            $element.hover(
-                function() {
-                    $element.append(tooltip);
-                    tooltip.fadeIn(200);
-                },
-                function() {
-                    tooltip.fadeOut(200, function() {
-                        tooltip.remove();
-                    });
-                }
-            );
+            // Use modern event handlers instead of deprecated hover
+            $element.on('mouseenter', function() {
+                $element.append(tooltip);
+                tooltip.fadeIn(200);
+            }).on('mouseleave', function() {
+                tooltip.fadeOut(200, function() {
+                    tooltip.remove();
+                });
+            });
         });
     }
     
@@ -314,7 +309,9 @@
         }
         
         // Custom tracking can be added here
-        console.log('Premium interaction:', feature, action);
+        if (typeof ExploreXRLogger !== 'undefined') {
+            ExploreXRLogger.log('Premium interaction:', feature, action);
+        }
     }
     
     // Initialize tooltips

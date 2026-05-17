@@ -1,11 +1,19 @@
 <?php
 /**
  * ExploreXR Core Model Validator
- *
+ * 
  * Validates model loading requirements and provides fallbacks
- * when required assets are not available.
- *
- * @package ExploreXR
+ * when addons            retu            return array(
+                'accessible' => false, 
+                'error' => 'Relative model file path not found',
+                'attempted_path' => $file_path
+            );ray(
+                'accessible' => false, 
+                'error' => 'Remote model file returned HTTP ' . $response_code,
+                'response_code' => $response_code
+            );not available
+ * 
+  * @package ExploreXR
  * @since 0.2.7.1
  */
 
@@ -211,5 +219,104 @@ function explorexr_generate_model_error_message($validation_result) {
     
     return $error_html;
 }
+
+/**
+ * Enhanced model shortcode with validation
+ */
+function explorexr_safe_model_shortcode($atts) {
+    $atts = shortcode_atts(['id' => ''], $atts, 'explorexr_model');
+    $model_id = intval($atts['id']);
+    
+    // Validate the model environment
+    $validation = explorexr_validate_model_environment($model_id);
+    
+    // If validation fails, return error message
+    if (!$validation['valid']) {
+        return explorexr_generate_model_error_message($validation);
+    }
+    
+    // If we get here, the model should load safely
+    // Return to the normal shortcode processing
+    return explorexr_process_validated_model($model_id, $validation);
+}
+
+/**
+ * Process model after validation passes
+ */
+function explorexr_process_validated_model($model_id, $validation) {
+    // Get the original shortcode function and call it
+    // This is a safe fallback to the existing shortcode implementation
+    
+    // Include helper functions if not already loaded
+    if (!function_exists('explorexr_process_annotations')) {
+        if (file_exists(EXPLOREXR_PLUGIN_DIR . 'includes/models/model-helper.php')) {
+            require_once EXPLOREXR_PLUGIN_DIR . 'includes/models/model-helper.php';
+        }
+    }
+    
+    // Call the original shortcode logic from shortcodes.php
+    // We'll create a wrapper that handles the validation results
+    $model_file = get_post_meta($model_id, '_explorexr_model_file', true) ?: '';
+    
+    // Get alt text for accessibility
+    $alt_text = get_post_meta($model_id, '_explorexr_model_alt_text', true) ?: '';
+    if (empty($alt_text)) {
+        $alt_text = get_the_title($model_id) . ' 3D Model';
+    }
+    
+    // Basic model viewer with minimal dependencies
+    $width = get_post_meta($model_id, '_explorexr_viewer_width', true) ?: '100vw';
+    $height = get_post_meta($model_id, '_explorexr_viewer_height', true) ?: '500px';
+    
+    // Enqueue core styles
+    wp_enqueue_style('explorexr-model-viewer', EXPLOREXR_PLUGIN_URL . 'assets/css/model-viewer.css', array(), EXPLOREXR_VERSION);
+    
+    // Build basic attributes
+    $attributes = array(
+        'src' => $model_file,
+        'alt' => $alt_text,
+        'style' => "width: {$width}; height: {$height};",
+        'class' => 'explorexr-model-core'
+    );
+    
+    // Only add features that don't require addons or are safely fallback
+    $enable_interactions = get_post_meta($model_id, '_explorexr_enable_interactions', true);
+    if ($enable_interactions !== 'off') {
+        $attributes['camera-controls'] = '';
+    }
+    
+    $auto_rotate = get_post_meta($model_id, '_explorexr_auto_rotate', true) ?: '';
+    if ($auto_rotate === 'on') {
+        $attributes['auto-rotate'] = '';
+    }
+    
+    // Convert attributes to HTML
+    $attributes_html = '';
+    foreach ($attributes as $key => $value) {
+        if ($value === '') {
+            $attributes_html .= ' ' . esc_attr($key);
+        } else {
+            $attributes_html .= ' ' . esc_attr($key) . '="' . esc_attr($value) . '"';
+        }
+    }
+    
+    // Include the script template
+    ob_start();
+    include EXPLOREXR_PLUGIN_DIR . 'template-parts/model-viewer-script.php';
+    $script = ob_get_clean();
+    
+    // Return the model HTML
+    $html = $script;
+    $html .= '<model-viewer' . $attributes_html . '>';
+    $html .= '<div slot="error" class="explorexr-model-error">';
+    $html .= '<div>The 3D model is currently unavailable. Please try refreshing the page.</div>';
+    $html .= '</div>';
+    $html .= '</model-viewer>';
+    
+    return $html;
+}
+
+
+
 
 

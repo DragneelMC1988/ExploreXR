@@ -4,7 +4,7 @@
  * 
  * Handles model file uploads and existing model selection
  *
-  * @package ExploreXR
+ * @package ExploreXR_Premium
  */
 
 // Prevent direct access
@@ -12,11 +12,13 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Template variables passed from parent scope - disable PHPCS global prefix check
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
+
 // Check if model_id is defined, if not try to get it from $_GET
 if (!isset($model_id) || empty($model_id)) {
     // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for display
     $model_id = isset($_GET['model_id']) ? intval($_GET['model_id']) : 0;
-    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used for template display only
     if (!$model_id) {
         echo '<div class="notice notice-error"><p>Error: Model ID not provided to model-file-card.php template.</p></div>';
         return;
@@ -96,10 +98,7 @@ if (!isset($poster_id)) {
             <div class="explorexr-form-group">
                 <label for="existing_model">Select Existing Model</label>
                 <select name="existing_model" id="existing_model" class="regular-text">
-                    <?php 
-                    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Loop variables in template context
-                    foreach ($existing_models as $file_url => $file_name) : 
-                    ?>
+                    <?php foreach ($existing_models as $file_url => $file_name) : ?>
                         <option value="<?php echo esc_attr($file_url); ?>" <?php selected($model_file, $file_url); ?>><?php echo esc_html($file_name); ?></option>
                     <?php endforeach; ?>
                 </select>
@@ -109,8 +108,8 @@ if (!isset($poster_id)) {
         <?php endif; ?>
     </div>
 </div>
-
-
-
+<?php
+// Re-enable PHPCS global prefix check
+// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 
 

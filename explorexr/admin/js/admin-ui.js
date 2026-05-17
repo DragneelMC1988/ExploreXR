@@ -6,45 +6,10 @@
  */
 
 jQuery(document).ready(function($) {
-    'use strict';    // Include the model-viewer script if it hasn't been included already
-    // Use centralized loader if available
-    if (window.loadModelViewer && !window.isModelViewerLoaded()) {
-        window.loadModelViewer({
-            scriptUrl: ExploreXRAdminVars.pluginUrl + 'assets/js/model-viewer-umd.js',
-            scriptType: 'umd'
-        }).then(function() {
-            console.log('Model Viewer loaded successfully via centralized loader');
-        }).catch(function(error) {
-            console.warn('ExploreXR Admin: Model viewer could not be loaded via centralized loader, trying fallback method.');
-            // Fallback to direct loading
-            loadModelViewerDirect();
-        });
-    } else if (!window.customElements || !window.customElements.get('model-viewer')) {
-        loadModelViewerDirect();
-    }
+    'use strict';
     
-    function loadModelViewerDirect() {
-        var script = document.createElement('script');
-        
-        // Try to use UMD version for better compatibility
-        var scriptUrl = ExploreXRAdminVars.pluginUrl + 'assets/js/model-viewer-umd.js';
-        
-        // If UMD loading fails, fallback to module version
-        script.onload = function() {
-            // Model Viewer loaded successfully
-        };
-        
-        script.onerror = function() {
-            console.warn('UMD version failed, loading module version...');
-            var moduleScript = document.createElement('script');
-            moduleScript.type = 'module';
-            moduleScript.src = ExploreXRAdminVars.pluginUrl + 'assets/js/model-viewer.min.js';
-            document.head.appendChild(moduleScript);
-        };
-        
-        script.src = scriptUrl;
-        document.head.appendChild(script);
-    }
+    // Model viewer is already loaded via wp_enqueue_script
+    // No need to manually load it here
     
     // Model viewer modal functionality
     const modal = $('#ExploreXR-model-modal');
@@ -139,7 +104,9 @@ jQuery(document).ready(function($) {
                 showCopySuccess($element);
             }
         } catch (err) {
-            console.error('Fallback: Could not copy text: ', err);
+            if (typeof ExploreXRLogger !== 'undefined') {
+                ExploreXRLogger.error('Fallback: Could not copy text: ', err);
+            }
         }
         
         document.body.removeChild(textArea);

@@ -11,6 +11,27 @@ if (!defined('ABSPATH')) {
 }
 
 /**
+ * Compatibility function for file validation
+ * Premium version has advanced validation, free version does basic checks in explorexr_handle_model_upload()
+ * 
+ * @param array $file The uploaded file data
+ * @return array|WP_Error File data or error
+ */
+function explorexr_validate_model_file_upload($file) {
+    // Basic checks - full validation happens in explorexr_handle_model_upload()
+    if (empty($file) || !isset($file['tmp_name']) || empty($file['tmp_name'])) {
+        return new WP_Error('no_file', __('No file was uploaded.', 'explorexr'));
+    }
+    
+    if (!current_user_can('upload_files')) {
+        return new WP_Error('permission_denied', __('You do not have permission to upload files.', 'explorexr'));
+    }
+    
+    // Return file as-is for explorexr_handle_model_upload() to process
+    return $file;
+}
+
+/**
  * Handle model file upload
  * 
  * @param array $file The uploaded file data
@@ -234,7 +255,7 @@ function explorexr_get_model_data($post_id) {
         'mobile_viewer_height' => get_post_meta($post_id, '_explorexr_mobile_viewer_height', true) ?: '',
         
         // Camera settings
-        'camera_controls' => get_post_meta($post_id, '_explorexr_camera_controls', true) ?: '',
+        'enable_interactions' => get_post_meta($post_id, '_explorexr_enable_interactions', true) ?: '',
         'disable_pan' => get_post_meta($post_id, '_explorexr_disable_pan', true) ?: '',
         'disable_tap' => get_post_meta($post_id, '_explorexr_disable_tap', true) ?: '',
         'disable_zoom' => get_post_meta($post_id, '_explorexr_disable_zoom', true) ?: '',
@@ -263,22 +284,51 @@ function explorexr_get_model_data($post_id) {
         'min_field_of_view' => get_post_meta($post_id, '_explorexr_min_field_of_view', true) ?: '',
         'interpolation_decay' => get_post_meta($post_id, '_explorexr_interpolation_decay', true) ?: '',
         
+        // Animation settings are not available in the Free version
+        // This feature is available in the Pro version only
+        
+        // AR settings
+        // AR features are not available in the free version
+        'ar_enabled' => false,
+        'ar_modes' => '',
+        'ar_scale' => '',
+        'ar_placement' => '',
+        'ar_usdz_model' => '',
+        'ar_button_text' => '',
+        'ar_button_image' => '',
+        'ar_xr_environment' => '',
+        'ar_min_height' => '',
+        
+        // Annotations are not available in the free version
+        'annotations' => null
     );
-
+    
     // Set defaults if values are empty
     if (empty($model_data['viewer_size'])) {
         $model_data['viewer_size'] = 'custom';
     }
-
+    
     if (empty($model_data['camera_controls'])) {
         $model_data['camera_controls'] = 'off';
     }
-
+    
     if (empty($model_data['auto_rotate'])) {
         $model_data['auto_rotate'] = 'off';
     }
-
+    
+    // Animation features are not available in the Free version
+    // This feature is available in the Pro version only
+    
+    // For free version, disable premium features
+    $model_data['ar_enabled'] = false;
+    $model_data['ar_modes'] = '';
+    $model_data['annotations'] = null;
+    
     return $model_data;
 }
+
+
+
+
 
 

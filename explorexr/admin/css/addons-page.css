@@ -1,0 +1,821 @@
+/* ExploreXR Addons Page Styles */
+
+@keyframes explorexr-spin {
+    to { transform: rotate(360deg); }
+}
+.explorexr-spin {
+    display: inline-block;
+    animation: explorexr-spin 1s linear infinite;
+}
+.explorexr-direct-install-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.explorexr-premium-addons-page {
+    margin: 20px 20px 0 0;
+}
+
+.explorexr-premium-addons-page h1 {
+    display: flex;
+    align-items: center;
+    font-size: 23px;
+    font-weight: 400;
+    margin: 0 0 20px 0;
+    padding-bottom: 15px;
+}
+
+.explorexr-premium-addons-page h1 .dashicons {
+    margin-right: 10px;
+    color: #2AACE2;
+}
+
+/* License Section Styles - Same as License Page */
+.explorexr-premium-license-section,
+.explorexr-premium-addons-section {
+    margin-bottom: 30px;
+    background: white;
+    border-radius: 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+.explorexr-premium-license-section-content {
+    padding: 20px;
+}
+
+.explorexr-premium-license-section h2,
+.explorexr-premium-addons-section h2 {
+    padding: 15px 20px;
+    margin: 0;
+    background-color: #E4E9EC;
+    border-bottom: 1px solid #0D152C;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.explorexr-premium-license-section h2 .dashicons,
+.explorexr-premium-addons-section h2 .dashicons {
+    margin-right: 8px;
+    color: #2AACE2;
+}
+
+/* Addon Manager Card Styles */
+#explorexr-premium-addons-manager-card .explorexr-premium-card-content {
+    padding: 15px 20px;
+}
+
+#explorexr-premium-addons-manager-card h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+#explorexr-premium-addons-manager-card .description {
+    margin-bottom: 20px;
+    color: #555;
+}
+
+#explorexr-premium-global-addon-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+
+.explorexr-premium-addon-item {
+    padding: 12px 15px;
+    margin: 0;
+    border-bottom: 1px solid #eee;
+    background: #fff;
+    display: flex;
+    position: relative;
+}
+
+.explorexr-premium-addon-item:last-child {
+    border-bottom: none;
+}
+
+.explorexr-premium-addon-item .addon-item-content {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.explorexr-premium-addon-item .drag-handle {
+    cursor: grab;
+    margin-right: 10px;
+    color: #72777c;
+}
+
+.explorexr-premium-addon-item .addon-name {
+    flex-grow: 1;
+    font-weight: 500;
+}
+
+.explorexr-premium-addon-item .addon-actions {
+    display: flex;
+    align-items: center;
+}
+
+.explorexr-premium-addon-item .toggle-visibility {
+    cursor: pointer;
+    color: #72777c;
+    transition: color 0.2s;
+}
+
+.explorexr-premium-addon-item .toggle-visibility:hover {
+    color: #0073aa;
+}
+
+.explorexr-premium-addon-item.addon-hidden {
+    background-color: #f9f9f9;
+    opacity: 0.7;
+}
+
+.explorexr-premium-addon-item.addon-hidden .addon-name {
+    text-decoration: line-through;
+    color: #777;
+}
+
+.addon-manager-actions {
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* License Info Styles - Same as License Page */
+.explorexr-premium-license-info {
+    padding: 20px;
+}
+
+.explorexr-premium-license-info.active {
+    border-left: 4px solid #2AACE2;
+}
+
+.explorexr-premium-license-info.inactive {
+    border-left: 4px solid #8062AA;
+}
+
+.explorexr-premium-license-tier {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.explorexr-premium-license-tier .dashicons {
+    margin-right: 10px;
+    font-size: 24px;
+}
+
+.explorexr-premium-license-tier .dashicons-yes-alt {
+    color: #ecf7ed;
+}
+
+.explorexr-premium-license-tier .dashicons-warning {
+    color: #8062AA;
+}
+
+.explorexr-premium-license-tier .tier-name {
+    font-size: 18px;
+    font-weight: 600;
+    margin-right: 10px;
+}
+
+.explorexr-premium-license-tier .license-active,
+.explorexr-premium-license-tier .license-inactive {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.explorexr-premium-license-tier .license-active {
+    background-color: #ecf7ed;
+    color: #0f5132;
+}
+
+.explorexr-premium-license-tier .license-inactive {
+    background-color: #fbeaea;
+    color: #842029;
+}
+
+.explorexr-premium-license-details {
+    margin-bottom: 20px;
+}
+
+.explorexr-premium-license-details p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+.license-actions {
+    text-align: right;
+}
+
+/* Addons Grid - Same as License Page */
+.explorexr-premium-addons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.explorexr-premium-addon-card {
+    border: 1px solid #e2e4e7;
+    border-radius: 0px;
+    background: white;
+    overflow: hidden;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    min-height: 200px;
+}
+
+.explorexr-premium-addon-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.explorexr-premium-addon-card.selected {
+    box-shadow: 0 0 0 2px #2AACE2;
+}
+
+.explorexr-premium-addon-card.disabled {
+    opacity: 0.6;
+    background: #f9f9f9;
+}
+
+.explorexr-premium-addon-card.activated {
+    border-color: #2AACE2;
+    background: linear-gradient(135deg, #f8fcff 0%, #ffffff 100%);
+}
+
+.explorexr-premium-addon-card.installed {
+    border-color: #dba617;
+    background: linear-gradient(135deg, #fffcf0 0%, #ffffff 100%);
+}
+
+.explorexr-premium-addon-card.not-installed {
+    border-color: #72aee6;
+    background: linear-gradient(135deg, #f0f8ff 0%, #ffffff 100%);
+}
+
+.addon-status-indicator {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 2;
+}
+
+.addon-status-indicator .dashicons {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+.addon-checkbox {
+    padding: 15px 20px 15px 20px;
+}
+
+.status-indicator {
+    width: 20%;
+    height: 2px;
+}
+
+.status-indicator.active {
+    background: #2AACE2;
+}
+
+.status-indicator.inactive {
+    background: #dba617;
+}
+
+.status-indicator.disabled {
+    background: #8062AA;
+}
+
+.addon-info {
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.addon-info h3 {
+    margin: 0 0 12px 0;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    padding-right: 30px; /* Space for status indicator */
+}
+
+.addon-info h3 .dashicons {
+    margin-right: 10px;
+    color: #2AACE2;
+    font-size: 18px;
+}
+
+.addon-info p {
+    margin: 0 0 15px 0;
+    font-size: 14px;
+    color: #646970;
+    line-height: 1.5;
+    flex: 1;
+}
+
+.addon-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    margin-top: auto;
+    padding-top: 10px;
+    border-top: 1px solid #f0f0f1;
+}
+
+.status-text {
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.explorexr-premium-addon-card.activated .status-text {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.explorexr-premium-addon-card.installed .status-text {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.explorexr-premium-addon-card.not-installed .status-text {
+    background: #cce7ff;
+    color: #004085;
+}
+
+.addon-version {
+    color: #646970;
+    font-size: 12px;
+}
+
+.addon-actions {
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f9f9f9;
+    border-top: 1px solid #e2e4e7;
+    gap: 8px;
+}
+
+.addon-upgrade-needed {
+    color: #8062AA;
+    font-weight: 600;
+    font-size: 12px;
+    padding: 5px 10px;
+    background: #fee2e2;
+    border-radius: 4px;
+}
+
+/* Addon Section Description */
+.addon-description {
+    padding: 20px;
+    margin: 0;
+    color: #646970;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Additional Addon Limit Text */
+.addon-limit {
+    color: #646970;
+    font-size: 14px;
+    font-weight: 500;
+    background: #f0f0f1;
+    padding: 2px 8px;
+    border-radius: 12px;
+    margin-left: 10px;
+}
+
+/* Global Settings Form */
+.explorexr-premium-global-settings-form .form-table th {
+    width: 200px;
+    vertical-align: top;
+    padding-top: 15px;
+}
+
+.explorexr-premium-global-settings-form .form-table td {
+    padding-bottom: 20px;
+}
+
+.explorexr-premium-global-settings-form input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.explorexr-premium-global-settings-form .description {
+    margin-top: 5px;
+    font-style: italic;
+}
+
+/* Addon Management Table */
+.addon-status-table {
+    margin-bottom: 20px;
+}
+
+.addon-status-table .addon-status {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.addon-status.active-compatible {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.addon-status.active-incompatible {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.addon-status.inactive {
+    background: #f3f4f6;
+    color: #6b7280;
+}
+
+.addon-management-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+/* Modal Styles */
+.explorexr-premium-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.explorexr-premium-modal-content {
+    background: #fff;
+    border-radius: 0;
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.explorexr-premium-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #c3c4c7;
+}
+
+.explorexr-premium-modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.explorexr-premium-modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.explorexr-premium-modal-close:hover {
+    background: #0D152C;
+    border-radius: 4px;
+}
+
+.explorexr-premium-modal-body {
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.explorexr-premium-modal-footer {
+    padding: 20px;
+    border-top: 1px solid #c3c4c7;
+    text-align: right;
+}
+
+/* Test Results */
+#explorexr-premium-test-results {
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    white-space: pre-wrap;
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 4px;
+    border: 1px solid #e9ecef;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* Notifications */
+.explorexr-premium-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 999999;
+    min-width: 300px;
+    max-width: 500px;
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    animation: slideInRight 0.3s ease-out;
+}
+
+.explorexr-premium-notification.success {
+    border-left: 4px solid #00a32a;
+}
+
+.explorexr-premium-notification.error {
+    border-left: 4px solid #d63638;
+}
+
+.explorexr-premium-notification.info {
+    border-left: 4px solid #0073aa;
+}
+
+.notification-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+}
+
+.notification-message {
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #646970;
+    padding: 0;
+    margin-left: 10px;
+    line-height: 1;
+}
+
+.notification-close:hover {
+    color: #d63638;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Tooltips */
+.tooltip-popup {
+    position: fixed;
+    background: #333;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    line-height: 1.3;
+    z-index: 99999;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+    pointer-events: none;
+    max-width: 250px;
+    word-wrap: break-word;
+}
+
+.tooltip-popup.visible {
+    opacity: 1;
+}
+
+.tooltip-popup::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #333;
+}
+
+/* Loading States */
+.explorexr-premium-loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.explorexr-premium-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #0073aa;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 782px) {
+    .explorexr-premium-addons-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .explorexr-premium-license-info {
+        grid-template-columns: 1fr;
+    }
+    
+    .addon-management-actions {
+        flex-direction: column;
+    }
+    
+    .explorexr-premium-modal-content {
+        width: 95%;
+        margin: 20px;
+    }
+}
+
+@media (max-width: 600px) {
+    .explorexr-premium-addons-page {
+        margin: 10px;
+    }
+    
+    .explorexr-premium-section {
+        padding: 15px;
+    }
+    
+    .addon-actions {
+        flex-direction: column;
+    }
+}
+
+/* Test Results Modal Content */
+.test-result-item {
+    margin-bottom: 15px;
+    padding: 12px;
+    border-radius: 4px;
+    border-left: 4px solid #c3c4c7;
+}
+
+.test-result-item.success {
+    background: #f0f9f0;
+    border-left-color: #00a32a;
+}
+
+.test-result-item.error {
+    background: #fdf0f0;
+    border-left-color: #d63638;
+}
+
+.test-result-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 5px;
+}
+
+.test-status {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.test-result-item.success .test-status {
+    color: #00a32a;
+}
+
+.test-result-item.error .test-status {
+    color: #d63638;
+}
+
+.test-result-message {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.test-result-details {
+    font-size: 12px;
+    color: #646970;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 8px;
+    border-radius: 3px;
+    font-family: monospace;
+}
+
+/* Body modal state */
+body.modal-open {
+    overflow: hidden;
+}
+
+/* Dashboard License Status Banner */
+.explorexr-premium-license-status-banner {
+    margin-bottom: 20px;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.explorexr-premium-license-status-banner.active {
+    background: linear-gradient(135deg, #f0f9f0 0%, #ffffff 100%);
+    border-color: #00a32a;
+    color: #00a32a;
+}
+
+.explorexr-premium-license-status-banner.inactive {
+    background: linear-gradient(135deg, #fdf0f0 0%, #ffffff 100%);
+    border-color: #d63638;
+    color: #d63638;
+}
+
+.explorexr-premium-license-status-banner h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.explorexr-premium-license-status-banner p {
+    margin: 5px 0 0 0;
+    font-size: 14px;
+    color: #646970;
+}
+
+.explorexr-premium-license-status-banner .button {
+    margin-left: auto;
+    white-space: nowrap;
+}
+
+.explorexr-premium-license-status-banner .dashicons {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+.explorexr-premium-license-status-banner.active .dashicons {
+    color: #00a32a;
+}
+
+.explorexr-premium-license-status-banner.inactive .dashicons {
+    color: #d63638;
+}
+.explorexr-license-summary {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    background: white;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+

@@ -44,50 +44,21 @@ add_action('admin_init', 'explorexr_register_loading_options_settings');
  * Get loading options from settings
  */
 function explorexr_get_loading_options() {
-    $loading_display = get_option('explorexr_loading_display', 'bar');
-    
     $options = array(
-        // Core display settings
-        'loading_type' => $loading_display,
-        'loading_display' => $loading_display, // Alias for backwards compatibility
-        
-        // Loading bar settings
-        'loading_bar_color' => get_option('explorexr_loading_bar_color', '#1e88e5'),
-        'loading_bar_size' => get_option('explorexr_loading_bar_size', 'medium'),
-        'loading_bar_position' => get_option('explorexr_loading_bar_position', 'middle'),
-        
-        // Percentage counter settings
-        'percentage_font_size' => get_option('explorexr_percentage_font_size', 24),
-        'percentage_font_family' => get_option('explorexr_percentage_font_family', 'Arial, sans-serif'),
-        'percentage_font_color' => get_option('explorexr_percentage_font_color', '#333333'),
-        'percentage_position' => get_option('explorexr_percentage_position', 'center-center'),
-        
-        // Overlay settings
-        'overlay_bg_color' => get_option('explorexr_overlay_bg_color', '#FFFFFF'),
-        'overlay_bg_opacity' => get_option('explorexr_overlay_bg_opacity', 70),
-        
-        // Large model handling
-        'large_model_handling' => get_option('explorexr_large_model_handling', 'direct'),
-        'large_model_size_threshold' => get_option('explorexr_large_model_size_threshold', 16),
-        
-        // Lazy loading
-        'lazy_load_poster' => get_option('explorexr_lazy_load_poster', false),
-        'lazy_load_model'  => get_option('explorexr_lazy_load_model', false),
-        
-        // Load button customization
-        'load_button_text'          => get_option('explorexr_load_button_text', __('Load 3D Model', 'explorexr')),
-        'load_button_bg_color'      => get_option('explorexr_load_button_bg_color', '#1e88e5'),
-        'load_button_text_color'    => get_option('explorexr_load_button_text_color', '#ffffff'),
-        'load_button_border_radius' => get_option('explorexr_load_button_border_radius', 4),
-        
-        // Computed flags for JavaScript
-        'show_progress_bar' => ($loading_display === 'bar' || $loading_display === 'both'),
-        'show_percentage' => ($loading_display === 'percentage' || $loading_display === 'both'),
-        
-        // Metadata
-        'version' => defined('EXPLOREXR_VERSION') ? EXPLOREXR_VERSION : '1.0.7',
-        'timestamp' => time() // Cache busting
+        'loading_type' => get_option('explorexr_loading_display', 'bar'), // Use the same option name as admin page
+        'loading_color' => get_option('explorexr_loading_bar_color', '#1e88e5'), // Match the actual option name
+        'show_progress_bar' => true,
+        'show_percentage' => true,
+        'version' => EXPLOREXR_VERSION,
+        'timestamp' => time() // Add timestamp for cache busting
     );
+    
+    // Adjust flags based on loading type
+    if ($options['loading_type'] === 'bar') {
+        $options['show_percentage'] = false;
+    } elseif ($options['loading_type'] === 'percentage') {
+        $options['show_progress_bar'] = false;
+    }
     
     return $options;
 }
@@ -96,48 +67,35 @@ function explorexr_get_loading_options() {
 
 /**
  * Add loading options to model-viewer element
- * Adds data attributes to the model-viewer HTML element for JavaScript configuration
+ *
+ * Skipped when the Loading Addon is active and enabled for this model — the
+ * addon injects its own full set of data-loading-* attributes at priority 15
+ * and the core loading UI defers to it.
  */
 function explorexr_add_loading_options_to_model_viewer($attributes, $model_id = null) {
+    // If Loading Addon is enabled for this specific model, skip core loading
+    // attributes.  The addon handles everything at priority 15.
+    if ( $model_id ) {
+        $loading_enabled = get_post_meta( $model_id, '_explorexr_loading_enable', true );
+        if ( $loading_enabled === '1' || $loading_enabled === 'on' ) {
+            return $attributes;
+        }
+    }
+
     $loading_options = explorexr_get_loading_options();
     
-    // Add all loading options as data attributes for JavaScript
+    // Set loading-type data attribute
     $attributes['data-loading-type'] = $loading_options['loading_type'];
-    $attributes['data-loading-bar-color'] = $loading_options['loading_bar_color'];
-    $attributes['data-loading-bar-size'] = $loading_options['loading_bar_size'];
-    $attributes['data-loading-bar-position'] = $loading_options['loading_bar_position'];
-    $attributes['data-percentage-font-size'] = $loading_options['percentage_font_size'];
-    $attributes['data-percentage-font-family'] = $loading_options['percentage_font_family'];
-    $attributes['data-percentage-font-color'] = $loading_options['percentage_font_color'];
-    $attributes['data-percentage-position'] = $loading_options['percentage_position'];
-    $attributes['data-overlay-bg-color'] = $loading_options['overlay_bg_color'];
-    $attributes['data-overlay-bg-opacity'] = $loading_options['overlay_bg_opacity'];
     
-    // Apply lazy loading to the model-viewer element based on per-model setting or global fallback.
-    // Per-model setting (_explorexr_lazy_load): 'global' | 'eager' | 'lazy' — defaults to 'global'.
-    $per_model_lazy = '';
-    if ( $model_id ) {
-        $per_model_lazy = get_post_meta( $model_id, '_explorexr_lazy_load', true ) ?: 'global';
-    }
-    if ( $per_model_lazy === 'lazy' ) {
-        $attributes['loading'] = 'lazy';
-    } elseif ( $per_model_lazy === 'eager' ) {
-        $attributes['loading'] = 'eager';
-    } else {
-        // Use global setting
-        $attributes['loading'] = $loading_options['lazy_load_model'] ? 'lazy' : 'eager';
-    }
-    
-    // Add flags for JavaScript logic
-    if ($loading_options['show_progress_bar']) {
-        $attributes['data-show-progress-bar'] = 'true';
-    }
-    if ($loading_options['show_percentage']) {
-        $attributes['data-show-percentage'] = 'true';
-    }
+    // Set loading-color data attribute
+    $attributes['data-loading-color'] = $loading_options['loading_color'];
     
     return $attributes;
 }
-add_filter('explorexr_model_viewer_attributes', 'explorexr_add_loading_options_to_model_viewer', 10, 2);
+add_filter('explorexr_premium_model_viewer_attributes', 'explorexr_add_loading_options_to_model_viewer', 10, 2);
+
+
+
+
 
 

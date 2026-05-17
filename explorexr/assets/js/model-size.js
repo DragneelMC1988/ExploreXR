@@ -1,183 +1,144 @@
 /**
- * ExploreXR Model Size Metabox JavaScript
+ * ExploreXR Display Size Handler
  *
- * Handles tab functionality and media uploader for the model size metabox
+ * Single authoritative handler for display size tab logic.
+ * Manages the predefined/custom tab switch and syncs the hidden
+ * viewer_size field that is submitted with the form.
+ *
+ * Architecture:
+ * - One hidden field `#explorexr_viewer_size_field` holds the submitted value.
+ * - Predefined tab: radio buttons `name="explorexr_predefined_size"` update
+ *   the hidden field on change.
+ * - Custom tab: the hidden field is set to "custom".
+ * - Tab switch: updates the hidden field immediately.
  */
-
 jQuery(document).ready(function($) {
     'use strict';
-    
-    const percentRuleError = 'Width and height cannot both be percentages. Please use px, vw, or vh for one dimension.';
-    
-    // Tab functionality
-    $('.explorexr-tab').on('click', function() {
-        const tabId = $(this).data('tab');
-        const tabGroup = $(this).closest('.explorexr-tabs').parent();
-        
-        // Update active tab
-        tabGroup.find('.explorexr-tab').removeClass('active');
+
+    // Bail early if the size card is not on this page
+    var $sizeField = $('#explorexr_viewer_size_field');
+    if (!$sizeField.length) {
+        return;
+    }
+
+    // ─── Tab switching (predefined / custom) ─────────────────────────
+
+    // Size-card specific tab handler (scoped to #explorexr-display-size-card)
+    var $sizeCard = $('#explorexr-display-size-card');
+
+    $sizeCard.find('.explorexr-tab').on('click', function() {
+        var tabId = $(this).data('tab');
+        var $parent = $(this).closest('.explorexr-tabs').parent();
+
+        // Switch active tab button
+        $parent.find('> .explorexr-tabs .explorexr-tab').removeClass('active');
         $(this).addClass('active');
-        
-        // Show the selected tab content
-        tabGroup.find('.explorexr-tab-content').removeClass('active');
-        tabGroup.find(`#${tabId}`).addClass('active');
-        
-        // Update hidden input values for form submission
+
+        // Switch active tab content
+        $parent.find('> .explorexr-tab-content').removeClass('active');
+        $parent.find('#' + tabId).addClass('active');
+
+        // Sync the hidden field
         if (tabId === 'custom-sizes') {
-            $('#custom_size_field').val('custom');
-        } else if (tabId === 'upload-poster') {
-            $('#poster_method_input').val('upload');
-        } else if (tabId === 'library-poster') {
-            $('#poster_method_input').val('library');
+            $sizeField.val('custom');
+        } else if (tabId === 'predefined-sizes') {
+            // Set to whatever radio is selected (or default to medium)
+            var selected = $('input[name="explorexr_predefined_size"]:checked').val();
+            $sizeField.val(selected || 'medium');
         }
     });
-    
-    // Device tab functionality
-    $('.explorexr-device-tab').on('click', function() {
-        const deviceId = $(this).data('device');
-        const deviceGroup = $(this).closest('.explorexr-device-tabs').parent();
-        
-        // Update active device tab
-        deviceGroup.find('.explorexr-device-tab').removeClass('active');
+
+    // ─── Device sub-tabs (Desktop / Tablet / Mobile) ─────────────────
+
+    $sizeCard.find('.explorexr-device-tab').on('click', function() {
+        var deviceId = $(this).data('device');
+        var $group = $(this).closest('.explorexr-device-tabs').parent();
+
+        $group.find('.explorexr-device-tab').removeClass('active');
         $(this).addClass('active');
-        
-        // Show the selected device content
-        deviceGroup.find('.explorexr-device-content').removeClass('active');
-        deviceGroup.find(`#${deviceId}-size`).addClass('active');
-    });    // When a predefined size is selected, update the width/height fields and disable custom size field
-    $('input[name="viewer_size"][value!="custom"]').on('change', function() {
-        if ($(this).is(':checked')) {
-            // Disable the custom size hidden field so it doesn't interfere
-            $('#custom_size_field').prop('disabled', true);
-            
-            // Update width/height fields based on predefined size
-            const selectedSize = $(this).val();
-            let width, height;
-            
-            switch(selectedSize) {
-                case 'small':
-                    width = '300px';
-                    height = '300px';
-                    break;
-                case 'medium':
-                    width = '500px';
-                    height = '500px';
-                    break;
-                case 'large':
-                    width = '800px';
-                    height = '600px';
-                    break;
-                case 'full':
-                    width = '98vw';
-                    height = '98vh';
-                    break;
-                default:
-                    return; // Don't update for unknown sizes
-            }
-            
-            // Update the width/height input fields
-            $('#viewer_width').val(width);
-            $('#viewer_height').val(height);
+
+        $group.find('.explorexr-device-content').removeClass('active');
+        $group.find('#' + deviceId + '-size').addClass('active');
+    });
+
+    // ─── Predefined size radio selection ─────────────────────────────
+
+    $('input[name="explorexr_predefined_size"]').on('change', function() {
+        var val = $(this).val();
+        $sizeField.val(val);
+
+        // Also update the custom width/height fields for preview sync
+        var map = {
+            small:  { w: '300px',  h: '300px' },
+            medium: { w: '500px',  h: '500px' },
+            large:  { w: '800px',  h: '600px' },
+            full:   { w: '100vw',  h: '90vh'  }
+        };
+
+        if (map[val]) {
+            $('#viewer_width').val(map[val].w).trigger('input');
+            $('#viewer_height').val(map[val].h).trigger('input');
         }
     });
-    
-    // When custom size tab is clicked, enable the custom size field
-    $('.explorexr-tab[data-tab="custom-sizes"]').on('click', function() {
-        $('#custom_size_field').prop('disabled', false);
-    });
-    
-    // Initialize the WordPress Media Uploader for the poster image
+
+    // ─── Media Library poster selector ───────────────────────────────
+
     $('#explorexr-select-poster').on('click', function(e) {
         e.preventDefault();
-        
-        const frame = wp.media({
+
+        if (typeof wp === 'undefined' || typeof wp.media === 'undefined') {
+            return;
+        }
+
+        var frame = wp.media({
             title: 'Select Model Poster Image',
-            button: {
-                text: 'Use this image'
-            },
+            button: { text: 'Use this image' },
             multiple: false
         });
-        
+
         frame.on('select', function() {
-            const attachment = frame.state().get('selection').first().toJSON();
-            
+            var attachment = frame.state().get('selection').first().toJSON();
             $('#model_poster_id').val(attachment.id);
             $('#model_poster_url').val(attachment.url);
-            
-            const previewElement = $('#explorexr-poster-preview');
-            previewElement.show().find('img').attr('src', attachment.url);
+            $('#explorexr-poster-preview').show().find('img').attr('src', attachment.url);
         });
-        
+
         frame.open();
     });
-    
-    // Initialize the display size form state on page load
-    function initializeDisplaySizeState() {
-        const activeTab = $('.explorexr-tab.active[data-tab]').data('tab');
-        const selectedPredefinedSize = $('input[name="viewer_size"]:checked').val();
-        
-        if (activeTab === 'predefined-sizes' && selectedPredefinedSize && selectedPredefinedSize !== 'custom') {
-            // If a predefined size is selected, disable the custom size field and update width/height
-            $('#custom_size_field').prop('disabled', true);
-            
-            let width, height;
-            switch(selectedPredefinedSize) {
-                case 'small':
-                    width = '300px';
-                    height = '300px';
-                    break;
-                case 'medium':
-                    width = '500px';
-                    height = '500px';
-                    break;
-                case 'large':
-                    width = '800px';
-                    height = '600px';
-                    break;
-                case 'full':
-                    width = '98vw';
-                    height = '98vh';
-                    break;
+
+    // ─── Percent-to-viewport auto-conversion ──────────────────────
+    // model-viewer does not support percentage (%) dimensions.
+    // Automatically convert "X%" to "Xvw" (width fields) or "Xvh" (height fields).
+
+    var widthFields  = ['#viewer_width', '#tablet_viewer_width', '#mobile_viewer_width'];
+    var heightFields = ['#viewer_height', '#tablet_viewer_height', '#mobile_viewer_height'];
+
+    function convertPercentToViewport(inputId, unit) {
+        $(inputId).on('change', function() {
+            var val = $(this).val().trim();
+            var match = val.match(/^(\d+(?:\.\d+)?)\s*%$/);
+            if (match) {
+                $(this).val(match[1] + unit);
             }
-            
-            if (width && height) {
-                $('#viewer_width').val(width);
-                $('#viewer_height').val(height);
+        });
+    }
+
+    widthFields.forEach(function(id) { convertPercentToViewport(id, 'vw'); });
+    heightFields.forEach(function(id) { convertPercentToViewport(id, 'vh'); });
+
+    // ─── Initialization ──────────────────────────────────────────────
+
+    // On page load, ensure the hidden field matches current UI state
+    (function initSizeState() {
+        var activeTab = $sizeCard.find('.explorexr-tab.active').data('tab');
+
+        if (activeTab === 'predefined-sizes') {
+            var selected = $('input[name="explorexr_predefined_size"]:checked').val();
+            if (selected) {
+                $sizeField.val(selected);
             }
         } else {
-            // Custom size is active, enable the custom size field
-            $('#custom_size_field').prop('disabled', false);
+            $sizeField.val('custom');
         }
-    }
-    
-    // Initialize on page load
-    initializeDisplaySizeState();
-    
-    /**
-     * Prevent saving when width/height are both percentages for any breakpoint.
-     */
-    function violatesPercentRule(width, height) {
-        const isPercent = (value) => typeof value === 'string' && value.trim().endsWith('%');
-        return isPercent(width) && isPercent(height);
-    }
-    
-    $('#post').on('submit', function(e) {
-        const desktopWidth = $('#viewer_width').val();
-        const desktopHeight = $('#viewer_height').val();
-        const tabletWidth = $('#tablet_viewer_width').val();
-        const tabletHeight = $('#tablet_viewer_height').val();
-        const mobileWidth = $('#mobile_viewer_width').val();
-        const mobileHeight = $('#mobile_viewer_height').val();
-        
-        if (
-            violatesPercentRule(desktopWidth, desktopHeight) ||
-            violatesPercentRule(tabletWidth, tabletHeight) ||
-            violatesPercentRule(mobileWidth, mobileHeight)
-        ) {
-            e.preventDefault();
-            alert(percentRuleError);
-            return false;
-        }
-        return true;
-    });
+    })();
 });

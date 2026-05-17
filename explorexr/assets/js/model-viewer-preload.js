@@ -43,7 +43,9 @@
                 window.loadModelViewer(scriptConfig)
                     .then(handleScriptLoaded)
                     .catch(error => {
-                        console.error('ModelViewerPreloader: Script loading failed', error);
+                        if (typeof ExploreXRLogger !== 'undefined') {
+                            ExploreXRLogger.error('ModelViewerPreloader: Script loading failed', error);
+                        }
                         handleScriptLoaded();
                     });
             } else {
@@ -60,7 +62,9 @@
         // Set up a timeout just in case the script loading gets stuck
         state.loadTimeout = setTimeout(function() {
             if (!state.scriptLoaded) {
-                console.warn('ModelViewerPreloader: Script loading timed out, forcing completion');
+                if (typeof ExploreXRLogger !== 'undefined') {
+                    ExploreXRLogger.warn('ModelViewerPreloader: Script loading timed out, forcing completion');
+                }
                 handleScriptLoaded();
             }
         }, 10000); // 10 second timeout
@@ -115,7 +119,9 @@
                                 controller.enqueue(value);
                                 read();
                             }).catch(error => {
-                                console.error('ModelViewerPreloader: Error reading script', error);
+                                if (typeof ExploreXRLogger !== 'undefined') {
+                                    ExploreXRLogger.error('ModelViewerPreloader: Error reading script', error);
+                                }
                                 controller.error(error);
                             });
                         }
@@ -125,7 +131,9 @@
                 });
             })
             .catch(error => {
-                console.error('ModelViewerPreloader: Error fetching script', error);
+                if (typeof ExploreXRLogger !== 'undefined') {
+                    ExploreXRLogger.error('ModelViewerPreloader: Error fetching script', error);
+                }
                 // If fetch fails, we'll still try to load via script tag
             });
         
@@ -140,7 +148,9 @@
         };
         
         script.onerror = function() {
-            console.error('ModelViewerPreloader: Failed to load script');
+            if (typeof ExploreXRLogger !== 'undefined') {
+                ExploreXRLogger.error('ModelViewerPreloader: Failed to load script');
+            }
             
             // If we have a fallback URL and haven't tried too many times
             if (window.modelViewerFallbackUrl && window.modelViewerLoadAttempts < 3) {

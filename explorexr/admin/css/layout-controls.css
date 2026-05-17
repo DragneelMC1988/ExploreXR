@@ -1,0 +1,87 @@
+/**
+ * ExploreXR Premium - Shared Layout Controls partial styles.
+ * Used by Materials and Annotations admin metaboxes.
+ */
+.explorexr-layout-controls {
+    border: 1px solid #dcdcde;
+    border-radius: 4px;
+    margin: 8px 0;
+    background: #fff;
+}
+
+.explorexr-layout-controls-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    background: #f6f7f7;
+    border-bottom: 1px solid #dcdcde;
+}
+
+.explorexr-layout-controls-title {
+    flex: 1;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #1d2327;
+}
+
+.explorexr-layout-controls-toggle {
+    background: none;
+    border: 0;
+    cursor: pointer;
+    padding: 2px 4px;
+    color: #50575e;
+}
+
+.explorexr-layout-controls-body {
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.explorexr-layout-controls-body .explorexr-layout-flex-only,
+.explorexr-layout-controls-body .explorexr-layout-grid-only,
+.explorexr-layout-controls-body .explorexr-layout-align-only,
+.explorexr-layout-controls-body .explorexr-layout-gap-only {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.explorexr-layout-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 110px;
+}
+
+.explorexr-layout-field label {
+    font-weight: 600;
+    font-size: 11px;
+    color: #50575e;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.explorexr-layout-field-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.explorexr-layout-input {
+    width: 100%;
+    font-size: 12px;
+    padding: 4px 6px;
+    box-sizing: border-box;
+}
+
+.explorexr-layout-controls .description {
+    margin: 4px 0 0;
+    font-size: 11px;
+    color: #646970;
+}

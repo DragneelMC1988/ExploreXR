@@ -1,0 +1,72 @@
+.ExploreXR-lazy-container {
+    position: relative;
+    background: #f5f5f5;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.ExploreXR-lazy-placeholder {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.ExploreXR-lazy-no-poster {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.ExploreXR-lazy-poster-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.ExploreXR-lazy-loading-indicator {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 20px 30px;
+    border-radius: 8px;
+    color: white;
+}
+
+.ExploreXR-spinner {
+    width: 40px;
+    height: 40px;
+    margin: 0 auto 10px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: explorexr-spin 1s linear infinite;
+}
+
+@keyframes explorexr-spin {
+    to { transform: rotate(360deg); }
+}
+
+.ExploreXR-lazy-loading-indicator p {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Wrapper receives the min-height; model-viewer fills 100% of it */
+.ExploreXR-lazy-viewer-wrapper {
+    width: 100%;
+    min-height: 400px;
+}
+
+.ExploreXR-lazy-viewer-wrapper model-viewer {
+    width: 100%;
+    height: 100%;
+}

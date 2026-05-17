@@ -62,7 +62,7 @@ function explorexr_redirect_standard_edit_page() {
             
             // Make sure no output has been sent to the browser yet
             if (!headers_sent()) {
-                // Redirect to our custom edit page using wp_safe_redirect for security
+                // Redirect to our custom edit page
                 wp_safe_redirect($redirect_url);
                 exit;
             }

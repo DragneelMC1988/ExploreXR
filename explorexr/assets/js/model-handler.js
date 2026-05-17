@@ -117,12 +117,16 @@
             const errorType = event.detail.type || 'unknown';
             const errorDetails = event.detail.sourceError ? event.detail.sourceError.message : 'Unknown error';
             
-            console.warn(`ExploreXR Info: Model #${index + 1} (${modelViewer.id}) encountered an issue:`, errorType, errorDetails);
+            if (typeof ExploreXRLogger !== 'undefined') {
+                ExploreXRLogger.warn(`ExploreXR Info: Model #${index + 1} (${modelViewer.id}) encountered an issue:`, errorType, errorDetails);
+            }
             
             // Use the error handler from model-viewer-error-handler.js if available
             if (typeof getUserFriendlyModelError === 'function') {
                 const friendlyMessage = getUserFriendlyModelError(errorType, errorDetails);
-                console.error(`ExploreXR Error: ${friendlyMessage}`);
+                if (typeof ExploreXRLogger !== 'undefined') {
+                    ExploreXRLogger.error(`ExploreXR Error: ${friendlyMessage}`);
+                }
                 
                 // Show error message to user (if not in a container that handles it already)
                 if (!modelViewer.closest('.explorexr-model-viewer-container')) {
@@ -138,7 +142,9 @@
             if (errorType === 'loadfailure') {
                 if (typeof checkWebGLSupport === 'function') {
                     const webglStatus = checkWebGLSupport();
-                    console.info(`ExploreXR Debug: WebGL Status - ${webglStatus}`);
+                    if (typeof ExploreXRLogger !== 'undefined') {
+                        ExploreXRLogger.info(`ExploreXR Debug: WebGL Status - ${webglStatus}`);
+                    }
                 }
             }
         });
@@ -175,7 +181,9 @@
         
         modelViewer.addEventListener('error', function(error) {
             if (debugMode) {
-                console.warn(`ExploreXR Debug [${modelViewer.id}]: Model encountered an issue:`, error);
+                if (typeof ExploreXRLogger !== 'undefined') {
+                    ExploreXRLogger.warn(`ExploreXR Debug [${modelViewer.id}]: Model encountered an issue:`, error);
+                }
             }
         });
     }

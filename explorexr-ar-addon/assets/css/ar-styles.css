@@ -1,0 +1,275 @@
+/**
+ * ExploreXR AR Add-On Styles
+ * 
+ * Styles for AR functionality in ExploreXR.
+ */
+
+/* AR Button Styles */
+/* Hide default model-viewer AR button when we have custom styling */
+model-viewer[data-explorexr-premium-ar-custom-button="true"]::part(default-ar-button) {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* Custom AR Button Base Styles */
+/* Position is set via inline styles from template based on AR Card settings */
+.explorexr-premium-ar-button,
+.ExploreXR-ar-button {
+    /* Layout properties */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    transition: all 0.3s ease;
+    min-width: 44px;
+    min-height: 44px;
+    gap: 8px;
+    white-space: nowrap;
+    
+    /* Style properties via CSS custom properties with !important */
+    background-color: var(--ar-button-bg, #ffffff) !important;
+    color: var(--ar-button-color, #000000) !important;
+    border: var(--ar-button-border, 1px solid #cccccc) !important;
+    border-radius: var(--ar-button-radius, 4px) !important;
+    padding: var(--ar-button-padding, 10px 20px) !important;
+    font-size: var(--ar-button-font-size, 16px) !important;
+}
+
+/* Hover effects - use opacity instead of background color to preserve user settings */
+.explorexr-premium-ar-button:hover {
+    opacity: 0.9;
+    transform: scale(1.02);
+}
+
+.explorexr-premium-ar-button:active {
+    transform: scale(0.98);
+}
+
+.explorexr-premium-ar-button img,
+.ExploreXR-ar-button img {
+    width: 24px;
+    height: 24px;
+    display: block;
+    object-fit: contain;
+}
+
+.explorexr-premium-ar-button .explorexr-premium-ar-button-icon img,
+.ExploreXR-ar-button .explorexr-premium-ar-button-icon img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.explorexr-premium-ar-button .explorexr-premium-ar-button-icon,
+.ExploreXR-ar-button .explorexr-premium-ar-button-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* AR Not Supported Message */
+.explorexr-premium-ar-not-supported {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    transition: opacity 0.5s ease;
+    z-index: 20;
+}
+
+/* AR Controls Styling */
+.explorexr-premium-ar-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 1000;
+    opacity: 0;
+    animation: fadeIn 0.5s ease forwards;
+    animation-delay: 0.5s;
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.explorexr-premium-ar-move-btn, 
+.explorexr-premium-ar-scale-btn {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 14px;
+}
+
+.explorexr-premium-ar-move-btn {
+    background-color: #4caf50;
+    color: white;
+}
+
+.explorexr-premium-ar-scale-btn {
+    background-color: #2196f3;
+    color: white;
+}
+
+.explorexr-premium-ar-move-btn:hover {
+    background-color: #388e3c;
+}
+
+.explorexr-premium-ar-scale-btn:hover {
+    background-color: #1976d2;
+}
+
+.explorexr-premium-ar-move-btn.active {
+    background-color: #388e3c;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.5);
+}
+
+.explorexr-premium-ar-scale-btn.active {
+    background-color: #1976d2;
+    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.5);
+}
+
+/* Scale Indicator Styling */
+.explorexr-premium-scale-indicator {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    z-index: 1001;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.explorexr-premium-scale-indicator.visible {
+    opacity: 1;
+}
+
+/* Animation for UI elements in AR mode */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Mobile/Tablet: Ensure buttons are visible and touch-friendly */
+/* Apply to ALL touch-capable devices including iPad in landscape */
+@media (max-width: 1024px), (hover: none) and (pointer: coarse) {
+    /* CRITICAL: Force AR button visibility on ALL mobile/tablet devices */
+    model-viewer button[slot="ar-button"],
+    model-viewer .explorexr-premium-ar-button,
+    model-viewer .ExploreXR-ar-button,
+    button[slot="ar-button"],
+    .explorexr-premium-ar-button,
+    .ExploreXR-ar-button {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        min-width: 48px !important;
+        min-height: 48px !important;
+        z-index: 10000 !important;
+        /* Ensure button is not hidden */
+        clip: auto !important;
+        clip-path: none !important;
+        transform: none !important;
+        /* Position handled by inline styles but ensure they're not overridden */
+    }
+    
+    /* Ensure model-viewer container doesn't hide button */
+    .ExploreXR-model-container {
+        overflow: visible !important;
+        position: relative !important;
+    }
+
+    model-viewer {
+        position: relative !important;
+        overflow: visible !important;
+        contain: none !important; /* Prevent containment from clipping button */
+    }
+
+    /* Prevent transform stacking context issues that can hide the button */
+    .explorexr-premium-ar-button,
+    button[slot="ar-button"] {
+        isolation: isolate !important;
+    }
+
+    .explorexr-premium-ar-controls {
+        width: 90%;
+        max-width: 320px;
+    }
+}
+
+/* iPad-specific: Works in both portrait AND landscape */
+@media only screen 
+  and (min-device-width: 768px) 
+  and (max-device-width: 1024px),
+  only screen 
+  and (min-device-width: 768px) 
+  and (max-device-width: 1366px) 
+  and (-webkit-min-device-pixel-ratio: 2) {
+    /* Target ALL iPad sizes and orientations including iPad Pro */
+    model-viewer button[slot="ar-button"],
+    model-viewer .explorexr-premium-ar-button,
+    model-viewer .ExploreXR-ar-button,
+    button[slot="ar-button"],
+    .explorexr-premium-ar-button,
+    .ExploreXR-ar-button {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        z-index: 10000 !important;
+        min-width: 48px !important;
+        min-height: 48px !important;
+        pointer-events: auto !important;
+        position: absolute !important;
+    }
+    
+    /* Ensure parent containers don't hide button */
+    model-viewer,
+    .ExploreXR-model-container {
+        overflow: visible !important;
+    }
+}
+
+/* Extra styles for very small screens */
+@media (max-width: 480px) {
+    .explorexr-premium-ar-button {
+        /* Sizing and padding only - position set via inline styles */
+        min-width: 48px !important;
+        min-height: 48px !important;
+        /* Keep z-index high for visibility */
+        z-index: 1000 !important;
+    }
+    
+    .explorexr-premium-ar-button img {
+        width: 24px;
+        height: 24px;
+    }
+    
+    .explorexr-premium-ar-controls {
+        flex-direction: column;
+        gap: 5px;
+    }
+}

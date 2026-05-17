@@ -1,0 +1,197 @@
+/**
+ * Add-on Cards Styles for Edit Model Page
+ * Styles for addon cards and their settings display
+ */
+
+/* Addon Card Layout */
+
+
+.explorexr-addon-card .explorexr-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.explorexr-addon-card .explorexr-card-header h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+}
+
+/* Addon Status Badge */
+.addon-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 12px;
+    background: #d4edda;
+    color: #155724;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.addon-status-badge .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+/* Addon Info Card */
+.explorexr-addon-info-card {
+    background: #f0f6fc;
+    border-left: 4px solid #72aee6;
+}
+
+.explorexr-addon-info-card .explorexr-card-body {
+    padding: 15px;
+}
+
+.explorexr-addon-info-card .explorexr-card-body p {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Addon Settings Group */
+.explorexr-addon-settings-group {
+    margin-top: 15px;
+}
+
+.explorexr-addon-settings-group .form-table {
+    margin-top: 0;
+}
+
+.explorexr-addon-settings-group .form-table th {
+    padding-left: 0;
+}
+
+/* Addon Settings Section */
+.explorexr-addon-settings-section {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f9f9f9;
+    border-left: 3px solid #2271b1;
+    border-radius: 4px;
+}
+
+.explorexr-addon-settings-section h4 {
+    margin-top: 0;
+    color: #2271b1;
+}
+
+.explorexr-addon-settings-section h4 .dashicons {
+    color: #00a32a;
+}
+
+/* Addon Enabled Status */
+.explorexr-addon-enabled {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    background: #f0f6fc;
+    border: 1px solid #c3e6cb;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.explorexr-addon-enabled .dashicons {
+    color: #00a32a;
+    font-size: 20px;
+}
+
+.explorexr-addon-enabled .addon-status {
+    margin-left: auto;
+    padding: 4px 12px;
+    background: #00a32a;
+    color: white;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Addon Info Notice */
+.explorexr-addon-info {
+    margin-top: 20px;
+    padding: 15px;
+    background: #fff8e5;
+    border: 1px solid #ffcc00;
+    border-radius: 4px;
+}
+
+.explorexr-addon-info p {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.explorexr-addon-info .dashicons {
+    color: #996600;
+    flex-shrink: 0;
+}
+
+/* Toggle Switch Styles for Addon Settings */
+.explorexr-toggle {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.explorexr-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.explorexr-toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 24px;
+}
+
+.explorexr-toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+.explorexr-toggle input:checked + .explorexr-toggle-slider {
+    background-color: #2AACE2;
+}
+
+.explorexr-toggle input:checked + .explorexr-toggle-slider:before {
+    transform: translateX(26px);
+}
+
+/* Addon Features List */
+.explorexr-addon-features ul {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0;
+}
+
+.explorexr-addon-features li {
+    padding: 8px 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.explorexr-addon-features li:last-child {
+    border-bottom: none;
+}
