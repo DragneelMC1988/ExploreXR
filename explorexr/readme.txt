@@ -8,13 +8,13 @@ Stable tag: 1.3.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Free 3D model viewer for WordPress. Embed GLB, GLTF, and USDZ models with Google model-viewer. Pick one addon. Upgrade to Premium for more.
+Free 3D model viewer for WordPress. Embed GLB, GLTF, and USDZ models with Google model-viewer. Includes one Premium Addon of your choice.
 
 == Description ==
 
 **ExploreXR — Free 3D Model Viewer for WordPress.**
 
-ExploreXR brings interactive 3D models to your WordPress site using Google's `<model-viewer>` element. Upload GLB / GLTF / USDZ files, embed them anywhere with a shortcode, and pair the viewer with exactly one addon of your choice (AR, Animation, Loading Options, or Annotations).
+ExploreXR brings interactive 3D models to your WordPress site using Google's `<model-viewer>` element. Upload GLB / GLTF / USDZ files, embed them anywhere with a shortcode, and pair the viewer with one Premium Addon of your choice (AR Addon, Animation Addon, or Loading Options Addon).
 
 For multi-addon production setups, upgrade to [ExploreXR Premium](https://expoxr.com/explorexr/pricing/) for 3, 5, or unlimited addons.
 
@@ -36,21 +36,20 @@ For multi-addon production setups, upgrade to [ExploreXR Premium](https://expoxr
 
 == Free Addons ==
 
-ExploreXR Free supports **one addon at a time**, chosen from this curated list:
+ExploreXR Free includes **one Premium Addon of your choice**. You can activate one addon at a time from this curated list:
 
-* **AR Viewer** — iOS Quick Look, Android Scene Viewer, WebXR
-* **Animation** — play, pause, loop, ping-pong glTF animation clips
-* **Loading Options** — custom loading bars, percentage counters, overlays
-* **Annotations** — interactive hotspots and labels on the model
+* **AR Addon** — iOS Quick Look, Android Scene Viewer, WebXR
+* **Animation Addon** — play, pause, loop, ping-pong glTF animation clips
+* **Loading Options Addon** — custom loading bars, percentage counters, overlays
 
-Each addon installs as a separate plugin from WordPress.org. The free version blocks any second addon from activating and any non-listed addon entirely.
+Each addon installs as a separate plugin from WordPress.org. The free version blocks any second addon from activating and any non-listed addon entirely. To use more than one addon, upgrade to ExploreXR Premium.
 
 == Going Premium ==
 
 ExploreXR Premium adds:
 
 * 3 / 5 / unlimited addon slots (Pro / Plus / Ultra tiers)
-* Eight additional commercial addons: Camera, Environment, Materials, Morphing, Mouse3D, Draggable, Post-Processing, WooCommerce
+* Additional commercial addons and expanded addon slots for professional projects
 * Priority email or VIP support
 * Multi-site licensing (1 / 5 / 25 site plans)
 
@@ -62,15 +61,15 @@ See the in-plugin **Go Premium** page for the full comparison.
 2. Activate **ExploreXR** through the WordPress Plugins menu.
 3. Go to **ExploreXR → Create New Model**, upload a GLB / GLTF file, and configure your viewer.
 4. Copy the shortcode and paste it anywhere on your site.
-5. To add an addon, visit **ExploreXR → Addons** and pick one of the four listed.
+5. To add your included Premium Addon, visit **ExploreXR → Addons** and choose AR Addon, Animation Addon, or Loading Options Addon.
 
 == Frequently Asked Questions ==
 
 = How many addons can I run on the free version? =
-Exactly one, from the curated list (AR, Animation, Loading Options, Annotations). Activating a second one will be blocked with a notice.
+Exactly one, from the curated list (AR Addon, Animation Addon, Loading Options Addon). Activating a second one will be blocked with a notice.
 
 = Why can I not install other ExploreXR addons? =
-The free version is locked to the four whitelisted addons. The remaining commercial addons (Camera, Environment, Materials, Morphing, Mouse3D, Draggable, Post-Processing, WooCommerce) require ExploreXR Premium.
+The free version is locked to the three included Premium Addons: AR Addon, Animation Addon, and Loading Options Addon. Any additional addons or multiple-addon setups require ExploreXR Premium.
 
 = Can I run ExploreXR and ExploreXR Premium at the same time? =
 No. If Premium is activated, the free plugin self-deactivates to prevent conflicts. Your models and meta data are preserved.
@@ -94,18 +93,18 @@ All decoder WASM files are required for compressed model support and have no Jav
 
 1. Dashboard — model count, file storage, system status, and quick actions
 2. Create New Model — drag-and-drop GLB/GLTF upload with live viewer preview
-3. Free Add-on page — one-click install and selection of your free premium add-on
+3. Free Add-on page — one-click install and selection of your included Premium Addon
 4. Plugin Settings — viewer defaults, loading strategy, and model viewer version
 5. Browse Models — searchable grid of all published 3D models with shortcodes
 6. Edit 3D Model — per-breakpoint sizing, camera, auto-rotation, and poster image
-7. Addons — four free-eligible addons with WordPress.org install links
+7. Addons — three free-eligible Premium Addons with WordPress.org install links
 
 == Changelog ==
 
 = 1.3.3 =
 * Initial WordPress.org release of the free ExploreXR plugin.
 * Built on the same rendering core as ExploreXR Premium 1.3.1.
-* Single-addon limit with curated whitelist (AR, Animation, Loading, Annotations).
+* Single-addon limit with curated whitelist (AR Addon, Animation Addon, Loading Options Addon).
 * Compression decoders bundled: Draco, KTX2/Basis Universal, Meshopt.
 * Per-model load behavior override (direct / poster + button / lazy).
 * Customisable Load Model button.
@@ -123,7 +122,7 @@ Fixes PHP fatal error on duplicate plugin activation. Update required if you saw
 Fixes GLB/GLTF/USDZ upload failures caused by PHP finfo MIME detection. Update required if uploads are showing "Invalid file type".
 
 = 1.2.0 =
-Adds a free premium add-on (your choice of AR, Animation, Camera Controls, or Annotations) plus fixes GLB/GLTF file upload failures. Update recommended for all users.
+Adds one included Premium Addon of your choice (AR Addon, Animation Addon, or Loading Options Addon) plus fixes GLB/GLTF file upload failures. Update recommended for all users.
 
 = 1.1.0 =
 Adds native Elementor, Divi, and Avada integrations plus a 14-day free trial for Premium. Update recommended.

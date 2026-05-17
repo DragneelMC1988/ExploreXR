@@ -47,7 +47,7 @@ ExploreXR brings the power of interactive 3D models to your WordPress website wi
         <li><b>Performance Tools</b> - Progressive loading + lazy posters</li>
         <li><b>Developer Friendly</b> - Shortcode hooks, model-viewer filters</li>
         <li><b>Robust Security</b> - Nonces, capability checks, file scanners</li>
-        <li><b>Free Premium Add-on</b> - Choose one of AR, Animation, Camera Controls, or Annotations</li>
+        <li><b>Free Premium Add-on</b> - Choose one premium add-on for free: AR, Animation, or Loading Options</li>
       </ul>
     </td>
   </tr>
@@ -142,41 +142,6 @@ ExploreXR handles the technical complexities so you can focus on showcasing your
   </tr>
 </table>
 
-## 🧱 Plugin Structure
-
-```
-explorexr/
-├── 📄 explorexr.php           # Main plugin file
-├── 📄 readme.txt              # WordPress.org plugin readme
-├── 📄 uninstall.php           # Clean uninstall handler
-├── 📂 admin/                  # Admin interface & dashboard
-│   ├── 📂 ajax/               # AJAX handlers
-│   ├── 📂 core/               # Core admin functionality
-│   ├── 📂 css/                # Admin stylesheets
-│   ├── 📂 js/                 # Admin JavaScript
-│   ├── 📂 models/             # Model management interface
-│   ├── 📂 pages/              # Admin page templates
-│   ├── 📂 settings/           # Settings management
-│   └── 📂 templates/          # Admin UI templates
-├── 📂 assets/                 # Frontend resources
-│   ├── 📂 css/                # Frontend stylesheets
-│   ├── 📂 js/                 # Frontend JavaScript
-│   └── 📂 img/                # Images and icons
-├── 📂 includes/               # Core plugin functionality
-│   ├── 📄 shortcodes.php      # Shortcode implementation
-│   ├── 📂 core/               # Core functions
-│   ├── 📂 integrations/       # Third-party integrations (premium only)
-│   ├── 📂 models/             # Model handling
-│   ├── 📂 premium/            # Premium features
-│   ├── 📂 security/           # Security functions
-│   ├── 📂 ui/                 # UI components
-│   └── 📂 utils/              # Utility functions
-├── 📂 models/                 # Sample/demo models
-└── 📂 template-parts/         # Frontend templates
-    ├── 📄 large-model-template.php
-    ├── 📄 model-viewer-script.php
-    └── 📄 standard-model-template.php
-```
 
 ## 🎨 Usage Examples
 
@@ -239,14 +204,13 @@ ExploreXR is built with security as a top priority:
 - **GDPR Compliance** - No personal data collection
 - **Clean Code** - Following WordPress security best practices
 
-## 🚀 Free Add-on (Choose One)
+## 🚀 Free Premium Add-on (Choose One)
 
-The free version includes one premium add-on of your choice — select it from the **ExploreXR → Free Add-ons** admin page:
+ExploreXR Free includes one premium add-on of your choice. You can activate one of the following add-ons from the **ExploreXR → Free Add-ons** admin page:
 
-- **AR** — Augmented reality on mobile (USDZ for iOS, WebXR for Android)
-- **Animation** — Play, pause, and loop GLTF animations
-- **Camera Controls** — Advanced orbit/zoom/pan tuning
-- **Annotations** — Interactive hotspot labels on 3D models
+- **AR Addon** — Enable augmented reality on mobile, including USDZ support for iOS and WebXR support for Android
+- **Animation Addon** — Play, pause, loop, and control GLTF animations directly inside the 3D viewer
+- **Loading Options Addon** — Customize the loading experience with poster images, loading behavior, and smoother model presentation
 
 ## 🌟 Premium Add-ons
 
@@ -265,7 +229,7 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 ## 📋 Changelog (Highlights)
 
 ### 1.3.1
-* Fixed: PHP fatal error "Cannot redeclare function" when duplicate plugin folder (`explorexr-1/`) exists alongside active installation
+* Fixed: PHP fatal error "Cannot redeclare function" when duplicate plugin folder (`explorexr/`) exists alongside active installation
 * Improved: Conflict notice distinguishes Premium-vs-Free from Free-vs-Free duplicate scenarios
 * Added: `function_exists()` guards on all file-scope functions
 
@@ -276,7 +240,7 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 
 ### 1.2.0
 * Fixed: GLB/GLTF/USDZ upload MIME type validation now accepts all three formats reliably
-* New: Free add-on system — activate one premium add-on (AR, Animation, Camera Controls, or Annotations) at no cost
+* New: Free add-on system — activate one premium add-on (AR, Animation, or Loading Options) at no cost
 * New: Free Add-ons admin page with one-click install and activation
 * New: Conflict prevention blocks simultaneous activation with ExploreXR Premium
 
