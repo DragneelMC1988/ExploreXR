@@ -56,7 +56,7 @@ function explorexr_free_go_premium_page() {
                 __('Automatic updates from expoxr.com', 'explorexr'),
             ),
             'cta_label'  => __('Choose Pro', 'explorexr'),
-            'cta_url'    => $pricing_url . '?tier=pro',
+            'cta_url'    => $pricing_url . '#tier',
             'disabled'   => false,
         ),
         'plus' => array(
@@ -74,12 +74,12 @@ function explorexr_free_go_premium_page() {
                 __('Page builder widgets (Elementor, Divi, Avada)', 'explorexr'),
             ),
             'cta_label'  => __('Choose Plus', 'explorexr'),
-            'cta_url'    => $pricing_url . '?tier=plus',
+            'cta_url'    => $pricing_url . '#tier',
             'disabled'   => false,
         ),
         'ultra' => array(
             'label'      => __('Ultra', 'explorexr'),
-            'price'      => __('€199', 'explorexr'),
+            'price'      => __('€179', 'explorexr'),
             'period'     => __('per year', 'explorexr'),
             'slots'      => __('Unlimited', 'explorexr'),
             'color'      => '#b91c1c',
@@ -92,7 +92,7 @@ function explorexr_free_go_premium_page() {
                 __('White-label / custom branding options', 'explorexr'),
             ),
             'cta_label'  => __('Choose Ultra', 'explorexr'),
-            'cta_url'    => $pricing_url . '?tier=ultra',
+            'cta_url'    => $pricing_url . '#tier',
             'disabled'   => false,
         ),
     );

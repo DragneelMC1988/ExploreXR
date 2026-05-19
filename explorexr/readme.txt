@@ -4,11 +4,11 @@ Tags: 3d model viewer, glb, gltf, augmented reality, woocommerce 3d
 Requires at least: 5.8
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.3.0
+Stable tag: 1.3.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Free 3D model viewer for WordPress. Embed GLB, GLTF, and USDZ models with Google model-viewer. Includes one Premium Addon of your choice.
+Free 3D model viewer for WordPress with AR or animation support. Embed GLB, GLTF, and USDZ models, plus choose one Premium Addon.
 
 == Description ==
 
@@ -239,6 +239,13 @@ Free support is available on the [WordPress.org support forum](https://wordpress
 
 == Changelog ==
 
+= 1.3.1 =
+* Fixed: Admin page styling and layout improvements
+* Fixed: Free addon selection UI refinements
+* Fixed: Dashboard statistics display accuracy
+* Improved: Admin navigation consistency
+* Improved: Error messages and user feedback
+
 = 1.3.0 =
 * Initial WordPress.org release of the free ExploreXR plugin.
 * Built on the same rendering core as ExploreXR Premium 1.3.1.
@@ -252,6 +259,9 @@ Free support is available on the [WordPress.org support forum](https://wordpress
 * Fixes GLB/GLTF/USDZ upload failures caused by PHP finfo MIME detection.
 
 == Upgrade Notice ==
+
+= 1.3.1 =
+Minor bug fixes and admin UI improvements. Update recommended for better user experience.
 
 = 1.3.0 =
 Initial free release with one included Premium Addon (AR, Animation, or Loading Options), compression decoders, per-model loading strategies, and customizable Load Model button. Recommended for all users.
