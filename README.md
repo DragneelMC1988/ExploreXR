@@ -228,15 +228,13 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 
 ## 📋 Changelog (Highlights)
 
-### 1.3.1
-* Fixed: PHP fatal error "Cannot redeclare function" when duplicate plugin folder (`explorexr/`) exists alongside active installation
-* Improved: Conflict notice distinguishes Premium-vs-Free from Free-vs-Free duplicate scenarios
-* Added: `function_exists()` guards on all file-scope functions
 
 ### 1.3.0
 * Fixed: GLB/GLTF/USDZ uploads failing with "Invalid file type" due to PHP finfo MIME detection mismatch
 * Added: `upload_mimes` filter registering correct MIME types for all 3D model formats
 * Added: `wp_check_filetype_and_ext` filter handling finfo returning `application/octet-stream`
+* Improved: Conflict notice distinguishes Premium-vs-Free from Free-vs-Free duplicate scenarios
+* Added: `function_exists()` guards on all file-scope functions
 
 ### 1.2.0
 * Fixed: GLB/GLTF/USDZ upload MIME type validation now accepts all three formats reliably
