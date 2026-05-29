@@ -31,20 +31,35 @@ if (!defined('EXPLOREXR_VERSION')) {
     define('EXPLOREXR_VERSION', '1.0.0');
 }
 
-// Get settings from options
-// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variables for script configuration
-// Force local mode for WordPress.org compliance - always use local (CDN disabled)
-// Note: Option migration to 'local' is handled in admin_init hook, not during render
-$cdn_source = 'local';
-$model_viewer_version = get_option('explorexr_model_viewer_version', '4.1.0');
+// Static once-per-page guard: all script/style registration runs exactly once.
+// On pages with multiple [explorexr_model] shortcodes the include fires N times;
+// this prevents duplicate wp_enqueue_*/wp_localize_script calls on those pages.
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template static flag
+static $explorexr_scripts_initialized = false;
+if ($explorexr_scripts_initialized) {
+    return;
+}
+$explorexr_scripts_initialized = true;
 
-// Get the new loading options
-$script_location = get_option('explorexr_script_location', 'footer');
-$script_loading_timing = get_option('explorexr_script_loading_timing', 'auto');
-$lazy_load_poster = get_option('explorexr_lazy_load_poster', false);
+// Cache all per-request options in a static so repeated shortcode calls never
+// re-query the DB or alloptions cache more than once per page load.
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variables for script configuration
+static $mv_cached_opts = null;
+if ($mv_cached_opts === null) {
+    $mv_cached_opts = array(
+        'model_viewer_version'  => get_option('explorexr_model_viewer_version', '4.1.0'),
+        'script_location'       => get_option('explorexr_script_location', 'footer'),
+        'script_loading_timing' => get_option('explorexr_script_loading_timing', 'auto'),
+        'lazy_load_poster'      => get_option('explorexr_lazy_load_poster', false),
+    );
+}
+$model_viewer_version  = $mv_cached_opts['model_viewer_version'];
+$script_location       = $mv_cached_opts['script_location'];
+$script_loading_timing = $mv_cached_opts['script_loading_timing'];
+$lazy_load_poster      = $mv_cached_opts['lazy_load_poster'];
 
 // Determine script loading settings
-$load_in_footer = ($script_location === 'footer');
+$load_in_footer    = ($script_location === 'footer');
 $script_attributes = array();
 // Ensure the plugin URL is available before any model-viewer script executes
 $plugin_url_inline_script = 'window.explorexrPluginUrl = window.explorexrPluginUrl || "' . esc_js(EXPLOREXR_PLUGIN_URL) . '";';
@@ -62,50 +77,47 @@ if ($script_loading_timing === 'defer') {
     add_action('wp_footer', 'explorexr_add_ondemand_script_loader');
 }
 
-// Check if script has already been enqueued to prevent duplicates
-// First check if the global registration from admin/core/functions.php exists
+// Cache file-existence checks — these filesystem syscalls would otherwise run on
+// every shortcode call on a page; with statics they run exactly once per request.
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template static file-existence cache
+static $umd_exists = null;
+static $min_exists = null;
+if ($umd_exists === null) {
+    $local_umd_path = EXPLOREXR_PLUGIN_DIR . 'assets/js/model-viewer-umd.js';
+    $local_min_path = EXPLOREXR_PLUGIN_DIR . 'assets/js/model-viewer.min.js';
+    $umd_exists     = file_exists($local_umd_path);
+    $min_exists     = file_exists($local_min_path);
+} else {
+    $local_umd_path = EXPLOREXR_PLUGIN_DIR . 'assets/js/model-viewer-umd.js';
+    $local_min_path = EXPLOREXR_PLUGIN_DIR . 'assets/js/model-viewer.min.js';
+}
+// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
+
+// Check if script has already been enqueued to prevent duplicates.
+// First check if the global registration from admin/core/functions.php exists.
 if (wp_script_is('explorexr-premium-model-viewer', 'registered') || wp_script_is('explorexr-premium-model-viewer', 'enqueued')) {
-    // Global registration exists, just enqueue it (don't re-register)
     if (!wp_script_is('explorexr-premium-model-viewer', 'enqueued')) {
         wp_enqueue_script('explorexr-premium-model-viewer');
     }
-    // Ensure model-viewer picks up the correct plugin URL before execution
     wp_add_inline_script('explorexr-premium-model-viewer', $plugin_url_inline_script, 'before');
 } else {
-    // Fallback: Use template's own registration (legacy support)
+    // Fallback: Use template's own registration (legacy support).
     // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for script handle
     $script_handle = 'model-viewer-script';
     if (!wp_script_is($script_handle, 'enqueued')) {
-    if ($cdn_source === 'local') {
-        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for file path check
-        $local_umd_path = EXPLOREXR_PLUGIN_DIR . 'assets/js/model-viewer-umd.js';
-        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for file path check
-        $local_min_path = EXPLOREXR_PLUGIN_DIR . 'assets/js/model-viewer.min.js';
-        
-        // If UMD version exists, use it (preferred for compatibility)
-        if (file_exists($local_umd_path)) {
+        if ($umd_exists) {
             wp_enqueue_script($script_handle, EXPLOREXR_PLUGIN_URL . 'assets/js/model-viewer-umd.js', array(), $model_viewer_version, $load_in_footer);
-            
-            // Apply script attributes if needed
             if (!empty($script_attributes)) {
                 // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Loop variables in template
                 foreach ($script_attributes as $attr_name => $attr_value) {
                     wp_script_add_data($script_handle, $attr_name, $attr_value);
                 }
             }
-        }
-        // If only the minified version exists, use it properly as a module
-        elseif (file_exists($local_min_path)) {
-            // Register the script properly with WordPress
+        } elseif ($min_exists) {
             wp_register_script($script_handle, EXPLOREXR_PLUGIN_URL . 'assets/js/model-viewer.min.js', array(), $model_viewer_version, $load_in_footer);
             wp_enqueue_script($script_handle);
-            
-            // Add module attribute for ES6 modules
             wp_script_add_data($script_handle, 'type', 'module');
-        }
-        // If no local versions exist, show admin error and don't load any script
-        else {
-            // Add admin notice about missing local files
+        } else {
             if (is_admin() && current_user_can('manage_options')) {
                 add_action('admin_notices', function() use ($local_umd_path, $local_min_path) {
                     echo '<div class="notice notice-error is-dismissible">';
@@ -114,29 +126,9 @@ if (wp_script_is('explorexr-premium-model-viewer', 'registered') || wp_script_is
                     echo '</div>';
                 });
             }
-            
-            return; // Exit without loading any script
+            return;
         }
-    } else {
-        // WordPress.org Plugin Check compliance: External CDN resources are not allowed
-        // All scripts must be bundled locally with the plugin
-        
-        // Add admin notice about CDN source being disabled
-        if (is_admin() && current_user_can('manage_options')) {
-            add_action('admin_notices', function() {
-                echo '<div class="notice notice-error is-dismissible">';
-                echo '<p><strong>ExploreXR Error:</strong> CDN source is not allowed. WordPress.org Plugin Check requires all scripts to be bundled locally.</p>';
-                echo '<p><em>Please set cdn_source to "local" and ensure model-viewer script files exist in assets/js/ directory.</em></p>';
-                echo '</div>';
-            });
-        }
-        
-        
-        return; // Exit without loading any external script
     }
-    } // End fallback registration check
-    
-    // Ensure the plugin URL is defined before the legacy model-viewer script executes
     wp_add_inline_script($script_handle, $plugin_url_inline_script, 'before');
 }
 
@@ -154,29 +146,19 @@ wp_enqueue_script('explorexr-model-viewer-wrapper', EXPLOREXR_PLUGIN_URL . 'asse
 $loading_options = explorexr_get_loading_options();
 wp_localize_script('explorexr-model-viewer-wrapper', 'ExploreXRLoadingOptions', $loading_options);
 
-// Pass script configuration for preloader
+// Pass script configuration for preloader.
+// Use the same static file-existence results from above to avoid redundant syscalls.
 // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for script configuration
-$script_config = array();
-if ($cdn_source === 'local') {
-    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for file path check
-    $local_umd_path = EXPLOREXR_PLUGIN_DIR . 'assets/js/model-viewer-umd.js';
-    if (file_exists($local_umd_path)) {
-        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for script config
-        $script_config['modelViewerScriptUrl'] = EXPLOREXR_PLUGIN_URL . 'assets/js/model-viewer-umd.js';
-        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for script config
-        $script_config['scriptType'] = 'umd';
-    } else {
-        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for script config
-        $script_config['modelViewerScriptUrl'] = EXPLOREXR_PLUGIN_URL . 'assets/js/model-viewer.min.js';
-        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for script config
-        $script_config['scriptType'] = 'module';
-    }
+if ($umd_exists) {
+    $script_config = array(
+        'modelViewerScriptUrl' => EXPLOREXR_PLUGIN_URL . 'assets/js/model-viewer-umd.js',
+        'scriptType'           => 'umd',
+    );
 } else {
-    // Local UMD version for better compatibility (WordPress.org compliance)
-    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for script config
-    $script_config['modelViewerScriptUrl'] = EXPLOREXR_PLUGIN_URL . 'assets/js/model-viewer-umd.js';
-    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for script config
-    $script_config['scriptType'] = 'umd';
+    $script_config = array(
+        'modelViewerScriptUrl' => EXPLOREXR_PLUGIN_URL . 'assets/js/model-viewer.min.js',
+        'scriptType'           => 'module',
+    );
 }
 
 // Add plugin URL for local dependencies
@@ -283,18 +265,13 @@ if (!function_exists('explorexr_add_model_viewer_attributes')) {    /**
      * @return array Updated attributes
      */
     function explorexr_add_model_viewer_attributes($attributes, $model_id = null) {
-        // Get settings from options
-        $loading_display = get_option('explorexr_loading_display', 'bar');
-        $loading_bar_color = get_option('explorexr_loading_bar_color', '#1e88e5');
-        $loading_bar_size = get_option('explorexr_loading_bar_size', 'medium');
-        $loading_bar_position = get_option('explorexr_loading_bar_position', 'middle');
-        $percentage_font_size = get_option('explorexr_percentage_font_size', 24);
-        $percentage_font_family = get_option('explorexr_percentage_font_family', 'Arial, sans-serif');
-        $percentage_font_color = get_option('explorexr_percentage_font_color', '#333333');
-        $percentage_position = get_option('explorexr_percentage_position', 'center-center');
-        
         // Resolve lazy poster: per-model override wins, otherwise global.
-        $lazy_load_poster = get_option('explorexr_lazy_load_poster', false);
+        // Cached in static so the option is fetched once per page, not per model.
+        static $lazy_load_poster_global = null;
+        if ($lazy_load_poster_global === null) {
+            $lazy_load_poster_global = get_option('explorexr_lazy_load_poster', false);
+        }
+        $lazy_load_poster = $lazy_load_poster_global;
         if (!empty($model_id)) {
             $per_model_lazy_poster = get_post_meta($model_id, '_explorexr_premium_lazy_load_poster', true);
             if ($per_model_lazy_poster === 'on') {
@@ -321,8 +298,11 @@ if (!function_exists('explorexr_add_model_viewer_attributes')) {    /**
         if (defined('EXPLOREXR_PLUGIN_URL')) {
             $attributes['draco-decoder-location']   = EXPLOREXR_PLUGIN_URL . 'assets/vendor/draco/';
             $attributes['ktx2-transcoder-location'] = EXPLOREXR_PLUGIN_URL . 'assets/vendor/basis-universal/';
-            $meshopt_file = EXPLOREXR_PLUGIN_DIR . 'assets/vendor/meshopt/meshopt_decoder.module.js';
-            if (file_exists($meshopt_file)) {
+            static $meshopt_exists = null;
+            if ($meshopt_exists === null) {
+                $meshopt_exists = file_exists(EXPLOREXR_PLUGIN_DIR . 'assets/vendor/meshopt/meshopt_decoder.module.js');
+            }
+            if ($meshopt_exists) {
                 $attributes['meshopt-decoder'] = EXPLOREXR_PLUGIN_URL . 'assets/vendor/meshopt/meshopt_decoder.module.js';
             }
         }

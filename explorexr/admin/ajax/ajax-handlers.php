@@ -72,7 +72,7 @@ add_action('wp_ajax_explorexr_delete_model', 'explorexr_ajax_delete_model');
 /**
  * Direct download + activate a free addon from update.expoxr.com.
  *
- * Free version: whitelist limited to AR, Animation, Loading, Annotations.
+ * Free version: whitelist limited to AR, Animation, Loading.
  * Enforces one-addon-at-a-time before install.
  */
 function explorexr_free_ajax_direct_download_addon() {
@@ -135,7 +135,13 @@ function explorexr_free_ajax_direct_download_addon() {
         wp_send_json_error(array('message' => esc_html__('No download URL in server response.', 'explorexr')));
     }
 
-    $download_url = esc_url_raw($meta['download_url']);
+    $download_url  = esc_url_raw($meta['download_url']);
+    $allowed_hosts = array('update.expoxr.com', 'downloads.expoxr.com');
+    $url_host      = wp_parse_url($download_url, PHP_URL_HOST);
+    if (!in_array($url_host, $allowed_hosts, true)) {
+        wp_send_json_error(array('message' => esc_html__('Download URL is not from a trusted source.', 'explorexr')));
+        return;
+    }
 
     require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
     require_once ABSPATH . 'wp-admin/includes/plugin-install.php';

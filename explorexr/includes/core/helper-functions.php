@@ -95,7 +95,9 @@ if (!function_exists('explorexr_premium_has_model_viewers')) {
             if (is_404() || is_category() || is_tag() || is_archive() || is_search()) {
                 return false;
             }
-            return true;
+            // Only load assets on singular-type pages or recognized front-page contexts.
+            // Avoids loading model-viewer scripts on listing pages, REST requests, etc.
+            return is_singular() || is_front_page() || is_home();
         }
 
         if ($post->post_type === 'explorexr_model') {

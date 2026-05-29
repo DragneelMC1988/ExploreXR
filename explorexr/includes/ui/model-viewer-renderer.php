@@ -32,12 +32,12 @@ function explorexr_premium_render_model_viewer($model_id, $custom_attrs = array(
     
     // Default attributes
     $default_attrs = array(
-        'src' => esc_url($model_file),
-        'alt' => get_the_title($model_id) . ' 3D Model',
-        'camera-controls' => 'true',
-        'class' => 'explorexr-model-viewer',
+        'src'             => esc_url($model_file),
+        'alt'             => get_the_title($model_id) . ' 3D Model',
+        'camera-controls' => '',
+        'class'           => 'explorexr-model-viewer',
         // Ensure visibility even if parent lacks height; width stays fluid, height fixed
-        'style' => 'width:100%;height:520px;background:#f5f5f5;'
+        'style'           => 'width:100%;height:520px;background:#f5f5f5;'
     );
     
     // Merge custom attributes with defaults

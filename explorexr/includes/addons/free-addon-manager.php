@@ -251,10 +251,16 @@ class ExploreXR_Addon_Manager {
      * (e.g. WP-CLI bypass), deactivate the extras keeping only one.
      */
     public function enforce_single_addon() {
+        if (!function_exists('is_plugin_active')) {
+            require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        }
+        // Use direct WordPress plugin state so WP-CLI activations that run before
+        // an addon's plugins_loaded self-registration are still detected.
         $active = array();
         foreach (self::WHITELIST as $slug) {
-            if ($this->is_addon_active($slug)) {
-                $active[$slug] = $this->registered_addons[$slug]['file'];
+            $plugin_file = "explorexr-{$slug}-addon/explorexr-{$slug}-addon.php";
+            if (is_plugin_active($plugin_file)) {
+                $active[$slug] = $plugin_file;
             }
         }
         if (count($active) <= self::MAX_ACTIVE) {
@@ -270,7 +276,7 @@ class ExploreXR_Addon_Manager {
                 $kept = true;
                 continue;
             }
-            deactivate_plugins(plugin_basename($file), true);
+            deactivate_plugins($file, true);
         }
         set_transient(self::ERROR_TRANSIENT, __('ExploreXR Free only allows a single addon. Extra addons have been deactivated.', 'explorexr'), self::NOTICE_TTL);
     }

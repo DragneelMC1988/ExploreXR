@@ -40,7 +40,7 @@ class ExploreXR_WPBakery_Integration {
         vc_map( array(
             'name'        => esc_html__( 'ExploreXR 3D Model', 'explorexr' ),
             'base'        => 'explorexr_model',
-            'icon'        => EXPLOREXR_PREMIUM_PLUGIN_URL . 'assets/css/elementor-editor.css', // fallback icon
+            'icon'        => EXPLOREXR_PLUGIN_URL . 'assets/css/elementor-editor.css', // fallback icon
             'category'    => esc_html__( 'ExploreXR', 'explorexr' ),
             'description' => esc_html__( 'Display an interactive 3D model.', 'explorexr' ),
             'params'      => array(

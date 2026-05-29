@@ -231,13 +231,17 @@ function explorexr_free_preload_decoder_assets() {
         return;
     }
 
-    $draco_wasm = EXPLOREXR_PLUGIN_DIR . 'assets/vendor/draco/draco_decoder.wasm';
-    $basis_wasm = EXPLOREXR_PLUGIN_DIR . 'assets/vendor/basis-universal/basis_transcoder.wasm';
+    static $draco_exists = null;
+    static $basis_exists = null;
+    if ($draco_exists === null) {
+        $draco_exists = file_exists(EXPLOREXR_PLUGIN_DIR . 'assets/vendor/draco/draco_decoder.wasm');
+        $basis_exists = file_exists(EXPLOREXR_PLUGIN_DIR . 'assets/vendor/basis-universal/basis_transcoder.wasm');
+    }
 
-    if (file_exists($draco_wasm)) {
+    if ($draco_exists) {
         echo '<link rel="preload" href="' . esc_url(EXPLOREXR_PLUGIN_URL . 'assets/vendor/draco/draco_decoder.wasm') . '" as="fetch" crossorigin>' . "\n";
     }
-    if (file_exists($basis_wasm)) {
+    if ($basis_exists) {
         echo '<link rel="preload" href="' . esc_url(EXPLOREXR_PLUGIN_URL . 'assets/vendor/basis-universal/basis_transcoder.wasm') . '" as="fetch" crossorigin>' . "\n";
     }
 }
@@ -296,11 +300,7 @@ function explorexr_free_admin_enqueue_scripts($hook) {
         'nonce'     => wp_create_nonce('explorexr_admin_nonce'),
         'isPremium' => false,
         'version'   => EXPLOREXR_VERSION,
-    ));
-    wp_localize_script('explorexr-admin', 'ExploreXRAdminVars', array(
         'pluginUrl' => EXPLOREXR_PLUGIN_URL,
-        'ajaxUrl'   => admin_url('admin-ajax.php'),
-        'nonce'     => wp_create_nonce('explorexr_admin_nonce'),
     ));
 }
 add_action('admin_enqueue_scripts', 'explorexr_free_admin_enqueue_scripts');

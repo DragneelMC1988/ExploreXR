@@ -69,9 +69,9 @@ class ExploreXR_Elementor_Integration {
     public static function editor_styles() {
         wp_enqueue_style(
             'explorexr-elementor-editor',
-            EXPLOREXR_PREMIUM_PLUGIN_URL . 'assets/css/elementor-editor.css',
+            EXPLOREXR_PLUGIN_URL . 'assets/css/elementor-editor.css',
             array(),
-            EXPLOREXR_PREMIUM_VERSION
+            EXPLOREXR_VERSION
         );
     }
 
@@ -83,18 +83,18 @@ class ExploreXR_Elementor_Integration {
         // Core model-viewer CSS.
         wp_enqueue_style(
             'explorexr-model-viewer',
-            EXPLOREXR_PREMIUM_PLUGIN_URL . 'assets/css/model-viewer.css',
+            EXPLOREXR_PLUGIN_URL . 'assets/css/model-viewer.css',
             array(),
-            EXPLOREXR_PREMIUM_VERSION
+            EXPLOREXR_VERSION
         );
 
         // Register the model-loader so the shortcode can enqueue it.
         if ( ! wp_script_is( 'explorexr-model-loader', 'registered' ) ) {
             wp_register_script(
                 'explorexr-model-loader',
-                EXPLOREXR_PREMIUM_PLUGIN_URL . 'assets/js/model-loader.js',
+                EXPLOREXR_PLUGIN_URL . 'assets/js/model-loader.js',
                 array( 'jquery' ),
-                EXPLOREXR_PREMIUM_VERSION,
+                EXPLOREXR_VERSION,
                 true
             );
         }
