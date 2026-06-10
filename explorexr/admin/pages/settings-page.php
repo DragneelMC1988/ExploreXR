@@ -179,19 +179,19 @@ function explorexr_settings_page() {
     if (isset($_POST['explorexr_action']) && $_POST['explorexr_action'] === 'save_general_settings' && isset($_POST['explorexr_general_nonce']) && wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['explorexr_general_nonce'])), 'explorexr_general_settings')) {
         // Process general settings fields
         if (isset($_POST['explorexr_model_viewer_version'])) {
-            update_option('explorexr_model_viewer_version', sanitize_text_field(wp_unslash($_POST['explorexr_model_viewer_version'])));
+            update_option('explorexr_model_viewer_version', sanitize_text_field(wp_unslash($_POST['explorexr_model_viewer_version'])), false);
         }
         if (isset($_POST['explorexr_default_tone_mapping'])) {
             $allowed_tone_mappings = array( 'aces', 'pbr-neutral', 'neutral', 'commerce', 'agx', 'filmic' );
             $tone_mapping = sanitize_text_field( wp_unslash( $_POST['explorexr_default_tone_mapping'] ) );
             if ( in_array( $tone_mapping, $allowed_tone_mappings, true ) ) {
-                update_option( 'explorexr_default_tone_mapping', $tone_mapping );
+                update_option( 'explorexr_default_tone_mapping', $tone_mapping, false );
             }
         }
         if (isset($_POST['explorexr_max_upload_size'])) {
             $max_upload = absint($_POST['explorexr_max_upload_size']);
             if ($max_upload > 0) {
-                update_option('explorexr_max_upload_size', $max_upload);
+                update_option('explorexr_max_upload_size', $max_upload, false);
             }
         }
 

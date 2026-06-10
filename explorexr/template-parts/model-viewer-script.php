@@ -82,15 +82,16 @@ if ($script_loading_timing === 'defer') {
 // phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template static file-existence cache
 static $umd_exists = null;
 static $min_exists = null;
+$local_umd_path = EXPLOREXR_PLUGIN_DIR . 'assets/js/model-viewer-umd.js';
+$local_min_path = EXPLOREXR_PLUGIN_DIR . 'assets/js/model-viewer.min.js';
 if ($umd_exists === null) {
-    $local_umd_path = EXPLOREXR_PLUGIN_DIR . 'assets/js/model-viewer-umd.js';
-    $local_min_path = EXPLOREXR_PLUGIN_DIR . 'assets/js/model-viewer.min.js';
-    $umd_exists     = file_exists($local_umd_path);
-    $min_exists     = file_exists($local_min_path);
-} else {
-    $local_umd_path = EXPLOREXR_PLUGIN_DIR . 'assets/js/model-viewer-umd.js';
-    $local_min_path = EXPLOREXR_PLUGIN_DIR . 'assets/js/model-viewer.min.js';
+    $umd_exists = file_exists($local_umd_path);
+    $min_exists = file_exists($local_min_path);
 }
+// Preferred UMD URL: minified bundle when available (see helper-functions.php).
+$umd_script_url = function_exists('explorexr_model_viewer_script_url')
+    ? explorexr_model_viewer_script_url()
+    : EXPLOREXR_PLUGIN_URL . 'assets/js/model-viewer-umd.js';
 // phpcs:enable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 
 // Check if script has already been enqueued to prevent duplicates.
@@ -106,7 +107,7 @@ if (wp_script_is('explorexr-premium-model-viewer', 'registered') || wp_script_is
     $script_handle = 'model-viewer-script';
     if (!wp_script_is($script_handle, 'enqueued')) {
         if ($umd_exists) {
-            wp_enqueue_script($script_handle, EXPLOREXR_PLUGIN_URL . 'assets/js/model-viewer-umd.js', array(), $model_viewer_version, $load_in_footer);
+            wp_enqueue_script($script_handle, $umd_script_url, array(), $model_viewer_version, $load_in_footer);
             if (!empty($script_attributes)) {
                 // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Loop variables in template
                 foreach ($script_attributes as $attr_name => $attr_value) {
@@ -151,7 +152,7 @@ wp_localize_script('explorexr-model-viewer-wrapper', 'ExploreXRLoadingOptions', 
 // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for script configuration
 if ($umd_exists) {
     $script_config = array(
-        'modelViewerScriptUrl' => EXPLOREXR_PLUGIN_URL . 'assets/js/model-viewer-umd.js',
+        'modelViewerScriptUrl' => $umd_script_url,
         'scriptType'           => 'umd',
     );
 } else {
@@ -322,28 +323,14 @@ if (!function_exists('explorexr_add_ondemand_script_loader')) {
      */
     function explorexr_add_ondemand_script_loader() {
         $model_viewer_version = get_option('explorexr_model_viewer_version', '4.1.0');
-        $script_url = EXPLOREXR_PLUGIN_URL . 'assets/js/model-viewer-umd.js';
-        
-        // Check if local storage is preferred
-        $cdn_source = get_option('explorexr_cdn_source', 'local');
-        
-        // Force local mode for WordPress.org compliance
-        if ($cdn_source === 'cdn') {
-            $cdn_source = 'local';
-        }
-        
-        if ($cdn_source === 'local') {
-            $local_umd_path = EXPLOREXR_PLUGIN_DIR . 'assets/js/model-viewer-umd.js';
-            if (file_exists($local_umd_path)) {
-                $script_url = EXPLOREXR_PLUGIN_URL . 'assets/js/model-viewer-umd.js';
-            } else {
-                // If local file doesn't exist, show error instead of using CDN
-                return; // Don't output any script loader
-            }
-        } else {
-            // CDN is disabled for WordPress.org compliance
+
+        // Local files only (CDN is disabled for WordPress.org compliance).
+        if (!file_exists(EXPLOREXR_PLUGIN_DIR . 'assets/js/model-viewer-umd.js')) {
             return; // Don't output any script loader
         }
+        $script_url = function_exists('explorexr_model_viewer_script_url')
+            ? explorexr_model_viewer_script_url()
+            : EXPLOREXR_PLUGIN_URL . 'assets/js/model-viewer-umd.js';
         
         // WordPress.org compliance: Convert inline script to wp_add_inline_script
         $script_loader_js = '

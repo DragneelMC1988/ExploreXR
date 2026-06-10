@@ -7,11 +7,37 @@
  * server, no tier-aware quota, and exactly one of the whitelisted addons
  * may be active at a time.
  *
+ * Naming convention: the `explorexr_premium_*` function names and the
+ * `EXPLOREXR_PREMIUM_*` constants are an intentional compatibility surface —
+ * addons are built against the Premium API and must run unchanged on Free.
+ * Do not rename these symbols; doing so breaks the addon contract.
+ *
  * @package ExploreXR
  */
 
 if (!defined('ABSPATH')) {
     exit;
+}
+
+if (!function_exists('explorexr_model_viewer_script_url')) {
+    /**
+     * Resolve the model-viewer library URL, preferring the minified bundle.
+     *
+     * Falls back to the unminified UMD build when the minified file is absent
+     * or SCRIPT_DEBUG is enabled.
+     *
+     * @return string Fully qualified URL to the model-viewer script.
+     */
+    function explorexr_model_viewer_script_url() {
+        static $url = null;
+        if ($url !== null) {
+            return $url;
+        }
+        $use_min = !(defined('SCRIPT_DEBUG') && SCRIPT_DEBUG)
+            && file_exists(EXPLOREXR_PLUGIN_DIR . 'assets/js/model-viewer-umd.min.js');
+        $url = EXPLOREXR_PLUGIN_URL . 'assets/js/' . ($use_min ? 'model-viewer-umd.min.js' : 'model-viewer-umd.js');
+        return $url;
+    }
 }
 
 if (!function_exists('explorexr_premium_is_active')) {

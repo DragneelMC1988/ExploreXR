@@ -70,14 +70,60 @@ function explorexr_free_check_premium_active() {
 add_action('plugins_loaded', 'explorexr_free_check_premium_active', 1);
 
 /**
- * Migrate CDN option to local (WordPress.org compliance).
+ * One-time migration: CDN option to local (WordPress.org compliance).
+ * Gated by explorexr_cdn_migrated.
  */
 function explorexr_free_migrate_cdn_option() {
+    if (get_option('explorexr_cdn_migrated') === '1') {
+        return;
+    }
     if (get_option('explorexr_cdn_source') === 'cdn') {
         update_option('explorexr_cdn_source', 'local');
     }
+    update_option('explorexr_cdn_migrated', '1', false);
 }
 add_action('admin_init', 'explorexr_free_migrate_cdn_option', 1);
+
+/**
+ * One-time migration: stop autoloading display/loading settings that are only
+ * read when a model actually renders. Keeps the alloptions cache lean on
+ * every other page load. Gated by explorexr_autoload_migrated.
+ */
+function explorexr_free_migrate_option_autoload() {
+    if (get_option('explorexr_autoload_migrated') === '1') {
+        return;
+    }
+    $no_autoload_options = array(
+        'explorexr_loading_display',
+        'explorexr_large_model_handling',
+        'explorexr_large_model_size_threshold',
+        'explorexr_lazy_load_poster',
+        'explorexr_load_button_text',
+        'explorexr_load_button_bg',
+        'explorexr_load_button_color',
+        'explorexr_load_button_hover_bg',
+        'explorexr_load_button_hover_color',
+        'explorexr_load_button_radius',
+        'explorexr_model_viewer_version',
+        'explorexr_default_tone_mapping',
+        'explorexr_max_upload_size',
+    );
+    if (function_exists('wp_set_option_autoload_values')) {
+        // WP 6.4+: flip autoload in one query without touching values.
+        wp_set_option_autoload_values(array_fill_keys($no_autoload_options, false));
+    } else {
+        foreach ($no_autoload_options as $option_name) {
+            $value = get_option($option_name, '__explorexr_unset__');
+            if ($value === '__explorexr_unset__') {
+                continue;
+            }
+            delete_option($option_name);
+            add_option($option_name, $value, '', false);
+        }
+    }
+    update_option('explorexr_autoload_migrated', '1', false);
+}
+add_action('admin_init', 'explorexr_free_migrate_option_autoload', 1);
 
 /**
  * One-time migration: legacy lazy-load post meta keys → unified

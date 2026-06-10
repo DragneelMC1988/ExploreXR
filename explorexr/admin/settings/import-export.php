@@ -494,8 +494,9 @@ function explorexr_handle_settings_import() {
     }
 
     // Import 3D model posts if present in the export
-    $models_imported = 0;
-    $models_updated  = 0;
+    $models_imported    = 0;
+    $models_updated     = 0;
+    $files_copy_failed  = array();
 
     if (!empty($import_data['models']) && is_array($import_data['models'])) {
         $source      = isset($import_data['_export_info']['plugin_source']) ? $import_data['_export_info']['plugin_source'] : '';
@@ -557,8 +558,9 @@ function explorexr_handle_settings_import() {
                             if (!is_dir($new_dir)) {
                                 wp_mkdir_p($new_dir);
                             }
-                            // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
-                            @copy($src, $dst);
+                            if (!copy($src, $dst)) {
+                                $files_copy_failed[] = $filename;
+                            }
                         }
                     }
                     update_post_meta((int) $post_id, $meta_key, $meta_value);
@@ -584,6 +586,14 @@ function explorexr_handle_settings_import() {
             esc_html__('3D models: %1$d created, %2$d updated.', 'explorexr'),
             $models_imported,
             $models_updated
+        );
+    }
+
+    if (!empty($files_copy_failed)) {
+        $message .= ' ' . sprintf(
+            // translators: %s: comma-separated list of model file names
+            esc_html__('Warning: the following model files could not be copied and may need to be re-uploaded: %s.', 'explorexr'),
+            esc_html(implode(', ', $files_copy_failed))
         );
     }
 
