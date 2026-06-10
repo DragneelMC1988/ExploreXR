@@ -10,9 +10,6 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-// Include helper functions only when needed (moved from top level to prevent circular dependencies)
-// require_once EXPLOREXR_PLUGIN_DIR . 'includes/models/model-helper.php';
-
 // Note: The is_plugin_active() function is only available in admin context
 // We don't need it in shortcodes since they run on frontend
 // If needed in admin, WordPress automatically loads plugin.php

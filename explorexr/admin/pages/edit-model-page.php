@@ -13,37 +13,15 @@ if (!defined('ABSPATH')) {
  * @return bool True if template was included successfully, false otherwise
  */
 function ExploreXR_safe_include_template($template_path, $fallback_path = '', $vars = array()) {
-    // If no additional vars provided, share all variables from the calling scope
-    if (empty($vars)) {
-        // Import variables from the parent scope
-        $vars = array();
-        foreach ($GLOBALS as $key => $value) {
-            if ($key != 'GLOBALS' && !is_object($value) && !is_array($value)) {
-                $vars[$key] = $value;
-            }
-        }
-        
-
-
-        // These variables are always needed
-        if (!isset($vars['model_id'])) {
-            $vars['model_id'] = isset($GLOBALS['model_id']) ? $GLOBALS['model_id'] : 0;
-        }
-        
-        if (!isset($vars['camera_controls'])) {
-            $vars['camera_controls'] = isset($GLOBALS['camera_controls']) ? $GLOBALS['camera_controls'] : false;
-        }
-        
-        if (!isset($vars['auto_rotate'])) {
-            $vars['auto_rotate'] = isset($GLOBALS['auto_rotate']) ? $GLOBALS['auto_rotate'] : false;
-        }
-    }
-
-    // Extract variables to make them available in the template scope
+    // Make the caller-provided variables available in the template scope.
+    // EXTR_SKIP prevents overwriting this function's own parameters
+    // (same pattern as WordPress core's load_template()).
     if (!empty($vars) && is_array($vars)) {
-        extract($vars);
+        // phpcs:ignore WordPress.PHP.DontExtract.extract_extract -- controlled, caller-supplied template vars only
+        extract($vars, EXTR_SKIP);
     }
-    
+
+
     if (file_exists($template_path)) {
         include $template_path;
         return true;

@@ -101,12 +101,3 @@ add_action('add_attachment', function ($post_id) {
         }
     }
 });
-
-// Note: The EXPLOREXR_handle_model_upload function has been moved to model-helper.php
-// to avoid duplicate function declarations.
-
-
-
-
-
-
