@@ -15,6 +15,12 @@ function explorexr_enqueue_edit_model_styles() {
         return;
     }
     
+    // Cache-bust on every load only during development (SCRIPT_DEBUG);
+    // otherwise use the plugin version so browsers can cache assets.
+    $asset_version = (defined('SCRIPT_DEBUG') && SCRIPT_DEBUG)
+        ? EXPLOREXR_VERSION . '.' . time()
+        : EXPLOREXR_VERSION;
+
     // Enqueue base admin styles first
     wp_enqueue_style(
         'explorexr-admin-common',
@@ -47,7 +53,7 @@ function explorexr_enqueue_edit_model_styles() {
         'explorexr-edit-model-css',
         EXPLOREXR_PLUGIN_URL . 'admin/css/edit-model.css', 
         array('explorexr-admin-common'), 
-        EXPLOREXR_VERSION . '.' . time() // Add timestamp to force cache refresh during development
+        $asset_version
     );
     
     // Also load the create-model.css for consistent styling between create and edit pages
@@ -71,7 +77,7 @@ function explorexr_enqueue_edit_model_styles() {
         'explorexr-edit-model-js',
         EXPLOREXR_PLUGIN_URL . 'admin/js/edit-model.js',
         array('jquery'),
-        EXPLOREXR_VERSION . '.' . time(), // Add timestamp to force cache refresh during development
+        $asset_version,
         true // Load in footer
     );
     
@@ -80,7 +86,7 @@ function explorexr_enqueue_edit_model_styles() {
         'explorexr-model-size',
         EXPLOREXR_PLUGIN_URL . 'assets/js/model-size.js',
         array('jquery'),
-        EXPLOREXR_VERSION . '.' . time(),
+        $asset_version,
         true // Load in footer
     );
     
@@ -89,7 +95,7 @@ function explorexr_enqueue_edit_model_styles() {
         'explorexr-premium-upgrade',
         EXPLOREXR_PLUGIN_URL . 'admin/js/premium-upgrade.js',
         array('jquery', 'explorexr-edit-model-js'),
-        EXPLOREXR_VERSION . '.' . time(),
+        $asset_version,
         true // Load in footer
     );
     
@@ -140,9 +146,12 @@ function explorexr_register_admin_model_viewer() {
         }
         
         // Add wrapper script to conditionally load model-viewer
+        $model_viewer_src = function_exists('explorexr_model_viewer_script_url')
+            ? explorexr_model_viewer_script_url()
+            : EXPLOREXR_PLUGIN_URL . 'assets/js/model-viewer-umd.js';
         wp_register_script(
             'explorexr-premium-model-viewer',
-            EXPLOREXR_PLUGIN_URL . 'assets/js/model-viewer-umd.js',
+            $model_viewer_src,
             array('explorexr-premium-model-viewer-guard'),
             '4.1.0',
             true // Load in footer

@@ -237,27 +237,27 @@ function explorexr_loading_options_page() {
     if (isset($_POST['explorexr_action']) && $_POST['explorexr_action'] === 'save_loading_options' && isset($_POST['explorexr_loading_nonce']) && wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['explorexr_loading_nonce'])), 'explorexr_loading_settings')) {
         // Process loading settings fields
         if (isset($_POST['explorexr_loading_display'])) {
-            update_option('explorexr_loading_display', sanitize_text_field(wp_unslash($_POST['explorexr_loading_display'])));
+            update_option('explorexr_loading_display', sanitize_text_field(wp_unslash($_POST['explorexr_loading_display'])), false);
         }
         if (isset($_POST['explorexr_large_model_handling'])) {
-            update_option('explorexr_large_model_handling', sanitize_text_field(wp_unslash($_POST['explorexr_large_model_handling'])));
+            update_option('explorexr_large_model_handling', sanitize_text_field(wp_unslash($_POST['explorexr_large_model_handling'])), false);
         }
         if (isset($_POST['explorexr_large_model_size_threshold'])) {
             $threshold = absint($_POST['explorexr_large_model_size_threshold']);
             if ($threshold > 0) {
-                update_option('explorexr_large_model_size_threshold', $threshold);
+                update_option('explorexr_large_model_size_threshold', $threshold, false);
             }
         }
         // Handle checkbox for lazy load poster
         if (isset($_POST['explorexr_lazy_load_poster']) && $_POST['explorexr_lazy_load_poster'] === '1') {
-            update_option('explorexr_lazy_load_poster', true);
+            update_option('explorexr_lazy_load_poster', true, false);
         } else {
-            update_option('explorexr_lazy_load_poster', false);
+            update_option('explorexr_lazy_load_poster', false, false);
         }
 
         // Load Model button customization
         if (isset($_POST['explorexr_load_button_text'])) {
-            update_option('explorexr_load_button_text', sanitize_text_field(wp_unslash($_POST['explorexr_load_button_text'])));
+            update_option('explorexr_load_button_text', sanitize_text_field(wp_unslash($_POST['explorexr_load_button_text'])), false);
         }
         $explorexr_button_color_fields = array(
             'explorexr_load_button_bg',
@@ -270,7 +270,8 @@ function explorexr_loading_options_page() {
                 update_option(
                     $explorexr_color_field,
                     // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- custom hex sanitization via explorexr_sanitize_load_button_color()
-                explorexr_sanitize_load_button_color(wp_unslash($_POST[$explorexr_color_field]))
+                explorexr_sanitize_load_button_color(wp_unslash($_POST[$explorexr_color_field])),
+                    false
                 );
             }
         }
@@ -278,7 +279,8 @@ function explorexr_loading_options_page() {
             update_option(
                 'explorexr_load_button_radius',
                 // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- custom CSS length sanitization via explorexr_sanitize_load_button_radius()
-                explorexr_sanitize_load_button_radius(wp_unslash($_POST['explorexr_load_button_radius']))
+                explorexr_sanitize_load_button_radius(wp_unslash($_POST['explorexr_load_button_radius'])),
+                false
             );
         }
 
