@@ -230,7 +230,7 @@ class ExploreXR_Addon_Manager {
             if ($whitelisted === $slug) {
                 continue;
             }
-            if ($this->is_addon_active($whitelisted)) {
+            if ($this->is_whitelisted_addon_active($whitelisted)) {
                 $other_active++;
             }
         }
@@ -255,17 +255,38 @@ class ExploreXR_Addon_Manager {
             require_once ABSPATH . 'wp-admin/includes/plugin.php';
         }
         // Use direct WordPress plugin state so WP-CLI activations that run before
-        // an addon's plugins_loaded self-registration are still detected.
+        // an addon's plugins_loaded self-registration are still detected. Check
+        // both the conventional folder layout and the file each addon registered
+        // itself with, so a renamed addon folder (e.g. a GitHub zip suffix)
+        // cannot bypass the limit.
         $active = array();
         foreach (self::WHITELIST as $slug) {
-            $plugin_file = "explorexr-{$slug}-addon/explorexr-{$slug}-addon.php";
-            if (is_plugin_active($plugin_file)) {
-                $active[$slug] = $plugin_file;
+            $candidates = array("explorexr-{$slug}-addon/explorexr-{$slug}-addon.php");
+            if (isset($this->registered_addons[$slug]['file'])) {
+                $candidates[] = plugin_basename($this->registered_addons[$slug]['file']);
+            }
+            foreach (array_unique($candidates) as $plugin_file) {
+                if (is_plugin_active($plugin_file)) {
+                    $active[$slug] = $plugin_file;
+                    break;
+                }
             }
         }
         if (count($active) <= self::MAX_ACTIVE) {
             return;
         }
+
+        // Keep the addon that appears first in the site's active_plugins list
+        // (deterministic WordPress ordering) rather than always favouring the
+        // first whitelist entry; deactivate the rest.
+        $active_plugins = (array) get_option('active_plugins', array());
+        uasort($active, static function($a, $b) use ($active_plugins) {
+            $pos_a = array_search($a, $active_plugins, true);
+            $pos_b = array_search($b, $active_plugins, true);
+            $pos_a = ($pos_a === false) ? PHP_INT_MAX : $pos_a;
+            $pos_b = ($pos_b === false) ? PHP_INT_MAX : $pos_b;
+            return $pos_a <=> $pos_b;
+        });
 
         if (!function_exists('deactivate_plugins')) {
             require_once ABSPATH . 'wp-admin/includes/plugin.php';
@@ -296,6 +317,27 @@ class ExploreXR_Addon_Manager {
             esc_url(admin_url('admin.php?page=explorexr-go-premium')),
             esc_html__('See premium plans →', 'explorexr')
         );
+    }
+
+    /**
+     * Registration-independent active check for a whitelisted addon: looks at
+     * both the conventional folder layout and the registered file, so it works
+     * even before the addon's own init-time self-registration has run.
+     */
+    private function is_whitelisted_addon_active($slug) {
+        if (!function_exists('is_plugin_active')) {
+            require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        }
+        $candidates = array("explorexr-{$slug}-addon/explorexr-{$slug}-addon.php");
+        if (isset($this->registered_addons[$slug]['file'])) {
+            $candidates[] = plugin_basename($this->registered_addons[$slug]['file']);
+        }
+        foreach (array_unique($candidates) as $plugin_file) {
+            if (is_plugin_active($plugin_file)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /** Try to resolve a plugin file path to one of the registered addon slugs. */

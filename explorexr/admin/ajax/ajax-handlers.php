@@ -86,7 +86,10 @@ function explorexr_free_ajax_direct_download_addon() {
         ? sanitize_key(wp_unslash($_POST['slug']))
         : '';
 
-    $allowed = array('ar', 'animation', 'loading');
+    // Single source of truth for the free-tier whitelist lives in the addon manager.
+    $allowed = class_exists('ExploreXR_Addon_Manager')
+        ? ExploreXR_Addon_Manager::WHITELIST
+        : array('ar', 'animation', 'loading');
 
     if (!in_array($slug, $allowed, true)) {
         wp_send_json_error(array('message' => esc_html__('This addon is not available in the free version.', 'explorexr')));
