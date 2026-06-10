@@ -40,9 +40,9 @@ class ExploreXR_Gutenberg_Integration {
         // Register the editor script.
         wp_register_script(
             'explorexr-gutenberg-block',
-            EXPLOREXR_PREMIUM_PLUGIN_URL . 'includes/integrations/gutenberg/block.js',
+            EXPLOREXR_PLUGIN_URL . 'includes/integrations/gutenberg/block.js',
             array( 'wp-blocks', 'wp-element', 'wp-editor', 'wp-components', 'wp-server-side-render', 'wp-data' ),
-            EXPLOREXR_PREMIUM_VERSION,
+            EXPLOREXR_VERSION,
             false
         );
 
@@ -55,9 +55,9 @@ class ExploreXR_Gutenberg_Integration {
         // Register the editor style.
         wp_register_style(
             'explorexr-gutenberg-editor',
-            EXPLOREXR_PREMIUM_PLUGIN_URL . 'assets/css/elementor-editor.css',
+            EXPLOREXR_PLUGIN_URL . 'assets/css/elementor-editor.css',
             array(),
-            EXPLOREXR_PREMIUM_VERSION
+            EXPLOREXR_VERSION
         );
 
         register_block_type( 'explorexr/3d-model', array(

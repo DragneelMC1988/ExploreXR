@@ -42,11 +42,6 @@ function explorexr_premium_convert_percent_to_viewport($value, $dimension = 'wid
     return $value;
 }
 
-// Enqueue model loader script when needed
-function EXPLOREXR_enqueue_model_loader() {
-    wp_enqueue_script('explorexr-model-loader', EXPLOREXR_PREMIUM_PLUGIN_URL . 'assets/js/model-loader.js', array(), EXPLOREXR_PREMIUM_VERSION, true);
-}
-
 // Helper function to build model-viewer attributes
 function EXPLOREXR_build_model_attributes($model_id, $model_file, $alt_text, $width, $height, $model_poster = '') {
     // Basic attributes - DO NOT add width/height here (applied to wrapper container instead)
@@ -289,6 +284,10 @@ add_shortcode('explorexr_model', function ($atts) {
         return 'Invalid model ID.';
     }
 
+    // Prime the post meta cache so all subsequent get_post_meta() calls in this
+    // shortcode and in EXPLOREXR_build_model_attributes() hit the cache, not the DB.
+    update_post_meta_cache(array($model_id));
+
     $model_file = get_post_meta($model_id, '_explorexr_model_file', true) ?: '';
     if (!$model_file) {
         return ' ExploreXR Alert: Model not found. Possibly abducted by polygons from another dimension.';
@@ -302,7 +301,6 @@ add_shortcode('explorexr_model', function ($atts) {
     
     // Get poster image if available
     $model_poster = get_post_meta($model_id, '_explorexr_model_poster', true) ?: '';
-    $model_poster_id = get_post_meta($model_id, '_explorexr_model_poster_id', true) ?: '';
 
     // Get size settings
     $viewer_size = get_post_meta($model_id, '_explorexr_viewer_size', true) ?: '';
@@ -417,28 +415,22 @@ add_shortcode('explorexr_model', function ($atts) {
         $responsive_css_content .= '}';
     }
     
-    // Use wp_add_inline_style for proper page builder compatibility
+    // Enqueue base style before adding inline CSS so wp_add_inline_style has a parent.
+    wp_enqueue_style('explorexr-model-viewer', EXPLOREXR_PLUGIN_URL . 'assets/css/model-viewer.css', array(), EXPLOREXR_VERSION);
+
     if (!empty($responsive_css_content)) {
-        // Create unique style handle per model instance
-        $style_handle = 'explorexr-model-' . $model_id;
-        
-        // Ensure base model-viewer style is registered/enqueued
-        if (!wp_style_is('explorexr-model-viewer', 'enqueued')) {
-            wp_enqueue_style('explorexr-model-viewer', EXPLOREXR_PREMIUM_PLUGIN_URL . 'assets/css/model-viewer.css', array(), EXPLOREXR_PREMIUM_VERSION);
-        }
-        
-        // Add inline styles to the base handle
         wp_add_inline_style('explorexr-model-viewer', $responsive_css_content);
     }
-    
+
     // Annotations are not available in the free version
     $annotations = null;
-    
-    // Enqueue required scripts and styles
-    wp_enqueue_style('explorexr-model-viewer', EXPLOREXR_PREMIUM_PLUGIN_URL . 'assets/css/model-viewer.css', array(), EXPLOREXR_PREMIUM_VERSION);
 
-    // Trigger model-viewer script registration (addons handle their own assets)
-    include EXPLOREXR_PLUGIN_DIR . 'template-parts/model-viewer-script.php';
+    // Trigger model-viewer script registration — run once per page regardless of model count.
+    static $scripts_registered = false;
+    if (!$scripts_registered) {
+        include EXPLOREXR_PLUGIN_DIR . 'template-parts/model-viewer-script.php';
+        $scripts_registered = true;
+    }
     
     // Check if the model is a large file that needs special handling
     $large_model_handling = get_option('explorexr_large_model_handling', 'direct');
@@ -496,7 +488,7 @@ add_shortcode('explorexr_model', function ($atts) {
         $model_instance_id = 'explorexr-model-' . $model_id . '-' . uniqid();
         
         // Enqueue the model loader script
-        EXPLOREXR_enqueue_model_loader();
+        wp_enqueue_script('explorexr-model-loader', EXPLOREXR_PLUGIN_URL . 'assets/js/model-loader.js', array(), EXPLOREXR_VERSION, true);
         
         // Build model attributes using our helper function
         $model_attributes = EXPLOREXR_build_model_attributes($model_id, $model_file, $alt_text, $width, $height, $model_poster);
@@ -529,7 +521,7 @@ add_shortcode('explorexr_model', function ($atts) {
         $model_instance_id = 'explorexr-model-' . $model_id . '-' . uniqid();
         
         // Enqueue the lazy loader script
-        wp_enqueue_script('explorexr-lazy-loader', EXPLOREXR_PREMIUM_PLUGIN_URL . 'assets/js/lazy-loader.js', array(), EXPLOREXR_PREMIUM_VERSION, true);
+        wp_enqueue_script('explorexr-lazy-loader', EXPLOREXR_PLUGIN_URL . 'assets/js/lazy-loader.js', array(), EXPLOREXR_VERSION, true);
         
         // Build model attributes using our helper function
         $model_attributes = EXPLOREXR_build_model_attributes($model_id, $model_file, $alt_text, $width, $height, $model_poster);
@@ -594,14 +586,6 @@ add_shortcode('EXPLOREXR_model', function ($atts) {
     return do_shortcode('[explorexr_model id="' . (isset($atts['id']) ? $atts['id'] : '') . '"]');
 });
 
-// Enqueue admin scripts
-add_action('admin_enqueue_scripts', function ($hook) {
-    // Add null check to prevent deprecated warning in PHP 8.1+
-    if (!empty($hook) && is_string($hook) && strpos($hook, 'explorexr') !== false) {
-        // Add the script directly in admin
-        wp_enqueue_script('explorexr-model-loader', EXPLOREXR_PREMIUM_PLUGIN_URL . 'assets/js/model-loader.js', array('jquery'), EXPLOREXR_PREMIUM_VERSION, true);
-    }
-});
 
 /**
  * FIX 3: Shared renderer function for admin previews
@@ -621,7 +605,7 @@ function explorexr_render_model_viewer($model_id, $context = 'admin', $overrides
         return '<div class="explorexr-error">Model file not found</div>';
     }
     
-    $alt_text = get_post_meta($model_id, '_explorexr_alt_text', true) ?: get_the_title($model_id);
+    $alt_text = get_post_meta($model_id, '_explorexr_model_alt_text', true) ?: get_the_title($model_id);
     $model_poster = get_post_meta($model_id, '_explorexr_model_poster', true) ?: '';
     
     // Default dimensions for admin previews
@@ -647,17 +631,7 @@ function explorexr_render_model_viewer($model_id, $context = 'admin', $overrides
         $attributes['camera-controls'] = ''; // Boolean attribute
     }
     
-    // Generate HTML
-    $html = '<model-viewer';
-    foreach ($attributes as $key => $value) {
-        if ($value === '' && in_array($key, ['camera-controls', 'autoplay', 'loop', 'auto-rotate'], true)) {
-            // Boolean attributes
-            $html .= ' ' . esc_attr($key);
-        } else {
-            $html .= ' ' . esc_attr($key) . '="' . esc_attr($value) . '"';
-        }
-    }
-    $html .= '></model-viewer>';
+    $html = '<model-viewer' . EXPLOREXR_generate_attributes_html($attributes) . '></model-viewer>';
     
     return $html;
 }

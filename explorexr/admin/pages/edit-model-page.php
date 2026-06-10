@@ -88,25 +88,25 @@ function ExploreXR_edit_model_page() {
     // Enqueue size validation and preview scripts
     wp_enqueue_script(
         'explorexr-size-validation',
-        EXPLOREXR_PREMIUM_PLUGIN_URL . 'admin/js/size-validation.js',
+        EXPLOREXR_PLUGIN_URL . 'admin/js/size-validation.js',
         array('jquery'),
-        EXPLOREXR_PREMIUM_VERSION,
+        EXPLOREXR_VERSION,
         true
     );
     
     wp_enqueue_script(
         'explorexr-preview-size-sync',
-        EXPLOREXR_PREMIUM_PLUGIN_URL . 'admin/js/preview-size-sync.js',
+        EXPLOREXR_PLUGIN_URL . 'admin/js/preview-size-sync.js',
         array('jquery'),
-        EXPLOREXR_PREMIUM_VERSION,
+        EXPLOREXR_VERSION,
         true
     );
     
     wp_enqueue_script(
         'explorexr-size-preview-indicator',
-        EXPLOREXR_PREMIUM_PLUGIN_URL . 'admin/js/size-preview-indicator.js',
+        EXPLOREXR_PLUGIN_URL . 'admin/js/size-preview-indicator.js',
         array('jquery'),
-        EXPLOREXR_PREMIUM_VERSION,
+        EXPLOREXR_VERSION,
         true
     );
     
@@ -209,7 +209,7 @@ function ExploreXR_edit_model_page() {
     }
     
     // Load size validator class for validation
-    require_once EXPLOREXR_PREMIUM_PLUGIN_DIR . 'includes/utils/size-validator.php';
+    require_once EXPLOREXR_PLUGIN_DIR . 'includes/utils/size-validator.php';
     
     // Handle form submission
     if (isset($_POST['ExploreXR_edit_model_submit']) && check_admin_referer('explorexr_edit_model', 'explorexr_edit_nonce')) {

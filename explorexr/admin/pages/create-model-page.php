@@ -83,7 +83,7 @@ function explorexr_handle_model_creation() {
         $model_source = isset($_POST['model_source']) ? sanitize_text_field(wp_unslash($_POST['model_source'])) : 'upload';
         
         // Load size validator for validation
-        require_once EXPLOREXR_PREMIUM_PLUGIN_DIR . 'includes/utils/size-validator.php';
+        require_once EXPLOREXR_PLUGIN_DIR . 'includes/utils/size-validator.php';
         
         // Validate and save model viewer size settings
         $width_input = isset($_POST['viewer_width']) ? sanitize_text_field(wp_unslash($_POST['viewer_width'])) : '100vw';
@@ -265,17 +265,17 @@ function explorexr_create_model_page() {
     // Enqueue validation and preview scripts
     wp_enqueue_script(
         'explorexr-size-validation',
-        EXPLOREXR_PREMIUM_PLUGIN_URL . 'admin/js/size-validation.js',
+        EXPLOREXR_PLUGIN_URL . 'admin/js/size-validation.js',
         array('jquery'),
-        EXPLOREXR_PREMIUM_VERSION,
+        EXPLOREXR_VERSION,
         true
     );
     
     wp_enqueue_script(
         'explorexr-size-preview-indicator',
-        EXPLOREXR_PREMIUM_PLUGIN_URL . 'admin/js/size-preview-indicator.js',
+        EXPLOREXR_PLUGIN_URL . 'admin/js/size-preview-indicator.js',
         array('jquery'),
-        EXPLOREXR_PREMIUM_VERSION,
+        EXPLOREXR_VERSION,
         true
     );
     
