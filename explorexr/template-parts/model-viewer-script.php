@@ -149,24 +149,22 @@ wp_localize_script('explorexr-model-viewer-wrapper', 'ExploreXRLoadingOptions', 
 
 // Pass script configuration for preloader.
 // Use the same static file-existence results from above to avoid redundant syscalls.
-// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for script configuration
 if ($umd_exists) {
-    $script_config = array(
+    $explorexr_script_config = array(
         'modelViewerScriptUrl' => $umd_script_url,
         'scriptType'           => 'umd',
     );
 } else {
-    $script_config = array(
+    $explorexr_script_config = array(
         'modelViewerScriptUrl' => EXPLOREXR_PLUGIN_URL . 'assets/js/model-viewer.min.js',
         'scriptType'           => 'module',
     );
 }
 
 // Add plugin URL for local dependencies
-// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for script config
-$script_config['pluginUrl'] = EXPLOREXR_PLUGIN_URL;
+$explorexr_script_config['pluginUrl'] = EXPLOREXR_PLUGIN_URL;
 
-wp_localize_script('explorexr-model-viewer-wrapper', 'explorexrScriptConfig', $script_config);
+wp_localize_script('explorexr-model-viewer-wrapper', 'explorexrScriptConfig', $explorexr_script_config);
 
 // Set global plugin URL for Model Viewer dependencies (WordPress.org compliance - properly escaped)
 wp_add_inline_script('explorexr-model-viewer-wrapper', 'window.explorexrPluginUrl = "' . esc_js(EXPLOREXR_PLUGIN_URL) . '";', 'before');

@@ -32,7 +32,7 @@ if (class_exists('ExploreXR_Addon_Manager')) {
 
 class ExploreXR_Addon_Manager {
 
-    const WHITELIST      = array('ar', 'animation', 'loading');
+    const WHITELIST      = array('ar', 'animation', 'camera', 'annotations');
     const MAX_ACTIVE     = 1;
     /** Addons allowed on Free regardless of WHITELIST; do not count against MAX_ACTIVE. */
     const ALWAYS_ALLOWED = array('debug');

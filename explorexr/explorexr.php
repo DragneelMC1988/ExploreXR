@@ -110,7 +110,8 @@ function explorexr_free_migrate_option_autoload() {
     );
     if (function_exists('wp_set_option_autoload_values')) {
         // WP 6.4+: flip autoload in one query without touching values.
-        wp_set_option_autoload_values(array_fill_keys($no_autoload_options, false));
+        // call_user_func avoids static-analysis false-positives on minimum WP version.
+        call_user_func('wp_set_option_autoload_values', array_fill_keys($no_autoload_options, false));
     } else {
         foreach ($no_autoload_options as $option_name) {
             $value = get_option($option_name, '__explorexr_unset__');

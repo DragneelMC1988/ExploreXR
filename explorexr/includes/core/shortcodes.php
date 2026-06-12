@@ -283,7 +283,7 @@ add_shortcode('explorexr_model', function ($atts) {
 
     // Prime the post meta cache so all subsequent get_post_meta() calls in this
     // shortcode and in EXPLOREXR_build_model_attributes() hit the cache, not the DB.
-    update_post_meta_cache(array($model_id));
+    update_meta_cache('post', array($model_id));
 
     $model_file = get_post_meta($model_id, '_explorexr_model_file', true) ?: '';
     if (!$model_file) {
