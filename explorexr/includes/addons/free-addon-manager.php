@@ -32,7 +32,7 @@ if (class_exists('ExploreXR_Addon_Manager')) {
 
 class ExploreXR_Addon_Manager {
 
-    const WHITELIST      = array('ar', 'animation', 'camera', 'annotations');
+    const WHITELIST      = array('ar', 'animation', 'loading');
     const MAX_ACTIVE     = 1;
     /** Addons allowed on Free regardless of WHITELIST; do not count against MAX_ACTIVE. */
     const ALWAYS_ALLOWED = array('debug');
@@ -75,6 +75,7 @@ class ExploreXR_Addon_Manager {
 
     private function __construct() {
         add_action('activate_plugin', array($this, 'gate_addon_activation'), 10, 1);
+        add_action('activated_plugin', array($this, 'enforce_after_activation'), 10, 1);
         add_action('admin_init', array($this, 'enforce_single_addon'), 20);
         add_action('admin_notices', array($this, 'maybe_show_block_notice'));
     }
@@ -247,6 +248,61 @@ class ExploreXR_Addon_Manager {
     }
 
     /**
+     * `activated_plugin` hook: fires AFTER WordPress has already persisted the
+     * activation into the `active_plugins` option, so unlike `gate_addon_activation()`
+     * (which runs during `activate_plugin`, before that option is saved),
+     * `deactivate_plugins()` here is guaranteed to actually take effect —
+     * regardless of AJAX/cron context. This closes the window where the direct-install
+     * AJAX handler's own `activate_plugin()` call could leave two whitelisted addons
+     * simultaneously active because `gate_addon_activation()`'s block relies on an
+     * `exit`/redirect that is deliberately skipped during `wp_doing_ajax()`.
+     */
+    public function enforce_after_activation($plugin_file) {
+        if (!is_string($plugin_file) || $plugin_file === '') {
+            return;
+        }
+
+        $slug = $this->slug_for_plugin_file($plugin_file);
+        if ($slug === null || in_array($slug, self::ALWAYS_ALLOWED, true)) {
+            return;
+        }
+
+        $friendly = self::friendly_name($slug);
+
+        if (!in_array($slug, self::WHITELIST, true)) {
+            $this->deactivate_now(
+                $plugin_file,
+                sprintf(
+                    /* translators: %s: friendly addon name */
+                    __('%s is not available in the free version of ExploreXR. Upgrade to Premium to unlock it.', 'explorexr'),
+                    $friendly
+                )
+            );
+            return;
+        }
+
+        $other_active = 0;
+        foreach (self::WHITELIST as $whitelisted) {
+            if ($whitelisted === $slug) {
+                continue;
+            }
+            if ($this->is_whitelisted_addon_active($whitelisted)) {
+                $other_active++;
+            }
+        }
+        if ($other_active >= self::MAX_ACTIVE) {
+            $this->deactivate_now(
+                $plugin_file,
+                sprintf(
+                    /* translators: %s: friendly addon name */
+                    __('%s cannot be activated — ExploreXR Free allows one addon at a time. Deactivate the current addon first, or upgrade to Premium.', 'explorexr'),
+                    $friendly
+                )
+            );
+        }
+    }
+
+    /**
      * `admin_init` hook: if more than one whitelisted addon ended up active
      * (e.g. WP-CLI bypass), deactivate the extras keeping only one.
      */
@@ -369,5 +425,19 @@ class ExploreXR_Addon_Manager {
             wp_safe_redirect(self_admin_url('plugins.php?error=true'));
             exit;
         }
+    }
+
+    /**
+     * Unconditional deactivation used by `enforce_after_activation()`. No
+     * exit/redirect here — this runs post-persistence (see that method's
+     * docblock) and must close the enforcement gap in every request context,
+     * including AJAX and cron, not just interactive admin page loads.
+     */
+    private function deactivate_now($plugin_file, $message) {
+        if (!function_exists('deactivate_plugins')) {
+            require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        }
+        deactivate_plugins($plugin_file, true);
+        set_transient(self::ERROR_TRANSIENT, $message, self::NOTICE_TTL);
     }
 }

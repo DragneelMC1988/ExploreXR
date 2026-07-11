@@ -19,37 +19,9 @@ if (!defined('ABSPATH')) {
 // plugin ships a slim ExploreXR_Addon_Manager with the same public API).
 $addon_manager = class_exists('ExploreXR_Addon_Manager') ? ExploreXR_Addon_Manager::get_instance() : null;
 
-// Get license handler
-$license_handler = class_exists('ExploreXR_License_Handler') ? ExploreXR_License_Handler::instance() : null;
-
 // Get active WordPress plugins that are addons
 $active_addons = array();
 
-if ($license_handler) {
-    $all_addons = $license_handler->get_addons();
-    
-    // Check each addon to see if it's active in WordPress
-    foreach ($all_addons as $addon_slug => $addon_data) {
-        $addon_path = isset($addon_data['path']) ? $addon_data['path'] : '';
-        
-        // Check if addon plugin is active (allow rendering even if license is pending to match prior behavior)
-        $addon_active = false;
-        if (function_exists('explorexr_premium_is_addon_active')) {
-            $addon_active = explorexr_premium_is_addon_active($addon_slug, false);
-        } elseif (!empty($addon_path)) {
-            if (!function_exists('is_plugin_active')) {
-                include_once ABSPATH . 'wp-admin/includes/plugin.php';
-            }
-            $addon_active = is_plugin_active($addon_path);
-        }
-
-        if (!empty($addon_path) && $addon_active) {
-            $active_addons[$addon_slug] = $addon_data;
-        }
-    }
-}
-
-// Fallback: include any registered addons that are active even if not present in license map
 if ($addon_manager && method_exists($addon_manager, 'get_registered_addons')) {
     foreach ($addon_manager->get_registered_addons() as $registered_slug => $registered_data) {
         if (isset($active_addons[$registered_slug])) {
@@ -97,7 +69,6 @@ if (empty($active_addons)) {
             <div class="explorexr-addon-features">
                 <h4><?php esc_html_e('Available Free Add-ons:', 'explorexr'); ?></h4>
                 <ul>
-                    <li><strong>📝 <?php esc_html_e('Annotations', 'explorexr'); ?>:</strong> <?php esc_html_e('Add interactive hotspots and labels to your 3D models', 'explorexr'); ?></li>
                     <li><strong>📱 <?php esc_html_e('AR (Augmented Reality)', 'explorexr'); ?>:</strong> <?php esc_html_e('View models in real-world environments', 'explorexr'); ?></li>
                     <li><strong>🎬 <?php esc_html_e('Animation', 'explorexr'); ?>:</strong> <?php esc_html_e('Add animated sequences and controls', 'explorexr'); ?></li>
                     <li><strong>⏳ <?php esc_html_e('Loading', 'explorexr'); ?>:</strong> <?php esc_html_e('Custom loading indicators and progress bars', 'explorexr'); ?></li>

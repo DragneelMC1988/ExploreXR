@@ -13,7 +13,7 @@ jQuery(document).ready(function($) {
     }
     
     // Find our plugin's deactivate link
-    var $deactivateLink = $('tr[data-plugin="explorexr/exploreXR.php"] .deactivate a');
+    var $deactivateLink = $('tr[data-plugin="' + explorexrDeactivation.pluginPath + '"] .deactivate a');
       // When deactivation link is clicked
     $deactivateLink.on('click', function(e) {
         // Prevent default action

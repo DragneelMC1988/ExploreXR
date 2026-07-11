@@ -294,7 +294,7 @@ function explorexr_loading_options_page() {
     $settings_args = array(
         'page_title'    => esc_html__('Loading Options', 'explorexr'),
         'plugin_name'   => esc_html__('explorexr', 'explorexr'),
-        'plugin_version' => defined('EXPLOREXR_VERSION') ? EXPLOREXR_VERSION : '1.0.1',
+        'plugin_version' => defined('EXPLOREXR_VERSION') ? EXPLOREXR_VERSION : '1.3.2',
         'doc_url'       => 'https://expoxr.com/explorexr/documentation/',
         'settings_group' => 'explorexr_loading_settings',
         'settings_page' => 'explorexr-loading-settings',
@@ -487,7 +487,7 @@ function explorexr_loading_options_page() {
                         <label for="explorexr_load_button_bg"><?php esc_html_e('Background Color', 'explorexr'); ?></label>
                     </th>
                     <td>
-                        <input type="text" name="explorexr_load_button_bg" id="explorexr_load_button_bg" value="<?php echo esc_attr($explorexr_button_bg); ?>" class="small-text" placeholder="#0073aa">
+                        <input type="text" name="explorexr_load_button_bg" id="explorexr_load_button_bg" value="<?php echo esc_attr($explorexr_button_bg); ?>" class="explorexr-color-field" data-default-color="#0073aa" placeholder="#0073aa">
                         <p class="description"><?php esc_html_e('Hex color (e.g. #0073aa). Leave empty for default.', 'explorexr'); ?></p>
                     </td>
                 </tr>
@@ -496,7 +496,7 @@ function explorexr_loading_options_page() {
                         <label for="explorexr_load_button_color"><?php esc_html_e('Text Color', 'explorexr'); ?></label>
                     </th>
                     <td>
-                        <input type="text" name="explorexr_load_button_color" id="explorexr_load_button_color" value="<?php echo esc_attr($explorexr_button_color); ?>" class="small-text" placeholder="#ffffff">
+                        <input type="text" name="explorexr_load_button_color" id="explorexr_load_button_color" value="<?php echo esc_attr($explorexr_button_color); ?>" class="explorexr-color-field" data-default-color="#ffffff" placeholder="#ffffff">
                     </td>
                 </tr>
                 <tr>
@@ -504,7 +504,7 @@ function explorexr_loading_options_page() {
                         <label for="explorexr_load_button_hover_bg"><?php esc_html_e('Hover Background', 'explorexr'); ?></label>
                     </th>
                     <td>
-                        <input type="text" name="explorexr_load_button_hover_bg" id="explorexr_load_button_hover_bg" value="<?php echo esc_attr($explorexr_button_hover_bg); ?>" class="small-text" placeholder="#005177">
+                        <input type="text" name="explorexr_load_button_hover_bg" id="explorexr_load_button_hover_bg" value="<?php echo esc_attr($explorexr_button_hover_bg); ?>" class="explorexr-color-field" data-default-color="#005177" placeholder="#005177">
                     </td>
                 </tr>
                 <tr>
@@ -512,7 +512,7 @@ function explorexr_loading_options_page() {
                         <label for="explorexr_load_button_hover_color"><?php esc_html_e('Hover Text Color', 'explorexr'); ?></label>
                     </th>
                     <td>
-                        <input type="text" name="explorexr_load_button_hover_color" id="explorexr_load_button_hover_color" value="<?php echo esc_attr($explorexr_button_hover_color); ?>" class="small-text" placeholder="#ffffff">
+                        <input type="text" name="explorexr_load_button_hover_color" id="explorexr_load_button_hover_color" value="<?php echo esc_attr($explorexr_button_hover_color); ?>" class="explorexr-color-field" data-default-color="#ffffff" placeholder="#ffffff">
                     </td>
                 </tr>
                 <tr>

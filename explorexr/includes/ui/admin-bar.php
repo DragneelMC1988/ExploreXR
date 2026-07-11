@@ -22,7 +22,7 @@ function explorexr_admin_bar_addons_link($admin_bar) {
         $admin_bar->add_node(array(
             'id'    => 'explorexr',
             'title' => '<span class="ab-icon dashicons dashicons-admin-customizer"></span><span class="ab-label">ExploreXR</span>',
-            'href'  => admin_url('admin.php?page=ExploreXR'),
+            'href'  => admin_url('admin.php?page=explorexr'),
             'meta'  => array(
                 'title' => 'explorexr',
                 'class' => 'explorexr-admin-bar-item'

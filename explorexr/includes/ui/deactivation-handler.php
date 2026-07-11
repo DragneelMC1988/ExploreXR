@@ -40,7 +40,7 @@ function explorexr_enqueue_deactivation_script($hook) {
             'adminUrl' => admin_url(),
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('explorexr_deactivation_nonce'),
-            'pluginPath' => 'explorexr/exploreXR.php',
+            'pluginPath' => 'explorexr/explorexr.php',
             'isPluginsPage' => true
         )
     );
@@ -54,7 +54,7 @@ add_action('admin_enqueue_scripts', 'explorexr_enqueue_deactivation_script');
 function explorexr_plugin_activation() {
     set_transient('explorexr_just_activated', true, 60);
 }
-register_activation_hook(EXPLOREXR_PLUGIN_DIR . 'exploreXR.php', 'explorexr_plugin_activation');
+register_activation_hook(EXPLOREXR_PLUGIN_DIR . 'explorexr.php', 'explorexr_plugin_activation');
 
 /**
  * Display a pre-uninstall admin notice when deactivating the plugin

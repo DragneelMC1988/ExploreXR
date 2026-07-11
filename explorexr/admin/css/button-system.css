@@ -189,11 +189,14 @@
    ======================================== */
 
 /* Apply ExploreXR styling to WordPress buttons within ExploreXR contexts */
-.explorexr-admin-container .button:not(.explorexr-button):not(.copy-shortcode):not(.explorexr-dismiss-fix-notice),
-.explorexr-card .button:not(.explorexr-button),
-.explorexr-form-group .button:not(.explorexr-button),
-.explorexr-media-field .button:not(.explorexr-button),
-.wrap[class*="explorexr-"] .button:not(.explorexr-button):not(.copy-shortcode):not(.explorexr-dismiss-fix-notice) {
+/* :not(.wp-color-result) excludes the WP core color-picker swatch button —
+   its background is meant to reflect the chosen color (set inline by Iris),
+   not the plugin's branded button gradient. */
+.explorexr-admin-container .button:not(.explorexr-button):not(.copy-shortcode):not(.explorexr-dismiss-fix-notice):not(.wp-color-result),
+.explorexr-card .button:not(.explorexr-button):not(.wp-color-result),
+.explorexr-form-group .button:not(.explorexr-button):not(.wp-color-result),
+.explorexr-media-field .button:not(.explorexr-button):not(.wp-color-result),
+.wrap[class*="explorexr-"] .button:not(.explorexr-button):not(.copy-shortcode):not(.explorexr-dismiss-fix-notice):not(.wp-color-result) {
     background: linear-gradient(135deg, var(--explorexr-secondary) 0%, #1a2332 100%) !important;
     border: 1px solid transparent !important;
     color: white !important;
@@ -202,14 +205,14 @@
     padding: 8px 16px !important;
     transition: all 0.3s ease !important;
     box-shadow: 0 2px 4px rgba(13, 21, 44, 0.3) !important;
-    text-shadow: none !important; 
+    text-shadow: none !important;
 }
 
-.explorexr-admin-container .button:not(.explorexr-button):hover,
-.explorexr-card .button:not(.explorexr-button):hover,
-.explorexr-form-group .button:not(.explorexr-button):hover,
-.explorexr-media-field .button:not(.explorexr-button):hover,
-.wrap[class*="explorexr-"] .button:not(.explorexr-button):hover {
+.explorexr-admin-container .button:not(.explorexr-button):not(.wp-color-result):hover,
+.explorexr-card .button:not(.explorexr-button):not(.wp-color-result):hover,
+.explorexr-form-group .button:not(.explorexr-button):not(.wp-color-result):hover,
+.explorexr-media-field .button:not(.explorexr-button):not(.wp-color-result):hover,
+.wrap[class*="explorexr-"] .button:not(.explorexr-button):not(.wp-color-result):hover {
     background: linear-gradient(135deg, #1a2332 0%, #262d3d 100%) !important;
     color: white !important;
     transform: translateY(-1px) !important;

@@ -78,7 +78,7 @@ add_action('wp_ajax_explorexr_delete_model', 'explorexr_ajax_delete_model');
 function explorexr_free_ajax_direct_download_addon() {
     check_ajax_referer('explorexr_install_addon_nonce', 'nonce');
 
-    if (!current_user_can('install_plugins')) {
+    if (!current_user_can('install_plugins') || !current_user_can('activate_plugins')) {
         wp_send_json_error(array('message' => esc_html__('Insufficient permissions.', 'explorexr')));
     }
 

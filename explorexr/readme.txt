@@ -4,7 +4,7 @@ Tags: 3d model viewer, glb, gltf, augmented reality, woocommerce 3d
 Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.3.1
+Stable tag: 1.3.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -38,7 +38,7 @@ ExploreXR Free gives you a clean, capable 3D viewer you can embed anywhere on yo
 * Drag-and-drop model upload through the WordPress admin
 * Conditional asset loading — scripts only enqueue on pages with a model shortcode
 * Nonce-protected admin actions and strict file upload validation
-* Full WordPress Coding Standards compliance, tested on WordPress 5.0 through 6.9
+* Full WordPress Coding Standards compliance, tested on WordPress 5.8 through 7.0
 
 **Choose Your Included Premium Addon:**
 
@@ -239,6 +239,13 @@ Free support is available on the [WordPress.org support forum](https://wordpress
 
 == Changelog ==
 
+= 1.3.2 =
+* Fixed: Free-tier addon whitelist corrected to AR, Animation, and Loading Options (was incorrectly allowing Camera Controls and Annotations, which are Premium-only, while blocking Loading Options).
+* Fixed: Closed a race condition where two addons could briefly end up simultaneously active during install.
+* Fixed: Deactivation-notice script and admin bar link no longer silently fail due to a plugin-path case mismatch.
+* Removed: Dead code, duplicate admin screens, and unused legacy files.
+* Tested up to WordPress 7.0.
+
 = 1.3.1 =
 * Fixed: Admin page styling and layout improvements
 * Fixed: Free addon selection UI refinements
@@ -259,6 +266,9 @@ Free support is available on the [WordPress.org support forum](https://wordpress
 * Fixes GLB/GLTF/USDZ upload failures caused by PHP finfo MIME detection.
 
 == Upgrade Notice ==
+
+= 1.3.2 =
+Corrects the free-tier addon whitelist (AR, Animation, Loading Options), closes an addon-activation race condition, and removes legacy/dead code. Tested up to WordPress 7.0. Update recommended for all users.
 
 = 1.3.1 =
 Minor bug fixes and admin UI improvements. Update recommended for better user experience.

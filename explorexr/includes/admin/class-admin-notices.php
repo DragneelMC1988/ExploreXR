@@ -105,32 +105,8 @@ class ExploreXR_Admin_Notices {
     }
     
     /**
-     * Add success notice
-     * 
-     * @param string $message Notice message
-     * @param bool $dismissible Whether dismissible
-     * @param string $id Unique identifier
-     * @return bool
-     */
-    public function success($message, $dismissible = true, $id = null) {
-        return $this->add($message, 'success', $dismissible, $id);
-    }
-    
-    /**
-     * Add error notice
-     * 
-     * @param string $message Notice message
-     * @param bool $dismissible Whether dismissible
-     * @param string $id Unique identifier
-     * @return bool
-     */
-    public function error($message, $dismissible = true, $id = null) {
-        return $this->add($message, 'error', $dismissible, $id);
-    }
-    
-    /**
      * Add warning notice
-     * 
+     *
      * @param string $message Notice message
      * @param bool $dismissible Whether dismissible
      * @param string $id Unique identifier
@@ -139,27 +115,15 @@ class ExploreXR_Admin_Notices {
     public function warning($message, $dismissible = true, $id = null) {
         return $this->add($message, 'warning', $dismissible, $id);
     }
-    
-    /**
-     * Add info notice
-     * 
-     * @param string $message Notice message
-     * @param bool $dismissible Whether dismissible
-     * @param string $id Unique identifier
-     * @return bool
-     */
-    public function info($message, $dismissible = true, $id = null) {
-        return $this->add($message, 'info', $dismissible, $id);
-    }
-    
+
     /**
      * Clear all notices
      */
-    public function clear() {
+    private function clear() {
         $this->notices = array();
         $this->notice_ids = array();
     }
-    
+
     /**
      * Render all notices
      * Hooked to admin_notices at priority 1
@@ -229,7 +193,7 @@ class ExploreXR_Admin_Notices {
         
         // Check for post type pages
         $screen = get_current_screen();
-        if ($screen && isset($screen->post_type) && $screen->post_type === 'explorexr_premium_model') {
+        if ($screen && isset($screen->post_type) && $screen->post_type === 'explorexr_model') {
             return true;
         }
         
@@ -240,25 +204,6 @@ class ExploreXR_Admin_Notices {
         }
         
         return false;
-    }
-    
-    /**
-     * Get count of queued notices
-     * 
-     * @return int
-     */
-    public function count() {
-        return count($this->notices);
-    }
-    
-    /**
-     * Check if a notice ID exists
-     * 
-     * @param string $id Notice ID
-     * @return bool
-     */
-    public function has_notice($id) {
-        return in_array($id, $this->notice_ids, true);
     }
 }
 

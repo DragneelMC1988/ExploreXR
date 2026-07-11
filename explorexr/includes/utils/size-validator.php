@@ -23,11 +23,6 @@ class ExploreXR_Size_Validator {
     const VALID_UNITS = ['px', 'em', 'rem', 'vw', 'vh', 'dvw', 'dvh'];
 
     /**
-     * Absolute units (don't require parent height)
-     */
-    const ABSOLUTE_UNITS = ['px', 'em', 'rem', 'vw', 'vh', 'dvw', 'dvh'];
-    
-    /**
      * Validate a single dimension value
      * 
      * @param string $value The dimension value (e.g., '500px', '100vw')
@@ -145,15 +140,5 @@ class ExploreXR_Size_Validator {
     public static function sanitize_dimension($value, $fallback = '100vw') {
         $result = self::validate_dimension($value);
         return $result['valid'] ? $value : $fallback;
-    }
-    
-    /**
-     * Check if a unit is absolute (doesn't need parent height)
-     * 
-     * @param string $unit CSS unit (px, %, vw, etc.)
-     * @return bool True if absolute unit
-     */
-    public static function is_absolute_unit($unit) {
-        return in_array(strtolower($unit), self::ABSOLUTE_UNITS, true);
     }
 }

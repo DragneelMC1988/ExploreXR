@@ -6,9 +6,7 @@ if (!defined('ABSPATH')) {
 
 require_once EXPLOREXR_PLUGIN_DIR . 'admin/core/admin-pages.php';
 require_once EXPLOREXR_PLUGIN_DIR . 'admin/pages/loading-options-page.php';
-require_once EXPLOREXR_PLUGIN_DIR . 'admin/core/admin-ui.php';
 require_once EXPLOREXR_PLUGIN_DIR . 'admin/core/functions.php';
-require_once EXPLOREXR_PLUGIN_DIR . 'admin/models/modern-model-browser.php';
 require_once EXPLOREXR_PLUGIN_DIR . 'admin/core/edit-redirector.php';
 
 // Free-version pages
@@ -99,9 +97,9 @@ function explorexr_admin_enqueue_scripts($hook) {
 
     if (strpos($hook ?? '', 'explorexr-loading-options') !== false) {
         wp_enqueue_style('explorexr-loading-options-css', EXPLOREXR_PLUGIN_URL . 'admin/css/loading-options.css', array(), EXPLOREXR_VERSION);
-        wp_enqueue_script('explorexr-loading-options-js', EXPLOREXR_PLUGIN_URL . 'admin/js/loading-options.js', array('jquery'), EXPLOREXR_VERSION, true);
         wp_enqueue_style('wp-color-picker');
         wp_enqueue_script('wp-color-picker');
+        wp_enqueue_script('explorexr-loading-options-js', EXPLOREXR_PLUGIN_URL . 'admin/js/loading-options.js', array('jquery', 'wp-color-picker'), EXPLOREXR_VERSION, true);
     }
 
     if (strpos($hook ?? '', 'explorexr-browse-models') !== false) {

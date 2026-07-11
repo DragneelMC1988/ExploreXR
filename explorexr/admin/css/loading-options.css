@@ -1,5 +1,19 @@
 /* Styles for the Loading Options Page */
 
+/*
+ * WP core's .wp-color-result-text has a hardcoded light-gray background + dark
+ * text (see wp-admin/css/color-picker.css), which covers most of the swatch
+ * button and hides the actual chosen color behind a ~30px strip on the left.
+ * Drop the fixed background so the button's own inline background-color (the
+ * real chosen/saved value) shows through the full button; text contrast color
+ * is computed per-instance in loading-options.js since it depends on the
+ * current color, not something CSS alone can express.
+ */
+.wp-picker-container .wp-color-result-text {
+    background: transparent;
+    border-left: none;
+}
+
 .explorexr-settings-section {
     background: #fff;
     border: 1px solid #ccd0d4;

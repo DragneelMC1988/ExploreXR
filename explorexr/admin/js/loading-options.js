@@ -10,7 +10,66 @@
     $(document).ready(function() {
         initLoadingOptions();
         initAdminPreview();
+        initColorPickers();
     });
+
+    /**
+     * Replace the plain hex-color text inputs with the WordPress color picker widget.
+     */
+    function initColorPickers() {
+        if (!$.fn.wpColorPicker) {
+            return;
+        }
+
+        $('.explorexr-color-field').wpColorPicker({
+            change: function(event, ui) {
+                updateResultTextContrast($(this), ui.color.toString());
+            },
+            clear: function() {
+                updateResultTextContrast($(this), '');
+            }
+        });
+
+        // Sync the label's contrast color to each field's saved value on load
+        // (the 'change' callback above only fires on user interaction).
+        $('.explorexr-color-field').each(function() {
+            updateResultTextContrast($(this), $(this).val());
+        });
+    }
+
+    /**
+     * Set the color-picker button's "Select Color" label to whichever of
+     * black/white is more readable against the currently chosen swatch color.
+     */
+    function updateResultTextContrast($input, color) {
+        const $text = $input.closest('.wp-picker-container').find('.wp-color-result-text');
+        if (!$text.length) {
+            return;
+        }
+        if (!color) {
+            $text.css('color', '');
+            return;
+        }
+        $text.css('color', getContrastTextColor(color));
+    }
+
+    /**
+     * Relative-luminance (YIQ) based black/white pick for a hex color string.
+     */
+    function getContrastTextColor(hex) {
+        hex = String(hex).replace('#', '');
+        if (hex.length === 3) {
+            hex = hex.split('').map(function(c) { return c + c; }).join('');
+        }
+        if (!/^[0-9a-fA-F]{6}$/.test(hex)) {
+            return '';
+        }
+        const r = parseInt(hex.substr(0, 2), 16);
+        const g = parseInt(hex.substr(2, 2), 16);
+        const b = parseInt(hex.substr(4, 2), 16);
+        const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+        return luminance > 0.6 ? '#000000' : '#ffffff';
+    }
 
     /**
      * Initialize loading options in admin preview

@@ -2,7 +2,7 @@
 /**
  * Free version Addons page.
  *
- * Lists the four free-eligible addons (AR, Animation, Loading, Annotations)
+ * Lists the three free-eligible addons (AR, Animation, Loading)
  * with the same card layout used by the Premium addons page. Installation
  * goes through a direct download from update.expoxr.com via the
  * explorexr_direct_download_addon AJAX endpoint.

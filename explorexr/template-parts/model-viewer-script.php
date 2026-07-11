@@ -28,7 +28,7 @@ if (!function_exists('explorexr_get_loading_options')) {
 
 // Define version fallback if EXPLOREXR_VERSION is not defined
 if (!defined('EXPLOREXR_VERSION')) {
-    define('EXPLOREXR_VERSION', '1.0.0');
+    define('EXPLOREXR_VERSION', '1.3.2');
 }
 
 // Static once-per-page guard: all script/style registration runs exactly once.

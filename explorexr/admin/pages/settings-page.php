@@ -307,7 +307,7 @@ function explorexr_settings_page() {
                 <tr>
                     <th>PHP Version</th>
                     <td><?php echo esc_html($system_info['php_version']); ?>
-                        <?php if (version_compare($system_info['php_version'], '7.2', '<')): ?>
+                        <?php if (version_compare($system_info['php_version'], '7.4', '<')): ?>
                             <span class="explorexr-badge error">Outdated</span>
                         <?php else: ?>
                             <span class="explorexr-badge ar">OK</span>

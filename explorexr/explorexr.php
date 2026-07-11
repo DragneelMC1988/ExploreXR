@@ -3,7 +3,7 @@
  * Plugin Name: ExploreXR
  * Plugin URI: https://expoxr.com/explorexr/
  * Description: Free 3D model viewer for WordPress. Embed glTF/GLB/USDZ models with Google's <model-viewer>. Supports a single addon from a curated list. Upgrade to Premium for advanced features.
- * Version: 1.3.1
+ * Version: 1.3.2
  * Author: Ayal Othman
  * Author URI: https://expoxr.com
  * Text Domain: explorexr
@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
 // Plugin constants. Free plugin defines both the canonical EXPLOREXR_* names
 // and the EXPLOREXR_PREMIUM_* aliases so addons and shared code that reference
 // either set of constants keep working unchanged.
-define('EXPLOREXR_VERSION', '1.3.1');
+define('EXPLOREXR_VERSION', '1.3.2');
 define('EXPLOREXR_PLUGIN_FILE', __FILE__);
 define('EXPLOREXR_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('EXPLOREXR_PLUGIN_URL', plugin_dir_url(__FILE__));
@@ -215,12 +215,6 @@ function explorexr_free_init() {
     foreach (array(
         'includes/ui/admin-bar.php',
         'includes/ui/deactivation-handler.php',
-        'includes/ui/form-submission-handler.php',
-        'includes/ui/model-viewer-renderer.php',
-        'includes/utils/core-file-verification.php',
-        'includes/utils/emergency-script-fix.php',
-        'includes/utils/form-helpers.php',
-        'includes/utils/safe-string-ops.php',
         'includes/utils/size-validator.php',
         'includes/utils/strip-tags-fix.php',
         'includes/shared/addon-notices-helper.php',
@@ -235,7 +229,6 @@ function explorexr_free_init() {
         require_once EXPLOREXR_PLUGIN_DIR . 'includes/admin/class-admin-notices.php';
         require_once EXPLOREXR_PLUGIN_DIR . 'admin/core/admin-menu.php';
         require_once EXPLOREXR_PLUGIN_DIR . 'admin/core/admin-pages.php';
-        require_once EXPLOREXR_PLUGIN_DIR . 'admin/core/admin-ui.php';
         if (file_exists(EXPLOREXR_PLUGIN_DIR . 'admin/core/functions.php')) {
             require_once EXPLOREXR_PLUGIN_DIR . 'admin/core/functions.php';
         }
@@ -250,7 +243,7 @@ function explorexr_free_init() {
         }
     }
 
-    // Addon manager (Free-tier: one addon, whitelist of 4).
+    // Addon manager (Free-tier: one addon, whitelist of 3: AR, Animation, Loading).
     require_once EXPLOREXR_PLUGIN_DIR . 'includes/addons/free-addon-manager.php';
     ExploreXR_Addon_Manager::get_instance();
 
@@ -360,9 +353,7 @@ function explorexr_free_activate() {
         explorexr_register_post_types();
     }
     flush_rewrite_rules();
-    if (!get_option('explorexr_version')) {
-        update_option('explorexr_version', EXPLOREXR_VERSION);
-    }
+    update_option('explorexr_version', EXPLOREXR_VERSION);
     // Model uploads need the dedicated dir to exist before the file handler
     // can write to it. wp_mkdir_p is a no-op if the path is already there.
     if (defined('EXPLOREXR_MODELS_DIR') && !is_dir(EXPLOREXR_MODELS_DIR)) {
