@@ -16,6 +16,11 @@ if (!defined('ABSPATH')) {
     </div>
 </div>
 
+<?php if (!empty($insert_header_end_marker)) : ?>
+<!-- WordPress.org Compliance: This div.wp-header-end tells WP core where to relocate admin_notices markup -->
+<div class="wp-header-end"></div>
+<?php endif; ?>
+
 <!-- Quick Actions -->
 <div class="explorexr-quick-actions">
     <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr')); ?>">

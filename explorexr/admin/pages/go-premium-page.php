@@ -125,6 +125,7 @@ function explorexr_free_go_premium_page() {
     <div class="wrap explorexr-admin-container explorexr-go-premium-page">
         <?php
         $page_title = esc_html__('Go Premium', 'explorexr');
+        $insert_header_end_marker = true;
         include EXPLOREXR_PLUGIN_DIR . 'admin/templates/admin-header.php';
         ?>
 

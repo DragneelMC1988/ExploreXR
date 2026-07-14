@@ -229,13 +229,17 @@ Free support is available on the [WordPress.org support forum](https://wordpress
 
 == Screenshots ==
 
-1. Dashboard — model count, file storage, system status, and quick actions
-2. Create New Model — drag-and-drop GLB/GLTF upload with live viewer preview
-3. Free Add-on page — one-click install and selection of your included Premium Addon
-4. Plugin Settings — viewer defaults, loading strategy, and model viewer version
-5. Browse Models — searchable grid of all published 3D models with shortcodes
-6. Edit 3D Model — per-breakpoint sizing, camera, auto-rotation, and poster image
-7. Addons — three free-eligible Premium Addons with WordPress.org install links
+1. ExploreXR Dashboard — model count, file storage, system status, and quick actions in one clean overview
+2. Create New 3D Model — drag-and-drop GLB, GLTF, or USDZ upload with an instant live 3D preview before you publish
+3. Global Loading Settings — configure lazy loading, poster-click-to-load, and direct load strategies so large 3D models never slow your site down
+4. Add-ons Page — one-click install and activation of your included Premium Addon: AR, Animation, or Loading Options
+5. Edit 3D Model — the full model editor: responsive sizing, camera controls, auto-rotation, and per-model settings in one screen
+6. Add-ons Section (Edit 3D Model) — configure your active Premium Addon's settings directly from the model editor, no extra screens
+7. Poster Image & Viewer Controls — set a custom poster image plus camera zoom, pan, and interaction prompts for a polished first impression
+8. Animation Addon Controls (Edit 3D Model) — play, pause, loop, and crossfade glTF animation clips with full player controls
+9. AR Addon Options (Edit 3D Model) — enable iOS Quick Look, Android Scene Viewer, and WebXR augmented reality per model
+10. AR Button Styling (Edit 3D Model) — customize the AR launch button's color, text, icon, and placement to match your brand
+11. Loading Options Addon (Edit 3D Model) — build a custom loading bar, percentage counter, or branded overlay for each individual 3D model
 
 == Changelog ==
 
@@ -243,6 +247,8 @@ Free support is available on the [WordPress.org support forum](https://wordpress
 * Fixed: Free-tier addon whitelist corrected to AR, Animation, and Loading Options (was incorrectly allowing Camera Controls and Annotations, which are Premium-only, while blocking Loading Options).
 * Fixed: Closed a race condition where two addons could briefly end up simultaneously active during install.
 * Fixed: Deactivation-notice script and admin bar link no longer silently fail due to a plugin-path case mismatch.
+* Fixed: A plugin-wide button style was forcing its own color onto the Loading Options color pickers, so picked colors never displayed correctly.
+* Added: Proper WordPress color pickers for the Load Model button colors, with automatic text contrast.
 * Removed: Dead code, duplicate admin screens, and unused legacy files.
 * Tested up to WordPress 7.0.
 
@@ -268,7 +274,7 @@ Free support is available on the [WordPress.org support forum](https://wordpress
 == Upgrade Notice ==
 
 = 1.3.2 =
-Corrects the free-tier addon whitelist (AR, Animation, Loading Options), closes an addon-activation race condition, and removes legacy/dead code. Tested up to WordPress 7.0. Update recommended for all users.
+Corrects the free-tier addon whitelist (AR, Animation, Loading Options), closes an addon-activation race condition, fixes the Loading Options color pickers, and removes legacy/dead code. Tested up to WordPress 7.0. Update recommended for all users.
 
 = 1.3.1 =
 Minor bug fixes and admin UI improvements. Update recommended for better user experience.

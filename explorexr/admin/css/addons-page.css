@@ -4,7 +4,11 @@
     to { transform: rotate(360deg); }
 }
 .explorexr-spin {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
     animation: explorexr-spin 1s linear infinite;
 }
 .explorexr-direct-install-btn:disabled {

@@ -330,7 +330,6 @@
 }
 
 .explorexr-admin-header * {
-    position: relative !important;
     z-index: 2 !important;
 }
 

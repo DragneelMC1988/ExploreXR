@@ -98,6 +98,9 @@ endif;
  */
 if (!function_exists('explorexr_addon_welcome_notice')) :
 function explorexr_addon_welcome_notice($addon_name, $addon_slug, $description = '') {
+    $post_type = (defined('EXPLOREXR_IS_PREMIUM') && EXPLOREXR_IS_PREMIUM)
+        ? 'explorexr_premium_model'
+        : 'explorexr_model';
     ?>
     <div class="notice notice-success is-dismissible">
         <p>
@@ -105,7 +108,7 @@ function explorexr_addon_welcome_notice($addon_name, $addon_slug, $description =
             <?php echo $description ? esc_html($description) : ''; ?>
         </p>
         <p>
-            <a href="<?php echo esc_url(admin_url('edit.php?post_type=explorexr_premium_model')); ?>" class="button button-primary">
+            <a href="<?php echo esc_url(admin_url('edit.php?post_type=' . $post_type)); ?>" class="button button-primary">
                 <?php esc_html_e('Edit Models', 'explorexr'); ?>
             </a>
         </p>
@@ -171,8 +174,8 @@ function explorexr_addon_should_show_notices() {
         return true;
     }
     
-    // Show on explorexr_premium_model post type pages
-    if (isset($screen->post_type) && $screen->post_type === 'explorexr_premium_model') {
+    // Show on explorexr_model (Free) or explorexr_premium_model (Premium) post type pages
+    if (isset($screen->post_type) && in_array($screen->post_type, array('explorexr_model', 'explorexr_premium_model'), true)) {
         return true;
     }
     
