@@ -18,7 +18,10 @@ jQuery(document).ready(function($) {
     $deactivateLink.on('click', function(e) {
         // Prevent default action
         e.preventDefault();
-        
+        // Stop this click from also reaching the body click-outside handler
+        // registered below, which would otherwise close the modal instantly.
+        e.stopPropagation();
+
         // Get the deactivation URL
         var deactivateURL = $(this).attr('href');
         
@@ -41,28 +44,31 @@ jQuery(document).ready(function($) {
             '</div>'
         );
           // Close dialog on outside click
-        $('body').on('click', function(e) {
+        $('body').on('click.explorexrDeactivate', function(e) {
             if (!$(e.target).closest('.explorexr-modal-content').length && !$(e.target).is('.explorexr-modal-content')) {
                 $modalContainer.remove();
+                $('body').off('click.explorexrDeactivate');
             }
         });
-        
+
         // Handle deactivation confirmation click
         $('#explorexr-confirm-deactivation').on('click', function(e) {
             e.preventDefault();
             var deactivateURL = $(this).data('url');
-            
+
             // Remove the modal first
             $modalContainer.remove();
-            
+            $('body').off('click.explorexrDeactivate');
+
             // Navigate to the deactivation URL immediately
             window.location.href = deactivateURL;
         });
-        
+
         // Add cancel/close button functionality
         $modalContainer.on('click', '.explorexr-cancel-deactivation', function(e) {
             e.preventDefault();
             $modalContainer.remove();
+            $('body').off('click.explorexrDeactivate');
         });
         
         // Style the modal

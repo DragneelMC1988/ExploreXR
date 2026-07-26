@@ -3,7 +3,7 @@
  * Plugin Name: ExploreXR
  * Plugin URI: https://expoxr.com/explorexr/
  * Description: Free 3D model viewer for WordPress. Embed glTF/GLB/USDZ models with Google's <model-viewer>. Supports a single addon from a curated list. Upgrade to Premium for advanced features.
- * Version: 1.3.2
+ * Version: 1.3.3
  * Author: Ayal Othman
  * Author URI: https://expoxr.com
  * Text Domain: explorexr
@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
 // Plugin constants. Free plugin defines both the canonical EXPLOREXR_* names
 // and the EXPLOREXR_PREMIUM_* aliases so addons and shared code that reference
 // either set of constants keep working unchanged.
-define('EXPLOREXR_VERSION', '1.3.2');
+define('EXPLOREXR_VERSION', '1.3.3');
 define('EXPLOREXR_PLUGIN_FILE', __FILE__);
 define('EXPLOREXR_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('EXPLOREXR_PLUGIN_URL', plugin_dir_url(__FILE__));
