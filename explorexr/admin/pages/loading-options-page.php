@@ -294,7 +294,7 @@ function explorexr_loading_options_page() {
     $settings_args = array(
         'page_title'    => esc_html__('Loading Options', 'explorexr'),
         'plugin_name'   => esc_html__('explorexr', 'explorexr'),
-        'plugin_version' => defined('EXPLOREXR_VERSION') ? EXPLOREXR_VERSION : '1.3.4',
+        'plugin_version' => defined('EXPLOREXR_VERSION') ? EXPLOREXR_VERSION : '1.3.5',
         'doc_url'       => 'https://expoxr.com/explorexr/documentation/',
         'settings_group' => 'explorexr_loading_settings',
         'settings_page' => 'explorexr-loading-settings',
@@ -591,7 +591,6 @@ function explorexr_loading_options_page() {
     
     <?php
 }
-
 
 
 

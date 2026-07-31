@@ -4,7 +4,7 @@ Tags: 3d model viewer, glb, gltf, augmented reality, woocommerce 3d
 Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.3.4
+Stable tag: 1.3.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -243,6 +243,12 @@ Free support is available on the [WordPress.org support forum](https://wordpress
 
 == Changelog ==
 
+= 1.3.5 =
+* Security: Hardened GLB, GLTF, and USDZ upload validation.
+* Fixed: Deactivation preserves model data and opt-in uninstall removes only owned data.
+* Fixed: Free add-on lifecycle, activation ordering, and mirrored add-on compatibility.
+* Performance: Reduced duplicate viewer setup and unnecessary decoder loading.
+
 = 1.3.4 =
 * Minor fixes and improvements.
 
@@ -278,6 +284,9 @@ Free support is available on the [WordPress.org support forum](https://wordpress
 * Fixes GLB/GLTF/USDZ upload failures caused by PHP finfo MIME detection.
 
 == Upgrade Notice ==
+
+= 1.3.5 =
+Security, lifecycle, upload validation, and performance fixes. Update recommended for all users.
 
 = 1.3.4 =
 Minor fixes and improvements.
