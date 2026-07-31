@@ -1,0 +1,139 @@
+name: ExploreXR Free CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ['7.4', '8.1', '8.2', '8.3', '8.4']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+      - name: PHP syntax
+        run: find explorexr -type f -name '*.php' -print0 | xargs -0 -n1 php -l
+
+  javascript:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: JavaScript syntax
+        run: find explorexr -type f -name '*.js' ! -path '*/vendor/*' ! -name 'model-viewer*.js' -print0 | xargs -0 -n1 node --check
+
+  free-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify Free add-on catalog
+        shell: bash
+        run: |
+          test "$(grep -o "'ar', 'animation', 'loading'" explorexr/includes/addons/free-addon-manager.php | head -1)" = "'ar', 'animation', 'loading'"
+
+  wordpress-smoke:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        wordpress_image:
+          - wordpress:5.8.10-php7.4-apache
+          - wordpress:latest-php8.1-apache
+          - wordpress:latest-php8.2-apache
+          - wordpress:latest-php8.3-apache
+          - wordpress:latest-php8.4-apache
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: wordpress
+          MYSQL_USER: wordpress
+          MYSQL_PASSWORD: wordpress
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Start WordPress
+        run: |
+          docker run --detach --name explorexr-wp --network host \
+            --env WORDPRESS_DB_HOST=127.0.0.1:3306 \
+            --env WORDPRESS_DB_USER=wordpress \
+            --env WORDPRESS_DB_PASSWORD=wordpress \
+            --env WORDPRESS_DB_NAME=wordpress \
+            "${{ matrix.wordpress_image }}"
+          for attempt in $(seq 1 30); do
+            curl --silent --fail http://127.0.0.1/ >/dev/null && break
+            sleep 2
+          done
+          curl --silent --fail http://127.0.0.1/ >/dev/null
+      - name: Install and activate Free
+        run: |
+          docker cp explorexr explorexr-wp:/var/www/html/wp-content/plugins/explorexr
+          docker exec explorexr-wp chown -R www-data:www-data /var/www/html/wp-content/plugins/explorexr
+          curl --silent --show-error --location --output /tmp/wp-cli.phar https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+          docker cp /tmp/wp-cli.phar explorexr-wp:/tmp/wp-cli.phar
+          docker exec --user www-data explorexr-wp php /tmp/wp-cli.phar core install \
+            --path=/var/www/html --url=http://127.0.0.1 --title=ExploreXR \
+            --admin_user=admin --admin_password=admin-test-password --admin_email=admin@example.test
+          docker exec --user www-data explorexr-wp php /tmp/wp-cli.phar plugin activate explorexr \
+            --path=/var/www/html
+          model_id="$(docker exec --user www-data explorexr-wp php /tmp/wp-cli.phar post create \
+            --path=/var/www/html --post_type=explorexr_model --post_status=publish \
+            --post_title='CI preservation model' --porcelain)"
+          docker exec --user www-data explorexr-wp php /tmp/wp-cli.phar post meta update \
+            "$model_id" _explorexr_ci_preserve 'exact-value' --path=/var/www/html
+          docker exec --user www-data explorexr-wp php /tmp/wp-cli.phar plugin deactivate explorexr \
+            --path=/var/www/html
+          docker exec --user www-data explorexr-wp php /tmp/wp-cli.phar plugin activate explorexr \
+            --path=/var/www/html
+          test "$(docker exec --user www-data explorexr-wp php /tmp/wp-cli.phar post meta get \
+            "$model_id" _explorexr_ci_preserve --path=/var/www/html)" = 'exact-value'
+          docker exec --user www-data explorexr-wp php /tmp/wp-cli.phar option update \
+            explorexr_remove_data_on_uninstall 1 --path=/var/www/html
+          docker exec --user www-data explorexr-wp php /tmp/wp-cli.phar plugin deactivate explorexr \
+            --path=/var/www/html
+          docker exec --user www-data explorexr-wp php /tmp/wp-cli.phar plugin uninstall explorexr \
+            --path=/var/www/html
+          ! docker exec --user www-data explorexr-wp php /tmp/wp-cli.phar post get \
+            "$model_id" --path=/var/www/html
+
+  wordpress-security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer, phpcs
+      - run: composer global config allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
+      - run: composer global require --no-interaction wp-coding-standards/wpcs dealerdirect/phpcodesniffer-composer-installer
+      - name: Focused WordPress security audit
+        run: >-
+          phpcs --standard=WordPress --extensions=php
+          --ignore='*/vendor/*,*/assets/vendor/*,*/node_modules/*'
+          --sniffs=WordPress.Security.NonceVerification,WordPress.Security.ValidatedSanitizedInput,WordPress.Security.EscapeOutput,WordPress.Security.PluginMenuSlug,WordPress.Security.SafeRedirect,WordPress.DB.PreparedSQL,WordPress.DB.PreparedSQLPlaceholders
+          explorexr
+
+  php-compatibility:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer, phpcs
+      - run: composer global config allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
+      - run: composer global require --no-interaction phpcompatibility/phpcompatibility-wp dealerdirect/phpcodesniffer-composer-installer
+      - run: phpcs --standard=PHPCompatibilityWP --runtime-set testVersion 7.4- --extensions=php explorexr

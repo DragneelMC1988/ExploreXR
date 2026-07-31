@@ -4,61 +4,35 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-// Allow uploading of 3D model file types and HDR environment files
+// Allow uploading of validated 3D model file types.
 add_filter('upload_mimes', function ($mimes) {
     $mimes['glb'] = 'model/gltf-binary';
     $mimes['gltf'] = 'model/gltf+json';
     $mimes['usdz'] = 'model/vnd.usdz+zip';
-    
-    // HDR/EXR environment files for lighting
-    $mimes['hdr'] = 'image/vnd.radiance';
-    $mimes['exr'] = 'image/x-exr';
-
-    // WebAssembly decoder binaries (Draco, Basis Universal)
-    $mimes['wasm'] = 'application/wasm';
 
     return $mimes;
 });
 
-// Fix wp_check_filetype_and_ext for 3D model files and HDR environment files
-// WordPress doesn't recognize GLB/GLTF/USDZ/HDR/EXR file signatures, so we need to bypass the strict MIME check
-add_filter('wp_check_filetype_and_ext', function ($data, $file, $filename, $mimes) {
-    // Get the file extension
-    $filetype = wp_check_filetype($filename, $mimes);
-    $ext = $filetype['ext'];
-    $type = $filetype['type'];
-    
-    // If it's a 3D model or HDR environment file, trust the extension
-    if (in_array($ext, array('glb', 'gltf', 'usdz', 'hdr', 'exr'), true)) {
-        // Check if file exists before accessing
-        if (file_exists($file)) {
-            $data['ext'] = $ext;
-            $data['type'] = $type;
-            
-            // For GLB files, also accept application/octet-stream
-            if ($ext === 'glb' && empty($data['type'])) {
-                $data['type'] = 'model/gltf-binary';
-            }
-            
-            // For USDZ files, also accept application/zip
-            if ($ext === 'usdz' && empty($data['type'])) {
-                $data['type'] = 'model/vnd.usdz+zip';
-            }
-            
-            // For HDR files, set proper MIME type
-            if ($ext === 'hdr' && empty($data['type'])) {
-                $data['type'] = 'image/vnd.radiance';
-            }
-            
-            // For EXR files, set proper MIME type
-            if ($ext === 'exr' && empty($data['type'])) {
-                $data['type'] = 'image/x-exr';
-            }
-        }
+/**
+ * Route Media Library model uploads through the same structural validator.
+ */
+function explorexr_media_model_upload_prefilter($file) {
+    $extension = isset($file['name'])
+        ? strtolower((string) pathinfo(sanitize_file_name($file['name']), PATHINFO_EXTENSION))
+        : '';
+    if (!in_array($extension, array('glb', 'gltf', 'usdz'), true)) {
+        return $file;
     }
-    
-    return $data;
-}, 10, 4);
+
+    $validated = explorexr_sanitize_file_upload($file);
+    if (is_wp_error($validated)) {
+        $file['error'] = $validated->get_error_message();
+        return $file;
+    }
+
+    return $validated;
+}
+add_filter('wp_handle_upload_prefilter', 'explorexr_media_model_upload_prefilter');
 
 // Handle file uploads and save them in the WordPress uploads models folder
 add_action('add_attachment', function ($post_id) {
@@ -70,7 +44,7 @@ add_action('add_attachment', function ($post_id) {
         // Ensure constants are defined before using them
         if (!defined('EXPLOREXR_MODELS_DIR')) {
             $upload_dir = wp_upload_dir();
-            $models_dir = $upload_dir['basedir'] . '/explorexr_models/';
+            $models_dir = $upload_dir['basedir'] . '/explorexr-models/';
         } else {
             $models_dir = EXPLOREXR_MODELS_DIR;
         }

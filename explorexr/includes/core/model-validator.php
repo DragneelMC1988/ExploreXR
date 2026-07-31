@@ -3,15 +3,7 @@
  * ExploreXR Core Model Validator
  * 
  * Validates model loading requirements and provides fallbacks
- * when addons            retu            return array(
-                'accessible' => false, 
-                'error' => 'Relative model file path not found',
-                'attempted_path' => $file_path
-            );ray(
-                'accessible' => false, 
-                'error' => 'Remote model file returned HTTP ' . $response_code,
-                'response_code' => $response_code
-            );not available
+ * when add-ons are not available.
  * 
   * @package ExploreXR
  * @since 0.2.7.1
@@ -105,7 +97,7 @@ function explorexr_check_model_file_access($model_file) {
         }
     } elseif (strpos($model_file, 'http') === 0) {
         // External file - try HEAD request with short timeout
-        $response = wp_remote_head($model_file, array('timeout' => 3));
+        $response = wp_safe_remote_head($model_file, array('timeout' => 3, 'redirection' => 2));
         
         if (is_wp_error($response)) {
             return array(
@@ -315,8 +307,6 @@ function explorexr_process_validated_model($model_id, $validation) {
     
     return $html;
 }
-
-
 
 
 

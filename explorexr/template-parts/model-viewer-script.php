@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
 // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only parameter for model display
 if (!isset($model_id) && isset($_GET['model_id'])) {
     // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template variable for model display
-    $model_id = intval($_GET['model_id']);
+    $model_id = absint(wp_unslash($_GET['model_id']));
 }
 
 // Include loading options 
@@ -29,6 +29,17 @@ if (!function_exists('explorexr_get_loading_options')) {
 // Define version fallback if EXPLOREXR_VERSION is not defined
 if (!defined('EXPLOREXR_VERSION')) {
     define('EXPLOREXR_VERSION', '1.3.4');
+}
+
+// Per-model poster hints must run before the shared setup guard.
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Template-scoped dedup cache
+static $explorexr_preloaded_posters = array();
+if (!is_admin() && !empty($model_id)) {
+    $explorexr_poster_url = get_post_meta($model_id, '_explorexr_model_poster', true);
+    if (!empty($explorexr_poster_url) && !isset($explorexr_preloaded_posters[$explorexr_poster_url])) {
+        $explorexr_preloaded_posters[$explorexr_poster_url] = true;
+        echo '<link rel="preload" href="' . esc_url($explorexr_poster_url) . '" as="image">' . "\n";
+    }
 }
 
 // Static once-per-page guard: all script/style registration runs exactly once.
@@ -496,7 +507,6 @@ if (!function_exists('explorexr_add_ondemand_script_loader')) {
     }
 }
 ?>
-
 
 
 

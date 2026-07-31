@@ -451,7 +451,7 @@ add_shortcode('explorexr_model', function ($atts) {
             $transient_key = 'explorexr_fsize_' . md5($model_file);
             $cached_size   = get_transient($transient_key);
             if ($cached_size === false) {
-                $request     = wp_remote_head($model_file, array('timeout' => 5));
+                $request     = wp_safe_remote_head($model_file, array('timeout' => 5, 'redirection' => 2));
                 $cached_size = 0;
                 if (!is_wp_error($request) && isset($request['headers']['content-length'])) {
                     $cached_size = intval($request['headers']['content-length']);

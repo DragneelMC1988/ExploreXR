@@ -48,7 +48,10 @@ function ExploreXR_safe_include_template($template_path, $fallback_path = '', $v
  */
 function ExploreXR_edit_model_page() {
     // Get the model ID from the URL
-    $model_id = isset($_GET['model_id']) ? intval($_GET['model_id']) : 0;
+    $model_id = isset($_GET['model_id']) ? absint(wp_unslash($_GET['model_id'])) : 0;
+    if (!current_user_can('edit_post', $model_id)) {
+        wp_die(esc_html__('You are not allowed to edit this model.', 'explorexr'));
+    }
     
     // Make sure all styling/scripts for this custom screen are definitely enqueued
     if (function_exists('explorexr_enqueue_edit_model_styles')) {

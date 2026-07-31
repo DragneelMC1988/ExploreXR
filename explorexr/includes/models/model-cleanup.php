@@ -30,7 +30,7 @@ function explorexr_model_file_exists($model_file_url) {
     }
     
     // For external files, do a lightweight check
-    $response = wp_remote_head($model_file_url);
+    $response = wp_safe_remote_head($model_file_url, array('timeout' => 3, 'redirection' => 2));
     return !is_wp_error($response) && wp_remote_retrieve_response_code($response) === 200;
 }
 
@@ -41,49 +41,40 @@ function explorexr_model_file_exists($model_file_url) {
  * @return array Results of the cleanup operation
  */
 function explorexr_cleanup_orphaned_models() {
-    $models_query = new WP_Query([
-        'post_type' => 'explorexr_model',
-        'posts_per_page' => -1,
-        'post_status' => 'publish'
-    ]);
-    
     $results = [
         'checked' => 0,
         'orphaned' => 0,
         'errors' => []
     ];
-    
-    if (!$models_query->have_posts()) {
-        return $results;
-    }
-    
-    while ($models_query->have_posts()) {
-        $models_query->the_post();
-        $model_id = get_the_ID();
-        $results['checked']++;
-        
-        // Get the model file URL
-        $model_file = get_post_meta($model_id, '_explorexr_model_file', true) ?: '';
-        
-        // Skip if no file is set
-        if (empty($model_file)) {
-            continue;
-        }
-        
-        // Check if the file exists
-        if (!explorexr_model_file_exists($model_file)) {
-            // File doesn't exist, mark as orphaned
-            update_post_meta($model_id, '_explorexr_file_missing', '1');
-            $results['orphaned']++;
-            
 
-        } else {
-            // File exists, clear any previous missing flag
-            delete_post_meta($model_id, '_explorexr_file_missing');
+    $page = 1;
+    do {
+        $models_query = new WP_Query([
+            'post_type' => 'explorexr_model',
+            'posts_per_page' => 50,
+            'paged' => $page,
+            'post_status' => 'publish',
+            'fields' => 'ids',
+            'no_found_rows' => false
+        ]);
+
+        foreach ($models_query->posts as $model_id) {
+            $results['checked']++;
+            $model_file = get_post_meta($model_id, '_explorexr_model_file', true) ?: '';
+            if (empty($model_file)) {
+                continue;
+            }
+
+            if (!explorexr_model_file_exists($model_file)) {
+                update_post_meta($model_id, '_explorexr_file_missing', '1');
+                $results['orphaned']++;
+            } else {
+                delete_post_meta($model_id, '_explorexr_file_missing');
+            }
         }
-    }
-    
-    wp_reset_postdata();
+        $page++;
+    } while ($page <= (int) $models_query->max_num_pages);
+
     return $results;
 }
 
@@ -281,8 +272,6 @@ add_action( 'admin_enqueue_scripts', 'explorexr_enqueue_cleanup_scripts' );
 
 // Register the dashboard widget
 add_action('wp_dashboard_setup', 'explorexr_register_orphaned_models_widget');
-
-
 
 
 

@@ -1,59 +1,76 @@
 <?php
 /**
- * ExploreXR Uninstaller
- * 
- * Standard WordPress uninstall handler - removes only temporary data
- * Settings and uploaded models are preserved for user data retention
+ * ExploreXR Free uninstall handler.
  */
 
-// Exit if uninstall not called from WordPress
 if (!defined('WP_UNINSTALL_PLUGIN')) {
     exit;
 }
 
-// Only run if user has proper permissions
-if (!current_user_can('activate_plugins')) {
-    return;
-}
+delete_transient('explorexr_model_cache');
+delete_transient('explorexr_admin_stats');
+delete_transient('explorexr_file_validation');
+delete_option('explorexr_admin_notice');
 
-// Double-check that we're uninstalling this plugin
-if (plugin_basename(__FILE__) !== WP_UNINSTALL_PLUGIN) {
+if (!get_option('explorexr_remove_data_on_uninstall', false)) {
     return;
 }
 
 /**
- * Clean up temporary plugin data only
- * Preserves user settings and uploaded models
+ * Delete one owned upload directory without following external paths.
+ *
+ * @param string $directory Directory path.
  */
-function explorexr_free_uninstall() {
-    global $wpdb;
-
-    // Clean up temporary transients only (temporary cached data)
-    // Use WordPress API to clean up transients individually for better compliance
-    $transient_options = get_option('explorexr_temp_transients', array());
-    if (!empty($transient_options)) {
-        foreach ($transient_options as $transient_key) {
-            delete_transient($transient_key);
-        }
-        delete_option('explorexr_temp_transients');
+function explorexr_free_delete_owned_directory($directory) {
+    $upload_dir = wp_upload_dir();
+    $upload_root = realpath($upload_dir['basedir']);
+    $directory_root = realpath($directory);
+    if (!$upload_root
+        || !$directory_root
+        || 0 !== strpos(trailingslashit($directory_root), trailingslashit($upload_root))
+        || !in_array(basename($directory_root), array('explorexr-models', 'explorexr_models'), true)) {
+        return;
     }
-    
-    // Alternative: Clean up known transients individually
-    delete_transient('explorexr_model_cache');
-    delete_transient('explorexr_admin_stats');
-    delete_transient('explorexr_file_validation');
 
-    // Clean up temporary admin notices
-    delete_option('explorexr_admin_notice');
-    
-    // Flush rewrite rules
-    flush_rewrite_rules();
+    $iterator = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($directory_root, FilesystemIterator::SKIP_DOTS),
+        RecursiveIteratorIterator::CHILD_FIRST
+    );
+    foreach ($iterator as $item) {
+        if ($item->isLink() || $item->isFile()) {
+            wp_delete_file($item->getPathname());
+        } elseif ($item->isDir()) {
+            rmdir($item->getPathname());
+        }
+    }
+    rmdir($directory_root);
 }
 
-// Run the minimal uninstall
-explorexr_free_uninstall();
+global $wpdb;
+do {
+    $deleted_models = 0;
+    // The CPT is not registered while uninstall.php runs, so query owned rows directly.
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Trusted WordPress table; bounded uninstall batch.
+    $model_ids = $wpdb->get_col(
+        $wpdb->prepare(
+            "SELECT ID FROM {$wpdb->posts} WHERE post_type = %s ORDER BY ID ASC LIMIT 100",
+            'explorexr_model'
+        )
+    );
+    foreach ($model_ids as $model_id) {
+        if (wp_delete_post((int) $model_id, true)) {
+            $deleted_models++;
+        }
+    }
+} while (!empty($model_ids) && $deleted_models > 0);
 
+$option_pattern = $wpdb->esc_like('explorexr_') . '%';
+$meta_pattern = $wpdb->esc_like('_explorexr_') . '%';
+// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Trusted WordPress table names; bulk owned-data uninstall.
+$wpdb->query($wpdb->prepare("DELETE FROM {$wpdb->options} WHERE option_name LIKE %s", $option_pattern));
+// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Trusted WordPress table names; bulk owned-data uninstall.
+$wpdb->query($wpdb->prepare("DELETE FROM {$wpdb->postmeta} WHERE meta_key LIKE %s", $meta_pattern));
 
-
-
-
+$upload_dir = wp_upload_dir();
+explorexr_free_delete_owned_directory(trailingslashit($upload_dir['basedir']) . 'explorexr-models');
+explorexr_free_delete_owned_directory(trailingslashit($upload_dir['basedir']) . 'explorexr_models');

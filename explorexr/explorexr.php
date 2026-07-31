@@ -255,9 +255,6 @@ function explorexr_free_init() {
         }
     }
 
-    // Emit <link rel="preload"> hints for decoder WASM binaries into <head>.
-    // Registered here so wp_head fires them before the_content renders.
-    add_action('wp_head', 'explorexr_free_preload_decoder_assets', 1);
 }
 add_action('plugins_loaded', 'explorexr_free_init', 5);
 
@@ -266,26 +263,6 @@ add_action('plugins_loaded', 'explorexr_free_init', 5);
  * Only emits on frontend pages that contain model-viewer shortcodes, and only
  * for files that are confirmed present on disk.
  */
-function explorexr_free_preload_decoder_assets() {
-    if (!function_exists('explorexr_premium_has_model_viewers') || !explorexr_premium_has_model_viewers()) {
-        return;
-    }
-
-    static $draco_exists = null;
-    static $basis_exists = null;
-    if ($draco_exists === null) {
-        $draco_exists = file_exists(EXPLOREXR_PLUGIN_DIR . 'assets/vendor/draco/draco_decoder.wasm');
-        $basis_exists = file_exists(EXPLOREXR_PLUGIN_DIR . 'assets/vendor/basis-universal/basis_transcoder.wasm');
-    }
-
-    if ($draco_exists) {
-        echo '<link rel="preload" href="' . esc_url(EXPLOREXR_PLUGIN_URL . 'assets/vendor/draco/draco_decoder.wasm') . '" as="fetch" crossorigin>' . "\n";
-    }
-    if ($basis_exists) {
-        echo '<link rel="preload" href="' . esc_url(EXPLOREXR_PLUGIN_URL . 'assets/vendor/basis-universal/basis_transcoder.wasm') . '" as="fetch" crossorigin>' . "\n";
-    }
-}
-
 /**
  * Enqueue frontend assets when a model viewer shortcode is present.
  */

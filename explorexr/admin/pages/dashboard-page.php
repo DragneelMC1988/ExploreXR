@@ -64,7 +64,7 @@ function explorexr_dashboard_page() {
     
     $model_viewer_status = 'operational';
     if ($cdn_source === 'cdn') {
-        $response = wp_remote_head($model_viewer_url);
+        $response = wp_safe_remote_head($model_viewer_url, array('timeout' => 3, 'redirection' => 2));
         if (is_wp_error($response) || wp_remote_retrieve_response_code($response) !== 200) {
             $model_viewer_status = 'issue';
         }
@@ -412,7 +412,6 @@ function explorexr_dashboard_page() {
     </div><!-- .wrap -->
     <?php
 }
-
 
 
 
