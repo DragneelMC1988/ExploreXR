@@ -79,7 +79,7 @@
 /* Tier cards */
 .explorexr-go-premium-page .gp-tiers {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 14px;
     margin-top: 24px;
 }
@@ -121,6 +121,7 @@
 .explorexr-go-premium-page .gp-tier--pro   h2 { color: #0073aa; }
 .explorexr-go-premium-page .gp-tier--plus  h2 { color: #7c3aed; }
 .explorexr-go-premium-page .gp-tier--ultra h2 { color: #b91c1c; }
+.explorexr-go-premium-page .gp-tier--agency h2 { color: #7f1d1d; }
 
 .explorexr-go-premium-page .gp-tier .gp-price {
     font-size: 32px;
@@ -134,11 +135,22 @@
     margin-bottom: 10px;
 }
 
-.explorexr-go-premium-page .gp-tier .gp-slots {
+.explorexr-go-premium-page .gp-tier .gp-entitlements {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.explorexr-go-premium-page .gp-tier .gp-slots,
+.explorexr-go-premium-page .gp-tier .gp-websites {
     font-size: 13px;
     color: #4b5563;
-    margin-bottom: 10px;
     font-weight: 600;
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    padding: 4px 8px;
 }
 
 .explorexr-go-premium-page .gp-tier .gp-tagline {
@@ -222,43 +234,14 @@
 .explorexr-go-premium-page .gp-addon--free  .gp-badge { background: #1a7f37; }
 .explorexr-go-premium-page .gp-addon--pro   .gp-badge,
 .explorexr-go-premium-page .gp-addon--plus  .gp-badge,
-.explorexr-go-premium-page .gp-addon--ultra .gp-badge { background: #7c3aed; }
+.explorexr-go-premium-page .gp-addon--ultra .gp-badge,
+.explorexr-go-premium-page .gp-addon--agency .gp-badge { background: #7c3aed; }
 
 .explorexr-go-premium-page .gp-addon p {
     margin: 0;
     color: #5f6c7b;
     font-size: 13px;
     line-height: 1.5;
-}
-
-/* Site plans */
-.explorexr-go-premium-page .gp-sites {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 14px;
-    margin-top: 18px;
-}
-
-.explorexr-go-premium-page .gp-site {
-    text-align: center;
-    padding: 18px;
-    background: #fff;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-}
-
-.explorexr-go-premium-page .gp-site .gp-site-num {
-    font-size: 34px;
-    font-weight: 700;
-    color: #0073aa;
-    padding: 16px;
-}
-
-/* Site description (replaces inline style="color:#6b7280;font-size:13px;margin:6px 0 0 0;") */
-.explorexr-go-premium-page .gp-site-desc {
-    color: #6b7280;
-    font-size: 13px;
-    margin: 6px 0 0 0;
 }
 
 /* FAQ */
@@ -315,8 +298,7 @@
 
     .explorexr-go-premium-page .gp-why,
     .explorexr-go-premium-page .gp-tiers,
-    .explorexr-go-premium-page .gp-addons-grid,
-    .explorexr-go-premium-page .gp-sites {
+    .explorexr-go-premium-page .gp-addons-grid {
         grid-template-columns: 1fr;
     }
 }

@@ -4,6 +4,8 @@ if (!defined('ABSPATH')) {
     exit;
 }
 ?>
+<hr class="wp-header-end">
+
 <!-- Header -->
 <div class="explorexr-admin-header">
     <div class="explorexr-logo">
@@ -15,11 +17,6 @@ if (!defined('ABSPATH')) {
         <?php endif; ?>
     </div>
 </div>
-
-<?php if (!empty($insert_header_end_marker)) : ?>
-<!-- WordPress.org Compliance: This div.wp-header-end tells WP core where to relocate admin_notices markup -->
-<div class="wp-header-end"></div>
-<?php endif; ?>
 
 <!-- Quick Actions -->
 <div class="explorexr-quick-actions">
@@ -48,7 +45,6 @@ if (!defined('ABSPATH')) {
         <span class="dashicons dashicons-star-filled"></span> Go Premium
     </a>
 </div>
-
 
 
 

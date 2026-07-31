@@ -111,9 +111,6 @@ function explorexr_browse_models_page() {
     <div class="wrap">
         <h1>Browse 3D Models</h1>
         
-        <!-- WordPress.org Compliance: This div.wp-header-end is required for WordPress to place admin notices properly -->
-        <div class="wp-header-end"></div>
-        
         <!-- ExploreXR Plugin Content -->
         <div class="explorexr-admin-container">
         
@@ -324,7 +321,6 @@ function explorexr_browse_models_page() {
     </div><!-- .wrap -->
     <?php
 }
-
 
 
 

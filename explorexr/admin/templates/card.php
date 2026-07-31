@@ -44,6 +44,7 @@ if (!defined('ABSPATH')) {
             'placeholder' => array(),
             'required' => array(),
             'accept' => array(),
+            'data-default-color' => array(),
         );
         // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Local variable for wp_kses configuration
         $allowed_html['select'] = array(
@@ -94,7 +95,6 @@ if (!defined('ABSPATH')) {
     </div>
     <?php endif; ?>
 </div>
-
 
 
 

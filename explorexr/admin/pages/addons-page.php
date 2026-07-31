@@ -58,7 +58,6 @@ function explorexr_free_addons_page() {
 
         <?php
         $page_title = esc_html__('ExploreXR Add-ons', 'explorexr');
-        $insert_header_end_marker = true;
         include EXPLOREXR_PLUGIN_DIR . 'admin/templates/admin-header.php';
         ?>
 

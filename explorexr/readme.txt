@@ -244,6 +244,7 @@ Free support is available on the [WordPress.org support forum](https://wordpress
 == Changelog ==
 
 = 1.3.5 =
+* Updated Premium comparison copy for central tier/domain entitlements, Agency, and 72-hour transport-only grace.
 * Security: Hardened GLB, GLTF, and USDZ upload validation.
 * Fixed: Deactivation preserves model data and opt-in uninstall removes only owned data.
 * Fixed: Free add-on lifecycle, activation ordering, and mirrored add-on compatibility.

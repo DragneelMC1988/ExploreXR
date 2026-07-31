@@ -128,9 +128,6 @@ function explorexr_files_page() {
     <div class="wrap">
         <h1>3D Model Files</h1>
         
-        <!-- WordPress.org Compliance: This div.wp-header-end is required for WordPress to place admin notices properly -->
-        <div class="wp-header-end"></div>
-        
         <!-- ExploreXR Plugin Content -->
         <div class="explorexr-admin-container">
         <!-- WordPress admin notices appear here automatically before our custom content -->
@@ -262,7 +259,6 @@ function explorexr_files_page() {
     
     <?php
 }
-
 
 
 

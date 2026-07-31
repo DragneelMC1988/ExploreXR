@@ -1,5 +1,6 @@
 .qodo
 .vscode/
+.github/
 sftp.json
 /index.php
 docs/quick_commands.md
@@ -26,6 +27,7 @@ akismet/
 Premium/
 AGENTS.md
 CLAUDE.md
+CODEX.md
 explorexr-ar-addon/
 explorexr-animation-addon/
 explorexr-loading-addon/

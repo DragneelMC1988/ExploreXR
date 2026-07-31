@@ -32,6 +32,14 @@ function explorexr_free_delete_owned_directory($directory) {
         return;
     }
 
+    if (!function_exists('WP_Filesystem')) {
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+    }
+    global $wp_filesystem;
+    if (!WP_Filesystem() || !$wp_filesystem) {
+        return;
+    }
+
     $iterator = new RecursiveIteratorIterator(
         new RecursiveDirectoryIterator($directory_root, FilesystemIterator::SKIP_DOTS),
         RecursiveIteratorIterator::CHILD_FIRST
@@ -40,37 +48,37 @@ function explorexr_free_delete_owned_directory($directory) {
         if ($item->isLink() || $item->isFile()) {
             wp_delete_file($item->getPathname());
         } elseif ($item->isDir()) {
-            rmdir($item->getPathname());
+            $wp_filesystem->rmdir($item->getPathname());
         }
     }
-    rmdir($directory_root);
+    $wp_filesystem->rmdir($directory_root);
 }
 
 global $wpdb;
 do {
-    $deleted_models = 0;
+    $explorexr_deleted_models = 0;
     // The CPT is not registered while uninstall.php runs, so query owned rows directly.
     // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Trusted WordPress table; bounded uninstall batch.
-    $model_ids = $wpdb->get_col(
+    $explorexr_model_ids = $wpdb->get_col(
         $wpdb->prepare(
             "SELECT ID FROM {$wpdb->posts} WHERE post_type = %s ORDER BY ID ASC LIMIT 100",
             'explorexr_model'
         )
     );
-    foreach ($model_ids as $model_id) {
-        if (wp_delete_post((int) $model_id, true)) {
-            $deleted_models++;
+    foreach ($explorexr_model_ids as $explorexr_model_id) {
+        if (wp_delete_post((int) $explorexr_model_id, true)) {
+            $explorexr_deleted_models++;
         }
     }
-} while (!empty($model_ids) && $deleted_models > 0);
+} while (!empty($explorexr_model_ids) && $explorexr_deleted_models > 0);
 
-$option_pattern = $wpdb->esc_like('explorexr_') . '%';
-$meta_pattern = $wpdb->esc_like('_explorexr_') . '%';
+$explorexr_option_pattern = $wpdb->esc_like('explorexr_') . '%';
+$explorexr_meta_pattern = $wpdb->esc_like('_explorexr_') . '%';
 // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Trusted WordPress table names; bulk owned-data uninstall.
-$wpdb->query($wpdb->prepare("DELETE FROM {$wpdb->options} WHERE option_name LIKE %s", $option_pattern));
+$wpdb->query($wpdb->prepare("DELETE FROM {$wpdb->options} WHERE option_name LIKE %s", $explorexr_option_pattern));
 // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Trusted WordPress table names; bulk owned-data uninstall.
-$wpdb->query($wpdb->prepare("DELETE FROM {$wpdb->postmeta} WHERE meta_key LIKE %s", $meta_pattern));
+$wpdb->query($wpdb->prepare("DELETE FROM {$wpdb->postmeta} WHERE meta_key LIKE %s", $explorexr_meta_pattern));
 
-$upload_dir = wp_upload_dir();
-explorexr_free_delete_owned_directory(trailingslashit($upload_dir['basedir']) . 'explorexr-models');
-explorexr_free_delete_owned_directory(trailingslashit($upload_dir['basedir']) . 'explorexr_models');
+$explorexr_upload_dir = wp_upload_dir();
+explorexr_free_delete_owned_directory(trailingslashit($explorexr_upload_dir['basedir']) . 'explorexr-models');
+explorexr_free_delete_owned_directory(trailingslashit($explorexr_upload_dir['basedir']) . 'explorexr_models');

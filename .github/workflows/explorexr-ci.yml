@@ -118,11 +118,12 @@ jobs:
           tools: composer, phpcs
       - run: composer global config allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
       - run: composer global require --no-interaction wp-coding-standards/wpcs dealerdirect/phpcodesniffer-composer-installer
-      - name: Focused WordPress security audit
+      - name: Focused WordPress security and plugin audit
         run: >-
           phpcs --standard=WordPress --extensions=php
           --ignore='*/vendor/*,*/assets/vendor/*,*/node_modules/*'
-          --sniffs=WordPress.Security.NonceVerification,WordPress.Security.ValidatedSanitizedInput,WordPress.Security.EscapeOutput,WordPress.Security.PluginMenuSlug,WordPress.Security.SafeRedirect,WordPress.DB.PreparedSQL,WordPress.DB.PreparedSQLPlaceholders
+          --sniffs=WordPress.Security.NonceVerification,WordPress.Security.ValidatedSanitizedInput,WordPress.Security.EscapeOutput,WordPress.Security.PluginMenuSlug,WordPress.Security.SafeRedirect,WordPress.DB.PreparedSQL,WordPress.DB.PreparedSQLPlaceholders,WordPress.WP.AlternativeFunctions,WordPress.NamingConventions.PrefixAllGlobals
+          --exclude=WordPress.WP.AlternativeFunctions.json_encode_json_encode,WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents,WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
           explorexr
 
   php-compatibility:

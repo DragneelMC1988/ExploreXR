@@ -1,17 +1,158 @@
 /* Styles for the Loading Options Page */
 
-/*
- * WP core's .wp-color-result-text has a hardcoded light-gray background + dark
- * text (see wp-admin/css/color-picker.css), which covers most of the swatch
- * button and hides the actual chosen color behind a ~30px strip on the left.
- * Drop the fixed background so the button's own inline background-color (the
- * real chosen/saved value) shows through the full button; text contrast color
- * is computed per-instance in loading-options.js since it depends on the
- * current color, not something CSS alone can express.
- */
-.wp-picker-container .wp-color-result-text {
+.explorexr-loading-page-intro {
+    margin: 0 0 16px;
+    color: #50575e;
+    font-size: 14px;
+}
+
+.explorexr-loading-options-page .explorexr-card-description {
+    max-width: 760px;
+    margin: 0 0 8px;
+    color: #50575e;
+}
+
+.explorexr-loading-options-page .form-table {
+    margin-top: 0;
+}
+
+.explorexr-loading-options-page .form-table th {
+    width: 230px;
+}
+
+.explorexr-loading-options-page .form-table select.regular-text {
+    width: min(100%, 420px);
+}
+
+.explorexr-loading-options-page .explorexr-compact-description {
+    max-width: 620px;
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.explorexr-loading-options-page .wp-picker-container {
+    display: inline-flex;
+    min-height: 34px;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.explorexr-loading-options-page .wp-picker-container .wp-color-result.button {
+    display: inline-flex;
+    width: 168px;
+    min-height: 34px;
+    height: 34px;
+    margin: 0;
+    padding: 0;
+    align-items: stretch;
+    overflow: hidden;
+    border-color: #8c8f94;
+    box-sizing: border-box;
+}
+
+.explorexr-loading-options-page .wp-picker-container .wp-color-result-text {
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    height: 32px;
+    margin: 0;
+    padding: 0 10px;
+    align-items: center;
+    justify-content: center;
     background: transparent;
-    border-left: none;
+    border: 0;
+    box-sizing: border-box;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.explorexr-loading-options-page .wp-picker-container .wp-picker-input-wrap {
+    margin: 0;
+}
+
+.explorexr-loading-options-page .wp-picker-container input.wp-color-picker {
+    width: 92px;
+    min-height: 30px;
+}
+
+.explorexr-compression-box {
+    margin-top: 8px;
+    overflow: hidden;
+    border: 1px solid #c3c4c7;
+    background: #fff;
+}
+
+.explorexr-compression-box .widefat {
+    border: 0;
+    box-shadow: none;
+}
+
+.explorexr-compression-table th {
+    width: 36%;
+    font-weight: 600;
+}
+
+.explorexr-compression-table td,
+.explorexr-compression-table th {
+    padding: 11px 14px;
+    vertical-align: middle;
+}
+
+.explorexr-compression-table code {
+    margin-left: 10px;
+}
+
+.explorexr-decoder-status {
+    display: inline-block;
+    min-width: 68px;
+    font-weight: 600;
+}
+
+.explorexr-decoder-status.is-available {
+    color: #1a7f37;
+}
+
+.explorexr-decoder-status.is-available::before {
+    content: "\2713";
+    margin-right: 5px;
+}
+
+.explorexr-decoder-status.is-missing {
+    color: #b32d2e;
+}
+
+.explorexr-decoder-status.is-missing::before {
+    content: "\2717";
+    margin-right: 5px;
+}
+
+.explorexr-loading-submit {
+    display: flex;
+    justify-content: flex-end;
+    margin: 4px 0 20px;
+}
+
+@media (max-width: 782px) {
+    .explorexr-loading-options-page .form-table th {
+        width: auto;
+    }
+
+    .explorexr-loading-options-page .wp-picker-container .wp-color-result.button {
+        width: 152px;
+    }
+
+    .explorexr-compression-table th,
+    .explorexr-compression-table td {
+        display: block;
+        width: auto;
+    }
+
+    .explorexr-compression-table code {
+        display: block;
+        margin: 6px 0 0;
+        overflow-wrap: anywhere;
+    }
 }
 
 .explorexr-settings-section {

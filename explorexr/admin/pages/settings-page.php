@@ -209,9 +209,6 @@ function explorexr_settings_page() {
     <div class="wrap">
         <h1>ExploreXR Settings</h1>
         
-        <!-- WordPress.org Compliance: This div.wp-header-end is required for WordPress to place admin notices properly -->
-        <div class="wp-header-end"></div>
-        
         <!-- ExploreXR Plugin Content -->
         <div class="explorexr-admin-container explorexr-settings-page">
         
@@ -513,7 +510,6 @@ function explorexr_general_settings_register_settings() {
     );
 }
 add_action('admin_init', 'explorexr_general_settings_register_settings');
-
 
 
 

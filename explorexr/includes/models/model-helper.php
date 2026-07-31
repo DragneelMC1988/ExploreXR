@@ -59,25 +59,21 @@ function explorexr_free_validate_gltf_json($json) {
 }
 
 /**
- * Validate a GLB stream.
+ * Validate a GLB file.
  *
  * @param string $path Uploaded path.
  * @return true|WP_Error
  */
 function explorexr_free_validate_glb($path) {
     $size = filesize($path);
-    $handle = fopen($path, 'rb');
-    if (false === $handle || false === $size || $size < 20) {
-        if (is_resource($handle)) {
-            fclose($handle);
-        }
+    if (false === $size || $size < 20) {
         return new WP_Error('invalid_glb', __('The GLB header is invalid.', 'explorexr'));
     }
 
-    $header = fread($handle, 12);
-    $values = 12 === strlen($header) ? unpack('a4magic/Vversion/Vlength', $header) : false;
+    // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Bounded local upload read; WP_Filesystem has no offset API.
+    $header = file_get_contents($path, false, null, 0, 12);
+    $values = is_string($header) && 12 === strlen($header) ? unpack('a4magic/Vversion/Vlength', $header) : false;
     if (!$values || 'glTF' !== $values['magic'] || 2 !== (int) $values['version'] || (int) $values['length'] !== (int) $size) {
-        fclose($handle);
         return new WP_Error('invalid_glb', __('The GLB header or length is invalid.', 'explorexr'));
     }
 
@@ -85,33 +81,31 @@ function explorexr_free_validate_glb($path) {
     $found_json = false;
     $chunk_index = 0;
     while ($offset < $size) {
-        $chunk_header = fread($handle, 8);
-        $chunk = 8 === strlen($chunk_header) ? unpack('Vlength/Vtype', $chunk_header) : false;
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Bounded local upload read; WP_Filesystem has no offset API.
+        $chunk_header = file_get_contents($path, false, null, $offset, 8);
+        $chunk = is_string($chunk_header) && 8 === strlen($chunk_header) ? unpack('Vlength/Vtype', $chunk_header) : false;
         if (!$chunk) {
-            fclose($handle);
             return new WP_Error('invalid_glb', __('The GLB chunk table is incomplete.', 'explorexr'));
         }
         $length = (int) $chunk['length'];
         $offset += 8;
         if (0 !== $length % 4 || $offset + $length > $size) {
-            fclose($handle);
             return new WP_Error('invalid_glb', __('The GLB contains an invalid chunk.', 'explorexr'));
         }
         if (0 === $chunk_index && 0x4E4F534A !== (int) $chunk['type']) {
-            fclose($handle);
             return new WP_Error('invalid_glb_json', __('The first GLB chunk must contain JSON.', 'explorexr'));
         }
         if (0x4E4F534A === (int) $chunk['type']) {
             if ($found_json || $length > 32 * 1024 * 1024) {
-                fclose($handle);
                 return new WP_Error('invalid_glb_json', __('The GLB JSON chunk is invalid or too large.', 'explorexr'));
             }
             $json = '';
             $remaining = $length;
             while ($remaining > 0) {
-                $part = fread($handle, min(1048576, $remaining));
+                $part_offset = $offset + $length - $remaining;
+                // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Bounded 1 MB local upload read; WP_Filesystem has no offset API.
+                $part = file_get_contents($path, false, null, $part_offset, min(1048576, $remaining));
                 if (false === $part || '' === $part) {
-                    fclose($handle);
                     return new WP_Error('invalid_glb_json', __('The GLB JSON chunk is incomplete.', 'explorexr'));
                 }
                 $json .= $part;
@@ -119,20 +113,13 @@ function explorexr_free_validate_glb($path) {
             }
             $result = explorexr_free_validate_gltf_json($json);
             if (is_wp_error($result)) {
-                fclose($handle);
                 return $result;
             }
             $found_json = true;
-        } else {
-            if (0 !== fseek($handle, $length, SEEK_CUR)) {
-                fclose($handle);
-                return new WP_Error('invalid_glb', __('The GLB chunk cannot be read.', 'explorexr'));
-            }
         }
         $offset += $length;
         $chunk_index++;
     }
-    fclose($handle);
 
     return $found_json && $offset === $size
         ? true

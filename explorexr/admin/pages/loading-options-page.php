@@ -151,22 +151,11 @@ function explorexr_loading_large_section_callback() {
 function explorexr_loading_display_callback() {
     $loading_display = get_option('explorexr_loading_display', 'bar');
     ?>
-    <fieldset>
-        <label>
-            <input type="radio" name="explorexr_loading_display" value="bar" <?php checked($loading_display, 'bar'); ?>>
-            <?php esc_html_e('Loading Bar Only', 'explorexr'); ?>
-        </label><br>
-        
-        <label>
-            <input type="radio" name="explorexr_loading_display" value="percentage" <?php checked($loading_display, 'percentage'); ?>>
-            <?php esc_html_e('Percentage Counter Only', 'explorexr'); ?>
-        </label><br>
-        
-        <label>
-            <input type="radio" name="explorexr_loading_display" value="both" <?php checked($loading_display, 'both'); ?>>
-            <?php esc_html_e('Both Loading Bar and Percentage', 'explorexr'); ?>
-        </label>
-    </fieldset>
+    <select name="explorexr_loading_display" class="regular-text">
+        <option value="bar" <?php selected($loading_display, 'bar'); ?>><?php esc_html_e('Loading Bar Only', 'explorexr'); ?></option>
+        <option value="percentage" <?php selected($loading_display, 'percentage'); ?>><?php esc_html_e('Percentage Counter Only', 'explorexr'); ?></option>
+        <option value="both" <?php selected($loading_display, 'both'); ?>><?php esc_html_e('Loading Bar and Percentage', 'explorexr'); ?></option>
+    </select>
     <p class="description">
         <?php 
         printf(
@@ -200,29 +189,12 @@ function explorexr_large_model_size_threshold_callback() {
 function explorexr_large_model_handling_callback() {
     $large_model_handling = get_option('explorexr_large_model_handling', 'direct');
     ?>
-    <fieldset>
-        <label>
-            <input type="radio" name="explorexr_large_model_handling" value="direct" <?php checked($large_model_handling, 'direct'); ?>>
-            <?php esc_html_e('Load directly (Default)', 'explorexr'); ?>
-        </label>
-        <p class="description"><?php esc_html_e('Always load models directly, regardless of size.', 'explorexr'); ?></p>
-        
-        <br><br>
-        
-        <label>
-            <input type="radio" name="explorexr_large_model_handling" value="poster_button" <?php checked($large_model_handling, 'poster_button'); ?>>
-            <?php esc_html_e('Show poster with load button', 'explorexr'); ?>
-        </label>
-        <p class="description"><?php esc_html_e('For large models, show a poster image with a button to load the model.', 'explorexr'); ?></p>
-        
-        <br><br>
-        
-        <label>
-            <input type="radio" name="explorexr_large_model_handling" value="lazy" <?php checked($large_model_handling, 'lazy'); ?>>
-            <?php esc_html_e('Lazy load when visible', 'explorexr'); ?>
-        </label>
-        <p class="description"><?php esc_html_e('Only load models when they are about to enter the viewport.', 'explorexr'); ?></p>
-    </fieldset>
+    <select name="explorexr_large_model_handling" class="regular-text">
+        <option value="direct" <?php selected($large_model_handling, 'direct'); ?>><?php esc_html_e('Load Directly (Default)', 'explorexr'); ?></option>
+        <option value="poster_button" <?php selected($large_model_handling, 'poster_button'); ?>><?php esc_html_e('Show Poster with Load Button', 'explorexr'); ?></option>
+        <option value="lazy" <?php selected($large_model_handling, 'lazy'); ?>><?php esc_html_e('Lazy Load When Visible', 'explorexr'); ?></option>
+    </select>
+    <p class="description explorexr-compact-description"><?php esc_html_e('Direct starts immediately. Poster waits for a click. Lazy waits until the viewer approaches the viewport.', 'explorexr'); ?></p>
     <?php
 }
 
@@ -287,41 +259,6 @@ function explorexr_loading_options_page() {
         echo '<div class="notice notice-success is-dismissible"><p>Loading options have been saved successfully!</p></div>';
     }
     
-    // Loading options for free version
-    $notice_content = '';
-    
-    // Prepare settings page structure using the standardized template
-    $settings_args = array(
-        'page_title'    => esc_html__('Loading Options', 'explorexr'),
-        'plugin_name'   => esc_html__('explorexr', 'explorexr'),
-        'plugin_version' => defined('EXPLOREXR_VERSION') ? EXPLOREXR_VERSION : '1.3.5',
-        'doc_url'       => 'https://expoxr.com/explorexr/documentation/',
-        'settings_group' => 'explorexr_loading_settings',
-        'settings_page' => 'explorexr-loading-settings',
-        'show_submit'   => true,
-        'sections'      => array(
-            array(
-                'title'       => esc_html__('Customize Loading Experience', 'explorexr'),
-                'description' => esc_html__('Customize how models appear while loading to provide the best experience for your users.', 'explorexr'),
-                'icon'        => 'performance',
-                'content'     => $notice_content,
-                'section_id'  => 'explorexr_loading_core_section'
-            ),
-            array(
-                'title'       => esc_html__('Lazy Loading Options', 'explorexr'),
-                'description' => esc_html__('Configure lazy loading behavior for faster initial page loading.', 'explorexr'),
-                'icon'        => 'clock',
-                'section_id'  => 'explorexr_loading_lazy_section'
-            ),
-            array(
-                'title'       => esc_html__('Large Model Handling', 'explorexr'),
-                'description' => esc_html__('Configure how to handle large 3D models that may cause slower loading times.', 'explorexr'),
-                'icon'        => 'admin-settings',
-                'section_id'  => 'explorexr_loading_large_section'
-            )
-        )
-    );
-    
     // Render the loading options page
     // Set up header variables
     $page_title = 'Loading Options';
@@ -332,63 +269,51 @@ function explorexr_loading_options_page() {
     <div class="wrap">
         <h1>Loading Options</h1>
         
-        <!-- WordPress.org Compliance: This div.wp-header-end is required for WordPress to place admin notices properly -->
-        <div class="wp-header-end"></div>
-        
         <!-- ExploreXR Plugin Content -->
-        <div class="explorexr-admin-container">
+        <div class="explorexr-admin-container explorexr-loading-options-page">
         <!-- WordPress admin notices appear here automatically before our custom content -->
         
         <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/notifications-area.php'; ?>
         <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/admin-header.php'; ?>
         
-        <!-- Loading Options Settings -->
-        <?php
-        $card_title = 'Loading Options';
-        $card_icon = 'performance';
-        ob_start();
-        ?>
-        <p>Configure how 3D models are loaded and displayed on your website. These settings help optimize performance and user experience.</p>
-        
-        <form method="post" action="">
+        <p class="explorexr-loading-page-intro"><?php esc_html_e('Configure how 3D models load and appear across your website.', 'explorexr'); ?></p>
+
+        <form method="post" action="" class="explorexr-loading-options-form">
             <?php wp_nonce_field('explorexr_loading_settings', 'explorexr_loading_nonce'); ?>
             <input type="hidden" name="explorexr_action" value="save_loading_options">
-            
+
             <?php
-            // Get current option values
-            $loading_display = get_option('explorexr_loading_display', 'bar');
-            $large_model_handling = get_option('explorexr_large_model_handling', 'direct');
+            $loading_display           = get_option('explorexr_loading_display', 'bar');
+            $large_model_handling      = get_option('explorexr_large_model_handling', 'direct');
             $large_model_size_threshold = get_option('explorexr_large_model_size_threshold', 16);
-            $lazy_load_poster = get_option('explorexr_lazy_load_poster', false);
+            $lazy_load_poster          = get_option('explorexr_lazy_load_poster', false);
+            $explorexr_button_text         = get_option('explorexr_load_button_text', '');
+            $explorexr_button_bg           = get_option('explorexr_load_button_bg', '');
+            $explorexr_button_color        = get_option('explorexr_load_button_color', '');
+            $explorexr_button_hover_bg     = get_option('explorexr_load_button_hover_bg', '');
+            $explorexr_button_hover_color  = get_option('explorexr_load_button_hover_color', '');
+            $explorexr_button_radius       = get_option('explorexr_load_button_radius', '');
             ?>
-            
-            <h3><?php esc_html_e('Core Loading Settings', 'explorexr'); ?></h3>
-            <p><?php esc_html_e('Configure essential loading behavior for your 3D models.', 'explorexr'); ?></p>
-            
+
+            <?php
+            $card_title = esc_html__('Core Loading Settings', 'explorexr');
+            $card_icon  = 'performance';
+            ob_start();
+            ?>
+            <p class="explorexr-card-description"><?php esc_html_e('Choose how loading progress appears to visitors.', 'explorexr'); ?></p>
             <table class="form-table" role="presentation">
                 <tr>
                     <th scope="row">
                         <label for="explorexr_loading_display"><?php esc_html_e('Display Type', 'explorexr'); ?></label>
                     </th>
                     <td>
-                        <fieldset>
-                            <label>
-                                <input type="radio" name="explorexr_loading_display" id="explorexr_loading_display_bar" value="bar" <?php checked($loading_display, 'bar'); ?>>
-                                <?php esc_html_e('Loading Bar Only', 'explorexr'); ?>
-                            </label><br>
-                            
-                            <label>
-                                <input type="radio" name="explorexr_loading_display" id="explorexr_loading_display_percentage" value="percentage" <?php checked($loading_display, 'percentage'); ?>>
-                                <?php esc_html_e('Percentage Counter Only', 'explorexr'); ?>
-                            </label><br>
-                            
-                            <label>
-                                <input type="radio" name="explorexr_loading_display" id="explorexr_loading_display_both" value="both" <?php checked($loading_display, 'both'); ?>>
-                                <?php esc_html_e('Both Loading Bar and Percentage', 'explorexr'); ?>
-                            </label>
-                        </fieldset>
+                        <select name="explorexr_loading_display" id="explorexr_loading_display" class="regular-text">
+                            <option value="bar" <?php selected($loading_display, 'bar'); ?>><?php esc_html_e('Loading Bar Only', 'explorexr'); ?></option>
+                            <option value="percentage" <?php selected($loading_display, 'percentage'); ?>><?php esc_html_e('Percentage Counter Only', 'explorexr'); ?></option>
+                            <option value="both" <?php selected($loading_display, 'both'); ?>><?php esc_html_e('Loading Bar and Percentage', 'explorexr'); ?></option>
+                        </select>
                         <p class="description">
-                            <?php 
+                            <?php
                             printf(
                                 // translators: %s: Link to Premium version
                                 esc_html__('For more styling options and effects, consider using the Loading Addon %s.', 'explorexr'),
@@ -398,10 +323,15 @@ function explorexr_loading_options_page() {
                     </td>
                 </tr>
             </table>
-            
-            <h3><?php esc_html_e('Lazy Loading Options', 'explorexr'); ?></h3>
-            <p><?php esc_html_e('Configure lazy loading behavior for faster initial page loading.', 'explorexr'); ?></p>
-            
+            <?php
+            $card_content = ob_get_clean();
+            include EXPLOREXR_PLUGIN_DIR . 'admin/templates/card.php';
+
+            $card_title = esc_html__('Lazy Loading Options', 'explorexr');
+            $card_icon  = 'clock';
+            ob_start();
+            ?>
+            <p class="explorexr-card-description"><?php esc_html_e('Delay poster image requests until they are close to the viewport.', 'explorexr'); ?></p>
             <table class="form-table" role="presentation">
                 <tr>
                     <th scope="row">
@@ -414,10 +344,15 @@ function explorexr_loading_options_page() {
                     </td>
                 </tr>
             </table>
-            
-            <h3><?php esc_html_e('Large Model Handling', 'explorexr'); ?></h3>
-            <p><?php esc_html_e('Configure how to handle large 3D models that may cause slower loading times.', 'explorexr'); ?></p>
-            
+            <?php
+            $card_content = ob_get_clean();
+            include EXPLOREXR_PLUGIN_DIR . 'admin/templates/card.php';
+
+            $card_title = esc_html__('Large Model Handling', 'explorexr');
+            $card_icon  = 'admin-settings';
+            ob_start();
+            ?>
+            <p class="explorexr-card-description"><?php esc_html_e('Set when a model is considered large and how its download starts.', 'explorexr'); ?></p>
             <table class="form-table" role="presentation">
                 <tr>
                     <th scope="row">
@@ -433,45 +368,24 @@ function explorexr_loading_options_page() {
                         <label for="explorexr_large_model_handling"><?php esc_html_e('Large Model Behavior', 'explorexr'); ?></label>
                     </th>
                     <td>
-                        <fieldset>
-                            <label>
-                                <input type="radio" name="explorexr_large_model_handling" id="explorexr_large_model_handling_direct" value="direct" <?php checked($large_model_handling, 'direct'); ?>>
-                                <?php esc_html_e('Load directly (Default)', 'explorexr'); ?>
-                            </label>
-                            <p class="description"><?php esc_html_e('Always load models directly, regardless of size.', 'explorexr'); ?></p>
-                            
-                            <br><br>
-                            
-                            <label>
-                                <input type="radio" name="explorexr_large_model_handling" id="explorexr_large_model_handling_poster" value="poster_button" <?php checked($large_model_handling, 'poster_button'); ?>>
-                                <?php esc_html_e('Show poster with load button', 'explorexr'); ?>
-                            </label>
-                            <p class="description"><?php esc_html_e('For large models, show a poster image with a button to load the model.', 'explorexr'); ?></p>
-                            
-                            <br><br>
-                            
-                            <label>
-                                <input type="radio" name="explorexr_large_model_handling" id="explorexr_large_model_handling_lazy" value="lazy" <?php checked($large_model_handling, 'lazy'); ?>>
-                                <?php esc_html_e('Lazy load when visible', 'explorexr'); ?>
-                            </label>
-                            <p class="description"><?php esc_html_e('Only load models when they are about to enter the viewport.', 'explorexr'); ?></p>
-                        </fieldset>
+                        <select name="explorexr_large_model_handling" id="explorexr_large_model_handling" class="regular-text">
+                            <option value="direct" <?php selected($large_model_handling, 'direct'); ?>><?php esc_html_e('Load Directly (Default)', 'explorexr'); ?></option>
+                            <option value="poster_button" <?php selected($large_model_handling, 'poster_button'); ?>><?php esc_html_e('Show Poster with Load Button', 'explorexr'); ?></option>
+                            <option value="lazy" <?php selected($large_model_handling, 'lazy'); ?>><?php esc_html_e('Lazy Load When Visible', 'explorexr'); ?></option>
+                        </select>
+                        <p class="description explorexr-compact-description"><?php esc_html_e('Direct starts immediately. Poster waits for a click. Lazy waits until the viewer approaches the viewport.', 'explorexr'); ?></p>
                     </td>
                 </tr>
             </table>
-            
-            <h3><?php esc_html_e('Load Model Button', 'explorexr'); ?></h3>
-            <p><?php esc_html_e('Customize the button shown over the poster when using the "Poster + Load Button" mode.', 'explorexr'); ?></p>
-
             <?php
-            $explorexr_button_text         = get_option('explorexr_load_button_text', '');
-            $explorexr_button_bg           = get_option('explorexr_load_button_bg', '');
-            $explorexr_button_color        = get_option('explorexr_load_button_color', '');
-            $explorexr_button_hover_bg     = get_option('explorexr_load_button_hover_bg', '');
-            $explorexr_button_hover_color  = get_option('explorexr_load_button_hover_color', '');
-            $explorexr_button_radius       = get_option('explorexr_load_button_radius', '');
-            ?>
+            $card_content = ob_get_clean();
+            include EXPLOREXR_PLUGIN_DIR . 'admin/templates/card.php';
 
+            $card_title = esc_html__('Load Model Button', 'explorexr');
+            $card_icon  = 'button';
+            ob_start();
+            ?>
+            <p class="explorexr-card-description"><?php esc_html_e('Customize the button used by Poster with Load Button mode.', 'explorexr'); ?></p>
             <table class="form-table" role="presentation">
                 <tr>
                     <th scope="row">
@@ -525,11 +439,10 @@ function explorexr_loading_options_page() {
                     </td>
                 </tr>
             </table>
-
-            <h3><?php esc_html_e('Compression & Texture Optimization', 'explorexr'); ?></h3>
-            <p><?php esc_html_e('ExploreXR ships Draco, KTX2/Basis Universal and Meshopt decoders. Model files using these formats decode automatically — no per-model configuration needed.', 'explorexr'); ?></p>
-
             <?php
+            $card_content = ob_get_clean();
+            include EXPLOREXR_PLUGIN_DIR . 'admin/templates/card.php';
+
             $explorexr_draco_path   = EXPLOREXR_PLUGIN_DIR . 'assets/vendor/draco/draco_decoder.wasm';
             $explorexr_ktx2_path    = EXPLOREXR_PLUGIN_DIR . 'assets/vendor/basis-universal/basis_transcoder.wasm';
             $explorexr_meshopt_path = EXPLOREXR_PLUGIN_DIR . 'assets/vendor/meshopt/meshopt_decoder.module.js';
@@ -550,16 +463,23 @@ function explorexr_loading_options_page() {
                     'path'  => 'assets/vendor/meshopt/',
                 ),
             );
+
+            $card_title = esc_html__('Compression & Texture Optimization', 'explorexr');
+            $card_icon  = 'database';
+            ob_start();
             ?>
-            <table class="form-table" role="presentation">
+            <p class="explorexr-card-description"><?php esc_html_e('Bundled decoders activate automatically when a model uses a supported format.', 'explorexr'); ?></p>
+            <div class="explorexr-compression-box">
+            <table class="widefat striped explorexr-compression-table">
+                <tbody>
                 <?php foreach ($explorexr_compression_rows as $explorexr_row) : ?>
                     <tr>
                         <th scope="row"><?php echo esc_html($explorexr_row['label']); ?></th>
                         <td>
                             <?php if ($explorexr_row['ok']) : ?>
-                                <span style="color:#1a7f37;font-weight:600;">&#x2713; <?php esc_html_e('Available', 'explorexr'); ?></span>
+                                <span class="explorexr-decoder-status is-available"><?php esc_html_e('Available', 'explorexr'); ?></span>
                             <?php else : ?>
-                                <span style="color:#b32d2e;font-weight:600;">&#x2717; <?php esc_html_e('Missing', 'explorexr'); ?></span>
+                                <span class="explorexr-decoder-status is-missing"><?php esc_html_e('Missing', 'explorexr'); ?></span>
                             <?php endif; ?>
                             <code><?php echo esc_html($explorexr_row['path']); ?></code>
                         </td>
@@ -574,14 +494,18 @@ function explorexr_loading_options_page() {
                         </p>
                     </td>
                 </tr>
+                </tbody>
             </table>
+            </div>
+            <?php
+            $card_content = ob_get_clean();
+            include EXPLOREXR_PLUGIN_DIR . 'admin/templates/card.php';
+            ?>
 
-            <?php submit_button('Save Loading Options'); ?>
+            <div class="explorexr-loading-submit">
+                <?php submit_button(esc_html__('Save Loading Options', 'explorexr'), 'primary', 'submit', false); ?>
+            </div>
         </form>
-        <?php
-        $card_content = ob_get_clean();
-        include EXPLOREXR_PLUGIN_DIR . 'admin/templates/card.php';
-        ?>
         
         <!-- ExploreXR Footer -->
         <?php include EXPLOREXR_PLUGIN_DIR . 'admin/templates/admin-footer.php'; ?>
@@ -591,7 +515,4 @@ function explorexr_loading_options_page() {
     
     <?php
 }
-
-
-
 

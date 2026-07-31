@@ -26,14 +26,18 @@
                 updateResultTextContrast($(this), ui.color.toString());
             },
             clear: function() {
-                updateResultTextContrast($(this), '');
+                const $input = $(this);
+                window.setTimeout(function() {
+                    updateResultTextContrast($input, '');
+                }, 0);
             }
         });
 
         // Sync the label's contrast color to each field's saved value on load
         // (the 'change' callback above only fires on user interaction).
         $('.explorexr-color-field').each(function() {
-            updateResultTextContrast($(this), $(this).val());
+            const $input = $(this);
+            updateResultTextContrast($input, $input.val());
         });
     }
 
@@ -42,15 +46,20 @@
      * black/white is more readable against the currently chosen swatch color.
      */
     function updateResultTextContrast($input, color) {
-        const $text = $input.closest('.wp-picker-container').find('.wp-color-result-text');
-        if (!$text.length) {
+        const $container = $input.closest('.wp-picker-container');
+        const $button = $container.find('.wp-color-result');
+        const $text = $container.find('.wp-color-result-text');
+        const effectiveColor = color || $input.attr('data-default-color') || '';
+        if (!$button.length || !$text.length) {
             return;
         }
-        if (!color) {
+        if (!effectiveColor) {
+            $button.css('background-color', '');
             $text.css('color', '');
             return;
         }
-        $text.css('color', getContrastTextColor(color));
+        $button.css('background-color', effectiveColor);
+        $text.css('color', getContrastTextColor(effectiveColor));
     }
 
     /**
@@ -76,7 +85,7 @@
      */
     function initAdminPreview() {
         // Update preview when loading type changes
-        $('input[name="explorexr_loading_type"]').on('change', function() {
+        $('select[name="explorexr_loading_display"]').on('change', function() {
             const loadingType = $(this).val();
             const previewContainer = $('.explorexr-loading-preview');
             
