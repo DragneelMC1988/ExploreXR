@@ -98,19 +98,11 @@ endif;
  */
 if (!function_exists('explorexr_addon_welcome_notice')) :
 function explorexr_addon_welcome_notice($addon_name, $addon_slug, $description = '') {
-    $post_type = (defined('EXPLOREXR_IS_PREMIUM') && EXPLOREXR_IS_PREMIUM)
-        ? 'explorexr_premium_model'
-        : 'explorexr_model';
     ?>
     <div class="notice notice-success is-dismissible">
         <p>
             <strong><?php echo esc_html('ExploreXR ' . $addon_name . ' activated!'); ?></strong><br>
             <?php echo $description ? esc_html($description) : ''; ?>
-        </p>
-        <p>
-            <a href="<?php echo esc_url(admin_url('edit.php?post_type=' . $post_type)); ?>" class="button button-primary">
-                <?php esc_html_e('Edit Models', 'explorexr'); ?>
-            </a>
         </p>
     </div>
     <?php

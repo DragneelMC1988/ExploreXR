@@ -28,7 +28,7 @@ if (!function_exists('explorexr_get_loading_options')) {
 
 // Define version fallback if EXPLOREXR_VERSION is not defined
 if (!defined('EXPLOREXR_VERSION')) {
-    define('EXPLOREXR_VERSION', '1.3.5');
+    define('EXPLOREXR_VERSION', '1.3.6');
 }
 
 // Per-model poster hints must run before the shared setup guard.
@@ -506,6 +506,3 @@ if (!function_exists('explorexr_add_ondemand_script_loader')) {
         wp_add_inline_script('explorexr-model-viewer-wrapper', $script_loader_js);
     }
 }
-?>
-
-

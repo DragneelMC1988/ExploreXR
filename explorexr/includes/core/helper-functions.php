@@ -82,7 +82,7 @@ if (!function_exists('explorexr_premium_is_addon_licensed')) {
         if (!class_exists('ExploreXR_Addon_Manager')) {
             return false;
         }
-        return in_array($addon_slug, ExploreXR_Addon_Manager::WHITELIST, true);
+        return ExploreXR_Addon_Manager::get_instance()->is_addon_authorized($addon_slug);
     }
 }
 
@@ -91,7 +91,14 @@ if (!function_exists('explorexr_premium_get_selected_addons')) {
         if (!class_exists('ExploreXR_Addon_Manager')) {
             return array();
         }
-        return array_keys(ExploreXR_Addon_Manager::get_instance()->get_active_addons());
+        $manager = ExploreXR_Addon_Manager::get_instance();
+        $authorized = array();
+        foreach (array_keys($manager->get_active_addons()) as $slug) {
+            if ($manager->is_addon_authorized($slug)) {
+                $authorized[] = $slug;
+            }
+        }
+        return $authorized;
     }
 }
 
@@ -132,6 +139,11 @@ if (!function_exists('explorexr_premium_has_model_viewers')) {
 
         $content    = (string) $post->post_content;
         $shortcodes = array('explorexr_model', 'explorexr', 'explorexr-premium', 'EXPLOREXR_model');
+        if (function_exists('has_block')) {
+            if (has_block('explorexr/model-3d', $content) || has_block('explorexr/3d-model', $content)) {
+                return true;
+            }
+        }
         foreach ($shortcodes as $shortcode) {
             if (has_shortcode($content, $shortcode)) {
                 return true;
@@ -152,6 +164,27 @@ if (!function_exists('explorexr_premium_has_model_viewers')) {
         return false;
     }
 }
+
+if (!function_exists('explorexr_free_normalize_legacy_block_markup')) {
+    /**
+     * Render historical digit-leading block markup through the valid block alias.
+     *
+     * @param string $content Post content.
+     * @return string
+     */
+    function explorexr_free_normalize_legacy_block_markup($content) {
+        if (false === strpos($content, 'wp:explorexr/3d-model')) {
+            return $content;
+        }
+
+        return str_replace(
+            array('wp:explorexr/3d-model'),
+            array('wp:explorexr/model-3d'),
+            $content
+        );
+    }
+}
+add_filter('the_content', 'explorexr_free_normalize_legacy_block_markup', 8);
 
 if (!function_exists('explorexr_premium_addon_license_notice')) {
     /**

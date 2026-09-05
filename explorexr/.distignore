@@ -2,6 +2,7 @@
 # Files and directories listed here will be excluded from the distribution archive
 
 # Development files
+.distignore
 .git
 .gitignore
 .gitattributes

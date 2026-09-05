@@ -220,7 +220,7 @@ function EXPLOREXR_build_model_attributes($model_id, $model_file, $alt_text, $wi
         }
         
         $attributes['data-debug-mode'] = 'true';
-        $attributes['data-debug-config'] = esc_attr(json_encode($debug_config));
+        $attributes['data-debug-config'] = esc_attr(wp_json_encode($debug_config));
     }
     
     return $attributes;

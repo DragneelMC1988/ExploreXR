@@ -3,7 +3,7 @@
  * Plugin Name: ExploreXR
  * Plugin URI: https://expoxr.com/explorexr/
  * Description: Free 3D model viewer for WordPress. Embed glTF/GLB/USDZ models with Google's <model-viewer>. Supports a single addon from a curated list. Upgrade to Premium for advanced features.
- * Version: 1.3.5
+ * Version: 1.3.6
  * Author: Ayal Othman
  * Author URI: https://expoxr.com
  * Text Domain: explorexr
@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
 // Plugin constants. Free plugin defines both the canonical EXPLOREXR_* names
 // and the EXPLOREXR_PREMIUM_* aliases so addons and shared code that reference
 // either set of constants keep working unchanged.
-define('EXPLOREXR_VERSION', '1.3.5');
+define('EXPLOREXR_VERSION', '1.3.6');
 define('EXPLOREXR_PLUGIN_FILE', __FILE__);
 define('EXPLOREXR_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('EXPLOREXR_PLUGIN_URL', plugin_dir_url(__FILE__));
@@ -168,6 +168,26 @@ add_action('admin_init', 'explorexr_free_migrate_load_behavior_meta', 5);
  * Register frontend assets early so page-builder previews can find them.
  */
 function explorexr_free_register_frontend_assets() {
+    if (!wp_script_is('model-viewer-script', 'registered')) {
+        $explorexr_model_viewer_version = sanitize_text_field((string) get_option('explorexr_model_viewer_version', '4.1.0'));
+        $explorexr_model_viewer_url     = function_exists('explorexr_model_viewer_script_url')
+            ? explorexr_model_viewer_script_url()
+            : EXPLOREXR_PLUGIN_URL . 'assets/js/model-viewer-umd.js';
+        $explorexr_load_in_footer       = 'footer' === get_option('explorexr_script_location', 'footer');
+
+        wp_register_script(
+            'model-viewer-script',
+            $explorexr_model_viewer_url,
+            array(),
+            $explorexr_model_viewer_version,
+            $explorexr_load_in_footer
+        );
+        wp_add_inline_script(
+            'model-viewer-script',
+            'window.explorexrPluginUrl = window.explorexrPluginUrl || "' . esc_js(EXPLOREXR_PLUGIN_URL) . '";',
+            'before'
+        );
+    }
     if (!wp_script_is('explorexr-model-loader', 'registered')) {
         wp_register_script(
             'explorexr-model-loader',

@@ -214,7 +214,8 @@ function explorexr_sanitize_file_upload($file, $args = array()) {
         if ($size > 32 * 1024 * 1024) {
             return new WP_Error('invalid_gltf', __('The glTF JSON file is too large.', 'explorexr'));
         }
-        $json = file_get_contents($file['tmp_name']);
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Local verified upload; bounded to the 32 MB GLTF limit above and WP_Filesystem has no byte-range equivalent.
+        $json = file_get_contents($file['tmp_name'], false, null, 0, 32 * 1024 * 1024);
         $result = false === $json
             ? new WP_Error('read_error', __('Unable to read the glTF file.', 'explorexr'))
             : explorexr_free_validate_gltf_json($json);

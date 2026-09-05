@@ -74,7 +74,7 @@ class ExploreXR_Addon_Manager {
     }
 
     private function __construct() {
-        add_action('activate_plugin', array($this, 'gate_addon_activation'), 10, 1);
+        add_action('activate_plugin', array($this, 'gate_addon_activation'), 10, 2);
         add_action('activated_plugin', array($this, 'enforce_after_activation'), 10, 1);
         add_action('admin_init', array($this, 'enforce_single_addon'), 20);
         add_action('admin_notices', array($this, 'maybe_show_block_notice'));
@@ -155,7 +155,20 @@ class ExploreXR_Addon_Manager {
         if (!function_exists('is_plugin_active')) {
             require_once ABSPATH . 'wp-admin/includes/plugin.php';
         }
-        return is_plugin_active($plugin_file);
+        return is_plugin_active($plugin_file)
+            || (function_exists('is_plugin_active_for_network') && is_plugin_active_for_network($plugin_file));
+    }
+
+    /** Runtime authorization: exactly one active Free add-on, including network-active plugins. */
+    public function is_addon_authorized($slug) {
+        $slug = $this->resolve_slug($slug);
+        if (in_array($slug, self::ALWAYS_ALLOWED, true)) {
+            return true;
+        }
+        if (!in_array($slug, self::WHITELIST, true) || !$this->is_whitelisted_addon_active($slug)) {
+            return false;
+        }
+        return $slug === $this->authorized_active_slug();
     }
 
     /** Compatibility shims for callers expecting the Premium options manager. */
@@ -197,7 +210,8 @@ class ExploreXR_Addon_Manager {
      * `activate_plugin` hook: block activation if the addon is not whitelisted
      * or if it would push the active count above MAX_ACTIVE.
      */
-    public function gate_addon_activation($plugin_file) {
+    public function gate_addon_activation($plugin_file, $network_wide = false) {
+        unset($network_wide);
         if (!is_string($plugin_file) || $plugin_file === '') {
             return;
         }
@@ -322,7 +336,8 @@ class ExploreXR_Addon_Manager {
                 $candidates[] = plugin_basename($this->registered_addons[$slug]['file']);
             }
             foreach (array_unique($candidates) as $plugin_file) {
-                if (is_plugin_active($plugin_file)) {
+                if (is_plugin_active($plugin_file)
+                    || (function_exists('is_plugin_active_for_network') && is_plugin_active_for_network($plugin_file))) {
                     $active[$slug] = $plugin_file;
                     break;
                 }
@@ -389,11 +404,33 @@ class ExploreXR_Addon_Manager {
             $candidates[] = plugin_basename($this->registered_addons[$slug]['file']);
         }
         foreach (array_unique($candidates) as $plugin_file) {
-            if (is_plugin_active($plugin_file)) {
+            if (is_plugin_active($plugin_file)
+                || (function_exists('is_plugin_active_for_network') && is_plugin_active_for_network($plugin_file))) {
                 return true;
             }
         }
         return false;
+    }
+
+    /** Pick one deterministic runtime winner from site-active, then network-active plugins. */
+    private function authorized_active_slug() {
+        $ordered_files = (array) get_option('active_plugins', array());
+        if (is_multisite()) {
+            $network_active = (array) get_site_option('active_sitewide_plugins', array());
+            $ordered_files = array_merge($ordered_files, array_keys($network_active));
+        }
+        foreach ($ordered_files as $plugin_file) {
+            $slug = $this->slug_for_plugin_file($plugin_file);
+            if (in_array($slug, self::WHITELIST, true) && $this->is_whitelisted_addon_active($slug)) {
+                return $slug;
+            }
+        }
+        foreach (self::WHITELIST as $slug) {
+            if ($this->is_whitelisted_addon_active($slug)) {
+                return $slug;
+            }
+        }
+        return '';
     }
 
     /** Try to resolve a plugin file path to one of the registered addon slugs. */

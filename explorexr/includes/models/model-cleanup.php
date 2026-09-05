@@ -234,45 +234,14 @@ function explorexr_orphaned_models_widget_callback() {
         <?php endif; ?>
         
         <p>
-            <a href="#" class="button" id="explorexr-check-orphaned-models">Check for Missing Files</a>
-            <span class="spinner"></span>
+            <a href="<?php echo esc_url(admin_url('admin.php?page=explorexr-browse-models')); ?>" class="button">Browse Models</a>
         </p>
-        <div id="explorexr-check-result"></div>
     </div>
-    
     <?php
-    // Cleanup JS is loaded via admin/js/model-cleanup.js (enqueued by explorexr_enqueue_cleanup_scripts).
-    // Styles live in admin/css/admin-ui.css.
 }
-
-/**
- * Enqueue dashboard widget script on the WordPress dashboard page.
- */
-function explorexr_enqueue_cleanup_scripts( $hook ) {
-    if ( 'index.php' !== $hook ) {
-        return;
-    }
-    wp_enqueue_script(
-        'explorexr-model-cleanup',
-        EXPLOREXR_PLUGIN_URL . 'admin/js/model-cleanup.js',
-        array( 'jquery' ),
-        EXPLOREXR_VERSION,
-        true
-    );
-    wp_localize_script(
-        'explorexr-model-cleanup',
-        'explorexrCleanup',
-        array(
-            'nonce'   => wp_create_nonce( 'explorexr_admin_nonce' ),
-            'ajaxUrl' => admin_url( 'admin-ajax.php' ),
-        )
-    );
-}
-add_action( 'admin_enqueue_scripts', 'explorexr_enqueue_cleanup_scripts' );
 
 // Register the dashboard widget
 add_action('wp_dashboard_setup', 'explorexr_register_orphaned_models_widget');
-
 
 
 

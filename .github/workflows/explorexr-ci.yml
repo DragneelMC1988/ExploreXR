@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: ['7.4', '8.1', '8.2', '8.3', '8.4']
+        php: ['7.4', '8.1', '8.2', '8.3', '8.4', '8.5']
     steps:
       - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2
@@ -36,17 +36,21 @@ jobs:
         shell: bash
         run: |
           test "$(grep -o "'ar', 'animation', 'loading'" explorexr/includes/addons/free-addon-manager.php | head -1)" = "'ar', 'animation', 'loading'"
+          grep -q "apiVersion: 3" explorexr/includes/integrations/gutenberg/block.js
+          grep -q "registerBlockType( 'explorexr/model-3d'" explorexr/includes/integrations/gutenberg/block.js
+          grep -q "register_block_type( 'explorexr/3d-model'" explorexr/includes/integrations/gutenberg/class-gutenberg-integration.php
+          ! grep -q "1.3.4\|checksum" explorexr/admin/ajax/ajax-handlers.php
 
   wordpress-smoke:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         wordpress_image:
-          - wordpress:5.8.10-php7.4-apache
-          - wordpress:latest-php8.1-apache
-          - wordpress:latest-php8.2-apache
-          - wordpress:latest-php8.3-apache
-          - wordpress:latest-php8.4-apache
+          - wordpress:5.8-php7.4-apache
+          - wordpress:7.1.0-php8.2-apache
+          - wordpress:7.1.0-php8.3-apache
+          - wordpress:7.1.0-php8.4-apache
+          - wordpress:7.1.0-php8.5-apache
     services:
       mysql:
         image: mysql:8.0
@@ -88,11 +92,54 @@ jobs:
             --admin_user=admin --admin_password=admin-test-password --admin_email=admin@example.test
           docker exec --user www-data explorexr-wp php /tmp/wp-cli.phar plugin activate explorexr \
             --path=/var/www/html
+          docker exec --user www-data explorexr-wp php /tmp/wp-cli.phar eval \
+            '$registry = WP_Block_Type_Registry::get_instance(); $block = $registry->get_registered("explorexr/model-3d"); $legacy = $registry->get_registered("explorexr/3d-model"); $scripts = $block && property_exists($block, "script_handles") ? $block->script_handles : array($block->script); $styles = $block && property_exists($block, "style_handles") ? $block->style_handles : array($block->style); if (!$block || !$legacy || 3 !== $block->api_version || 3 !== $legacy->api_version || !in_array("model-viewer-script", $scripts, true) || !in_array("explorexr-model-viewer", $styles, true)) { WP_CLI::error("ExploreXR block contract failed."); } if (!shortcode_exists("explorexr_model")) { WP_CLI::error("ExploreXR shortcode is not registered."); }' \
+            --path=/var/www/html
           model_id="$(docker exec --user www-data explorexr-wp php /tmp/wp-cli.phar post create \
             --path=/var/www/html --post_type=explorexr_model --post_status=publish \
             --post_title='CI preservation model' --porcelain)"
           docker exec --user www-data explorexr-wp php /tmp/wp-cli.phar post meta update \
             "$model_id" _explorexr_ci_preserve 'exact-value' --path=/var/www/html
+          docker exec --user www-data explorexr-wp php /tmp/wp-cli.phar post meta update \
+            "$model_id" _explorexr_model_file 'http://127.0.0.1/model.glb' --path=/var/www/html
+          docker exec --user www-data --env EXPLOREXR_MODEL_ID="$model_id" explorexr-wp \
+            php /tmp/wp-cli.phar eval '
+              $model_id = absint(getenv("EXPLOREXR_MODEL_ID"));
+              $page_id = wp_insert_post(array(
+                "post_type" => "page",
+                "post_status" => "publish",
+                "post_title" => "ExploreXR block smoke",
+                "post_content" => "<!-- wp:explorexr/model-3d {\"modelId\":\"{$model_id}\"} /-->"
+              ));
+              if (is_wp_error($page_id) || !explorexr_premium_has_model_viewers(get_post($page_id))) {
+                WP_CLI::error("ExploreXR block detection failed.");
+              }
+              if (false === strpos(do_blocks(get_post_field("post_content", $page_id)), "<model-viewer")) {
+                WP_CLI::error("ExploreXR block rendering failed.");
+              }
+              if (false === strpos(do_shortcode("[explorexr_model id=\"{$model_id}\"]"), "<model-viewer")) {
+                WP_CLI::error("ExploreXR shortcode rendering failed.");
+              }
+            ' --path=/var/www/html
+          for screen_and_hook in dashboard:index.php plugins:plugins.php post:post.php; do
+            screen="${screen_and_hook%%:*}"
+            hook="${screen_and_hook#*:}"
+            docker exec --user www-data --env EXPLOREXR_SCREEN="$screen" --env EXPLOREXR_HOOK="$hook" \
+              explorexr-wp php -r '
+                define("WP_ADMIN", true);
+                require "/var/www/html/wp-load.php";
+                require_once ABSPATH . "wp-admin/includes/admin.php";
+                set_current_screen(getenv("EXPLOREXR_SCREEN"));
+                do_action("admin_enqueue_scripts", getenv("EXPLOREXR_HOOK"));
+                $is_editor = "post" === getenv("EXPLOREXR_SCREEN");
+                foreach (wp_styles()->queue as $handle) {
+                  if (0 === strpos($handle, "explorexr") && (!$is_editor || in_array($handle, array("explorexr-admin-styles", "explorexr-button-system", "explorexr-premium-upgrade", "explorexr-admin"), true))) { exit(1); }
+                }
+                foreach (wp_scripts()->queue as $handle) {
+                  if (0 === strpos($handle, "explorexr") && (!$is_editor || in_array($handle, array("explorexr-admin", "explorexr-admin-ui", "explorexr-model-viewer-modal-js", "explorexr-model-cleanup", "explorexr-deactivation-message"), true))) { exit(1); }
+                }
+              '
+          done
           docker exec --user www-data explorexr-wp php /tmp/wp-cli.phar plugin deactivate explorexr \
             --path=/var/www/html
           docker exec --user www-data explorexr-wp php /tmp/wp-cli.phar plugin activate explorexr \
@@ -123,12 +170,10 @@ jobs:
           phpcs --standard=WordPress --extensions=php
           --ignore='*/vendor/*,*/assets/vendor/*,*/node_modules/*'
           --sniffs=WordPress.Security.NonceVerification,WordPress.Security.ValidatedSanitizedInput,WordPress.Security.EscapeOutput,WordPress.Security.PluginMenuSlug,WordPress.Security.SafeRedirect,WordPress.DB.PreparedSQL,WordPress.DB.PreparedSQLPlaceholders,WordPress.WP.AlternativeFunctions,WordPress.NamingConventions.PrefixAllGlobals
-          --exclude=WordPress.WP.AlternativeFunctions.json_encode_json_encode,WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents,WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
           explorexr
 
   php-compatibility:
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2
@@ -138,3 +183,156 @@ jobs:
       - run: composer global config allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
       - run: composer global require --no-interaction phpcompatibility/phpcompatibility-wp dealerdirect/phpcodesniffer-composer-installer
       - run: phpcs --standard=PHPCompatibilityWP --runtime-set testVersion 7.4- --extensions=php explorexr
+
+  legacy-addon-smoke:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        slug: [ar, animation, loading]
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: wordpress
+          MYSQL_USER: wordpress
+          MYSQL_PASSWORD: wordpress
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Start WordPress 7.1 on PHP 8.4
+        run: |
+          docker run --detach --name explorexr-addon-wp --network host \
+            --env WORDPRESS_DB_HOST=127.0.0.1:3306 \
+            --env WORDPRESS_DB_USER=wordpress \
+            --env WORDPRESS_DB_PASSWORD=wordpress \
+            --env WORDPRESS_DB_NAME=wordpress \
+            wordpress:7.1.0-php8.4-apache
+          for attempt in $(seq 1 30); do
+            curl --silent --fail http://127.0.0.1/ >/dev/null && break
+            sleep 2
+          done
+          curl --silent --fail http://127.0.0.1/ >/dev/null
+      - name: Install Free and validate live metadata
+        env:
+          ADDON_SLUG: ${{ matrix.slug }}
+        run: |
+          docker cp explorexr explorexr-addon-wp:/var/www/html/wp-content/plugins/explorexr
+          docker exec explorexr-addon-wp chown -R www-data:www-data /var/www/html/wp-content/plugins/explorexr
+          curl --silent --show-error --location --output /tmp/wp-cli.phar https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+          docker cp /tmp/wp-cli.phar explorexr-addon-wp:/tmp/wp-cli.phar
+          docker exec --user www-data explorexr-addon-wp php /tmp/wp-cli.phar core install \
+            --path=/var/www/html --url=http://127.0.0.1 --title=ExploreXR \
+            --admin_user=admin --admin_password=admin-test-password --admin_email=admin@example.test
+          docker exec --user www-data explorexr-addon-wp php /tmp/wp-cli.phar plugin activate explorexr \
+            --path=/var/www/html
+          meta_url="https://update.expoxr.com/explorexr/premium/addon-${ADDON_SLUG}/explorexr-${ADDON_SLUG}-addon.json"
+          curl --fail --silent --show-error --location "$meta_url" --output /tmp/addon.json
+          docker cp /tmp/addon.json explorexr-addon-wp:/tmp/addon.json
+          docker exec --user www-data --env ADDON_SLUG="$ADDON_SLUG" explorexr-addon-wp \
+            php -r '
+              define("WP_ADMIN", true);
+              require "/var/www/html/wp-load.php";
+              $slug = getenv("ADDON_SLUG");
+              $meta = json_decode(file_get_contents("/tmp/addon.json"), true);
+              $valid = explorexr_free_validate_addon_metadata($meta, $slug);
+              if (is_wp_error($valid)) { fwrite(STDERR, $valid->get_error_message()); exit(1); }
+              $cases = array(
+                null,
+                array_merge($meta, array("slug" => "unexpected-addon")),
+                array_merge($meta, array("requires" => "99.0")),
+                array_merge($meta, array("requires_php" => "99.0")),
+                array_merge($meta, array("download_url" => "http://update.expoxr.com/addon.zip")),
+                array_merge($meta, array("download_url" => "https://example.test/addon.zip"))
+              );
+              foreach ($cases as $case) {
+                if (!is_wp_error(explorexr_free_validate_addon_metadata($case, $slug))) {
+                  fwrite(STDERR, "Invalid add-on metadata was accepted.");
+                  exit(1);
+                }
+              }
+            '
+      - name: Install, activate, and switch live legacy add-ons
+        env:
+          ADDON_SLUG: ${{ matrix.slug }}
+        run: |
+          download_url="$(jq --raw-output '.download_url' /tmp/addon.json)"
+          advertised_version="$(jq --raw-output '.version' /tmp/addon.json)"
+          plugin="explorexr-${ADDON_SLUG}-addon"
+          docker exec --user www-data explorexr-addon-wp php /tmp/wp-cli.phar plugin install "$download_url" \
+            --activate --path=/var/www/html
+          test "$(docker exec --user www-data explorexr-addon-wp php /tmp/wp-cli.phar plugin get "$plugin" \
+            --field=version --path=/var/www/html)" = "$advertised_version"
+          docker exec --user www-data --env ADDON_SLUG="$ADDON_SLUG" explorexr-addon-wp \
+            php /tmp/wp-cli.phar eval '
+              $slug = getenv("ADDON_SLUG");
+              $manager = ExploreXR_Addon_Manager::get_instance();
+              $registered = $manager->get_registered_addons();
+              if (!isset($registered[$slug]) || !$manager->is_addon_authorized($slug)) {
+                WP_CLI::error("Legacy add-on registration or authorization failed.");
+              }
+              foreach ((array) $registered[$slug]["default_options"] as $name => $default) {
+                if ("__missing__" === get_option($name, "__missing__")) {
+                  WP_CLI::error("Legacy add-on defaults were not registered.");
+                }
+              }
+              if (false === has_filter("explorexr_premium_model_viewer_attributes")) {
+                WP_CLI::error("Legacy add-on viewer filter was not registered.");
+              }
+            ' --path=/var/www/html
+          case "$ADDON_SLUG" in
+            ar) second_slug=animation ;;
+            animation) second_slug=loading ;;
+            loading) second_slug=ar ;;
+          esac
+          second_meta_url="https://update.expoxr.com/explorexr/premium/addon-${second_slug}/explorexr-${second_slug}-addon.json"
+          second_download_url="$(curl --fail --silent --show-error --location "$second_meta_url" | jq --raw-output '.download_url')"
+          second_plugin="explorexr-${second_slug}-addon"
+          docker exec --user www-data explorexr-addon-wp php /tmp/wp-cli.phar plugin install "$second_download_url" \
+            --path=/var/www/html
+          docker exec --user www-data explorexr-addon-wp php /tmp/wp-cli.phar plugin activate "$second_plugin" \
+            --path=/var/www/html || true
+          docker exec --user www-data explorexr-addon-wp php /tmp/wp-cli.phar plugin is-active "$plugin" \
+            --path=/var/www/html
+          ! docker exec --user www-data explorexr-addon-wp php /tmp/wp-cli.phar plugin is-active "$second_plugin" \
+            --path=/var/www/html
+          docker exec --user www-data explorexr-addon-wp php /tmp/wp-cli.phar plugin deactivate "$plugin" \
+            --path=/var/www/html
+          docker exec --user www-data explorexr-addon-wp php /tmp/wp-cli.phar plugin activate "$second_plugin" \
+            --path=/var/www/html
+          docker exec --user www-data --env ADDON_SLUG="$second_slug" explorexr-addon-wp \
+            php /tmp/wp-cli.phar eval '
+              $slug = getenv("ADDON_SLUG");
+              if (!ExploreXR_Addon_Manager::get_instance()->is_addon_authorized($slug)) {
+                WP_CLI::error("Legacy add-on switch failed.");
+              }
+            ' --path=/var/www/html
+
+  release-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and validate release ZIP
+        run: |
+          mkdir -p build/explorexr dist plugin-check-build
+          rsync -a --exclude-from=explorexr/.distignore explorexr/ build/explorexr/
+          (cd build && zip -q -r ../dist/explorexr.1.3.6.zip explorexr)
+          unzip -q dist/explorexr.1.3.6.zip -d plugin-check-build
+          test -f plugin-check-build/explorexr/explorexr.php
+          test ! -e plugin-check-build/explorexr/.distignore
+          test "$(grep -c '^ \* Version: 1.3.6$' plugin-check-build/explorexr/explorexr.php)" = 1
+          test "$(grep -c '^Stable tag: 1.3.6$' plugin-check-build/explorexr/readme.txt)" = 1
+          test "$(grep -c '^Tested up to: 7.1$' plugin-check-build/explorexr/readme.txt)" = 1
+          test -z "$(find plugin-check-build/explorexr -name '.*' -print -quit)"
+          git diff --check
+      - name: Plugin Check staged release ZIP
+        uses: wordpress/plugin-check-action@v1
+        with:
+          build-dir: ./plugin-check-build/explorexr
+          strict: true

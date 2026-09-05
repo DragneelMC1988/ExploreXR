@@ -70,6 +70,89 @@ function explorexr_ajax_delete_model() {
 add_action('wp_ajax_explorexr_delete_model', 'explorexr_ajax_delete_model');
 
 /**
+ * Validate legacy-channel metadata without pinning the server-advertised version.
+ *
+ * @param mixed  $meta Add-on metadata.
+ * @param string $slug Free add-on slug.
+ * @return array|WP_Error
+ */
+function explorexr_free_validate_addon_metadata($meta, $slug) {
+    if (!is_array($meta)) {
+        return new WP_Error('invalid_addon_metadata', __('The update server returned invalid add-on metadata.', 'explorexr'));
+    }
+
+    $required_fields = array('slug', 'version', 'download_url', 'requires', 'tested', 'requires_php');
+    foreach ($required_fields as $field) {
+        if (!isset($meta[$field]) || !is_string($meta[$field]) || '' === trim($meta[$field])) {
+            return new WP_Error('invalid_addon_metadata', __('The update server returned incomplete add-on metadata.', 'explorexr'));
+        }
+    }
+
+    $expected_slug = 'explorexr-' . $slug . '-addon';
+    if ($expected_slug !== $meta['slug']) {
+        return new WP_Error('invalid_addon_slug', __('The update server returned metadata for an unexpected add-on.', 'explorexr'));
+    }
+
+    $version      = sanitize_text_field($meta['version']);
+    $requires     = sanitize_text_field($meta['requires']);
+    $tested       = sanitize_text_field($meta['tested']);
+    $requires_php = sanitize_text_field($meta['requires_php']);
+    $version_rule = '/^\d+(?:\.\d+){1,3}(?:[-+][0-9A-Za-z.-]+)?$/';
+    $compat_rule  = '/^\d+(?:\.\d+){0,3}$/';
+
+    if (!preg_match($version_rule, $version)
+        || !preg_match($compat_rule, $requires)
+        || !preg_match($compat_rule, $tested)
+        || !preg_match($compat_rule, $requires_php)
+        || version_compare($tested, $requires, '<')) {
+        return new WP_Error('invalid_addon_compatibility', __('The update server returned invalid compatibility information.', 'explorexr'));
+    }
+
+    if (!is_wp_version_compatible($requires)) {
+        return new WP_Error(
+            'incompatible_wordpress',
+            sprintf(
+                /* translators: %s: minimum required WordPress version */
+                __('This add-on requires WordPress %s or newer.', 'explorexr'),
+                $requires
+            )
+        );
+    }
+
+    if (!is_php_version_compatible($requires_php)) {
+        return new WP_Error(
+            'incompatible_php',
+            sprintf(
+                /* translators: %s: minimum required PHP version */
+                __('This add-on requires PHP %s or newer.', 'explorexr'),
+                $requires_php
+            )
+        );
+    }
+
+    $download_url  = esc_url_raw($meta['download_url'], array('https'));
+    $url_scheme    = strtolower((string) wp_parse_url($download_url, PHP_URL_SCHEME));
+    $url_host      = strtolower((string) wp_parse_url($download_url, PHP_URL_HOST));
+    $allowed_hosts = array('update.expoxr.com', 'downloads.expoxr.com');
+
+    if (!$download_url || !wp_http_validate_url($download_url) || 'https' !== $url_scheme) {
+        return new WP_Error('invalid_addon_url', __('The add-on download URL must use HTTPS.', 'explorexr'));
+    }
+    if (!in_array($url_host, $allowed_hosts, true)) {
+        return new WP_Error('untrusted_addon_url', __('The add-on download URL is not from a trusted source.', 'explorexr'));
+    }
+
+    return array(
+        'slug'         => $expected_slug,
+        'version'      => $version,
+        'download_url' => $download_url,
+        'requires'     => $requires,
+        'tested'       => $tested,
+        'requires_php' => $requires_php,
+    );
+}
+
+/**
  * Direct download + activate a free addon from update.expoxr.com.
  *
  * Free version: whitelist limited to AR, Animation, Loading.
@@ -133,26 +216,31 @@ function explorexr_free_ajax_direct_download_addon() {
     }
 
     $meta = json_decode(wp_remote_retrieve_body($response), true);
-
-    if (empty($meta['download_url'])) {
-        wp_send_json_error(array('message' => esc_html__('No download URL in server response.', 'explorexr')));
+    if (JSON_ERROR_NONE !== json_last_error()) {
+        wp_send_json_error(array('message' => esc_html__('The update server returned malformed JSON.', 'explorexr')));
     }
 
-    $download_url  = esc_url_raw($meta['download_url']);
-    $allowed_hosts = array('update.expoxr.com', 'downloads.expoxr.com');
-    $url_host      = wp_parse_url($download_url, PHP_URL_HOST);
-    if (!in_array($url_host, $allowed_hosts, true)) {
-        wp_send_json_error(array('message' => esc_html__('Download URL is not from a trusted source.', 'explorexr')));
-        return;
+    $meta = explorexr_free_validate_addon_metadata($meta, $slug);
+    if (is_wp_error($meta)) {
+        wp_send_json_error(array('message' => esc_html($meta->get_error_message())));
+    }
+
+    $expected_directory = 'explorexr-' . $slug . '-addon';
+    $plugin_file        = $expected_directory . '/explorexr-' . $slug . '-addon.php';
+    $plugin_path        = WP_PLUGIN_DIR . '/' . $plugin_file;
+
+    if (is_dir(WP_PLUGIN_DIR . '/' . $expected_directory) || file_exists($plugin_path)) {
+        wp_send_json_error(array('message' => esc_html__('The add-on is already installed. Activate it from the Plugins screen.', 'explorexr')));
     }
 
     require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
     require_once ABSPATH . 'wp-admin/includes/plugin-install.php';
     require_once ABSPATH . 'wp-admin/includes/file.php';
+    require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
     $skin     = new WP_Ajax_Upgrader_Skin();
     $upgrader = new Plugin_Upgrader($skin);
-    $result   = $upgrader->install($download_url);
+    $result   = $upgrader->install($meta['download_url']);
 
     if (is_wp_error($result)) {
         wp_send_json_error(array(
@@ -171,19 +259,41 @@ function explorexr_free_ajax_direct_download_addon() {
         ));
     }
 
-    $plugin_file     = "explorexr-{$slug}-addon/explorexr-{$slug}-addon.php";
+    $plugin_root_real    = realpath(WP_PLUGIN_DIR);
+    $installed_dir_real  = realpath(WP_PLUGIN_DIR . '/' . $expected_directory);
+    $valid_installed_dir = false !== $plugin_root_real
+        && false !== $installed_dir_real
+        && $plugin_root_real === dirname($installed_dir_real)
+        && $expected_directory === basename($installed_dir_real);
+
+    if (!$valid_installed_dir) {
+        wp_send_json_error(array('message' => esc_html__('The downloaded package did not install into the expected add-on directory.', 'explorexr')));
+    }
+
+    if (!file_exists($plugin_path) || 0 !== validate_file($plugin_file)) {
+        wp_send_json_error(array('message' => esc_html__('The downloaded package is missing the expected add-on main file.', 'explorexr')));
+    }
+
+    $plugin_data       = get_plugin_data($plugin_path, false, false);
+    $installed_version = isset($plugin_data['Version']) ? sanitize_text_field($plugin_data['Version']) : '';
+    if ('' === $installed_version || $meta['version'] !== $installed_version) {
+        wp_send_json_error(array('message' => esc_html__('The installed add-on version does not match the update server metadata.', 'explorexr')));
+    }
+
     $activate_result = activate_plugin($plugin_file);
 
     if (is_wp_error($activate_result)) {
-        wp_send_json_success(array(
-            'message'     => sprintf(
+        wp_send_json_error(array(
+            'message' => sprintf(
                 /* translators: %s: activation error message */
-                esc_html__('Installed. Note: %s', 'explorexr'),
+                esc_html__('The add-on was installed but activation failed: %s', 'explorexr'),
                 esc_html($activate_result->get_error_message())
             ),
-            'plugin_file' => $plugin_file,
-            'reload'      => true,
         ));
+    }
+
+    if (!is_plugin_active($plugin_file)) {
+        wp_send_json_error(array('message' => esc_html__('The add-on was installed but could not be activated.', 'explorexr')));
     }
 
     wp_send_json_success(array(

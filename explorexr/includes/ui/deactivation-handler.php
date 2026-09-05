@@ -45,7 +45,6 @@ function explorexr_enqueue_deactivation_script($hook) {
         )
     );
 }
-add_action('admin_enqueue_scripts', 'explorexr_enqueue_deactivation_script');
 
 
 /**
@@ -75,7 +74,6 @@ function explorexr_deactivation_admin_notice() {
         <?php
     }
 }
-add_action('admin_notices', 'explorexr_deactivation_admin_notice');
 
 /**
  * Add JavaScript for simple deactivation notice
@@ -105,8 +103,6 @@ function explorexr_deactivation_notice_script() {
         wp_add_inline_script('jquery', $deactivation_script);
     }
 }
-add_action('admin_footer', 'explorexr_deactivation_notice_script');
-
 
 
 

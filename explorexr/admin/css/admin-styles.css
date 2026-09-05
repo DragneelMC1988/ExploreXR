@@ -966,6 +966,22 @@
     flex-wrap: wrap;
 }
 
+.explorexr-pricing-plan + .explorexr-pricing-plan {
+    margin-top: 24px;
+}
+
+.explorexr-pricing-plan-title {
+    margin: 0 0 14px;
+    font-size: 20px;
+}
+
+.explorexr-pricing-plan-title span {
+    margin-left: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    opacity: 0.85;
+}
+
 .explorexr-pricing-tier {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 8px;

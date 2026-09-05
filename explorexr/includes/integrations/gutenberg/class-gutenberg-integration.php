@@ -24,9 +24,34 @@ class ExploreXR_Gutenberg_Integration {
      */
     public static function init() {
         add_action( 'init', array( __CLASS__, 'register_block' ) );
+        add_action( 'enqueue_block_editor_assets', array( __CLASS__, 'dequeue_content_assets_from_editor_shell' ), PHP_INT_MAX );
+        add_action( 'admin_print_scripts', array( __CLASS__, 'dequeue_content_assets_from_editor_shell' ), PHP_INT_MAX );
+        add_action( 'admin_print_styles', array( __CLASS__, 'dequeue_content_assets_from_editor_shell' ), PHP_INT_MAX );
         add_action( 'save_post_explorexr_model', array( __CLASS__, 'clear_model_options_cache' ) );
         add_action( 'save_post_explorexr_premium_model', array( __CLASS__, 'clear_model_options_cache' ) );
         add_action( 'deleted_post', array( __CLASS__, 'clear_model_options_cache' ) );
+    }
+
+    /**
+     * Keep content-only assets in the WordPress 7.1 editor iframe.
+     *
+     * WordPress builds the iframe with a separate asset queue after this hook,
+     * so dequeuing here removes the duplicate editor-shell copy only.
+     */
+    public static function dequeue_content_assets_from_editor_shell() {
+        global $wp_version;
+
+        if ( version_compare( $wp_version, '7.1', '<' ) ) {
+            return;
+        }
+
+        $screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+        if ( $screen && method_exists( $screen, 'is_block_editor' ) && ! $screen->is_block_editor() ) {
+            return;
+        }
+
+        wp_dequeue_script( 'model-viewer-script' );
+        wp_dequeue_style( 'explorexr-model-viewer' );
     }
 
     /**
@@ -37,11 +62,13 @@ class ExploreXR_Gutenberg_Integration {
             return;
         }
 
+        explorexr_free_register_frontend_assets();
+
         // Register the editor script.
         wp_register_script(
             'explorexr-gutenberg-block',
             EXPLOREXR_PLUGIN_URL . 'includes/integrations/gutenberg/block.js',
-            array( 'wp-blocks', 'wp-element', 'wp-editor', 'wp-components', 'wp-server-side-render', 'wp-data' ),
+            array( 'wp-blocks', 'wp-element', 'wp-block-editor', 'wp-components', 'wp-server-side-render', 'wp-data' ),
             EXPLOREXR_VERSION,
             false
         );
@@ -60,7 +87,10 @@ class ExploreXR_Gutenberg_Integration {
             EXPLOREXR_VERSION
         );
 
-        register_block_type( 'explorexr/3d-model', array(
+        $block_args = array(
+            'api_version'     => 3,
+            'script'          => 'model-viewer-script',
+            'style'           => 'explorexr-model-viewer',
             'editor_script'   => 'explorexr-gutenberg-block',
             'editor_style'    => 'explorexr-gutenberg-editor',
             'render_callback' => array( __CLASS__, 'render_block' ),
@@ -70,7 +100,13 @@ class ExploreXR_Gutenberg_Integration {
                     'default' => '',
                 ),
             ),
-        ) );
+        );
+
+        // Retain the historical server-side name for integrations that query it.
+        register_block_type( 'explorexr/3d-model', $block_args );
+
+        // WordPress block names must start with a letter after the namespace.
+        register_block_type( 'explorexr/model-3d', $block_args );
     }
 
     /**
@@ -142,4 +178,3 @@ class ExploreXR_Gutenberg_Integration {
         delete_transient( 'explorexr_block_model_list' );
     }
 }
-

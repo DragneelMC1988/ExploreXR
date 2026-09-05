@@ -2,9 +2,9 @@
 Contributors: expoxr
 Tags: 3d model viewer, glb, gltf, augmented reality, woocommerce 3d
 Requires at least: 5.8
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.3.5
+Stable tag: 1.3.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -38,7 +38,7 @@ ExploreXR Free gives you a clean, capable 3D viewer you can embed anywhere on yo
 * Drag-and-drop model upload through the WordPress admin
 * Conditional asset loading — scripts only enqueue on pages with a model shortcode
 * Nonce-protected admin actions and strict file upload validation
-* Full WordPress Coding Standards compliance, tested on WordPress 5.8 through 7.0
+* Full WordPress Coding Standards compliance, tested on WordPress 5.8 through 7.1
 
 **Choose Your Included Premium Addon:**
 
@@ -46,7 +46,7 @@ ExploreXR Free gives you a clean, capable 3D viewer you can embed anywhere on yo
 * **Animation Addon** — Play, pause, loop, and ping-pong glTF animation clips with crossfade transitions
 * **Loading Options Addon** — Custom loading bars, percentage counters, and loading overlays
 
-Each addon installs as a separate plugin from WordPress.org via the **ExploreXR → Addons** page. You can only activate one at a time. To use multiple addons simultaneously, upgrade to ExploreXR Premium.
+Each addon installs as a separate plugin from the ExpoXR update server via the **ExploreXR → Addons** page. You can only activate one at a time. To use multiple addons simultaneously, upgrade to ExploreXR Premium.
 
 ---
 
@@ -243,6 +243,15 @@ Free support is available on the [WordPress.org support forum](https://wordpress
 
 == Changelog ==
 
+= 1.3.6 =
+* Fixed: Corrected Premium pricing to Personal (1 Website), Business (5 Websites), and Agency (25 Websites), each with Pro, Plus, and Ultra options.
+* Compatibility: Updated the ExploreXR block for the WordPress 7.1 iframed editor.
+* Fixed: Added a standards-compliant editor block alias while preserving the historical server block name.
+* Fixed: Prevented Model Viewer template whitespace from causing editor and REST header warnings.
+* Performance: Prevented ExploreXR admin assets from loading on unrelated WordPress screens.
+* Security: Hardened server add-on metadata, package, version, and activation validation.
+* Quality: Expanded PHP 8.5, PHPCompatibility, Plugin Check, and release ZIP validation in CI.
+
 = 1.3.5 =
 * Updated Premium comparison copy for central tier/domain entitlements, Agency, and 72-hour transport-only grace.
 * Security: Hardened GLB, GLTF, and USDZ upload validation.
@@ -285,6 +294,9 @@ Free support is available on the [WordPress.org support forum](https://wordpress
 * Fixes GLB/GLTF/USDZ upload failures caused by PHP finfo MIME detection.
 
 == Upgrade Notice ==
+
+= 1.3.6 =
+WordPress 7.1 block editor compatibility, admin asset isolation, and safer server add-on installation. Update recommended for all users.
 
 = 1.3.5 =
 Security, lifecycle, upload validation, and performance fixes. Update recommended for all users.

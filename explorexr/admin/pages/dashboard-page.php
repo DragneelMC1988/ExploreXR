@@ -311,25 +311,65 @@ function explorexr_dashboard_page() {
                 </div>
             </div>
             <div class="explorexr-premium-pricing">
-                <div class="explorexr-pricing-tiers">
-                    <div class="explorexr-pricing-tier">
-                        <h4>Pro</h4>
-                        <div class="explorexr-price">€59/year</div>
-                        <div class="explorexr-addon-count">3 Add-ons</div>
-                        <p>Choose any 3 add-ons</p>
+                <div class="explorexr-pricing-plan">
+                    <h4 class="explorexr-pricing-plan-title">Personal <span>1 Website</span></h4>
+                    <div class="explorexr-pricing-tiers">
+                        <div class="explorexr-pricing-tier">
+                            <h4>Pro</h4>
+                            <div class="explorexr-price">€59/year</div>
+                            <div class="explorexr-addon-count">3 Add-ons</div>
+                        </div>
+                        <div class="explorexr-pricing-tier">
+                            <h4>Plus</h4>
+                            <div class="explorexr-price">€99/year</div>
+                            <div class="explorexr-addon-count">5 Add-ons</div>
+                        </div>
+                        <div class="explorexr-pricing-tier">
+                            <h4>Ultra</h4>
+                            <div class="explorexr-price">€179/year</div>
+                            <div class="explorexr-addon-count">All 12 Add-ons</div>
+                        </div>
                     </div>
-                    <div class="explorexr-pricing-tier featured">
-                        <h4>Plus</h4>
-                        <div class="explorexr-price">€99/year</div>
-                        <div class="explorexr-addon-count">5 Add-ons</div>
-                        <p>Choose any 5 add-ons</p>
-                        <span class="explorexr-popular-badge">Most Popular</span>
+                </div>
+                <div class="explorexr-pricing-plan">
+                    <h4 class="explorexr-pricing-plan-title">Business <span>5 Websites</span></h4>
+                    <div class="explorexr-pricing-tiers">
+                        <div class="explorexr-pricing-tier">
+                            <h4>Pro</h4>
+                            <div class="explorexr-price">€169/year</div>
+                            <div class="explorexr-addon-count">3 Add-ons</div>
+                        </div>
+                        <div class="explorexr-pricing-tier featured">
+                            <h4>Plus</h4>
+                            <div class="explorexr-price">€279/year</div>
+                            <div class="explorexr-addon-count">5 Add-ons</div>
+                            <span class="explorexr-popular-badge">Most Popular</span>
+                        </div>
+                        <div class="explorexr-pricing-tier">
+                            <h4>Ultra</h4>
+                            <div class="explorexr-price">€499/year</div>
+                            <div class="explorexr-addon-count">All 12 Add-ons</div>
+                        </div>
                     </div>
-                    <div class="explorexr-pricing-tier">
-                        <h4>Ultra</h4>
-                        <div class="explorexr-price">€179/year</div>
-                        <div class="explorexr-addon-count">All 12 Add-ons</div>
-                        <p>Complete collection</p>
+                </div>
+                <div class="explorexr-pricing-plan">
+                    <h4 class="explorexr-pricing-plan-title">Agency <span>25 Websites</span></h4>
+                    <div class="explorexr-pricing-tiers">
+                        <div class="explorexr-pricing-tier">
+                            <h4>Pro</h4>
+                            <div class="explorexr-price">€449/year</div>
+                            <div class="explorexr-addon-count">3 Add-ons</div>
+                        </div>
+                        <div class="explorexr-pricing-tier">
+                            <h4>Plus</h4>
+                            <div class="explorexr-price">€749/year</div>
+                            <div class="explorexr-addon-count">5 Add-ons</div>
+                        </div>
+                        <div class="explorexr-pricing-tier">
+                            <h4>Ultra</h4>
+                            <div class="explorexr-price">€1299/year</div>
+                            <div class="explorexr-addon-count">All 12 Add-ons</div>
+                        </div>
                     </div>
                 </div>
                 <div class="explorexr-addon-note">
@@ -409,6 +449,3 @@ function explorexr_dashboard_page() {
     </div><!-- .wrap -->
     <?php
 }
-
-
-

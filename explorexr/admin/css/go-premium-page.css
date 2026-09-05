@@ -76,12 +76,33 @@
     margin-top: 36px;
 }
 
-/* Tier cards */
+/* Licence plans and tier cards */
+.explorexr-go-premium-page .gp-plan {
+    margin-top: 24px;
+}
+
+.explorexr-go-premium-page .gp-plan-heading {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.explorexr-go-premium-page .gp-plan-heading h3 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.explorexr-go-premium-page .gp-plan-heading span {
+    color: #6b7280;
+    font-weight: 600;
+}
+
 .explorexr-go-premium-page .gp-tiers {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 14px;
-    margin-top: 24px;
+    margin-top: 0;
 }
 
 .explorexr-go-premium-page .gp-tier {
@@ -117,11 +138,9 @@
 }
 
 /* Tier-specific heading colours (replaces inline style="color:…") */
-.explorexr-go-premium-page .gp-tier--free  h2 { color: #6c757d; }
 .explorexr-go-premium-page .gp-tier--pro   h2 { color: #0073aa; }
 .explorexr-go-premium-page .gp-tier--plus  h2 { color: #7c3aed; }
 .explorexr-go-premium-page .gp-tier--ultra h2 { color: #b91c1c; }
-.explorexr-go-premium-page .gp-tier--agency h2 { color: #7f1d1d; }
 
 .explorexr-go-premium-page .gp-tier .gp-price {
     font-size: 32px;

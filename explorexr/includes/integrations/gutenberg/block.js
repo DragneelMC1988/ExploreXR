@@ -19,7 +19,8 @@
 
     var models = ( window.explorexrBlockData && window.explorexrBlockData.models ) || [];
 
-    registerBlockType( 'explorexr/3d-model', {
+    registerBlockType( 'explorexr/model-3d', {
+        apiVersion: 3,
         title: 'ExploreXR 3D Model',
         description: 'Display an interactive 3D model.',
         icon: 'format-gallery',
@@ -58,7 +59,7 @@
 
             if ( modelId ) {
                 preview = createElement( ServerSideRender, {
-                    block: 'explorexr/3d-model',
+                    block: 'explorexr/model-3d',
                     attributes: props.attributes
                 } );
             } else {

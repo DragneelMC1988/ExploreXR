@@ -20,34 +20,12 @@ function explorexr_free_go_premium_page() {
     $docs_url    = 'https://digital.expoxr.de/';
     $logo_url    = EXPLOREXR_PLUGIN_URL . 'assets/img/logos/exploreXR-Logo.png';
 
-    // Tier definitions. Prices in EUR / year, sourced from the Premium
-    // codebase pricing payload (admin/core/admin-menu.php:444-468).
+    // Premium tier entitlements. Website coverage and annual EUR prices are
+    // defined separately for each licence plan below.
     $tiers = array(
-        'free' => array(
-            'label'      => __('Free', 'explorexr'),
-            'price'      => __('€0', 'explorexr'),
-            'period'     => __('forever', 'explorexr'),
-            'slots'      => __('1 addon', 'explorexr'),
-            'color'      => '#6c757d',
-            'highlight'  => false,
-            'tagline'    => __('Get started with 3D on WordPress.', 'explorexr'),
-            'features'   => array(
-                __('Core 3D viewer (GLB / GLTF / USDZ)', 'explorexr'),
-                __('One free addon (AR, Animation, or Loading)', 'explorexr'),
-                __('Compression decoders: Draco, KTX2, Meshopt', 'explorexr'),
-                __('Community support', 'explorexr'),
-            ),
-            'cta_label'  => __('You are here', 'explorexr'),
-            'cta_url'    => '',
-            'disabled'   => true,
-        ),
         'pro' => array(
             'label'      => __('Pro', 'explorexr'),
-            'price'      => __('€59', 'explorexr'),
-            'period'     => __('per year', 'explorexr'),
             'slots'      => __('3 addons', 'explorexr'),
-            'websites'   => __('1 Website', 'explorexr'),
-            'color'      => '#0073aa',
             'highlight'  => false,
             'tagline'    => __('Focused production deployments.', 'explorexr'),
             'features'   => array(
@@ -57,16 +35,10 @@ function explorexr_free_go_premium_page() {
                 __('Automatic updates from expoxr.com', 'explorexr'),
             ),
             'cta_label'  => __('Choose Pro', 'explorexr'),
-            'cta_url'    => $pricing_url . '#tier',
-            'disabled'   => false,
         ),
         'plus' => array(
             'label'      => __('Plus', 'explorexr'),
-            'price'      => __('€99', 'explorexr'),
-            'period'     => __('per year', 'explorexr'),
             'slots'      => __('5 addons', 'explorexr'),
-            'websites'   => __('Up to 3 Websites', 'explorexr'),
-            'color'      => '#7c3aed',
             'highlight'  => true,
             'tagline'    => __('Rich production sites with AR + commerce.', 'explorexr'),
             'features'   => array(
@@ -76,16 +48,10 @@ function explorexr_free_go_premium_page() {
                 __('Page builder widgets (Elementor, Divi, Avada)', 'explorexr'),
             ),
             'cta_label'  => __('Choose Plus', 'explorexr'),
-            'cta_url'    => $pricing_url . '#tier',
-            'disabled'   => false,
         ),
         'ultra' => array(
             'label'      => __('Ultra', 'explorexr'),
-            'price'      => __('€199', 'explorexr'),
-            'period'     => __('per year', 'explorexr'),
             'slots'      => __('Unlimited', 'explorexr'),
-            'websites'   => __('Up to 5 Websites', 'explorexr'),
-            'color'      => '#b91c1c',
             'highlight'  => false,
             'tagline'    => __('Agencies, marketplaces, multi-brand.', 'explorexr'),
             'features'   => array(
@@ -95,27 +61,36 @@ function explorexr_free_go_premium_page() {
                 __('Advanced multi-site deployments', 'explorexr'),
             ),
             'cta_label'  => __('Choose Ultra', 'explorexr'),
-            'cta_url'    => $pricing_url . '#tier',
-            'disabled'   => false,
+        ),
+    );
+
+    $plans = array(
+        'personal' => array(
+            'label'    => __('Personal', 'explorexr'),
+            'websites' => __('1 Website', 'explorexr'),
+            'prices'   => array(
+                'pro'   => __('€59', 'explorexr'),
+                'plus'  => __('€99', 'explorexr'),
+                'ultra' => __('€179', 'explorexr'),
+            ),
+        ),
+        'business' => array(
+            'label'    => __('Business', 'explorexr'),
+            'websites' => __('5 Websites', 'explorexr'),
+            'prices'   => array(
+                'pro'   => __('€169', 'explorexr'),
+                'plus'  => __('€279', 'explorexr'),
+                'ultra' => __('€499', 'explorexr'),
+            ),
         ),
         'agency' => array(
-            'label'      => __('Agency', 'explorexr'),
-            'price'      => __('€399', 'explorexr'),
-            'period'     => __('per year', 'explorexr'),
-            'slots'      => __('Unlimited', 'explorexr'),
-            'websites'   => __('Unlimited Websites', 'explorexr'),
-            'color'      => '#7f1d1d',
-            'highlight'  => false,
-            'tagline'    => __('Agency portfolios and client deployments.', 'explorexr'),
-            'features'   => array(
-                __('Everything in Ultra', 'explorexr'),
-                __('All 12 commercial addons included', 'explorexr'),
-                __('Unlimited Websites', 'explorexr'),
-                __('White-label options', 'explorexr'),
+            'label'    => __('Agency', 'explorexr'),
+            'websites' => __('25 Websites', 'explorexr'),
+            'prices'   => array(
+                'pro'   => __('€449', 'explorexr'),
+                'plus'  => __('€749', 'explorexr'),
+                'ultra' => __('€1299', 'explorexr'),
             ),
-            'cta_label'  => __('Choose Agency', 'explorexr'),
-            'cta_url'    => $pricing_url . '#tier',
-            'disabled'   => false,
         ),
     );
 
@@ -124,7 +99,6 @@ function explorexr_free_go_premium_page() {
         'pro'   => array('label' => __('Premium', 'explorexr'), 'bg' => '#7c3aed'),
         'plus'  => array('label' => __('Premium', 'explorexr'), 'bg' => '#7c3aed'),
         'ultra' => array('label' => __('Premium', 'explorexr'), 'bg' => '#7c3aed'),
-        'agency' => array('label' => __('Premium', 'explorexr'), 'bg' => '#7c3aed'),
     );
 
     // Full commercial addon catalog. Descriptions taken from each addon's
@@ -184,54 +158,57 @@ function explorexr_free_go_premium_page() {
             <div class="gp-why-item">
                 <span class="dashicons dashicons-admin-multisite"></span>
                 <h3><?php esc_html_e('More Sites', 'explorexr'); ?></h3>
-                <p><?php esc_html_e('Pro includes 1 Website, Plus up to 3 Websites, Ultra up to 5 Websites, and Agency unlimited Websites.', 'explorexr'); ?></p>
+                <p><?php esc_html_e('Choose Personal for 1 Website, Business for 5 Websites, or Agency for 25 Websites.', 'explorexr'); ?></p>
             </div>
             <div class="gp-why-item">
                 <span class="dashicons dashicons-businessperson"></span>
                 <h3><?php esc_html_e('Priority Support', 'explorexr'); ?></h3>
-                <p><?php esc_html_e('Email support on Pro, priority email on Plus, and VIP response time on Ultra and Agency.', 'explorexr'); ?></p>
+                <p><?php esc_html_e('Email support on Pro, priority email on Plus, and VIP response time on Ultra.', 'explorexr'); ?></p>
             </div>
         </div>
 
         <!-- TIERS -->
         <h2 class="gp-section-title"><?php esc_html_e('Choose your plan', 'explorexr'); ?></h2>
-        <p class="description"><?php esc_html_e('Each paid tier combines addon access and Website coverage in one plan.', 'explorexr'); ?></p>
-        <div class="gp-tiers">
-            <?php foreach ($tiers as $tier_slug => $tier) : ?>
-                <div class="gp-tier gp-tier--<?php echo esc_attr($tier_slug); ?> <?php echo $tier['highlight'] ? 'gp-highlight' : ''; ?>">
-                    <?php if ($tier['highlight']) : ?>
-                        <span class="gp-pill"><?php esc_html_e('Most Popular', 'explorexr'); ?></span>
-                    <?php endif; ?>
-                    <h2><?php echo esc_html($tier['label']); ?></h2>
-                    <div class="gp-price"><?php echo esc_html($tier['price']); ?></div>
-                    <div class="gp-period"><?php echo esc_html($tier['period']); ?></div>
-                    <div class="gp-entitlements">
-                        <span class="gp-slots"><?php echo esc_html($tier['slots']); ?></span>
-                        <?php if (!empty($tier['websites'])) : ?>
-                            <span class="gp-websites"><?php echo esc_html($tier['websites']); ?></span>
-                        <?php endif; ?>
-                    </div>
-                    <div class="gp-tagline"><?php echo esc_html($tier['tagline']); ?></div>
-                    <ul>
-                        <?php foreach ($tier['features'] as $feat) : ?>
-                            <li><?php echo esc_html($feat); ?></li>
-                        <?php endforeach; ?>
-                    </ul>
-                    <?php if ($tier['disabled']) : ?>
-                        <button class="button" disabled><?php echo esc_html($tier['cta_label']); ?></button>
-                    <?php else : ?>
-                        <a href="<?php echo esc_url($tier['cta_url']); ?>" target="_blank" rel="noopener" class="button button-primary">
-                            <?php echo esc_html($tier['cta_label']); ?>
-                        </a>
-                    <?php endif; ?>
+        <p class="description"><?php esc_html_e('Choose your Website allowance, then select Pro, Plus, or Ultra based on the addons you need.', 'explorexr'); ?></p>
+        <?php foreach ($plans as $plan_slug => $plan) : ?>
+            <section class="gp-plan gp-plan--<?php echo esc_attr($plan_slug); ?>">
+                <div class="gp-plan-heading">
+                    <h3><?php echo esc_html($plan['label']); ?></h3>
+                    <span><?php echo esc_html($plan['websites']); ?></span>
                 </div>
-            <?php endforeach; ?>
-        </div>
+                <div class="gp-tiers">
+                    <?php foreach ($tiers as $tier_slug => $tier) : ?>
+                        <?php $is_highlight = $tier['highlight'] && 'business' === $plan_slug; ?>
+                        <div class="gp-tier gp-tier--<?php echo esc_attr($tier_slug); ?> <?php echo $is_highlight ? 'gp-highlight' : ''; ?>">
+                            <?php if ($is_highlight) : ?>
+                                <span class="gp-pill"><?php esc_html_e('Most Popular', 'explorexr'); ?></span>
+                            <?php endif; ?>
+                            <h2><?php echo esc_html($tier['label']); ?></h2>
+                            <div class="gp-price"><?php echo esc_html($plan['prices'][$tier_slug]); ?></div>
+                            <div class="gp-period"><?php esc_html_e('per year', 'explorexr'); ?></div>
+                            <div class="gp-entitlements">
+                                <span class="gp-slots"><?php echo esc_html($tier['slots']); ?></span>
+                                <span class="gp-websites"><?php echo esc_html($plan['websites']); ?></span>
+                            </div>
+                            <div class="gp-tagline"><?php echo esc_html($tier['tagline']); ?></div>
+                            <ul>
+                                <?php foreach ($tier['features'] as $feat) : ?>
+                                    <li><?php echo esc_html($feat); ?></li>
+                                <?php endforeach; ?>
+                            </ul>
+                            <a href="<?php echo esc_url($pricing_url . '#tier'); ?>" target="_blank" rel="noopener" class="button button-primary">
+                                <?php echo esc_html($tier['cta_label']); ?>
+                            </a>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </section>
+        <?php endforeach; ?>
 
         <!-- ADDON CATALOG -->
         <h2 class="gp-section-title-lg"><?php esc_html_e('Available addons', 'explorexr'); ?></h2>
         <p class="description">
-            <?php esc_html_e('With ExploreXR Free, you can choose and activate one of the four add-ons marked “Free.” If you want to use multiple add-ons at the same time, please upgrade to ExploreXR Premium.', 'explorexr'); ?>
+            <?php esc_html_e('With ExploreXR Free, you can choose and activate only one of the three add-ons marked “Free.” If you want to use multiple add-ons at the same time, please upgrade to ExploreXR Premium.', 'explorexr'); ?>
         </p>
         <div class="gp-addons-grid">
             <?php foreach ($addons as $addon) :
@@ -261,7 +238,7 @@ function explorexr_free_go_premium_page() {
             </details>
             <details>
                 <summary><?php esc_html_e('Can I switch addons later?', 'explorexr'); ?></summary>
-                <p><?php esc_html_e('Yes. On Pro, Plus, Ultra and Agency you can change your selected addons from the License screen. Deactivating an addon preserves its settings exactly.', 'explorexr'); ?></p>
+                <p><?php esc_html_e('Yes. On Pro, Plus, and Ultra you can change your selected addons from the License screen. Deactivating an addon preserves its settings exactly.', 'explorexr'); ?></p>
             </details>
             <details>
                 <summary><?php esc_html_e('How does the free trial work?', 'explorexr'); ?></summary>
